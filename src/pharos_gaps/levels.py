@@ -47,7 +47,7 @@ def old_levels(release: str) -> pd.DataFrame:
     if len(out) != len(t) or out.uniprot.duplicated().any():
         raise SystemExit(f"REFUSED {release}: targets and proteins are not one to one "
                          f"({len(t):,} targets, {len(out):,} joined, {int(out.uniprot.duplicated().sum())} repeated accessions)")
-    return out[["uniprot", "sym", "tdl", "fam"]]
+    return out[["uniprot", "sym", "tdl", "fam", "target_id"]]
 
 
 def new_levels() -> pd.DataFrame:
@@ -79,6 +79,41 @@ def transitions(old: pd.DataFrame, new: pd.DataFrame) -> dict:
         "ligand_holders": len(had), "ligand_lost": int(lost.sum()),
         "gained_by_family": {k: {"candidates": int(r["size"]), "gained": int(r["sum"])} for k, r in fam.iterrows()},
     }
+
+
+def level_against_ligands(release: str) -> dict:
+    """Does a release's level agree with its own ligand table? Targets graded as holding a ligand
+    with no activity row, and targets with activity rows graded as holding none."""
+    d = paths.tables(release)
+    p = d / "ncats_ligand_activity.parquet"
+    if not p.is_file():
+        raise SystemExit(f"{release} has no extracted ncats_ligand_activity; run:  "
+                         f"python -m pharos_gaps.sqldump extract {release} --tables ncats_ligand_activity")
+    with_rows = set(pq.read_table(p, columns=["target_id"]).to_pandas().target_id)
+    t = pq.read_table(d / "target.parquet", columns=["id", "tdl"]).to_pandas()
+    graded = t.tdl.isin(HAS_LIGAND)
+    has = t.id.isin(with_rows)
+    return {"targets_with_activity_rows": int(has.sum()), "graded_as_holding": int(graded.sum()),
+            "rows_but_graded_without": int((has & ~graded).sum()),
+            "rows_but_graded_without_by_level": {k: int(v) for k, v in t.tdl[has & ~graded].value_counts().items()},
+            "graded_holding_but_no_rows": int((graded & ~has).sum()),
+            "graded_holding_but_no_rows_by_level": {k: int(v) for k, v in t.tdl[graded & ~has].value_counts().items()}}
+
+
+def ligand_label(release: str, old: pd.DataFrame, new: pd.DataFrame) -> dict:
+    """The label "gained a qualifying ligand by Pharos 4.0.0", with candidates defined by the release's
+    ligand TABLE and not its grade: a target that already has activity rows did not gain a ligand,
+    whatever it was graded."""
+    with_rows = set(pq.read_table(paths.tables(release) / "ncats_ligand_activity.parquet", columns=["target_id"]).to_pandas().target_id)
+    both = old.merge(new, on="uniprot", suffixes=("_old", "_new"))
+    by_grade = both[~both.tdl_old.isin(HAS_LIGAND)]
+    had_rows = by_grade.target_id.isin(with_rows)
+    gained = by_grade.tdl_new.isin(HAS_LIGAND)
+    clean = by_grade[~had_rows]
+    return {"candidates_by_grade": len(by_grade), "gained_by_grade": int(gained.sum()),
+            "candidates_with_activity_rows": int(had_rows.sum()), "of_those_counted_as_gained": int((had_rows & gained).sum()),
+            "candidates": len(clean), "gained": int(clean.tdl_new.isin(HAS_LIGAND).sum()),
+            "gained_from": {k: int(v) for k, v in clean.tdl_old[clean.tdl_new.isin(HAS_LIGAND)].value_counts().items()}}
 
 
 def notes_transitions() -> dict[str, int]:
@@ -114,6 +149,8 @@ def _selftest() -> int:
     cmp_ = against_notes(r, {"Tdark>Tchem": 1, "Tbio>Tchem": 3})
     ck("a move is compared with the notes' count", [c["difference"] for c in cmp_] == [-2, 0])
     ck("the notes' arrow is read with or without HTML escaping", NOTE_ROW.findall("Tbio -&gt; Tchem 1,320 Tdark -> Tbio 743") == [("Tbio", "Tchem", "1,320"), ("Tdark", "Tbio", "743")])
+    r2 = transitions(old.assign(target_id=range(7)), new)
+    ck("an extra column on the old side changes nothing", r2["matrix"] == r["matrix"])
     try:
         transitions(old.assign(tdl="Tnew"), new)
         ck("an unknown level is refused", False)
@@ -148,7 +185,9 @@ def main(argv: list[str] | None = None) -> int:
     if len(argv) != 1:
         raise SystemExit(__doc__)
     release = argv[0]
-    r = transitions(old_levels(release), new_levels())
+    old, new = old_levels(release), new_levels()
+    r = transitions(old, new)
+    label = ligand_label(release, old, new)
     notes = notes_transitions()
     cmp_ = against_notes(r, notes)
     print(f"{release} -> Pharos 4.0.0: {r['shared']:,} shared accessions, {r['only_old']:,} only in {release}, {r['only_new']:,} only in 4.0.0")
@@ -163,12 +202,19 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  release notes, upward moves ({sum(notes.values()):,} in all):")
     for c in cmp_:
         print(f"    {c['move']:12s} notes {c['notes']:>6,}  measured {c['measured']:>6,}  difference {c['difference']:+d}")
+    own = level_against_ligands(release)
+    print(f"  {release} against its own ligand table: {own['targets_with_activity_rows']:,} targets have activity rows, "
+          f"{own['graded_as_holding']:,} are graded Tchem or Tclin; {own['rows_but_graded_without']:,} have rows and a lower grade, "
+          f"{own['graded_holding_but_no_rows']:,} have the grade and no rows")
+    print(f"  label, candidates taken from the ligand table: {label['candidates']:,} targets with no activity row, "
+          f"{label['gained']:,} with a ligand in 4.0.0 ({label['gained'] / label['candidates']:.1%}); "
+          f"{label['of_those_counted_as_gained']} of the {label['candidates_with_activity_rows']} already holding rows would have counted as gains")
     man = json.loads((paths.tables(release) / "_manifest.json").read_text())
     side = lambda k: json.loads(registry.SOURCES[k].path.with_name(registry.SOURCES[k].filename + ".lineage.json").read_text())["sha256"]
     out = paths.DOCS_DATA / f"levels_{release}_pharos400.json"
     out.write_text(json.dumps({"old": release, "old_sha256": man["sha256"], "new": "pharos400_canonicals",
                                "new_sha256": side("pharos400_canonicals"), "notes_sha256": side("pharos400_readme"),
-                               **r, "release_notes": cmp_}, indent=1) + "\n")
+                               **r, "release_notes": cmp_, "level_against_own_ligand_table": own, "ligand_label": label}, indent=1) + "\n")
     print(f"  -> {out}")
     return 0
 
