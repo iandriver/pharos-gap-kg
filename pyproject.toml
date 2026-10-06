@@ -11,10 +11,17 @@ requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "Ian Driver" }]
-dependencies = ["pandas>=2.0", "pyarrow>=15"]
+dependencies = [
+  "pandas>=2.0",
+  "pyarrow>=15",
+  "kgx-gaps @ git+https://github.com/iandriver/kgx-gaps@aca30efa7932f0ca87ca7eb7da072499c2f6da65",
+]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pharos_gaps"]

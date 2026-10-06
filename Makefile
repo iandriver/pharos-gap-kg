@@ -12,6 +12,8 @@ selftest:
 	$(PY) -m pharos_gaps.levels --selftest
 	$(PY) -m pharos_gaps.pubyear --selftest
 	$(PY) -m pharos_gaps.dated --selftest
+	$(PY) -m pharos_gaps.split --selftest
+	$(PY) -m pharos_gaps.graph --selftest
 
 test:
 	$(PY) -m pytest -q
