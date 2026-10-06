@@ -15,14 +15,24 @@ Three properties are the point of it:
 
 ## Status
 
-Started 6 Oct 2026. Built: the data registry, the resumable fetcher, a streaming reader that turns a
-published MySQL dump into typed tables, and the first measurements of what the snapshots can date.
-No model has been trained.
+Started 6 Oct 2026. No model has been fitted. What exists:
 
-First findings ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md)): the April 2023 and April 2024
-databases hold identical link tables, so the archive cannot be split by publication date. The links
-that carry their own dates are GWAS gene and trait associations (295,327 pairs, all dated by study),
-and 1,359 of 17,517 targets with no ligand in the last legacy database hold one in Pharos 4.0.0.
+- **The data, read without a database server.** A registry with pinned digests, a resumable fetcher,
+  and a streaming reader that turns a published MySQL dump into typed tables.
+- **What the snapshots can date** ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md)). The April 2023
+  and April 2024 databases hold identical link tables, so the archive cannot be split by publication
+  date. GWAS target and trait links carry their own dates (295,327 pairs, each dated by its first
+  study).
+- **A frozen split and a protocol** ([`docs/PROTOCOL.md`](docs/PROTOCOL.md)). Links first reported by
+  2018 train; 130,369 later links are scored. Each part is pinned by digest, and the protocol was
+  committed before any scorer ran.
+- **The graph as of 2018.** 20,412 targets, 1,404 traits, 99,435 edges carrying only the studies dated
+  2018 or earlier. It passes the `kgx-gaps` conformance suite, and `graph lineage` answers why one
+  edge exists, down to the papers and the digest of the file they were read from.
+- **Baselines** ([`findings/BASELINES.md`](findings/BASELINES.md)). How well-studied a target was in
+  2018 ranks later links at four times chance; a parameter-free neighbour score adds to that. A fitted
+  model has to beat 0.0969.
+
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Inputs
@@ -48,6 +58,12 @@ documents quote are committed under `docs/data/`.
 uv venv && uv pip install -e ".[test]"
 python -m pharos_gaps.registry            # what is needed and what is on disk
 python -m pharos_gaps.fetch pharos319     # ranged, resumable, refuses a file that changed
+python -m pharos_gaps.sqldump extract pharos319 --tables tiga,tiga_provenance,protein
+NCBI_EMAIL=you@example.org python -m pharos_gaps.pubyear pharos319
+python -m pharos_gaps.split pharos319 --cutoff 2018          # rebuilds the split and checks its digests
+python -m pharos_gaps.graph build pharos319 --cutoff 2018
+python -m pharos_gaps.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
+python -m pharos_gaps.baselines --cutoff 2018
 make check
 ```
 
