@@ -14,6 +14,8 @@ selftest:
 	$(PY) -m pharos_gaps.dated --selftest
 	$(PY) -m pharos_gaps.split --selftest
 	$(PY) -m pharos_gaps.graph --selftest
+	$(PY) -m pharos_gaps.score --selftest
+	$(PY) -m pharos_gaps.baselines --selftest
 
 test:
 	$(PY) -m pytest -q
