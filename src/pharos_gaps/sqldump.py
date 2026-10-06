@@ -21,6 +21,7 @@ Run:  python -m pharos_gaps.sqldump inventory pharos319
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import re
@@ -103,8 +104,14 @@ def events(src) -> Iterator[tuple[str, str, object]]:
 
 
 def inventory(src) -> dict:
-    """Every table: its columns and declared types, its rows, and the bytes of its INSERT payload."""
+    """Every table: its columns and declared types, its rows, and the size and SHA-256 of its INSERT payload.
+
+    The digest is over the VALUES text in dump order, so two dumps give the same digest for a table
+    only if it holds the same rows, with the same ids, written in the same order. Equal digests mean
+    an identical table. Unequal digests mean only "compare the rows"; a re-ordered table differs here.
+    """
     out: dict[str, dict] = {}
+    hashes: dict[str, "hashlib._Hash"] = {}
     for kind, table, x in events(src):
         if kind == "create":
             out[table] = {"columns": [{"name": c, "type": t} for c, t in x], "rows": 0, "payload_bytes": 0}
@@ -112,6 +119,9 @@ def inventory(src) -> dict:
             d = out.setdefault(table, {"columns": [], "rows": 0, "payload_bytes": 0})
             d["rows"] += sum(1 for _ in ROW.finditer(x))
             d["payload_bytes"] += len(x)
+            hashes.setdefault(table, hashlib.sha256()).update(x)
+    for table, d in out.items():
+        d["payload_sha256"] = hashes[table].hexdigest() if table in hashes else None
     return out
 
 
@@ -226,6 +236,12 @@ def _selftest() -> int:
     ck("columns are the column lines, not the keys", [c["name"] for c in inv["t"]["columns"]] == ["id", "name", "score", "note"])
     ck("a row containing '),(' in a string is one row (5 rows, not 6)", inv["t"]["rows"] == 5)
     ck("a declared table with no INSERT has zero rows", inv["empty"]["rows"] == 0)
+    same = inventory(io.BytesIO(dump))
+    moved = inventory(io.BytesIO(dump.replace(b"(7),(8)", b"(7),(9)")))
+    ck("the same table read twice has one digest; an empty table has none",
+       inv["t"]["payload_sha256"] == same["t"]["payload_sha256"] and inv["empty"]["payload_sha256"] is None)
+    ck("one changed value changes that table's digest and no other",
+       moved["u"]["payload_sha256"] != inv["u"]["payload_sha256"] and moved["t"]["payload_sha256"] == inv["t"]["payload_sha256"])
     import tempfile
     with tempfile.TemporaryDirectory() as d:
         done = extract(io.BytesIO(dump), {"t", "empty"}, Path(d))

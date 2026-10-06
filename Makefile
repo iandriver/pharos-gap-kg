@@ -8,6 +8,7 @@ paths:
 
 selftest:
 	$(PY) -m pharos_gaps.sqldump --selftest
+	$(PY) -m pharos_gaps.snapshots --selftest
 
 test:
 	$(PY) -m pytest -q

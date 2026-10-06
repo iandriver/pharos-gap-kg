@@ -1,5 +1,5 @@
 """Each module's own self-test also runs under pytest, so one command covers both."""
-from pharos_gaps import paths, sqldump
+from pharos_gaps import paths, snapshots, sqldump
 
 
 def test_paths_selftest():
@@ -8,3 +8,7 @@ def test_paths_selftest():
 
 def test_sqldump_selftest():
     assert sqldump._selftest() == 0
+
+
+def test_snapshots_selftest():
+    assert snapshots._selftest() == 0
