@@ -10,7 +10,8 @@ THE RELEASE NOTES ARE A SECOND SOURCE, so they are read and compared here on eve
 count upward moves only. This module counts both directions, because a level that can fall is a level
 some of whose rises are the pipeline changing and not the knowledge.
 
-Run:  python -m pharos_gaps.levels pharos319
+Run:  python -m pharos_gaps.levels pharos319              # against Pharos 4.0.0 and its release notes
+      python -m pharos_gaps.levels pharos316 pharos319    # two database releases against each other
       python -m pharos_gaps.levels --selftest
 """
 from __future__ import annotations
@@ -121,10 +122,29 @@ def _selftest() -> int:
     return 0 if ok else 1
 
 
+def _between(a: str, b: str) -> int:
+    """Two database releases against each other: the same counts, with no release notes to compare."""
+    r = transitions(old_levels(a), old_levels(b)[["uniprot", "tdl"]])
+    print(f"{a} -> {b}: {r['shared']:,} shared accessions, {r['only_old']:,} only in {a}, {r['only_new']:,} only in {b}")
+    print("  from \\ to " + "".join(f"{c:>8s}" for c in ORDER))
+    for x in ORDER:
+        print(f"  {x:9s} " + "".join(f"{r['matrix'][x][y]:>8,}" for y in ORDER))
+    print(f"  moved up {r['up']:,}, moved down {r['down']:,}, unchanged {r['unchanged']:,}")
+    print(f"  no qualifying ligand in {a}: {r['ligand_candidates']:,}; with one in {b}: {r['ligand_gained']:,}")
+    print(f"  held one in {a}: {r['ligand_holders']:,}; without one in {b}: {r['ligand_lost']:,}")
+    sha = lambda k: json.loads((paths.tables(k) / "_manifest.json").read_text())["sha256"]
+    out = paths.DOCS_DATA / f"levels_{a}_{b}.json"
+    out.write_text(json.dumps({"old": a, "old_sha256": sha(a), "new": b, "new_sha256": sha(b), **r}, indent=1) + "\n")
+    print(f"  -> {out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return _selftest()
+    if len(argv) == 2:
+        return _between(argv[0], argv[1])
     if len(argv) != 1:
         raise SystemExit(__doc__)
     release = argv[0]
