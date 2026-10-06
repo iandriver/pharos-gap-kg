@@ -1,0 +1,157 @@
+"""Development levels at two dates, joined by UniProt accession: who moved, and who gained a ligand.
+
+Pharos grades every human protein target: Tclin (an approved drug with a known mechanism), Tchem (a
+small molecule above a potency cutoff), Tbio (biological evidence only), Tdark (little of anything).
+The archived database gives each target's level as of its own contents; the Pharos 4.0.0 table gives
+the level in May 2026. A target with no qualifying ligand at the first date and one at the second is
+a dated, public label for "this target-ligand link did not exist and now does".
+
+THE RELEASE NOTES ARE A SECOND SOURCE, so they are read and compared here on every run. The notes
+count upward moves only. This module counts both directions, because a level that can fall is a level
+some of whose rises are the pipeline changing and not the knowledge.
+
+Run:  python -m pharos_gaps.levels pharos319
+      python -m pharos_gaps.levels --selftest
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+
+import pandas as pd
+import pyarrow.parquet as pq
+
+from pharos_gaps import paths, registry
+
+ORDER = ["Tdark", "Tbio", "Tchem", "Tclin"]
+RANK = {k: i for i, k in enumerate(ORDER)}
+HAS_LIGAND = {"Tchem", "Tclin"}
+NOTE_ROW = re.compile(r"(T(?:dark|bio|chem|clin))\s*-(?:&gt;|>)\s*(T(?:dark|bio|chem|clin))\s+([\d,]+)")
+
+
+def old_levels(release: str) -> pd.DataFrame:
+    """uniprot, sym, tdl, fam for every target of an extracted database release."""
+    d = paths.tables(release)
+    need = ["target", "t2tc", "protein"]
+    missing = [t for t in need if not (d / f"{t}.parquet").is_file()]
+    if missing:
+        raise SystemExit(f"{release} has no extracted {missing}; run:  "
+                         f"python -m pharos_gaps.sqldump extract {release} --tables {','.join(need)}")
+    rd = lambda t, cols: pq.read_table(d / f"{t}.parquet", columns=cols).to_pandas()
+    t = rd("target", ["id", "tdl", "fam"]).rename(columns={"id": "target_id"})
+    link = rd("t2tc", ["target_id", "protein_id"])
+    p = rd("protein", ["id", "uniprot", "sym"]).rename(columns={"id": "protein_id"})
+    out = t.merge(link, on="target_id").merge(p, on="protein_id")
+    if len(out) != len(t) or out.uniprot.duplicated().any():
+        raise SystemExit(f"REFUSED {release}: targets and proteins are not one to one "
+                         f"({len(t):,} targets, {len(out):,} joined, {int(out.uniprot.duplicated().sum())} repeated accessions)")
+    return out[["uniprot", "sym", "tdl", "fam"]]
+
+
+def new_levels() -> pd.DataFrame:
+    d = pd.read_csv(registry.require("pharos400_canonicals"), dtype=str, keep_default_na=False,
+                    usecols=["uniprot_id", "tdl", "symbol", "idg_family", "tdl_ligand_count", "tdl_drug_count"])
+    if d.uniprot_id.duplicated().any():
+        raise SystemExit("REFUSED: the Pharos 4.0.0 canonical table repeats an accession")
+    return d.rename(columns={"uniprot_id": "uniprot"})
+
+
+def transitions(old: pd.DataFrame, new: pd.DataFrame) -> dict:
+    m = old.merge(new, on="uniprot", how="outer", suffixes=("_old", "_new"), indicator=True)
+    both = m[m._merge == "both"]
+    bad = sorted((set(both.tdl_old) | set(both.tdl_new)) - set(ORDER))
+    if bad:
+        raise SystemExit(f"REFUSED: unknown development levels {bad}")
+    matrix = {a: {b: int(((both.tdl_old == a) & (both.tdl_new == b)).sum()) for b in ORDER} for a in ORDER}
+    up = both.tdl_new.map(RANK) > both.tdl_old.map(RANK)
+    down = both.tdl_new.map(RANK) < both.tdl_old.map(RANK)
+    cand = both[~both.tdl_old.isin(HAS_LIGAND)]
+    gained = cand.tdl_new.isin(HAS_LIGAND)
+    had = both[both.tdl_old.isin(HAS_LIGAND)]
+    lost = ~had.tdl_new.isin(HAS_LIGAND)
+    fam = cand.assign(gained=gained, fam=cand.fam.fillna("none")).groupby("fam").gained.agg(["size", "sum"])
+    return {
+        "shared": len(both), "only_old": int((m._merge == "left_only").sum()), "only_new": int((m._merge == "right_only").sum()),
+        "matrix": matrix, "up": int(up.sum()), "down": int(down.sum()), "unchanged": int((~up & ~down).sum()),
+        "ligand_candidates": len(cand), "ligand_gained": int(gained.sum()),
+        "ligand_holders": len(had), "ligand_lost": int(lost.sum()),
+        "gained_by_family": {k: {"candidates": int(r["size"]), "gained": int(r["sum"])} for k, r in fam.iterrows()},
+    }
+
+
+def notes_transitions() -> dict[str, int]:
+    """The upward moves the Pharos 4.0.0 release notes report, as {'Tbio>Tchem': 1320, ...}."""
+    text = re.sub(r"<[^>]*>", " ", registry.require("pharos400_readme").read_text(errors="replace"))
+    return {f"{a}>{b}": int(n.replace(",", "")) for a, b, n in NOTE_ROW.findall(text)}
+
+
+def against_notes(r: dict, notes: dict[str, int]) -> list[dict]:
+    return [{"move": k, "notes": n, "measured": r["matrix"][k.split(">")[0]][k.split(">")[1]],
+             "difference": r["matrix"][k.split(">")[0]][k.split(">")[1]] - n} for k, n in sorted(notes.items())]
+
+
+def _selftest() -> int:
+    ok = True
+
+    def ck(name: str, cond: bool) -> None:
+        nonlocal ok
+        ok &= bool(cond)
+        print(f"  {'PASS' if cond else 'FAIL'}  {name}")
+
+    old = pd.DataFrame({"uniprot": list("ABCDEFG"), "sym": list("abcdefg"),
+                        "tdl": ["Tdark", "Tdark", "Tbio", "Tbio", "Tchem", "Tclin", "Tbio"],
+                        "fam": ["Kinase", None, "Kinase", None, None, None, None]})
+    new = pd.DataFrame({"uniprot": list("ABCDEFH"), "tdl": ["Tbio", "Tchem", "Tchem", "Tdark", "Tbio", "Tclin", "Tdark"]})
+    r = transitions(old, new)
+    ck("accessions are matched, and the unmatched counted on each side", (r["shared"], r["only_old"], r["only_new"]) == (6, 1, 1))
+    ck("rises and falls are both counted", (r["up"], r["down"], r["unchanged"]) == (3, 2, 1))
+    ck("the matrix holds each move once", r["matrix"]["Tdark"]["Tchem"] == 1 and r["matrix"]["Tchem"]["Tbio"] == 1 and sum(sum(v.values()) for v in r["matrix"].values()) == 6)
+    ck("a ligand is gained only from a level without one", (r["ligand_candidates"], r["ligand_gained"]) == (4, 2))
+    ck("a ligand lost is counted against those that held one", (r["ligand_holders"], r["ligand_lost"]) == (2, 1))
+    ck("family counts sum to the candidates", sum(v["candidates"] for v in r["gained_by_family"].values()) == 4 and r["gained_by_family"]["Kinase"] == {"candidates": 2, "gained": 1})
+    cmp_ = against_notes(r, {"Tdark>Tchem": 1, "Tbio>Tchem": 3})
+    ck("a move is compared with the notes' count", [c["difference"] for c in cmp_] == [-2, 0])
+    ck("the notes' arrow is read with or without HTML escaping", NOTE_ROW.findall("Tbio -&gt; Tchem 1,320 Tdark -> Tbio 743") == [("Tbio", "Tchem", "1,320"), ("Tdark", "Tbio", "743")])
+    try:
+        transitions(old.assign(tdl="Tnew"), new)
+        ck("an unknown level is refused", False)
+    except SystemExit:
+        ck("an unknown level is refused", True)
+    return 0 if ok else 1
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    if "--selftest" in argv:
+        return _selftest()
+    if len(argv) != 1:
+        raise SystemExit(__doc__)
+    release = argv[0]
+    r = transitions(old_levels(release), new_levels())
+    notes = notes_transitions()
+    cmp_ = against_notes(r, notes)
+    print(f"{release} -> Pharos 4.0.0: {r['shared']:,} shared accessions, {r['only_old']:,} only in {release}, {r['only_new']:,} only in 4.0.0")
+    print("  from \\ to " + "".join(f"{c:>8s}" for c in ORDER))
+    for a in ORDER:
+        print(f"  {a:9s} " + "".join(f"{r['matrix'][a][b]:>8,}" for b in ORDER))
+    print(f"  moved up {r['up']:,}, moved down {r['down']:,}, unchanged {r['unchanged']:,}")
+    print(f"  no qualifying ligand in {release}: {r['ligand_candidates']:,}; with one in 4.0.0: {r['ligand_gained']:,} "
+          f"({r['ligand_gained'] / r['ligand_candidates']:.1%})")
+    print(f"  held one in {release}: {r['ligand_holders']:,}; without one in 4.0.0: {r['ligand_lost']:,} "
+          f"({r['ligand_lost'] / r['ligand_holders']:.1%})")
+    print(f"  release notes, upward moves ({sum(notes.values()):,} in all):")
+    for c in cmp_:
+        print(f"    {c['move']:12s} notes {c['notes']:>6,}  measured {c['measured']:>6,}  difference {c['difference']:+d}")
+    man = json.loads((paths.tables(release) / "_manifest.json").read_text())
+    side = lambda k: json.loads(registry.SOURCES[k].path.with_name(registry.SOURCES[k].filename + ".lineage.json").read_text())["sha256"]
+    out = paths.DOCS_DATA / f"levels_{release}_pharos400.json"
+    out.write_text(json.dumps({"old": release, "old_sha256": man["sha256"], "new": "pharos400_canonicals",
+                               "new_sha256": side("pharos400_canonicals"), "notes_sha256": side("pharos400_readme"),
+                               **r, "release_notes": cmp_}, indent=1) + "\n")
+    print(f"  -> {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

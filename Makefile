@@ -9,6 +9,9 @@ paths:
 selftest:
 	$(PY) -m pharos_gaps.sqldump --selftest
 	$(PY) -m pharos_gaps.snapshots --selftest
+	$(PY) -m pharos_gaps.levels --selftest
+	$(PY) -m pharos_gaps.pubyear --selftest
+	$(PY) -m pharos_gaps.dated --selftest
 
 test:
 	$(PY) -m pytest -q
