@@ -10,15 +10,20 @@ Three properties are the point of it:
 - **Every pruned edge stays, as a typed gap.** Removing a link is a claim too. The graph records what
   was removed, by which rule, and what evidence would put it back. The rules and their conformance
   suite are [`kgx-gaps`](https://github.com/iandriver/kgx-gaps).
-- **Predictions are scored on links that appeared later.** The graph is built from the April 2023
-  snapshot and scored against April 2024, beside a baseline that knows only how well-studied each
-  node is.
+- **Predictions are scored on links that became known later.** A link is dated by the first paper it
+  cites, and every score is reported beside a baseline that knows only how well-studied each node is.
 
 ## Status
 
-Started 6 Oct 2026. Built so far: the data registry, the resumable fetcher, and the streaming reader
-that turns a published MySQL dump into typed tables. Nothing here is a result yet. The plan, with what
-is decided and what is open, is [`docs/PLAN.md`](docs/PLAN.md).
+Started 6 Oct 2026. Built: the data registry, the resumable fetcher, a streaming reader that turns a
+published MySQL dump into typed tables, and the first measurements of what the snapshots can date.
+No model has been trained.
+
+First findings ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md)): the April 2023 and April 2024
+databases hold identical link tables, so the archive cannot be split by publication date. The links
+that carry their own dates are GWAS gene and trait associations (295,327 pairs, all dated by study),
+and 1,359 of 17,517 targets with no ligand in the last legacy database hold one in Pharos 4.0.0.
+The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Inputs
 
@@ -27,8 +32,8 @@ fetch command. A missing input names the command that fetches it.
 
 | key | published | what |
 |---|---|---|
-| `pharos316` | 2023-04-12 | the snapshot the graph is built from |
-| `pharos319` | 2024-04-29 | the snapshot links are scored against |
+| `pharos316` | 2023-04-12 | Pharos 3.16 database; same links as 3.19 |
+| `pharos319` | 2024-04-29 | Pharos 3.19, the last full legacy database; the graph is built from it |
 | `pharos400_canonicals` | 2026-05-28 | development levels for 20,654 canonical proteins |
 
 ## Outputs

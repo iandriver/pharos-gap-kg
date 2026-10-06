@@ -56,24 +56,34 @@ Pruning is scored by planting known-false edges and counting how many the agent 
 cost in true ones. A model's score may flag an edge. Only a declared rule or a cited contradiction
 removes one.
 
-### Open: which dates the prospective test uses
+### The prospective test, as measured on 6 Oct
 
-The archive holds database dumps dated July 2022, April 2023, August 2023, October 2023 and April
-2024, and a May 2026 table of development levels. The publication date of a dump is not the date of
-its contents: the April 2024 dump's own `dataset` table lists its newest source loads as September
-2022. Before a split is frozen, `findings/SNAPSHOTS.md` must say how many links differ between each
-pair of dumps. Candidate designs, in order of preference once that is known:
+The archive's dumps cannot be split by publication date: the April 2023 and April 2024 databases hold
+byte-identical link tables (`findings/SNAPSHOTS.md`). What the files do support:
 
-1. two dumps whose contents differ, scored on links present only in the later one;
-2. within one dump, a split by the publication year of the evidence behind each link;
-3. target level: from the April 2024 graph, which targets gained a qualifying ligand or moved up a
-   development level by May 2026 (the release notes report 2,137 such moves).
+1. **Gene and trait links, split by GWAS study year.** 295,327 pairs, every one dated. At a 2018 cutoff
+   99,435 train, and 130,369 later links join a gene and a trait already in the graph. This is the
+   pair-level test. The cutoff year is not frozen yet.
+2. **Ligand gain per target, from the 3.19 database to Pharos 4.0.0.** 17,517 targets with no activity
+   row; 1,359 hold a ligand grade in May 2026. Features are strictly earlier than labels.
+
+Dropped: target and ligand pairs (after any cutoff nearly every new pair involves a compound the graph
+has not seen), and 3.16 against 3.19.
+
+To settle before a model is scored:
+
+- GWAS assigns a signal to a gene by position, so neighbouring genes share links. The split, or the
+  negatives, must not let a neighbour's link stand in for the held-out one.
+- Associations per year follow cohort size (4,101 in 2010, 63,978 in 2020).
+- Only these links carry dates. Every other table is as of 2022, so as context it can hold what the
+  held-out link later made known. Either date the context or report the test with and without it.
+- Whether each of the 1,359 ligand gains rests on evidence published after 3.19's ends, from ChEMBL.
 
 ## Schedule
 
 | dates | work |
 |---|---|
-| 6 to 12 Oct | fetch and read the snapshots; measure how they differ; freeze the split and the pass rules |
+| 6 to 12 Oct | fetch and read the snapshots; measure how they differ (done 6 Oct); build the graph; freeze the split and the pass rules |
 | 13 to 26 Oct | baselines and one graph model on Pharos alone; first pruning rules |
 | 27 Oct | progress report |
 | 27 Oct to 9 Nov | the typed questions as an MCP server; lineage; one enrichment arm; planted-edge test |
@@ -94,3 +104,5 @@ Neptune.
 - Which link type is held out, and who runs the scoring models?
 - Is any compute provided during the challenge?
 - How should a stored absence be written in BioLink? (For the Monarch mentors.)
+- Is the Pharos 4.0.0 database or graph itself available to teams? The public release is a table of
+  levels and counts; with its activities and disease links, 3.19 to 4.0.0 could be scored link by link.
