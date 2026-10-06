@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pharos-gaps"
+version = "0.0.1"
+description = "An agent-built knowledge graph from Pharos snapshots: every edge carries its lineage, every pruned edge stays as a typed gap, and predictions are scored on links that appeared later"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Ian Driver" }]
+dependencies = ["pandas>=2.0", "pyarrow>=15"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pharos_gaps"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
