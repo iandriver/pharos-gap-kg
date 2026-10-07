@@ -1,0 +1,312 @@
+{
+ "release": "pharos319",
+ "seed": 20261007,
+ "fraction": 0.05,
+ "bar": {
+  "planted_withheld_at_least": 0.8,
+  "real_withheld_at_most": 0.5
+ },
+ "disease_links_sha256": "21ba83f737dde64c7c33a7a776d451a9de71579ad2b81f50256ed7cf046b7d6a",
+ "partners_sha256": "b06737eb6827f4db454d31b685496718319b0bf2d88773c197fa8b7f66fda817",
+ "planted_pairs": 16250,
+ "sources": {
+  "CTD": {
+   "pairs": 34797,
+   "real_single_source": 12860,
+   "planted": 1740,
+   "planted_withheld": 0.5218390804597701,
+   "real_single_source_withheld": 0.23670295489891136,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.1442528735632184,
+     "real": 0.2463452566096423
+    },
+    "gwas": {
+     "planted": 0.02471264367816092,
+     "real": 0.0546656298600311
+    },
+    "partner": {
+     "planted": 0.43103448275862066,
+     "real": 0.6881804043545878
+    }
+   },
+   "auc_neighbours": 0.7690069671618313,
+   "auc_degree_product": 0.5330261570225774,
+   "rule_applied": false
+  },
+  "DisGeNET": {
+   "pairs": 82453,
+   "real_single_source": 59466,
+   "planted": 4123,
+   "planted_withheld": 0.5559058937666748,
+   "real_single_source_withheld": 0.2749470285541318,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.071549842347805,
+     "real": 0.10866713752396327
+    },
+    "gwas": {
+     "planted": 0.011399466407955373,
+     "real": 0.012292738707833047
+    },
+    "partner": {
+     "planted": 0.4171719621634732,
+     "real": 0.696969696969697
+    }
+   },
+   "auc_neighbours": 0.7922641328341277,
+   "auc_degree_product": 0.5236579606521323,
+   "rule_applied": false
+  },
+  "DrugCentral Indication": {
+   "pairs": 3523,
+   "real_single_source": 3145,
+   "planted": 177,
+   "planted_withheld": 0.5706214689265536,
+   "real_single_source_withheld": 0.19236883942766295,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.062146892655367235,
+     "real": 0.3163751987281399
+    },
+    "gwas": {
+     "planted": 0.011299435028248588,
+     "real": 0.02066772655007949
+    },
+    "partner": {
+     "planted": 0.3898305084745763,
+     "real": 0.7322734499205087
+    }
+   },
+   "auc_neighbours": 0.7237324063844502,
+   "auc_degree_product": 0.46350587876011606,
+   "rule_applied": false
+  },
+  "Expression Atlas": {
+   "pairs": 159748,
+   "real_single_source": 158479,
+   "planted": 7988,
+   "planted_withheld": 0.19078617926890334,
+   "real_single_source_withheld": 0.11664005956625167,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.1872809213820731,
+     "real": 0.35031139772461967
+    },
+    "gwas": {
+     "planted": 0.016649974962443664,
+     "real": 0.01603367007616151
+    },
+    "partner": {
+     "planted": 0.7839258888332499,
+     "real": 0.8383886824121808
+    }
+   },
+   "auc_neighbours": 0.6028009195565065,
+   "auc_degree_product": 0.5905716897268681,
+   "rule_applied": false
+  },
+  "JensenLab Knowledge AmyCo": {
+   "pairs": 260,
+   "real_single_source": 218,
+   "planted": 13,
+   "planted_withheld": 0.23076923076923078,
+   "real_single_source_withheld": 0.24311926605504589,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.15384615384615385,
+     "real": 0.22935779816513763
+    },
+    "gwas": {
+     "planted": 0.0,
+     "real": 0.01834862385321101
+    },
+    "partner": {
+     "planted": 0.6923076923076923,
+     "real": 0.7339449541284404
+    }
+   },
+   "auc_neighbours": 0.7674664784756527,
+   "auc_degree_product": 0.5601623147494708,
+   "rule_applied": false
+  },
+  "JensenLab Knowledge MedlinePlus": {
+   "pairs": 4107,
+   "real_single_source": 972,
+   "planted": 206,
+   "planted_withheld": 0.7427184466019418,
+   "real_single_source_withheld": 0.2366255144032922,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.04854368932038835,
+     "real": 0.3343621399176955
+    },
+    "gwas": {
+     "planted": 0.009708737864077669,
+     "real": 0.16255144032921812
+    },
+    "partner": {
+     "planted": 0.22330097087378642,
+     "real": 0.6882716049382716
+    }
+   },
+   "auc_neighbours": 0.7692751408366295,
+   "auc_degree_product": 0.382666107315514,
+   "rule_applied": false
+  },
+  "JensenLab Knowledge UniProtKB-KW": {
+   "pairs": 3364,
+   "real_single_source": 1329,
+   "planted": 169,
+   "planted_withheld": 0.5443786982248521,
+   "real_single_source_withheld": 0.1565086531226486,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.15976331360946747,
+     "real": 0.581640331075997
+    },
+    "gwas": {
+     "planted": 0.011834319526627219,
+     "real": 0.09029345372460497
+    },
+    "partner": {
+     "planted": 0.3905325443786982,
+     "real": 0.7501881113619263
+    }
+   },
+   "auc_neighbours": 0.6929532815971434,
+   "auc_degree_product": 0.32717352104398467,
+   "rule_applied": false
+  },
+  "JensenLab Text Mining": {
+   "pairs": 7394,
+   "real_single_source": 4994,
+   "planted": 370,
+   "planted_withheld": 0.5324324324324324,
+   "real_single_source_withheld": 0.08109731678013617,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.16216216216216217,
+     "real": 0.49279134961954346
+    },
+    "gwas": {
+     "planted": 0.032432432432432434,
+     "real": 0.11253504205046055
+    },
+    "partner": {
+     "planted": 0.3945945945945946,
+     "real": 0.8942731277533039
+    }
+   },
+   "auc_neighbours": 0.7340243427247832,
+   "auc_degree_product": 0.5560128911450497,
+   "rule_applied": false
+  },
+  "Monarch": {
+   "pairs": 9424,
+   "real_single_source": 1692,
+   "planted": 472,
+   "planted_withheld": 0.8601694915254238,
+   "real_single_source_withheld": 0.30023640661938533,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.06991525423728813,
+     "real": 0.46631205673758863
+    },
+    "gwas": {
+     "planted": 0.012711864406779662,
+     "real": 0.03309692671394799
+    },
+    "partner": {
+     "planted": 0.08050847457627118,
+     "real": 0.5183215130023641
+    }
+   },
+   "auc_neighbours": 0.7832503155427335,
+   "auc_degree_product": 0.44445320952037504,
+   "rule_applied": true
+  },
+  "UniProt Disease": {
+   "pairs": 5549,
+   "real_single_source": 401,
+   "planted": 278,
+   "planted_withheld": 0.9136690647482014,
+   "real_single_source_withheld": 0.5810473815461347,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.04316546762589928,
+     "real": 0.33665835411471323
+    },
+    "gwas": {
+     "planted": 0.0035971223021582736,
+     "real": 0.017456359102244388
+    },
+    "partner": {
+     "planted": 0.050359712230215826,
+     "real": 0.18204488778054864
+    }
+   },
+   "auc_neighbours": 0.3240190889682269,
+   "auc_degree_product": 0.14057482193796086,
+   "rule_applied": false
+  },
+  "eRAM": {
+   "pairs": 14263,
+   "real_single_source": 4962,
+   "planted": 714,
+   "planted_withheld": 0.5490196078431373,
+   "real_single_source_withheld": 0.11305925030229746,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.12184873949579832,
+     "real": 0.6007658202337767
+    },
+    "gwas": {
+     "planted": 0.029411764705882353,
+     "real": 0.1158806932688432
+    },
+    "partner": {
+     "planted": 0.40476190476190477,
+     "real": 0.7041515517936316
+    }
+   },
+   "auc_neighbours": 0.7325754163011436,
+   "auc_degree_product": 0.5049561541666243,
+   "rule_applied": false
+  },
+  "all sources": {
+   "pairs": 276642,
+   "real_single_source": 248518,
+   "planted": 16250,
+   "planted_withheld": 0.3890461538461538,
+   "real_single_source_withheld": 0.16369840413974038,
+   "corroborated_by": {
+    "lineage": {
+     "planted": 0.14055384615384614,
+     "real": 0.29638094624936623
+    },
+    "gwas": {
+     "planted": 0.016553846153846155,
+     "real": 0.02221971849121593
+    },
+    "partner": {
+     "planted": 0.5790153846153846,
+     "real": 0.7894880853700738
+    }
+   },
+   "auc_neighbours": 0.7041538959258175,
+   "auc_degree_product": 0.6095276490110297,
+   "rule_applied": false
+  }
+ },
+ "rule_applied_to": [
+  "Monarch"
+ ],
+ "real_pairs_withheld": 508,
+ "rows_kept": 324374,
+ "rows_before": 324882,
+ "files": {
+  "disease_links_pruned.parquet": "6b29495bd4caa4b3efcab8d6c77a48684f5cda286acb46c6fadd798d2dd8dbc6",
+  "disease_links_withheld.parquet": "7f428abcb9a12e2af3fa41c7f17a19a53ccb138b50de10f1900848958abfee8f"
+ }
+}
