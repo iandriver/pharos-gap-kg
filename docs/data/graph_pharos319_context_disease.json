@@ -1,0 +1,44 @@
+{
+ "release": "pharos319",
+ "source_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "source_tables": [
+  "disease",
+  "protein"
+ ],
+ "rows": 324882,
+ "edges": 324374,
+ "gaps": 508,
+ "merged": 0,
+ "nodes": 31147,
+ "edges_by_source": {
+  "Expression Atlas": 159748,
+  "DisGeNET": 82453,
+  "CTD": 34797,
+  "eRAM": 14263,
+  "Monarch": 8916,
+  "JensenLab Text Mining": 7394,
+  "UniProt Disease": 5549,
+  "JensenLab Knowledge MedlinePlus": 4107,
+  "DrugCentral Indication": 3523,
+  "JensenLab Knowledge UniProtKB-KW": 3364,
+  "JensenLab Knowledge AmyCo": 260
+ },
+ "gaps_by_rule": {
+  "uncorroborated": 504,
+  "not_a_disease": 4
+ },
+ "gaps_by_source": {
+  "Monarch": 508
+ },
+ "predicates": {
+  "biolink:gene_associated_with_condition": 161103,
+  "biolink:correlated_with": 159748,
+  "biolink:target_for": 3523
+ },
+ "conformance": "10 of 10 checks passed",
+ "files": {
+  "nodes": "37782dab6a4faf52dacc993b9fd7031f77024cc7ee026c0f775c28007c7af94e",
+  "edges": "283d6fed0a0af3af0f8769af511e981ec50f12154046522d612ea8d4967ebb75",
+  "gaps": "86e60e998a9f4dc872755a21bca69badc14e8339c295c77c3b06250031455aa7"
+ }
+}

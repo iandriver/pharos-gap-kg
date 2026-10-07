@@ -31,6 +31,7 @@
     }
    },
    "auc_neighbours": 0.7690069671618313,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.44090202177293936,
    "auc_degree_product": 0.5330261570225774,
    "rule_applied": false
   },
@@ -55,6 +56,7 @@
     }
    },
    "auc_neighbours": 0.7922641328341277,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.36822722227827664,
    "auc_degree_product": 0.5236579606521323,
    "rule_applied": false
   },
@@ -79,6 +81,7 @@
     }
    },
    "auc_neighbours": 0.7237324063844502,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.4782193958664547,
    "auc_degree_product": 0.46350587876011606,
    "rule_applied": false
   },
@@ -103,6 +106,7 @@
     }
    },
    "auc_neighbours": 0.6028009195565065,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.658017781535724,
    "auc_degree_product": 0.5905716897268681,
    "rule_applied": false
   },
@@ -127,6 +131,7 @@
     }
    },
    "auc_neighbours": 0.7674664784756527,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.26605504587155965,
    "auc_degree_product": 0.5601623147494708,
    "rule_applied": false
   },
@@ -151,6 +156,7 @@
     }
    },
    "auc_neighbours": 0.7692751408366295,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.3549382716049383,
    "auc_degree_product": 0.382666107315514,
    "rule_applied": false
   },
@@ -175,6 +181,7 @@
     }
    },
    "auc_neighbours": 0.6929532815971434,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.5221971407072987,
    "auc_degree_product": 0.32717352104398467,
    "rule_applied": false
   },
@@ -199,6 +206,7 @@
     }
    },
    "auc_neighbours": 0.7340243427247832,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.4409291149379255,
    "auc_degree_product": 0.5560128911450497,
    "rule_applied": false
   },
@@ -223,6 +231,7 @@
     }
    },
    "auc_neighbours": 0.7832503155427335,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.2712765957446808,
    "auc_degree_product": 0.44445320952037504,
    "rule_applied": true
   },
@@ -247,6 +256,7 @@
     }
    },
    "auc_neighbours": 0.3240190889682269,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.7481296758104738,
    "auc_degree_product": 0.14057482193796086,
    "rule_applied": false
   },
@@ -271,6 +281,7 @@
     }
    },
    "auc_neighbours": 0.7325754163011436,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.5749697702539298,
    "auc_degree_product": 0.5049561541666243,
    "rule_applied": false
   },
@@ -295,6 +306,7 @@
     }
    },
    "auc_neighbours": 0.7041538959258175,
+   "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": 0.5477269252126606,
    "auc_degree_product": 0.6095276490110297,
    "rule_applied": false
   }

@@ -27,6 +27,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.ctxtables --selftest
 	$(PY) -m pharos_gap_kg.enrich --selftest
 	$(PY) -m pharos_gap_kg.planted --selftest
+	$(PY) -m pharos_gap_kg.ctxgraph --selftest
 
 test:
 	$(PY) -m pytest -q

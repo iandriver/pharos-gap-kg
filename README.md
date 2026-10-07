@@ -52,6 +52,15 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   the graph. A first round failed both of its stated verdicts and exposed two faults in the test and
   one in the tools; both rounds are recorded. No person has tested it yet.
 
+- **Context** ([`findings/ENRICH.md`](findings/ENRICH.md)). Interactions, pathways, GO terms, compounds
+  and eleven disease sources, each scored alone and blended with the neighbour score. Each carries
+  some signal alone; every blend is worse than the neighbour score, and with the blending weight
+  tuned on the test links the best weight is still none.
+- **Pruning** ([`findings/PRUNING.md`](findings/PRUNING.md)). 16,250 false pairs were planted in the
+  disease sources. The corroboration rule stated in advance withheld 39% of them and cleared its bar
+  on one source of eleven; the criterion that fails is "an interaction partner has the same disease",
+  which is true of most random pairs. The 508 pairs it did withhold are in the graph as typed gaps.
+
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Inputs
@@ -90,6 +99,11 @@ python -m pharos_gap_kg.sqldump extract pharos319 --tables xref
 python -m pharos_gap_kg.controls pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables disease
 python -m pharos_gap_kg.context pharos319 --cutoff 2018
+python -m pharos_gap_kg.sqldump extract pharos319 --tables ncats_ppi,pathway,goa,ncats_ligand_activity
+python -m pharos_gap_kg.ctxtables pharos319                  # the rest of the release as link tables
+python -m pharos_gap_kg.enrich pharos319 --cutoff 2018       # needs the [eval] extra
+python -m pharos_gap_kg.planted pharos319
+python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
 python -m pharos_gap_kg.bundle pharos319                     # what the questions read

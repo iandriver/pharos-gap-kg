@@ -138,6 +138,13 @@ def auc(real: np.ndarray, planted: np.ndarray) -> float:
     return float((r[:len(real)].sum() - len(real) * (len(real) + 1) / 2) / (len(real) * len(planted)))
 
 
+def cost_at(real: np.ndarray, planted: np.ndarray, share: float) -> float:
+    """The share of real pairs at or below the score under which `share` of the planted pairs fall."""
+    if not len(real) or not len(planted):
+        return float("nan")
+    return float((real <= np.quantile(planted, share)).mean())
+
+
 def evaluate(real: pd.DataFrame, planted: pd.DataFrame, gwas: pd.DataFrame, partners: pd.DataFrame, terms: dict) -> tuple[dict, pd.DataFrame]:
     table = pd.concat([real, planted], ignore_index=True)
     rel, onto = lineage_of(sorted(set(table.disease)), terms)
@@ -159,6 +166,9 @@ def evaluate(real: pd.DataFrame, planted: pd.DataFrame, gwas: pd.DataFrame, part
                "planted_withheld": float((~p.corroborated).mean()), "real_single_source_withheld": float((~r.corroborated).mean()),
                "corroborated_by": {k: {"planted": float(p[k].mean()), "real": float(r[k].mean())} for k in ("lineage", "gwas", "partner")},
                "auc_neighbours": auc(r.neighbours.to_numpy(), p.neighbours.to_numpy()),
+               # added after the first run, as description: what ANY cut on the neighbours score would
+               # cost if set to withhold 80% of the planted pairs
+               "real_withheld_by_a_score_cut_that_withholds_80pct_of_planted": cost_at(r.neighbours.to_numpy(), p.neighbours.to_numpy(), KEEP_AT_LEAST),
                "auc_degree_product": auc(r.degree_product.to_numpy(), p.degree_product.to_numpy())}
         row["rule_applied"] = bool(row["planted_withheld"] >= KEEP_AT_LEAST and row["real_single_source_withheld"] <= LOSE_AT_MOST)
         res[s] = row
@@ -215,6 +225,8 @@ is_a: MONDO:1
     ck("a planted pair's target and disease both come from the source", set(pl.target) <= set(big.target) and set(pl.disease) <= set(big.disease))
     ck("planting is the same under the same seed", plant(big, 0.05, 1).equals(pl) and not plant(big, 0.05, 2).equals(pl))
     ck("the area is 1 when every real pair scores above every planted one, a half when they tie", auc(np.array([2.0, 3.0]), np.array([1.0])) == 1.0 and auc(np.array([1.0, 1.0]), np.array([1.0])) == 0.5)
+    # the 80th percentile of 0..4 is 3.2, and three of the four real scores are at or below it
+    ck("a score cut set on the planted pairs is costed on the real ones", cost_at(np.array([1.0, 2.0, 3.0, 4.0]), np.array([0.0, 1.0, 2.0, 3.0, 4.0]), 0.8) == 0.75)
     tb = pd.DataFrame([("A", "x", "s"), ("A", "y", "s"), ("B", "x", "s"), ("B", "y", "s"), ("C", "x", "s"), ("C", "z", "s")], columns=["target", "disease", "source"])
     ns = neighbour_scores(pd.DataFrame([("A", "x", "s"), ("C", "z", "s")], columns=["target", "disease", "source"]), tb)
     # (A,x) left out: A's other disease y shares B with x (shared 2 incl. A, minus A = 1); deg y = 2, deg x - 1 = 2 -> 1/sqrt(4) = 0.5
@@ -236,10 +248,10 @@ def main(argv: list[str] | None = None) -> int:
     terms = ontology.read(registry.require("efo_obo"))
     planted = plant(real)
     res, detail = evaluate(real, planted, gwas, partners, terms)
-    print(f"  {'source':34s} {'pairs':>8s} {'single':>8s} {'planted':>8s} {'planted withheld':>17s} {'real withheld':>14s} {'AUC neigh.':>11s} {'AUC degree':>11s}  applied")
+    print(f"  {'source':34s} {'pairs':>8s} {'single':>8s} {'planted':>8s} {'planted withheld':>17s} {'real withheld':>14s} {'AUC neigh.':>11s} {'AUC degree':>11s} {'score cut cost':>15s}  applied")
     for s, r in sorted(res.items(), key=lambda kv: (kv[0] == "all sources", -kv[1]["pairs"])):
         print(f"  {s:34s} {r['pairs']:>8,} {r['real_single_source']:>8,} {r['planted']:>8,} {r['planted_withheld']:>17.3f} {r['real_single_source_withheld']:>14.3f} "
-              f"{r['auc_neighbours']:>11.3f} {r['auc_degree_product']:>11.3f}  {r['rule_applied']}")
+              f"{r['auc_neighbours']:>11.3f} {r['auc_degree_product']:>11.3f} {r['real_withheld_by_a_score_cut_that_withholds_80pct_of_planted']:>15.3f}  {r['rule_applied']}")
     a = res["all sources"]["corroborated_by"]
     print("  corroborated by each criterion alone, all sources (planted / real single-source): "
           + "; ".join(f"{k} {v['planted']:.3f} / {v['real']:.3f}" for k, v in a.items()))
