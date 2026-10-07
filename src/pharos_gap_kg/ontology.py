@@ -4,7 +4,7 @@ Only `is_a` is followed. An obsolete term stands for the term named in its `repl
 that the ontology treats as one trait are one trait here. Ids are compared as CURIEs: the EFO release
 writes its own terms as `efo:EFO_0000249`, which is `EFO:0000249`.
 
-Run:  python -m pharos_gaps.ontology --selftest
+Run:  python -m pharos_gap_kg.ontology --selftest
 """
 from __future__ import annotations
 

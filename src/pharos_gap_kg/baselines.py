@@ -6,8 +6,8 @@
     B3 neighbours      the target's training traits, weighted by how similar each is to the candidate
                        trait (cosine over the training targets two traits share)
 
-Run:  python -m pharos_gaps.baselines --cutoff 2018
-      python -m pharos_gaps.baselines --selftest
+Run:  python -m pharos_gap_kg.baselines --cutoff 2018
+      python -m pharos_gap_kg.baselines --selftest
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ import time
 
 import numpy as np
 
-from pharos_gaps import paths, score, split
+from pharos_gap_kg import paths, score, split
 
 NAMES = {"B0": "chance", "B1": "target degree", "B2": "degree product", "B3": "neighbours"}
 

@@ -1,5 +1,5 @@
 """Each module's own self-test also runs under pytest, so one command covers both."""
-from pharos_gaps import baselines, controls, dated, graph, levels, ontology, paths, position, pubyear, score, snapshots, split, sqldump
+from pharos_gap_kg import baselines, controls, dated, graph, levels, ontology, paths, position, pubyear, score, snapshots, split, sqldump
 
 
 def test_paths_selftest():

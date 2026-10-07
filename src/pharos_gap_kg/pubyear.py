@@ -9,8 +9,8 @@ kept in `data/tables/pubmed_year.parquet`, so an id is asked once. An id NCBI do
 with no year; it is not asked again and not guessed. NCBI asks callers to name a contact address:
 pass `--email` or set `NCBI_EMAIL`. None is stored in this repository.
 
-Run:  python -m pharos_gaps.pubyear pharos319
-      python -m pharos_gaps.pubyear --selftest
+Run:  python -m pharos_gap_kg.pubyear pharos319
+      python -m pharos_gap_kg.pubyear --selftest
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ import urllib.request
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths
+from pharos_gap_kg import paths
 
 ESUMMARY = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 CACHE = paths.TABLES / "pubmed_year.parquet"
@@ -49,7 +49,7 @@ def cited(release: str) -> set[int]:
     for table, (col, multi) in CITING.items():
         p = paths.tables(release) / f"{table}.parquet"
         if not p.is_file():
-            raise SystemExit(f"{release} has no extracted {table}; run:  python -m pharos_gaps.sqldump extract {release} --tables {table}")
+            raise SystemExit(f"{release} has no extracted {table}; run:  python -m pharos_gap_kg.sqldump extract {release} --tables {table}")
         s = pq.read_table(p, columns=[col]).to_pandas()[col]
         out |= set(ids_in_text(s)) if multi else set(s.dropna().astype("int64"))
     return {i for i in out if i > 0}
@@ -75,7 +75,7 @@ def lookup(ids: list[int], email: str | None, pause: float = 0.4) -> pd.DataFram
     rows: list[dict] = []
     for k in range(0, len(ids), 200):
         batch = ids[k:k + 200]
-        q = {"db": "pubmed", "id": ",".join(map(str, batch)), "retmode": "json", "tool": "pharos-gaps"}
+        q = {"db": "pubmed", "id": ",".join(map(str, batch)), "retmode": "json", "tool": "pharos-gap-kg"}
         if email:
             q["email"] = email
         body = urllib.parse.urlencode(q).encode()

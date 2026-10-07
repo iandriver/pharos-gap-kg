@@ -4,7 +4,7 @@ Coordinates come from an Ensembl GTF (gene lines on primary chromosomes). A Phar
 its Ensembl gene ids by the snapshot's own cross-references. Two targets are neighbours when genes of
 theirs lie on one chromosome with at most `WINDOW` bases between them; overlapping genes are 0 apart.
 
-Run:  python -m pharos_gaps.position --selftest
+Run:  python -m pharos_gap_kg.position --selftest
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths
+from pharos_gap_kg import paths
 
 WINDOW = 500_000
 PRIMARY = [str(i) for i in range(1, 23)] + ["X", "Y", "MT"]

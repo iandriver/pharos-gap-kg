@@ -1,6 +1,6 @@
 # Baselines on the frozen 2018 split
 
-6 Oct 2026. `python -m pharos_gaps.baselines --cutoff 2018` writes
+6 Oct 2026. `python -m pharos_gap_kg.baselines --cutoff 2018` writes
 `docs/data/baselines_gene_trait_2018.json`. The protocol (`docs/PROTOCOL.md`) was committed before this
 was run. None of the four scorers has a fitted parameter.
 

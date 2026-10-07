@@ -1,4 +1,4 @@
-# pharos-gaps
+# pharos-gap-kg
 
 A knowledge graph built by an agent from dated [Pharos](https://pharos.nih.gov) snapshots, for the
 Bio-Agent Knowledge Graph Construction Challenge (6 Oct to 17 Nov 2026).
@@ -41,7 +41,7 @@ The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Inputs
 
-Public files only, each listed in `src/pharos_gaps/registry.py` with its size, publication date and
+Public files only, each listed in `src/pharos_gap_kg/registry.py` with its size, publication date and
 fetch command. A missing input names the command that fetches it.
 
 | key | published | what |
@@ -62,23 +62,23 @@ documents quote are committed under `docs/data/`.
 
 ```bash
 uv venv && uv pip install -e ".[test]"
-python -m pharos_gaps.registry            # what is needed and what is on disk
-python -m pharos_gaps.fetch pharos319     # ranged, resumable, refuses a file that changed
-python -m pharos_gaps.sqldump extract pharos319 --tables tiga,tiga_provenance,protein
-NCBI_EMAIL=you@example.org python -m pharos_gaps.pubyear pharos319
-python -m pharos_gaps.split pharos319 --cutoff 2018          # rebuilds the split and checks its digests
-python -m pharos_gaps.graph build pharos319 --cutoff 2018
-python -m pharos_gaps.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
-python -m pharos_gaps.baselines --cutoff 2018
-python -m pharos_gaps.fetch efo_obo ensembl_gtf_113
-python -m pharos_gaps.sqldump extract pharos319 --tables xref
-python -m pharos_gaps.controls pharos319 --cutoff 2018
+python -m pharos_gap_kg.registry            # what is needed and what is on disk
+python -m pharos_gap_kg.fetch pharos319     # ranged, resumable, refuses a file that changed
+python -m pharos_gap_kg.sqldump extract pharos319 --tables tiga,tiga_provenance,protein
+NCBI_EMAIL=you@example.org python -m pharos_gap_kg.pubyear pharos319
+python -m pharos_gap_kg.split pharos319 --cutoff 2018          # rebuilds the split and checks its digests
+python -m pharos_gap_kg.graph build pharos319 --cutoff 2018
+python -m pharos_gap_kg.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
+python -m pharos_gap_kg.baselines --cutoff 2018
+python -m pharos_gap_kg.fetch efo_obo ensembl_gtf_113
+python -m pharos_gap_kg.sqldump extract pharos319 --tables xref
+python -m pharos_gap_kg.controls pharos319 --cutoff 2018
 make check
 ```
 
 ## Layout
 
-`src/pharos_gaps/paths.py` is the only module that names a location. `findings/` is an append-only
+`src/pharos_gap_kg/paths.py` is the only module that names a location. `findings/` is an append-only
 record of what was measured. `docs/` says how things work.
 
 Apache-2.0.

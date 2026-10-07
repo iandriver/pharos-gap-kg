@@ -12,9 +12,9 @@ Every later run recomputes the parts and refuses if a digest moved, so a changed
 year lookup or a changed rule cannot quietly move a result's denominator. The digest is over the
 sorted "target<TAB>trait" lines, so it does not depend on row order or file format.
 
-Run:  python -m pharos_gaps.split pharos319 --cutoff 2018 --freeze     # once
-      python -m pharos_gaps.split pharos319 --cutoff 2018              # rebuild and check
-      python -m pharos_gaps.split --selftest
+Run:  python -m pharos_gap_kg.split pharos319 --cutoff 2018 --freeze     # once
+      python -m pharos_gap_kg.split pharos319 --cutoff 2018              # rebuild and check
+      python -m pharos_gap_kg.split --selftest
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ from pathlib import Path
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths, pubyear
+from pharos_gap_kg import paths, pubyear
 
 PARTS = ("train", "test", "unscored")
 
@@ -49,7 +49,7 @@ def gene_trait(release: str, years: pd.Series) -> pd.DataFrame:
     p["year"] = p.pubmedid.map(years)
     if p.year.isna().any():
         raise SystemExit(f"REFUSED: {int(p.year.isna().sum()):,} cited studies have no publication year; "
-                         f"run:  python -m pharos_gaps.pubyear {release}")
+                         f"run:  python -m pharos_gap_kg.pubyear {release}")
     m = t.merge(p, on=["ensg", "efoid"], how="left").merge(prot, on="protein_id", how="left")
     if m.study_acc.isna().any() or m.uniprot.isna().any():
         raise SystemExit("REFUSED: a link has no study behind it, or a target has no accession")
@@ -97,13 +97,13 @@ def load(cutoff: int) -> dict[str, pd.DataFrame]:
     """The parts as written by the last checked run; refuses if they are not the frozen ones."""
     fz = frozen_path(cutoff)
     if not fz.is_file():
-        raise SystemExit(f"no frozen split for {cutoff}; see `python -m pharos_gaps.split --help`")
+        raise SystemExit(f"no frozen split for {cutoff}; see `python -m pharos_gap_kg.split --help`")
     want = json.loads(fz.read_text())
     parts = {}
     for k in PARTS:
         p = out_dir(cutoff) / f"{k}.parquet"
         if not p.is_file():
-            raise SystemExit(f"missing {p.name}; rebuild with:  python -m pharos_gaps.split {want['release']} --cutoff {cutoff}")
+            raise SystemExit(f"missing {p.name}; rebuild with:  python -m pharos_gap_kg.split {want['release']} --cutoff {cutoff}")
         parts[k] = pd.read_parquet(p)
         if digest(parts[k]) != want[k]["sha256"]:
             raise SystemExit(f"REFUSED: {p} is not the frozen {k} part (digest differs)")

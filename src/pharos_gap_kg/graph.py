@@ -15,9 +15,9 @@ LINEAGE. `lineage` answers "why does A connect to B" for one edge: the claim, th
 with their papers and years, the tables and the published file they were read from with its digest,
 and the rule that admitted it.
 
-Run:  python -m pharos_gaps.graph build pharos319 --cutoff 2018
-      python -m pharos_gaps.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
-      python -m pharos_gaps.graph --selftest
+Run:  python -m pharos_gap_kg.graph build pharos319 --cutoff 2018
+      python -m pharos_gap_kg.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
+      python -m pharos_gap_kg.graph --selftest
 """
 from __future__ import annotations
 
@@ -32,9 +32,9 @@ import pyarrow.parquet as pq
 from kgx_gaps import Mapping, Rule, conformance
 from kgx_gaps.export import Exporter
 
-from pharos_gaps import paths, pubyear, registry, split
+from pharos_gap_kg import paths, pubyear, registry, split
 
-PREFIX = "pharosgaps"
+PREFIX = "pharosgapkg"
 SOURCE = "infores:tiga"          # Target Illumination GWAS Analytics, which aggregated the GWAS Catalog
 AGGREGATOR = "infores:pharos"
 TABLES = ["tiga", "tiga_provenance", "protein"]
@@ -221,7 +221,7 @@ def build(release: str, cutoff: int) -> dict:
 def lineage(release: str, cutoff: int, edge_id: str | None = None, target: str | None = None, trait: str | None = None) -> dict:
     out = graph_dir(release, cutoff)
     if not (out / "edges.tsv").is_file():
-        raise SystemExit(f"no graph yet; build it with:  python -m pharos_gaps.graph build {release} --cutoff {cutoff}")
+        raise SystemExit(f"no graph yet; build it with:  python -m pharos_gap_kg.graph build {release} --cutoff {cutoff}")
     e = pd.read_csv(out / "edges.tsv", sep="\t", dtype=str, keep_default_na=False)
     n = pd.read_csv(out / "nodes.tsv", sep="\t", dtype=str, keep_default_na=False).set_index("id")
     if edge_id:

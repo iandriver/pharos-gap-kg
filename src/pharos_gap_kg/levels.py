@@ -10,9 +10,9 @@ THE RELEASE NOTES ARE A SECOND SOURCE, so they are read and compared here on eve
 count upward moves only. This module counts both directions, because a level that can fall is a level
 some of whose rises are the pipeline changing and not the knowledge.
 
-Run:  python -m pharos_gaps.levels pharos319              # against Pharos 4.0.0 and its release notes
-      python -m pharos_gaps.levels pharos316 pharos319    # two database releases against each other
-      python -m pharos_gaps.levels --selftest
+Run:  python -m pharos_gap_kg.levels pharos319              # against Pharos 4.0.0 and its release notes
+      python -m pharos_gap_kg.levels pharos316 pharos319    # two database releases against each other
+      python -m pharos_gap_kg.levels --selftest
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ import sys
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths, registry
+from pharos_gap_kg import paths, registry
 
 ORDER = ["Tdark", "Tbio", "Tchem", "Tclin"]
 RANK = {k: i for i, k in enumerate(ORDER)}
@@ -38,7 +38,7 @@ def old_levels(release: str) -> pd.DataFrame:
     missing = [t for t in need if not (d / f"{t}.parquet").is_file()]
     if missing:
         raise SystemExit(f"{release} has no extracted {missing}; run:  "
-                         f"python -m pharos_gaps.sqldump extract {release} --tables {','.join(need)}")
+                         f"python -m pharos_gap_kg.sqldump extract {release} --tables {','.join(need)}")
     rd = lambda t, cols: pq.read_table(d / f"{t}.parquet", columns=cols).to_pandas()
     t = rd("target", ["id", "tdl", "fam"]).rename(columns={"id": "target_id"})
     link = rd("t2tc", ["target_id", "protein_id"])
@@ -88,7 +88,7 @@ def level_against_ligands(release: str) -> dict:
     p = d / "ncats_ligand_activity.parquet"
     if not p.is_file():
         raise SystemExit(f"{release} has no extracted ncats_ligand_activity; run:  "
-                         f"python -m pharos_gaps.sqldump extract {release} --tables ncats_ligand_activity")
+                         f"python -m pharos_gap_kg.sqldump extract {release} --tables ncats_ligand_activity")
     with_rows = set(pq.read_table(p, columns=["target_id"]).to_pandas().target_id)
     t = pq.read_table(d / "target.parquet", columns=["id", "tdl"]).to_pandas()
     graded = t.tdl.isin(HAS_LIGAND)

@@ -1,11 +1,11 @@
 """Every location this package reads or writes. No other module names a path.
 
 A checkout keeps its data under `<repo>/data` (git-ignored). The raw snapshots are several GB each, so
-`data/raw` is usually a symlink to a larger volume, or `PHAROS_GAPS_RAW` names one. An installed copy
-has no repo root to stand on, so it requires `PHAROS_GAPS_DATA`.
+`data/raw` is usually a symlink to a larger volume, or `PHAROS_GAP_KG_RAW` names one. An installed copy
+has no repo root to stand on, so it requires `PHAROS_GAP_KG_DATA`.
 
-Run:  python -m pharos_gaps.paths            # print the resolved locations
-      python -m pharos_gaps.paths --selftest
+Run:  python -m pharos_gap_kg.paths            # print the resolved locations
+      python -m pharos_gap_kg.paths --selftest
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ _HERE = Path(__file__).resolve()
 
 
 def _root() -> Path | None:
-    """The repo root when this file sits in a checkout (`<root>/src/pharos_gaps/paths.py`), else None."""
+    """The repo root when this file sits in a checkout (`<root>/src/pharos_gap_kg/paths.py`), else None."""
     cand = _HERE.parents[2]
     return cand if (cand / "pyproject.toml").is_file() and (cand / "src").is_dir() else None
 
@@ -26,16 +26,16 @@ ROOT = _root()
 
 
 def _data() -> Path:
-    env = os.environ.get("PHAROS_GAPS_DATA")
+    env = os.environ.get("PHAROS_GAP_KG_DATA")
     if env:
         return Path(env)
     if ROOT is None:
-        raise RuntimeError("pharos-gaps is installed outside a checkout: set PHAROS_GAPS_DATA to a data directory")
+        raise RuntimeError("pharos-gap-kg is installed outside a checkout: set PHAROS_GAP_KG_DATA to a data directory")
     return ROOT / "data"
 
 
 DATA = _data()
-RAW = Path(os.environ.get("PHAROS_GAPS_RAW", DATA / "raw"))   # snapshots as published, never edited
+RAW = Path(os.environ.get("PHAROS_GAP_KG_RAW", DATA / "raw"))   # snapshots as published, never edited
 TABLES = DATA / "tables"                                      # tables/<release>/<table>.parquet
 GRAPH = DATA / "graph"                                        # graph/<release>/{nodes,edges,gaps}.tsv
 EVAL = DATA / "eval"                                          # frozen splits and scores

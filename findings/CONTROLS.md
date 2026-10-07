@@ -1,6 +1,6 @@
 # Lineage, position and locus: how much of a later link is predictable without biology
 
-7 Oct 2026. `python -m pharos_gaps.controls pharos319 --cutoff 2018` writes
+7 Oct 2026. `python -m pharos_gap_kg.controls pharos319 --cutoff 2018` writes
 `docs/data/controls_gene_trait_2018.json`. The three controls were defined in `docs/PROTOCOL.md` and
 committed before any was computed. No fitted model has been scored.
 

@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pharos-gaps"
+name = "pharos-gap-kg"
 version = "0.0.1"
 description = "An agent-built knowledge graph from Pharos snapshots: every edge carries its lineage, every pruned edge stays as a typed gap, and predictions are scored on links that appeared later"
 readme = "README.md"
@@ -24,7 +24,7 @@ test = ["pytest>=7"]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pharos_gaps"]
+packages = ["src/pharos_gap_kg"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

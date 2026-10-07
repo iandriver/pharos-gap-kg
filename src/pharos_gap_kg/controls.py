@@ -5,8 +5,8 @@ under a broader, narrower or second name (lineage). The gene may sit beside a ge
 the trait (position). And one GWAS signal is assigned to several neighbouring genes, so positives
 come in clumps (locus). This measures how much of each scorer's result those account for.
 
-Run:  python -m pharos_gaps.controls pharos319 --cutoff 2018
-      python -m pharos_gaps.controls --selftest
+Run:  python -m pharos_gap_kg.controls pharos319 --cutoff 2018
+      python -m pharos_gap_kg.controls --selftest
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ import time
 
 import numpy as np
 
-from pharos_gaps import baselines, ontology, paths, position, registry, score, split
+from pharos_gap_kg import baselines, ontology, paths, position, registry, score, split
 
 NAMES = {**baselines.NAMES, "B4": "lineage", "B5": "position"}
 

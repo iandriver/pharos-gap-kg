@@ -8,23 +8,23 @@ A table is IDENTICAL when its payload digests match: same rows, same ids, same o
 digests differ is reported with both row counts; whether its rows differ in content or only in order
 is a row-level question for `sqldump extract`.
 
-Run:  python -m pharos_gaps.snapshots pharos316 pharos319
+Run:  python -m pharos_gap_kg.snapshots pharos316 pharos319
 """
 from __future__ import annotations
 
 import json
 import sys
 
-from pharos_gaps import paths
+from pharos_gap_kg import paths
 
 
 def load(key: str) -> dict:
     p = paths.DOCS_DATA / f"{key}_tables.json"
     if not p.is_file():
-        raise SystemExit(f"no inventory for {key}; write it with:  python -m pharos_gaps.sqldump inventory {key}")
+        raise SystemExit(f"no inventory for {key}; write it with:  python -m pharos_gap_kg.sqldump inventory {key}")
     d = json.loads(p.read_text())
     if any("payload_sha256" not in t for t in d["tables"].values()):
-        raise SystemExit(f"{p.name} predates table digests; re-run:  python -m pharos_gaps.sqldump inventory {key}")
+        raise SystemExit(f"{p.name} predates table digests; re-run:  python -m pharos_gap_kg.sqldump inventory {key}")
     return d
 
 

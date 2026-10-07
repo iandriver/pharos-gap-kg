@@ -4,14 +4,14 @@
 
 | command | writes |
 |---|---|
-| `python -m pharos_gaps.sqldump inventory pharos316` (and `pharos319`) | `pharos316_tables.json`, `pharos319_tables.json` |
-| `python -m pharos_gaps.snapshots pharos316 pharos319` | `snapshots_pharos316_pharos319.json` |
-| `python -m pharos_gaps.levels pharos316 pharos319` | `levels_pharos316_pharos319.json` |
-| `python -m pharos_gaps.levels pharos319` | `levels_pharos319_pharos400.json` |
-| `python -m pharos_gaps.pubyear pharos319` then `python -m pharos_gaps.dated pharos319` | `dated_links_pharos319.json` |
+| `python -m pharos_gap_kg.sqldump inventory pharos316` (and `pharos319`) | `pharos316_tables.json`, `pharos319_tables.json` |
+| `python -m pharos_gap_kg.snapshots pharos316 pharos319` | `snapshots_pharos316_pharos319.json` |
+| `python -m pharos_gap_kg.levels pharos316 pharos319` | `levels_pharos316_pharos319.json` |
+| `python -m pharos_gap_kg.levels pharos319` | `levels_pharos319_pharos400.json` |
+| `python -m pharos_gap_kg.pubyear pharos319` then `python -m pharos_gap_kg.dated pharos319` | `dated_links_pharos319.json` |
 
 Inputs: `pharos316.sql.gz`, `pharos319.sql.gz`, the Pharos 4.0.0 canonical table and its release notes.
-`src/pharos_gaps/registry.py` pins the SHA-256 of all four.
+`src/pharos_gap_kg/registry.py` pins the SHA-256 of all four.
 
 ## 1. The April 2023 and April 2024 databases hold the same links
 

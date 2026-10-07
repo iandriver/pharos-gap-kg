@@ -14,9 +14,9 @@ nulls would hide which.
 
 WHAT IS LOST, deliberately: an escaped newline, tab or NUL inside a string becomes a space.
 
-Run:  python -m pharos_gaps.sqldump inventory pharos319
-      python -m pharos_gaps.sqldump extract pharos319 --tables target,protein,disease
-      python -m pharos_gaps.sqldump --selftest
+Run:  python -m pharos_gap_kg.sqldump inventory pharos319
+      python -m pharos_gap_kg.sqldump extract pharos319 --tables target,protein,disease
+      python -m pharos_gap_kg.sqldump --selftest
 """
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ import pyarrow as pa
 import pyarrow.csv as pacsv
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths, registry
+from pharos_gap_kg import paths, registry
 
 # One row: "(" then any run of plain bytes or whole quoted strings, then ")". Possessive, so a
 # malformed row fails at once instead of backtracking.

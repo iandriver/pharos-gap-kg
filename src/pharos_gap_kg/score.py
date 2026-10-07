@@ -5,7 +5,7 @@ first reported later. Candidates are the pairs with no training link. Ties are b
 a seed, so a scorer that says nothing (every candidate equal) scores as chance and not as whatever
 order the rows happened to be in.
 
-Run:  python -m pharos_gaps.score --selftest
+Run:  python -m pharos_gap_kg.score --selftest
 """
 from __future__ import annotations
 

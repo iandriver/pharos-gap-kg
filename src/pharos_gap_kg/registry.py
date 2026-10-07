@@ -7,14 +7,14 @@ download whose size differs, and a digest that differs from a pinned one: every 
 later" label is a difference between two of these files, so a snapshot replaced in place would move
 the labels without any code changing.
 
-Run:  python -m pharos_gaps.registry          # the table, with what is on disk
+Run:  python -m pharos_gap_kg.registry          # the table, with what is on disk
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
 
-from pharos_gaps import paths
+from pharos_gap_kg import paths
 
 BASE = "https://opendata.ncats.nih.gov/public/pharos"
 
@@ -38,7 +38,7 @@ class Source:
 
     @property
     def fetch_command(self) -> str:
-        return f"python -m pharos_gaps.fetch {self.key}"
+        return f"python -m pharos_gap_kg.fetch {self.key}"
 
 
 _S = [

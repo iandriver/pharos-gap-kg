@@ -10,8 +10,8 @@ dated row in 2021 and one undated row may have been known in 1995, so it is not 
 is `scorable` when both of its ends already carry a link of the same kind in training: a model that
 has never seen a node can only guess, and that case is counted apart, by which end is new.
 
-Run:  python -m pharos_gaps.dated pharos319
-      python -m pharos_gaps.dated --selftest
+Run:  python -m pharos_gap_kg.dated pharos319
+      python -m pharos_gap_kg.dated --selftest
 """
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ import sys
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gaps import paths, pubyear
+from pharos_gap_kg import paths, pubyear
 
 CUTOFFS = [2012, 2014, 2016, 2017, 2018, 2019, 2020]
 
@@ -29,7 +29,7 @@ CUTOFFS = [2012, 2014, 2016, 2017, 2018, 2019, 2020]
 def _years(release: str) -> pd.Series:
     y = pubyear.load()
     if y.empty:
-        raise SystemExit(f"no publication years yet; run:  python -m pharos_gaps.pubyear {release}")
+        raise SystemExit(f"no publication years yet; run:  python -m pharos_gap_kg.pubyear {release}")
     return y.set_index("pmid").year
 
 

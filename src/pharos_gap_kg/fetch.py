@@ -5,8 +5,8 @@ ranges at once and joined. Each range resumes from what is already on disk. The 
 size, and the server's Last-Modified are written beside it (`<file>.lineage.json`); everything built
 from the file cites that digest.
 
-Run:  python -m pharos_gaps.fetch pharos319
-      python -m pharos_gaps.fetch pharos400_canonicals --parts 1
+Run:  python -m pharos_gap_kg.fetch pharos319
+      python -m pharos_gap_kg.fetch pharos400_canonicals --parts 1
 """
 from __future__ import annotations
 
@@ -20,10 +20,10 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from pharos_gaps.registry import SOURCES, Source
+from pharos_gap_kg.registry import SOURCES, Source
 
 CHUNK = 1 << 20
-UA = {"User-Agent": "pharos-gaps (research; github.com/iandriver)"}
+UA = {"User-Agent": "pharos-gap-kg (research; github.com/iandriver)"}
 
 
 def head(url: str) -> tuple[int, str]:
