@@ -209,3 +209,37 @@ Results under the earlier text are kept.
 endpoint that this account's zero-data-retention setting admits; the provider refused both smoke-test
 requests before they reached a model. It is replaced by the next cheapest model the setting admits
 that can call a tool, `inception/mercury-2.5`. The other two hosted models stand.
+
+**7 Oct 2026, usability, second round. Written after the first round was graded and before the second
+set of questions was generated.**
+
+The first round, graded as stated: typed 27, 27 and 26 of 35; sql 27, 30 and 30; no tool 0 for all
+three. Neither stated verdict is met. Reading the wrong answers showed two faults in the test and one
+in the tools, none of which the stated grading can separate from what it meant to measure.
+
+- *The conditions were not given the same rules.* The sql and no-tool prompts spelled out which
+  status word goes with which situation. The typed prompt was the server's instructions and one line
+  about the format, without that mapping. On the two kinds of question where the status word was the
+  only error, typed answers said "answered" 19 times of 21 and sql answers 13 of 21.
+- *Two kinds of question had an expected status a correct answer does not naturally give.* "As of
+  2019, was X linked to Y? If not, when was a link reported?" answered "no, in 2020" was marked wrong
+  unless it also said the status was "no_link_reported", and every one of the 18 answers to the
+  related-wording questions named an acceptable trait under the status "answered".
+- *`find` invites a choice.* Asked about "alzheimer", it lists four traits and calls the first "the
+  closest". All three models then answered for Alzheimer disease, where the server's own rule is to
+  ask which is meant.
+
+The first set of questions is now the development set. The second round changes three things:
+
+1. The same rules text, in full, is given in every condition. In the typed condition it follows the
+   server's instructions.
+2. The answer format no longer asks for a status. Every answer has a `problem` field: null when the
+   model found what was asked (including when what it found is that there is no link), or
+   "not_in_graph", "ambiguous" or "unknown". A question about whether a link existed asks for
+   `linked: true or false`.
+3. `find` says whether any name matches exactly, and when none does it says to ask which is meant.
+
+A second set of 35 questions of the same ten kinds is generated with a different seed, different
+invented symbols and different ambiguous words, and frozen before any model sees it. Models, limits,
+grading by code, measures and the two verdict rules are those stated above, applied to the second set.
+The spend cap of 1.50 dollars covers both rounds together. The first round's results stand as recorded.

@@ -41,6 +41,14 @@ import pandas as pd
 from pharos_gap_kg import ask, paths
 
 SEED = 20261007
+# The first set is the development set: its results shaped the second round (docs/PROTOCOL.md).
+SETS = {
+    "dev": {"seed": 20261007, "schema": 1, "fakes": ("ZQXP1", "VRTK9", "QJMB4"), "words": ("alzheimer", "diabetes", "cholesterol"),
+            "file": "usability_questions.json", "results": "usability_results.json"},
+    "eval": {"seed": 20261008, "schema": 2, "fakes": ("XQVT3", "ZJKP8", "WQZR5"),
+             "words": ("lymphoma", "arthritis", "leukemia", "hepatitis", "sclerosis", "carcinoma", "anemia", "dermatitis"),
+             "file": "usability_questions_eval.json", "results": "usability_results_eval.json"},
+}
 STATUSES = ["answered", "no_link_reported", "not_in_graph", "ambiguous", "unknown"]
 CONDITIONS = ["typed", "sql", "none"]
 MAX_TOOL_CALLS = 8
@@ -54,6 +62,17 @@ RULES = """You answer questions about a graph of dated GWAS links between human 
 - "No link" means no study in this source had reported one by that year. It is not evidence of no association: status "no_link_reported".
 - If you cannot determine the answer, status "unknown".
 Explain briefly, then end with one last line of the form  FINAL: {...}  holding the JSON object the question asks for."""
+
+RULES_V2 = """You answer questions about a graph of dated GWAS links between human protein targets and traits, built from NIH Pharos.
+- A link exists from the year of the first study behind it. "As of YEAR" means using only what had been reported by the end of that year.
+- "No link" means no study in this source had reported one by that year. It is not evidence of no association.
+Explain briefly, then end with one last line of the form  FINAL: {...}  holding the JSON object the question asks for.
+Every FINAL object has a "problem" field:
+  null             you found what was asked. This includes finding that there is no link.
+  "not_in_graph"   the target or the trait is not in the graph. Do not answer from your own knowledge.
+  "ambiguous"      a name in the question matches nothing in the graph exactly and could mean more than one thing. Do not choose one.
+  "unknown"        you could not determine the answer.
+When "problem" is not null, set the other fields to null."""
 
 SQL_SCHEMA = """You have one tool, sql(query), which runs one read-only SQLite SELECT and returns up to 50 rows.
 Tables:
@@ -75,7 +94,12 @@ def _final(fields: str) -> str:
             '"not_in_graph", "ambiguous", "unknown". Use null for a field that does not apply.')
 
 
-def make_questions(bundle: Path, seed: int = SEED) -> list[dict]:
+def _final2(fields: str) -> str:
+    return ' End with a last line  FINAL: {"problem": P, ' + fields + '}  where P is null, "not_in_graph", "ambiguous" or "unknown".'
+
+
+def make_questions(bundle: Path, seed: int = SEED, schema: int = 1, fakes: tuple = SETS["dev"]["fakes"], words: tuple = SETS["dev"]["words"]) -> list[dict]:
+    v2 = schema == 2
     T = _tables(bundle)
     G = ask.Graph(bundle)
     rng = random.Random(seed)
@@ -103,40 +127,50 @@ def make_questions(bundle: Path, seed: int = SEED) -> list[dict]:
         return [df.iloc[i] for i in rng.sample(range(len(df)), n)]
 
     for r in pick(good[good.n_studies >= 2], 4):
-        add("first_year", f"In what year was a link between {sym[r.target]} and {nm[r.trait]} first reported?" + _final('"year": YEAR'),
-            {"status": "answered", "year": int(r.first_year)})
+        add("first_year", f"In what year was a link between {sym[r.target]} and {nm[r.trait]} first reported?"
+            + (_final2('"year": YEAR') if v2 else _final('"year": YEAR')),
+            {"problem": None, "year": int(r.first_year)} if v2 else {"status": "answered", "year": int(r.first_year)})
 
     span = ev.groupby(["target", "trait"]).year.agg(["nunique", "median"]).reset_index()
     multi = good.merge(span[span["nunique"] >= 3], on=["target", "trait"])
     for r in pick(multi, 4):
         y = int(r["median"])
         n = int(ev[(ev.target == r.target) & (ev.trait == r.trait) & (ev.year <= y)].study.nunique())
-        add("studies_as_of", f"As of {y}, how many GWAS studies supported the link between {sym[r.target]} and {nm[r.trait]}?" + _final('"count": N'),
-            {"status": "answered", "count": n})
+        add("studies_as_of", f"As of {y}, how many GWAS studies supported the link between {sym[r.target]} and {nm[r.trait]}?"
+            + (_final2('"count": N') if v2 else _final('"count": N')),
+            {"problem": None, "count": n} if v2 else {"status": "answered", "count": n})
 
     for r in pick(good[good.first_year >= 2012], 4):
         y = int(r.first_year) - rng.choice([1, 2, 3])
         add("not_yet", f"As of {y}, was {sym[r.target]} linked to {nm[r.trait]}? If not, was a link reported later, and in what year?"
-            + _final('"reported_later": YEAR or null'), {"status": "no_link_reported", "reported_later": int(r.first_year)})
+            + (_final2('"linked": true or false, "reported_later": YEAR or null') if v2 else _final('"reported_later": YEAR or null')),
+            {"problem": None, "linked": False, "reported_later": int(r.first_year)} if v2 else {"status": "no_link_reported", "reported_later": int(r.first_year)})
 
     n = 0
     while n < 4:
         a, b = rng.choice(ok_t), rng.choice(ok_d)
         if (a, b) not in pair:
             add("never", f"As of 2020, was {sym[a]} linked to {nm[b]}? If not, was a link reported later, and in what year?"
-                + _final('"reported_later": YEAR or null'), {"status": "no_link_reported", "reported_later": None})
+                + (_final2('"linked": true or false, "reported_later": YEAR or null') if v2 else _final('"reported_later": YEAR or null')),
+                {"problem": None, "linked": False, "reported_later": None} if v2 else {"status": "no_link_reported", "reported_later": None})
             n += 1
 
-    for fake in ("ZQXP1", "VRTK9", "QJMB4"):
+    for fake in fakes:
         if G.resolve(fake, "target").get("problem") != "not in the graph":
             raise SystemExit(f"REFUSED: the invented symbol {fake} matches something in the graph")
-        add("not_in_graph", f"In what year was a link between {fake} and {nm[rng.choice(ok_d)]} first reported?" + _final('"year": YEAR or null'),
-            {"status": "not_in_graph"})
+        add("not_in_graph", f"In what year was a link between {fake} and {nm[rng.choice(ok_d)]} first reported?"
+            + (_final2('"year": YEAR or null') if v2 else _final('"year": YEAR or null')),
+            {"problem": "not_in_graph"} if v2 else {"status": "not_in_graph"})
 
-    for word in ("alzheimer", "diabetes", "cholesterol"):
+    if v2:   # the first three listed words that the graph holds under several names and under none exactly
+        words = tuple(w for w in words if G.resolve(w, "trait").get("problem") == "ambiguous")[:3]
+        if len(words) < 3:
+            raise SystemExit("REFUSED: fewer than three of the listed words are ambiguous in this graph")
+    for word in words:
         if G.resolve(word, "trait").get("problem") != "ambiguous":
             raise SystemExit(f"REFUSED: {word!r} is not ambiguous in this graph")
-        add("ambiguous", f"How many targets is {word} linked to in this graph?" + _final('"count": N or null'), {"status": "ambiguous"})
+        add("ambiguous", f"How many targets is {word} linked to in this graph?" + (_final2('"count": N or null') if v2 else _final('"count": N or null')),
+            {"problem": "ambiguous"} if v2 else {"status": "ambiguous"})
 
     n = 0
     for d in rng.sample(ok_d, len(ok_d)):
@@ -144,8 +178,8 @@ def make_questions(bundle: Path, seed: int = SEED) -> list[dict]:
         if len(top) >= 2 and top.iloc[0].n_studies > top.iloc[1].n_studies and top.iloc[0].target in set(ok_t):
             t0 = top.iloc[0].target
             add("top_then_count", f"Which target is linked to {nm[d]} by the most GWAS studies in this graph, and to how many traits in total "
-                f"is that target linked?" + _final('"symbol": GENE SYMBOL, "count": N'),
-                {"status": "answered", "symbol": sym[t0], "count": int(deg_t[t0])})
+                f"is that target linked?" + (_final2('"symbol": GENE SYMBOL, "count": N') if v2 else _final('"symbol": GENE SYMBOL, "count": N')),
+                {"problem": None, "symbol": sym[t0], "count": int(deg_t[t0])} if v2 else {"status": "answered", "symbol": sym[t0], "count": int(deg_t[t0])})
             n += 1
             if n == 4:
                 break
@@ -156,13 +190,14 @@ def make_questions(bundle: Path, seed: int = SEED) -> list[dict]:
         a, b = rng.sample(ok_d, 2)
         k = len(by_trait[a] & by_trait[b])
         if k >= 5:
-            add("shared", f"How many targets are linked to both {nm[a]} and {nm[b]} in this graph?" + _final('"count": N'),
-                {"status": "answered", "count": k})
+            add("shared", f"How many targets are linked to both {nm[a]} and {nm[b]} in this graph?" + (_final2('"count": N') if v2 else _final('"count": N')),
+                {"problem": None, "count": k} if v2 else {"status": "answered", "count": k})
             n += 1
 
     for d, y in zip(rng.sample(ok_d, 3), (2015, 2017, 2019)):
-        add("new_since", f"How many links to {nm[d]} were first reported after {y}?" + _final('"count": N'),
-            {"status": "answered", "count": int(((links.trait == d) & (links.first_year > y)).sum())})
+        k = int(((links.trait == d) & (links.first_year > y)).sum())
+        add("new_since", f"How many links to {nm[d]} were first reported after {y}?" + (_final2('"count": N') if v2 else _final('"count": N')),
+            {"problem": None, "count": k} if v2 else {"status": "answered", "count": k})
 
     first = {(a, b): y for a, b, y in zip(links.target, links.trait, links.first_year)}
     rel = lin[lin.a.isin(set(ok_d))]
@@ -179,8 +214,9 @@ def make_questions(bundle: Path, seed: int = SEED) -> list[dict]:
         mine = links[(links.target == a) & (links.first_year <= y)]
         okay = sorted(set(lin[(lin.a == d) & lin.b.isin(set(mine.trait))].b))
         add("related_wording", f"As of {y}, {sym[a]} was not linked to {nm[d]}. Was it already linked to the same trait under another id, or to a "
-            f"broader or narrower form of it? Name one such trait." + _final('"related_trait": TRAIT NAME OR ID or null'),
-            {"status": "no_link_reported", "related_trait_any_of": okay + [nm[x] for x in okay]})
+            f"broader or narrower form of it? Name one such trait."
+            + (_final2('"related_trait": TRAIT NAME OR ID or null') if v2 else _final('"related_trait": TRAIT NAME OR ID or null')),
+            {"problem": None, "related_trait_any_of": okay + [nm[x] for x in okay]} if v2 else {"status": "no_link_reported", "related_trait_any_of": okay + [nm[x] for x in okay]})
     return qs
 
 
@@ -188,14 +224,14 @@ def digest(qs: list[dict]) -> str:
     return hashlib.sha256(json.dumps(qs, sort_keys=True).encode()).hexdigest()
 
 
-def frozen_path() -> Path:
-    return paths.DOCS_DATA / "usability_questions.json"
+def frozen_path(set_: str = "dev") -> Path:
+    return paths.DOCS_DATA / SETS[set_]["file"]
 
 
-def load_questions() -> list[dict]:
-    p = frozen_path()
+def load_questions(set_: str = "dev") -> list[dict]:
+    p = frozen_path(set_)
     if not p.is_file():
-        raise SystemExit("no frozen questions; run:  python -m pharos_gap_kg.usability questions <release> --freeze")
+        raise SystemExit(f"no frozen questions; run:  python -m pharos_gap_kg.usability questions <release> --set {set_} --freeze")
     d = json.loads(p.read_text())
     if digest(d["questions"]) != d["sha256"]:
         raise SystemExit(f"REFUSED: {p.name} does not match its own digest")
@@ -225,12 +261,28 @@ def _int(v) -> int | None:
         return None
 
 
+def _problem(final: dict):
+    v = final.get("problem")
+    return None if v in (None, "null", "", "none", "None") else v
+
+
 def grade(q: dict, final: dict | None) -> bool:
     g = q["gold"]
-    if not isinstance(final, dict) or final.get("status") != g["status"]:
+    if not isinstance(final, dict):
+        return False
+    if "problem" in g:                      # second schema: a problem, or the facts
+        if _problem(final) != g["problem"]:
+            return False
+        if g["problem"] is not None:
+            return True
+    elif final.get("status") != g["status"]:
         return False
     for k, want in g.items():
-        if k == "status":
+        if k in ("status", "problem"):
+            continue
+        if k == "linked":
+            if final.get("linked") not in (want, str(want).lower()):
+                return False
             continue
         if k == "related_trait_any_of":
             got = str(final.get("related_trait") or "").strip().casefold()
@@ -249,7 +301,11 @@ def grade(q: dict, final: dict | None) -> bool:
 
 def fabricated(q: dict, final: dict | None) -> bool:
     """On a not-in-graph question: the model answered as if the gene were known."""
-    return q["family"] == "not_in_graph" and isinstance(final, dict) and final.get("status") in ("answered", "no_link_reported")
+    if q["family"] != "not_in_graph" or not isinstance(final, dict):
+        return False
+    if "problem" in q["gold"]:
+        return _problem(final) is None
+    return final.get("status") in ("answered", "no_link_reported")
 
 
 # ----------------------------------------------------------------------------- the two tool sets
@@ -357,8 +413,9 @@ async def converse(q: dict, system: str, tools: list[dict], call_tool, model: st
     return {"final": final, "text": text[-1500:], "tools_used": used, "error": error, **usage}
 
 
-def _key(model: str, condition: str, qid: str, fp: str) -> str:
-    return hashlib.sha256(f"{PROMPT_VERSION}|{model}|{condition}|{qid}|{fp}".encode()).hexdigest()[:24]
+def _key(model: str, condition: str, qid: str, fp: str, set_: str = "dev") -> str:
+    head = f"{PROMPT_VERSION}" if set_ == "dev" else f"{set_}"
+    return hashlib.sha256(f"{head}|{model}|{condition}|{qid}|{fp}".encode()).hexdigest()[:24]
 
 
 def calls_dir() -> Path:
@@ -366,8 +423,10 @@ def calls_dir() -> Path:
 
 
 async def run(bundle: Path, model: str, condition: str, base_url: str, key: str | None, max_cost: float, workers: int, max_tokens: int,
-              only: set[str] | None = None) -> list[dict]:
-    qs = [q for q in load_questions() if not only or q["id"] in only]
+              only: set[str] | None = None, set_: str = "dev") -> list[dict]:
+    qs = [q for q in load_questions(set_) if not only or q["id"] in only]
+    v2 = SETS[set_]["schema"] == 2
+    rules = RULES_V2 if v2 else RULES
     out_dir = calls_dir()
     out_dir.mkdir(parents=True, exist_ok=True)
     spent = 0.0
@@ -378,7 +437,7 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
 
         async def one(q: dict) -> dict:
             nonlocal spent
-            f = out_dir / f"{_key(model, condition, q['id'], fp)}.json"
+            f = out_dir / f"{_key(model, condition, q['id'], fp, set_)}.json"
             if f.is_file():
                 return json.loads(f.read_text())
             async with sem:
@@ -388,7 +447,7 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                 if not r["cost"] and model in PRICES:
                     r["cost"] = (r["in"] * PRICES[model][0] + r["out"] * PRICES[model][1]) / 1e6
                 spent += r["cost"]
-                row = {"model": model, "condition": condition, "id": q["id"], "family": q["family"], "tool_fingerprint": fp, **r}
+                row = {"set": set_, "model": model, "condition": condition, "id": q["id"], "family": q["family"], "tool_fingerprint": fp, **r}
                 if not r["error"]:
                     f.write_text(json.dumps(row, indent=1) + "\n")
                 return row
@@ -404,7 +463,9 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                 listed = (await s.list_tools()).tools
                 specs = [{"type": "function", "function": {"name": t.name, "description": t.description,
                                                            "parameters": getattr(t, "input_schema", None) or getattr(t, "inputSchema")}} for t in listed]
-                system = (init.instructions or "") + "\n\n" + RULES.split("\n")[-1]
+                # first round: the server's instructions and the format line only. Second round: the same
+                # rules text as every other condition, after the server's instructions.
+                system = (init.instructions or "") + "\n\n" + (RULES_V2 if v2 else RULES.split("\n")[-1])
                 lock = asyncio.Lock()
 
                 async def call_tool(name: str, args: dict) -> str:
@@ -421,11 +482,11 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
         async def call_tool(name: str, args: dict) -> str:
             return run_sql(con, args.get("query", "")) if name == "sql" else f"unknown tool {name}; the only tool is sql"
 
-        system = RULES + "\n\n" + SQL_SCHEMA
+        system = rules + "\n\n" + SQL_SCHEMA
         fp = hashlib.sha256(json.dumps([system, SQL_TOOL], sort_keys=True).encode()).hexdigest()[:12]
         rows = await body(None, system, SQL_TOOL, call_tool, fp)
     else:
-        system = RULES + "\n\nYou have no tool, and the graph is not available to you."
+        system = rules + "\n\nYou have no tool, and the graph is not available to you."
         fp = hashlib.sha256(system.encode()).hexdigest()[:12]
 
         async def call_tool(name: str, args: dict) -> str:
@@ -436,10 +497,10 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
 
 
 # ----------------------------------------------------------------------------- the report
-def report() -> dict:
-    qs = {q["id"]: q for q in load_questions()}
+def report(set_: str = "dev") -> dict:
+    qs = {q["id"]: q for q in load_questions(set_)}
     rows = [json.loads(p.read_text()) for p in sorted(calls_dir().glob("*.json"))]
-    rows = [r for r in rows if r["id"] in qs]
+    rows = [r for r in rows if r["id"] in qs and r.get("set", "dev") == set_]
     latest: dict[tuple, dict] = {}
     for r in rows:
         latest[(r["model"], r["condition"], r["id"])] = r
@@ -457,7 +518,7 @@ def report() -> dict:
         f[0] += ok
         f[1] += 1
         c["right"][qid] = bool(ok)
-    out = {"questions": len(qs), "sha256": json.loads(frozen_path().read_text())["sha256"],
+    out = {"set": set_, "questions": len(qs), "sha256": json.loads(frozen_path(set_).read_text())["sha256"],
            "cells": {f"{m}|{c}": v for (m, c), v in sorted(cells.items())}}
     out.update(compare(out["cells"]))
     return out
@@ -532,6 +593,14 @@ def _selftest() -> int:
     q = {"family": "not_in_graph", "gold": {"status": "not_in_graph"}}
     ck("answering about a gene that is not in the graph is counted as invention; declining is not",
        fabricated(q, {"status": "answered", "year": 2010}) and not fabricated(q, {"status": "not_in_graph"}) and not fabricated(q, {"status": "unknown"}))
+    q2 = {"family": "not_yet", "gold": {"problem": None, "linked": False, "reported_later": 2020}}
+    ck("second schema: a found absence is no problem, with linked false and the year",
+       grade(q2, {"problem": None, "linked": False, "reported_later": 2020}) and grade(q2, {"problem": "null", "linked": "false", "reported_later": "2020"})
+       and not grade(q2, {"problem": None, "linked": True, "reported_later": 2020}) and not grade(q2, {"problem": "unknown", "linked": None, "reported_later": None}))
+    q2 = {"family": "not_in_graph", "gold": {"problem": "not_in_graph"}}
+    ck("second schema: a problem is right by itself, and answering a not-in-graph question is invention",
+       grade(q2, {"problem": "not_in_graph", "year": None}) and not grade(q2, {"problem": None, "year": 2010})
+       and fabricated(q2, {"problem": None, "year": 2010}) and not fabricated(q2, {"problem": "unknown"}))
     mk = lambda right, fab=0: {"n": 35, "correct": sum(right.values()), "fabricated": fab, "right": right}
     good = {f"q{i}": i < 30 for i in range(35)}
     poor = {f"q{i}": i < 20 for i in range(35)}
@@ -567,6 +636,7 @@ def main(argv: list[str] | None = None) -> int:
     qp = sub.add_parser("questions")
     qp.add_argument("release")
     qp.add_argument("--freeze", action="store_true")
+    qp.add_argument("--set", dest="set_", choices=sorted(SETS), default="dev")
     rp = sub.add_parser("run")
     rp.add_argument("release")
     rp.add_argument("--model", required=True)
@@ -577,12 +647,14 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("--workers", type=int, default=6)
     rp.add_argument("--max-tokens", type=int, default=4000)
     rp.add_argument("--only", default="")
-    sub.add_parser("report")
+    rp.add_argument("--set", dest="set_", choices=sorted(SETS), default="dev")
+    sub.add_parser("report").add_argument("--set", dest="set_", choices=sorted(SETS), default="dev")
     a = ap.parse_args(argv)
     if a.cmd == "questions":
-        qs = make_questions(paths.bundle(a.release))
-        d = {"release": a.release, "seed": SEED, "sha256": digest(qs), "questions": qs}
-        fz = frozen_path()
+        S = SETS[a.set_]
+        qs = make_questions(paths.bundle(a.release), S["seed"], S["schema"], S["fakes"], S["words"])
+        d = {"release": a.release, "seed": S["seed"], "sha256": digest(qs), "questions": qs}
+        fz = frozen_path(a.set_)
         if fz.is_file():
             old = json.loads(fz.read_text())
             if old["sha256"] != d["sha256"]:
@@ -601,16 +673,16 @@ def main(argv: list[str] | None = None) -> int:
         if "openrouter.ai" in a.base_url and not key:
             raise SystemExit(f"{a.key_env} is not set")
         rows = asyncio.run(run(paths.bundle(a.release), a.model, a.condition, a.base_url, key, a.max_cost, a.workers, a.max_tokens,
-                               set(a.only.split(",")) if a.only else None))
-        qs = {q["id"]: q for q in load_questions()}
+                               set(a.only.split(",")) if a.only else None, a.set_))
+        qs = {q["id"]: q for q in load_questions(a.set_)}
         done = [r for r in rows if "final" in r]
         right = sum(grade(qs[r["id"]], r["final"]) for r in done)
         print(f"{a.model} / {a.condition}: {right} of {len(done)} correct; no FINAL line {sum(r['final'] is None for r in done)}; "
               f"errors {sum(bool(r.get('error')) for r in done)}; skipped {len(rows) - len(done)}; "
               f"cost ${sum(r.get('cost') or 0 for r in done):.4f}; tool calls {sum(len(r['tools_used']) for r in done)}")
         return 0
-    r = report()
-    out = paths.DOCS_DATA / "usability_results.json"
+    r = report(a.set_)
+    out = paths.DOCS_DATA / SETS[a.set_]["results"]
     out.write_text(json.dumps(r, indent=1) + "\n")
     for k, v in r["cells"].items():
         print(f"  {k:44s} {v['correct']:>2d} of {v['n']:>2d}  invented {v['fabricated']}  no FINAL {v['no_final']}  calls {v['calls']:>3d}  ${v['cost']:.4f}")

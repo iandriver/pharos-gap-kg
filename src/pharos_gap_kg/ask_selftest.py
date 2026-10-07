@@ -71,6 +71,10 @@ def run() -> int:
         r = G.resolve("ZZZ9")
         ck("a name that matches nothing is not in the graph", not r["ok"] and r["problem"] == "not in the graph" and r["candidates"] == [])
         ck("two letters are too few to search symbols by", G.find("AA")["found"] is False)
+        f = G.find("disease")
+        ck("find says when no name matches exactly, and to ask rather than pick", f["exact_match"] is False and f["ask_which_is_meant"] is True and "Do not pick" in f["answer"])
+        f = G.find("arrhythmia")
+        ck("find says when a name matches exactly", f["exact_match"] is True and f["ask_which_is_meant"] is False and f["matches"][0]["id"] == "MONDO:2")
         ck("a three-letter prefix finds the symbols that start with it", {m["symbol"] for m in G.find("AAA", "target")["matches"]} == {"AAA"} and {m["symbol"] for m in G.find("aab", "target")["matches"]} == {"AAB"})
 
         # known

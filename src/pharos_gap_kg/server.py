@@ -24,7 +24,7 @@ from pharos_gap_kg import ask
 
 INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (from NIH Pharos) and traits. Seven tools; pick by what is asked.
 
-- Someone names a gene, protein or disease loosely -> find. Use the id it returns in the other tools when a name is ambiguous.
+- Someone names a gene, protein or disease loosely -> find. If it reports an exact match, use that id. If it reports no exact match and several names, ask which is meant; do not pick one.
 - "What is known about X" -> known.
 - "Why is X linked to Y", "what is the evidence", "is X linked to Y" -> why. It also answers when there is NO link, and says what nearby evidence exists.
 - "How are X and Y related" (two genes, two diseases, or a gene and a disease with no direct link) -> connect.
@@ -49,7 +49,8 @@ def build(bundle_dir: Path):
     app = MCPServer("pharos-gap-kg", instructions=INSTRUCTIONS)
 
     @app.tool(description="Resolve a loosely given name to targets or traits in the graph. kind is 'any', 'target' or 'trait'. "
-                          "Returns each match's id, name and how many links it has. Use it first when a name could mean several things.")
+                          "Says whether any name matches exactly (exact_match) and whether to ask which is meant (ask_which_is_meant), "
+                          "and returns each match's id, name and how many links it has. Use it first when a name could mean several things.")
     def find(text: str, kind: str = "any", limit: int = 8) -> dict:
         return G.find(text, kind if kind in ("any", "target", "trait") else "any", max(1, min(int(limit), 25)))
 

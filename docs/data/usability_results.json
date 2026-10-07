@@ -1,4 +1,5 @@
 {
+ "set": "dev",
  "questions": 35,
  "sha256": "0100843b823e71af6042911aca77827b049eb70db9b1c2d9727f6961ced4ad14",
  "cells": {
@@ -264,12 +265,12 @@
    }
   },
   "hf.co/LiquidAI/LFM2.5-2.6B-GGUF:Q4_K_M|typed": {
-   "n": 21,
-   "correct": 18,
+   "n": 28,
+   "correct": 19,
    "fabricated": 0,
    "no_final": 0,
    "cost": 0.0,
-   "calls": 81,
+   "calls": 110,
    "by_family": {
     "not_yet": [
      3,
@@ -285,11 +286,19 @@
     ],
     "ambiguous": [
      0,
-     2
+     3
     ],
     "never": [
      4,
      4
+    ],
+    "top_then_count": [
+     0,
+     4
+    ],
+    "shared": [
+     1,
+     2
     ],
     "studies_as_of": [
      4,
@@ -306,18 +315,25 @@
     "never-4": true,
     "first_year-4": true,
     "not_yet-2": true,
+    "top_then_count-1": false,
     "first_year-1": true,
     "never-1": true,
     "first_year-2": true,
+    "top_then_count-2": false,
+    "shared-2": false,
     "studies_as_of-4": true,
+    "shared-1": true,
     "studies_as_of-1": true,
     "studies_as_of-2": true,
     "never-3": true,
+    "ambiguous-3": false,
+    "top_then_count-4": false,
     "never-2": true,
     "not_yet-3": true,
     "not_in_graph-2": true,
     "ambiguous-1": false,
-    "studies_as_of-3": true
+    "studies_as_of-3": true,
+    "top_then_count-3": false
    }
   },
   "inception/mercury-2.5|none": {

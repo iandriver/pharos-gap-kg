@@ -294,7 +294,15 @@ class Graph:
         ms = self._match(text, kind)
         if not ms:
             return {"found": False, "answer": f"Nothing in the graph matches {text!r}.", "matches": []}
-        return {"found": True, "answer": f"{len(ms)} match(es) for {text!r}; the first is the closest.",
+        exact = ms[0]["tier"] <= 1
+        if exact:
+            say = f"{text!r} names something in the graph exactly; it is listed first" + (f", with {len(ms) - 1} other name(s) that contain it." if len(ms) > 1 else ".")
+        elif len(ms) == 1:
+            say = f"Nothing is named exactly {text!r}. One name contains it; confirm it is the one meant before using it."
+        else:
+            say = (f"Nothing is named exactly {text!r}, and {len(ms)} names contain it. Ask which is meant. "
+                   f"Do not pick one: they are different things.")
+        return {"found": True, "exact_match": exact, "ask_which_is_meant": (not exact) and len(ms) > 1, "answer": say,
                 "matches": [self._describe(m) for m in ms[:limit]], "more": max(0, len(ms) - limit)}
 
     def known(self, node: str, as_of: int | None = None, limit: int = 10) -> dict:
