@@ -20,6 +20,9 @@ selftest:
 	$(PY) -m pharos_gap_kg.position --selftest
 	$(PY) -m pharos_gap_kg.controls --selftest
 	$(PY) -m pharos_gap_kg.context --selftest
+	$(PY) -m pharos_gap_kg.bundle --selftest
+	$(PY) -m pharos_gap_kg.calibrate --selftest
+	$(PY) -m pharos_gap_kg.ask --selftest
 
 test:
 	$(PY) -m pytest -q

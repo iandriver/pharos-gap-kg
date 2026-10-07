@@ -21,18 +21,18 @@
  "studies": 12335,
  "papers": 3141,
  "lineage_pairs": 2936,
- "neighbour_pairs": 162353,
+ "neighbour_pairs": 174571,
  "conformance": "10 of 10 checks passed",
  "dated_graphs": [
   "pharos319_asof2018: 99,435 edges found under the same ids"
  ],
  "backtest": "split frozen at 2018",
  "files": {
-  "nodes.parquet": "2ba937e2bb8bd4ebc86b867ea2f429d46dacff48e90fcb43e6c62c2786a8bde4",
+  "nodes.parquet": "565c576a01965cff1a8a080ac15afd44d01e738c174f26f1527a3c983dff0f39",
   "links.parquet": "9e54546a9b42ca00dbdb49a9fce8fc3898a4237cd7f5e1dbefd85cebc97d68fe",
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
-  "neighbours.parquet": "9431cf08e7ef9bfee456947237fe912eab8d8d49bc804510573b38494a7a59f6",
-  "backtest.json": "372b0f95bf93b4483a06ad8db6a5bbe42393a2871581b307c14966fcda379ac2"
+  "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
+  "backtest.json": "32ec57d5c87710c34ccddec98000fd30f165b591cd9b30a33d27cd3b7dc37830"
  }
 }

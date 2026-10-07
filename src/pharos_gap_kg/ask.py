@@ -49,6 +49,29 @@ def _norm(s: str) -> str:
     return " ".join(re.sub(r"[^a-z0-9]+", " ", str(s).casefold()).split())
 
 
+def group_leads(ranked, related, label, top: int) -> list[dict]:
+    """Ranked items gathered into leads. An item joins the first earlier lead that already holds one
+    of its relatives, or an item with its label; otherwise it starts a lead. Stops when a new lead
+    would be the (top+1)th. `ranked` yields (rank, item); `related(item)` is a set of items.
+
+    Why: one GWAS signal is assigned to several neighbouring genes, and Pharos holds some genes as
+    several entries. Listed one per row they fill a top ten with a single finding."""
+    leads: list[dict] = []
+    for rank, i in ranked:
+        rel, lab = related(i), label(i)
+        home = next((L for L in leads if (rel & L["members"]) or lab in L["labels"]), None)
+        if home is not None:
+            home["members"].add(i)
+            if lab not in home["labels"]:
+                home["labels"].add(lab)
+                home["also"].append(lab)
+            continue
+        if len(leads) == top:
+            break
+        leads.append({"rank": rank, "first": i, "members": {i}, "labels": {lab}, "also": []})
+    return leads
+
+
 class Graph:
     def __init__(self, bundle_dir: Path, verify: bool = True):
         self.dir = Path(bundle_dir)
@@ -356,7 +379,7 @@ class Graph:
                "same_trait_under_another_wording": [{**self._dlabel(o), "relation_to_asked_trait": rel} for o, rel in fl["lineage"][:5]],
                "neighbouring_genes_with_this_link": [{**{kk: v for kk, v in self._tlabel(o).items() if kk in ("id", "symbol")}, "bases_apart": gap}
                                                      for o, gap in fl["position"][:5]],
-               "rank_among_candidates": rank if sc[ti] > 0 else None, "candidates": int(cand.sum()),
+               "rank_among_candidates": rank if sc[ti] > 0 else None, "candidates_for_this_trait": int(cand.sum()),
                "calibration": self._calibration("by_trait", rank, linked, bool(self.d.disease_like[di])) if sc[ti] > 0 else ""}
         if k is not None:
             head = f"As of {y} there was no link between {tl['symbol']} and {dl['name']}. One was first reported in {int(self.first[k])}."
@@ -373,6 +396,9 @@ class Graph:
         if sc[ti] > 0:
             bits.append(f"by shared-trait neighbours {tl['symbol']} ranks {rank:,} of {int(cand.sum()):,} candidates for this trait")
         out["answer"] = head + (" What nearby evidence exists: " + "; ".join(bits) + "." if bits else " Nothing nearby in the graph points either way.")
+        if self.mhc[ti]:
+            out["caution"] = f"{tl['symbol']} is {MHC_NOTE.split(';')[0]}, so a high rank here says little about this gene in particular."
+            out["answer"] += " " + out["caution"]
         return out
 
     def connect(self, a: str, b: str, as_of: int | None = None, limit: int = 5) -> dict:
@@ -465,27 +491,34 @@ class Graph:
             order = np.lexsort((np.arange(len(sc)), -deg, -sc))
             order = order[~have[order] & (sc[order] > 0)]
             n_cand = int((~have).sum())
-            first_of = set(self._one_per_symbol(order))
-            for rank, ti in enumerate(order, 1):
-                if int(ti) not in first_of:
-                    continue
-                fl = self._flags(int(ti), di, mask)
+            flags: dict[int, dict] = {}
+
+            def ranked():
+                for rank, ti in enumerate(order[:5000], 1):
+                    fl = flags.setdefault(int(ti), self._flags(int(ti), di, mask))
+                    if unexplained_only and (fl["lineage"] or fl["position"]):
+                        continue
+                    yield rank, int(ti)
+
+            leads = group_leads(ranked(), lambda i: {o for o, _ in self.neigh.get(i, [])}, lambda i: self.t["name"][i], top)
+            for L in leads:
+                ti, rank = L["first"], L["rank"]
+                fl = flags[ti]
                 linked = bool(fl["lineage"] or fl["position"])
-                if unexplained_only and linked:
-                    continue
                 mine = self.ld[mask & (self.lt == ti)]
                 sup = sorted(((float(sim[o]), int(o)) for o in mine if sim[o] > 0), reverse=True)[:2]
-                k = self._row(int(ti), di)
-                rows.append({"rank": rank, **{kk: v for kk, v in self._tlabel(int(ti)).items() if kk in ("id", "symbol", "pharos_level", "pharos_entries_with_this_symbol")},
+                k = self._row(ti, di)
+                later = [int(self.first[kk]) for kk in (self._row(m, di) for m in L["members"]) if kk is not None]
+                rows.append({"rank": rank, **{kk: v for kk, v in self._tlabel(ti).items() if kk in ("id", "symbol", "pharos_level", "pharos_entries_with_this_symbol")},
                              "score": round(float(sc[ti]), 3), "traits_already_linked": int(deg[ti]),
+                             "same_locus": L["also"][:8], "same_locus_more": max(0, len(L["also"]) - 8),
                              "caution": MHC_NOTE if self.mhc[ti] else "",
                              "explained_by": ([f"already linked to {self.d['name'][o]} ({rel})" for o, rel in fl["lineage"][:1]]
                                               + [f"{self.t['name'][o]} is {gap:,} bases away and has this link" for o, gap in fl["position"][:1]]),
                              "because_it_has": [self.d["name"][o] for _, o in sup],
                              "reported_after_as_of": int(self.first[k]) if k is not None else None,
+                             "any_gene_at_this_locus_reported_after_as_of": min(later) if later else None,
                              "how_often_this_held": self._calibration("by_trait", rank, linked, bool(self.d.disease_like[di]))})
-                if len(rows) >= top:
-                    break
             lab = {"kind": "trait", **self._dlabel(di)}
             what = f"targets for {self.d['name'][di]}"
         else:
@@ -508,24 +541,34 @@ class Graph:
             order = np.lexsort((np.arange(len(total)), -degd, -total))
             order = order[~have[order] & (total[order] > 0)]
             n_cand = int((~have & (degd > 0)).sum())
-            for rank, di in enumerate(order, 1):
-                fl = self._flags(ti, int(di), mask)
+            flags = {}
+
+            def ranked():
+                for rank, dj in enumerate(order, 1):
+                    fl = flags.setdefault(int(dj), self._flags(ti, int(dj), mask))
+                    if unexplained_only and (fl["lineage"] or fl["position"]):
+                        continue
+                    yield rank, int(dj)
+
+            leads = group_leads(ranked(), lambda j: {o for o, _ in self.lineage.get(j, [])}, lambda j: self.d.id[j], top)
+            for L in leads:
+                dj, rank = L["first"], L["rank"]
+                fl = flags[dj]
                 linked = bool(fl["lineage"] or fl["position"])
-                if unexplained_only and linked:
-                    continue
-                k = self._row(ti, int(di))
-                rows.append({"rank": rank, **self._dlabel(int(di)), "score": round(float(total[di]), 3),
+                k = self._row(ti, dj)
+                rows.append({"rank": rank, **self._dlabel(dj), "score": round(float(total[dj]), 3),
+                             "other_wordings_of_this_trait": [self.d["name"][self.di[x]] for x in L["also"][:5]],
                              "explained_by": ([f"already linked to {self.d['name'][o]} ({rel})" for o, rel in fl["lineage"][:1]]
                                               + [f"{self.t['name'][o]} is {gap:,} bases away and has this link" for o, gap in fl["position"][:1]]),
-                             "because_it_has": [self.d["name"][best[int(di)][1]]] if int(di) in best else [],
+                             "because_it_has": [self.d["name"][best[dj][1]]] if dj in best else [],
                              "reported_after_as_of": int(self.first[k]) if k is not None else None,
                              "how_often_this_held": self._calibration("by_target", rank, linked, False)})
-                if len(rows) >= top:
-                    break
             lab = {"kind": "target", **self._tlabel(ti)}
             what = f"traits for {self.t['name'][ti]}"
-        came = sum(1 for x in rows if x["reported_after_as_of"])
-        ans = f"The {len(rows)} highest-ranked candidate {what} as of {y}, out of {n_cand:,}."
+        came = sum(1 for x in rows if x["reported_after_as_of"] or x.get("any_gene_at_this_locus_reported_after_as_of"))
+        ans = (f"The {len(rows)} highest-ranked candidate {what} as of {y}, out of {n_cand:,}."
+               + (" Genes within 500,000 bases of each other are shown as one lead." if r["kind"] == "trait" else
+                  " Traits the ontology files under one another are shown as one lead."))
         n_mhc = sum(1 for x in rows if x.get("caution"))
         if n_mhc:
             ans += f" In the MHC region of chromosome 6, where neighbouring candidates are best read as one lead: {n_mhc} of them."

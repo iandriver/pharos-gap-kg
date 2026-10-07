@@ -22,10 +22,11 @@ from pharos_gap_kg import paths
 WINDOW = 500_000
 PRIMARY = [str(i) for i in range(1, 23)] + ["X", "Y", "MT"]
 GENE_ID = re.compile(r'gene_id "([^"]+)"')
+GENE_NAME = re.compile(r'gene_name "([^"]+)"')
 
 
 def genes(path: Path) -> pd.DataFrame:
-    """ensg, chr, start, end for every gene on a primary chromosome."""
+    """ensg, symbol, chr, start, end for every gene on a primary chromosome."""
     rows = []
     with gzip.open(path, "rt") as f:
         for line in f:
@@ -33,22 +34,37 @@ def genes(path: Path) -> pd.DataFrame:
                 continue
             c = line.split("\t", 9)
             if c[2] == "gene" and c[0] in PRIMARY:
-                rows.append((GENE_ID.search(c[8]).group(1), c[0], int(c[3]), int(c[4])))
-    return pd.DataFrame(rows, columns=["ensg", "chr", "start", "end"])
+                name = GENE_NAME.search(c[8])
+                rows.append((GENE_ID.search(c[8]).group(1), name.group(1) if name else "", c[0], int(c[3]), int(c[4])))
+    return pd.DataFrame(rows, columns=["ensg", "symbol", "chr", "start", "end"])
+
+
+def by_symbol(missing: pd.DataFrame, g: pd.DataFrame) -> pd.DataFrame:
+    """Coordinates for targets (columns target, sym) that no gene id placed, from the gene of the same symbol."""
+    named = g[g.symbol != ""]
+    m = missing.dropna(subset=["sym"]).merge(named, left_on="sym", right_on="symbol")
+    return m[["target", "ensg", "chr", "start", "end"]]
 
 
 def target_genes(release: str, g: pd.DataFrame) -> pd.DataFrame:
-    """target (UniProtKB CURIE), ensg, chr, start, end: one row per gene a target is tied to."""
+    """target (UniProtKB CURIE), ensg, chr, start, end, placed_by: one row per gene a target is tied to.
+
+    A target is placed by the Ensembl gene ids the snapshot cross-references it to. Some targets, the
+    HLA allele entries above all, are cross-referenced only to gene ids on alternate haplotype
+    assemblies, which have no position on a primary chromosome. Those are placed by the primary gene
+    that carries their symbol."""
     d = paths.tables(release)
-    prot = pq.read_table(d / "protein.parquet", columns=["id", "uniprot"]).to_pandas().rename(columns={"id": "protein_id"})
+    prot = pq.read_table(d / "protein.parquet", columns=["id", "uniprot", "sym"]).to_pandas().rename(columns={"id": "protein_id"})
+    prot["target"] = "UniProtKB:" + prot.uniprot
     x = pq.read_table(d / "xref.parquet", columns=["xtype", "protein_id", "value"]).to_pandas()
     x = x[x.xtype == "ENSG"][["protein_id", "value"]].rename(columns={"value": "ensg"})
     t = pq.read_table(d / "tiga.parquet", columns=["protein_id", "ensg"]).to_pandas()
     m = pd.concat([x, t]).dropna()
     m["ensg"] = m.ensg.str.split(".").str[0]
-    m = m.drop_duplicates().merge(g, on="ensg").merge(prot, on="protein_id")
-    m["target"] = "UniProtKB:" + m.uniprot
-    return m[["target", "ensg", "chr", "start", "end"]].drop_duplicates()
+    m = m.drop_duplicates().merge(g[["ensg", "chr", "start", "end"]], on="ensg").merge(prot[["protein_id", "target"]], on="protein_id")
+    m = m[["target", "ensg", "chr", "start", "end"]].drop_duplicates().assign(placed_by="gene id")
+    rest = by_symbol(prot[~prot.target.isin(set(m.target))][["target", "sym"]], g).drop_duplicates().assign(placed_by="symbol")
+    return pd.concat([m, rest], ignore_index=True)
 
 
 def neighbour_pairs(tg: pd.DataFrame, index: dict[str, int], window: int = WINDOW) -> np.ndarray:
@@ -150,6 +166,10 @@ def _selftest() -> int:
        len(set(components(P, np.array([0, 1, 5])))) == 2 and len(set(components(P, np.array([0, 2])))) == 2
        and len(set(components(P, np.array([2, 4, 3])))) == 2)
     ck("no pairs gives every member its own locus", len(set(components(np.zeros((0, 2), np.int64), np.array([3, 4])))) == 2)
+    G_ = pd.DataFrame({"ensg": ["g1", "g2", "g3"], "symbol": ["HLA-B", "", "XYZ"], "chr": ["6", "1", "2"], "start": [31, 5, 9], "end": [32, 6, 10]})
+    S_ = by_symbol(pd.DataFrame({"target": ["T1", "T2", "T3"], "sym": ["HLA-B", None, "NOPE"]}), G_)
+    ck("a target no gene id placed is placed by the gene of its symbol; one with no symbol or no such gene is not",
+       S_.values.tolist() == [["T1", "g1", "6", 31, 32]])
     NT = neighbour_table(tg, list("ABCDEFG"))
     gap = {(r.a, r.b): r.gap for r in NT.itertuples()}
     ck("the table lists the same pairs as the index form, with the bases between them",

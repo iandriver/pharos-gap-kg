@@ -35,10 +35,16 @@ Started 6 Oct 2026. No model has been fitted. What exists:
 - **Controls** ([`findings/CONTROLS.md`](findings/CONTROLS.md)). A fifth of the later links follow from
   an earlier link by trait lineage or by chromosomal position, and the ontology alone or the
   chromosome alone ranks later links at two and a half times chance. On links neither explains, the
-  neighbour score is not shown to beat target degree. The 130,369 later links are 34,149 loci.
+  neighbour score is not shown to beat target degree. The 130,369 later links are 31,885 loci, and
+  counted by locus target degree is at twice chance, not four times.
 - **Context audit** ([`findings/CONTEXT.md`](findings/CONTEXT.md)). Nine tenths of the later links are
   to measurements, not diseases. Of Pharos's twelve undated disease sources, one is the held-out GWAS
   data under another name: used as context it would score 0.60 by reading the answers.
+
+- **Seven questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`,
+  `connect`, `predict`, `whats_new`, `status`, answered from an 11 MB bundle whose files are checked
+  against a manifest of digests. A name that matches nothing is "not in the graph"; an absent link is
+  never reported as a negative; a prediction comes with how often its rank held in the backtest.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -58,7 +64,7 @@ fetch command. A missing input names the command that fetches it.
 ## Outputs
 
 `data/tables/<release>/<table>.parquet` (typed tables), `data/graph/<release>/` (KGX nodes, edges and
-gaps), `data/eval/` (frozen splits and scores). `data/` is not committed; small summaries that the
+gaps), `data/eval/` (frozen splits and scores), `data/bundle/<release>/` (what the questions read). `data/` is not committed; small summaries that the
 documents quote are committed under `docs/data/`.
 
 ## Run
@@ -78,6 +84,12 @@ python -m pharos_gap_kg.sqldump extract pharos319 --tables xref
 python -m pharos_gap_kg.controls pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables disease
 python -m pharos_gap_kg.context pharos319 --cutoff 2018
+python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
+python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
+python -m pharos_gap_kg.bundle pharos319                     # what the questions read
+python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
+python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --unexplained-only
+python -m pharos_gap_kg.server                               # the same questions over MCP (needs the [server] extra)
 make check
 ```
 

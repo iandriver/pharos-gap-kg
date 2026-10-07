@@ -59,3 +59,10 @@ could account for some or all of the 0.0236, and neither has been measured.
 chromosomal position. On the positives that neither explains, the neighbours gain over target degree
 is +0.0121 with every linked candidate removed, and +0.0060 with an interval that includes zero when
 only the linked positives are removed. The 0.0236 above is therefore not a gain on new links.
+
+## Since: counted by locus, target degree is at twice chance (7 Oct 2026)
+
+`findings/CONTROLS.md`, second correction. Pharos holds the HLA genes as 83 separate entries with the
+same links, and a ranking by degree puts them first for every trait. With each locus counted once,
+target degree scores 0.0255 against chance at 0.0123, and neighbours 0.0512. The "four times chance"
+above is true of the primary measure as defined and is mostly that one region counted many times.

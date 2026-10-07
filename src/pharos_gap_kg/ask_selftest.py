@@ -93,6 +93,8 @@ def run() -> int:
         ck("the absence names the broader trait the target already had", [x["id"] for x in w["same_trait_under_another_wording"]] == ["MONDO:1"])
         w = G.why("DDD", "arrhythmia")
         ck("an absent link names the neighbouring gene that has it", not w["found"] and w["reported_later"] is None and w["neighbouring_genes_with_this_link"][0]["symbol"] == "CCC")
+        w = G.why("BBB", "arrhythmia", as_of=2018)
+        ck("an absent link to a gene in the MHC region says a high rank there means little", "MHC" in w.get("caution", "") and w["candidates_for_this_trait"] == 5)
         ck("an unknown argument stops the question", G.why("QQQ", "arrhythmia")["found"] is False and G.why("QQQ", "arrhythmia")["problem"] == "not in the graph")
 
         # connect
@@ -119,8 +121,17 @@ def run() -> int:
         ck("each candidate quotes how often its rank has held, and that it is a lower bound", all("backtest" in x["how_often_this_held"] and "not known to be absent" in x["how_often_this_held"] for x in p["candidates"]))
         q = G.predict("arrhythmia", as_of=2018, unexplained_only=True)
         ck("unexplained-only drops every candidate an earlier link explains", q["candidates"] == [])
-        ck("predict for a target ranks the traits it does not have", [x["id"] for x in G.predict("BBB", as_of=2018)["candidates"]] == ["MONDO:2", "EFO:9"])
+        pt = G.predict("BBB", as_of=2018)["candidates"]
+        ck("predict for a target ranks the traits it does not have, with wordings of one trait as one lead",
+           [x["id"] for x in pt] == ["MONDO:2"] and pt[0]["other_wordings_of_this_trait"] == ["heart disease"])
         ck("with nothing linked there is nothing to rank from", G.predict("DDD")["candidates"] == [] and "nothing to rank" in G.predict("DDD")["answer"])
+
+        # leads
+        near = {1: {2}, 2: {1, 3}, 3: {2}, 7: set(), 8: set(), 9: set()}
+        L = ask.group_leads([(1, 1), (2, 7), (3, 2), (4, 3), (5, 8), (6, 9)], lambda i: near[i], lambda i: "s8" if i in (8, 9) else f"s{i}", top=3)
+        ck("neighbours chain into one lead, at the rank of its best member", [(x["rank"], x["first"], sorted(x["members"])) for x in L] == [(1, 1, [1, 2, 3]), (2, 7, [7]), (5, 8, [8, 9])])
+        ck("a lead lists the other labels in it once, and items sharing a label are one lead", L[0]["also"] == ["s2", "s3"] and L[2]["also"] == [])
+        ck("grouping stops when another lead would exceed the number asked for", len(ask.group_leads([(1, 1), (2, 7), (3, 8)], lambda i: set(), str, top=2)) == 2)
 
         # whats_new, status
         n = G.whats_new("AAA", 2015)
