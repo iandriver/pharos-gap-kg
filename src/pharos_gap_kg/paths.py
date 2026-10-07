@@ -40,6 +40,7 @@ TABLES = DATA / "tables"                                      # tables/<release>
 GRAPH = DATA / "graph"                                        # graph/<release>/{nodes,edges,gaps}.tsv
 EVAL = DATA / "eval"                                          # frozen splits and scores
 BUNDLE = Path(os.environ.get("PHAROS_GAP_KG_BUNDLE", DATA / "bundle"))   # bundle/<release>: what the front end reads
+CONTEXT = DATA / "context"                                    # context/<release>: undated link tables, one per kind
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
 
 
@@ -49,6 +50,10 @@ def tables(release: str) -> Path:
 
 def bundle(release: str) -> Path:
     return BUNDLE / release
+
+
+def context(release: str) -> Path:
+    return CONTEXT / release
 
 
 def _selftest() -> int:
