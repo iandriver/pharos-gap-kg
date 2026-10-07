@@ -135,6 +135,21 @@ A source that ranks later links well is either prior knowledge or the later link
 another name. Without dates the two cannot be told apart, which is why a result that uses such a
 table must also be reported without it.
 
+## Calibration by rank, for the question-answering front end
+
+Defined on 7 Oct 2026 before it was computed. The front end offers ranked candidates for a trait or a
+target, scored by neighbours (B3). Beside each it states how often a candidate ranked that high in
+the 2018 backtest was reported by 2022. Those shares are computed once, here.
+
+For each scored trait, rank its candidates by B3. Pool over traits the candidates at ranks 1 to 10,
+11 to 50, 51 to 100 and 101 to 500, and report the share that are positives: overall, by kind of
+trait, and separately for candidates that are lineage- or position-linked and those that are not. The
+same by target, for ranks 1 to 5, 6 to 20 and 21 to 50 of each scored target's candidate traits.
+Ties are broken at random with the five seeds and the shares averaged.
+
+Every share is a lower bound for the reason given at the top: a candidate not reported by 2022 is not
+known to be absent. The front end must say so wherever it quotes one.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later

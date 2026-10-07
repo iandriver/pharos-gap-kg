@@ -19,6 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+server = ["mcp>=2,<3"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
