@@ -85,3 +85,11 @@ the rule's name and what would restore them. 324,374 of 324,882 rows are kept.
 - A second round would plant among one-source pairs only, so that the comparison is matched, and
   would test a rule that reads evidence the sources carry (a confidence, a z-score, a p-value) on a
   new seed.
+
+## Added 7 Oct 2026, after the second round
+
+`findings/PRUNING2.md` planted among one-source pairs only, as the last point above proposed. That did
+not remove the fault described under "A fault in the design", so the account given there is
+incomplete. A planted pair is added to its target, which then has one more other pair than a real
+pair's target has, and in a source where a target has one or two diseases that alone separates them.
+The fault runs against the rule, and Monarch's pass stands. The text above is left as it was written.

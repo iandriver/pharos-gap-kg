@@ -60,6 +60,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   disease sources. The corroboration rule stated in advance withheld 39% of them and cleared its bar
   on one source of eleven; the criterion that fails is "an interaction partner has the same disease",
   which is true of most random pairs. The 508 pairs it did withhold are in the graph as typed gaps.
+- **Pruning, second round** ([`findings/PRUNING2.md`](findings/PRUNING2.md)). Evidence from outside
+  the graph, on 2,200 planted and 2,200 real pairs. A cut on how much more often than chance PubMed
+  mentions a gene with a disease clears the bar on five sources of eleven and needs no model. A model
+  that reads the abstracts and must copy the passage it relies on clears it on three, and at the same
+  cost in real pairs it withholds fewer planted ones than the cut does. No source's own confidence
+  field orders its pairs the way the literature does. Three sources are out of reach of every rule.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -103,6 +109,8 @@ python -m pharos_gap_kg.sqldump extract pharos319 --tables ncats_ppi,pathway,goa
 python -m pharos_gap_kg.ctxtables pharos319                  # the rest of the release as link tables
 python -m pharos_gap_kg.enrich pharos319 --cutoff 2018       # needs the [eval] extra
 python -m pharos_gap_kg.planted pharos319
+python -m pharos_gap_kg.evidence pharos319                   # each source's own evidence field, per pair
+python -m pharos_gap_kg.prune2 freeze pharos319              # second pruning round; stages in its docstring
 python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc

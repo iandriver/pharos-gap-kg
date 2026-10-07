@@ -468,6 +468,9 @@ def report(release: str) -> dict:
     lineage = round1.corroboration(single, links, rel, onto, gwas, pd.DataFrame({"a": [], "b": []}), terms)[KEY + ["lineage"]]
     out["fields"] = field_rows(release, se, lineage)
     out["in_graph_rule_on_matched_planting"] = ing
+    # Two descriptions added after the stated measures were computed.
+    out["planted_pairs_asserted_under_another_identifier"] = same_name(links, s, names(release)[0])
+    out["in_graph_against_literature"] = agreement(ok[~ok.planted], pd.read_parquet(W / "ingraph_detail.parquet"))
     (paths.DOCS_DATA / f"pruning2_{release}.json").write_text(dump(out))
     return out
 
@@ -500,7 +503,33 @@ def show(out: dict) -> None:
         print(f"    {k:44s} AUC mentioned {a['auc'] if a['auc'] is not None else float('nan'):.3f} [{a['low']:.3f}, {a['high']:.3f}] ({r['mentioned']}/{r['not_mentioned']})  "
               f"{'GRADES' if r['grades_its_source'] else 'no' if r['measurable'] else 'not measurable'}{'' if r['independent_of_the_label'] else ' (not independent)'}  "
               f"not mentioned: {bands}; planted {r['planted_not_mentioned']['share']:.2f}  | lineage AUC {f['auc']:.3f} [{f['low']:.3f}, {f['high']:.3f}]")
+    sn = out["planted_pairs_asserted_under_another_identifier"]["all sources"]
+    print(f"  planted pairs a source asserts under another identifier of the same name: {sn['n']} of {sn['of']}")
+    print("  share of sampled real pairs no paper mentions, by whether the in-graph rule corroborates them")
+    for s, r in order(out["in_graph_against_literature"]):
+        print(f"    {s:34s} uncorroborated {pc(r['uncorroborated'])}  corroborated {pc(r['corroborated'])}  flagged by both {r['flagged_by_both']}")
     print(f"  spent on model calls: {out['spent_on_model_calls']:.3f} of {out['spend_cap']:.2f}")
+
+
+def same_name(links: pd.DataFrame, sample: pd.DataFrame, name_of: dict) -> dict:
+    """Planted pairs that some source does assert, for the same target, under another identifier whose
+    name is the same. Pairs are told apart by identifier, so these were planted as false and are not."""
+    named = set(zip(links.target, (str(name_of.get(k, "")).lower() for k in zip(links.source, links.disease)))) - {(t, "") for t in set(links.target)}
+    pl = sample[sample.planted]
+    hit = np.array([(t, str(n).lower()) in named for t, n in zip(pl.target, pl.name)])
+    return {"all sources": {"n": int(hit.sum()), "of": int(len(pl))}, **{src: {"n": int(hit[(pl.source == src).to_numpy()].sum()), "of": int((pl.source == src).sum())} for src in sorted(set(pl.source))}}
+
+
+def agreement(real: pd.DataFrame, detail: pd.DataFrame) -> dict:
+    """For the sampled real one-source pairs: is a pair the in-graph rule leaves uncorroborated more often
+    one that no paper mentions? Two checks that share no evidence, on the same pairs."""
+    x = real.merge(detail[~detail.planted][KEY + ["corroborated"]], on=KEY)
+    out = {}
+    for src, g in list(x.groupby("source")) + [("all sources", x)]:
+        unc, cor = g[~g.corroborated], g[g.corroborated]
+        out[src] = {"uncorroborated": share((unc.both == 0).to_numpy()), "corroborated": share((cor.both == 0).to_numpy()),
+                    "flagged_by_both": int(((g.both == 0) & ~g.corroborated).sum()), "pairs": int(len(g))}
+    return out
 
 
 def ingraph(release: str) -> dict:
@@ -619,6 +648,14 @@ def _selftest() -> int:
     st = standardised(det)["s"]
     # real pairs are half at 0 and half at 9; planted withheld is 1.0 at 0 and 0.0 at 9, so 0.5 once weighted (0.167 unweighted)
     ck("planted pairs are reweighted to the real pairs' other-pair counts", abs(st["planted_withheld_at_the_real_pairs_other_pair_counts"] - 0.5) < 1e-12 and st["share_of_real_pairs_in_strata_with_a_planted_pair"] == 1.0)
+
+    lk = pd.DataFrame([("A", "MONDO:1", "s"), ("B", "DOID:9", "u")], columns=KEY)
+    sp_ = pd.DataFrame({"target": ["A", "B", "B"], "disease": ["DOID:9", "MONDO:1", "MONDO:7"], "source": ["s", "s", "u"], "planted": [True, True, True], "name": ["Gout", "gout", "other"]})
+    sn = same_name(lk, sp_, {("s", "MONDO:1"): "gout", ("u", "DOID:9"): "Gout"})
+    ck("a planted pair that a source asserts under another identifier of the same name is counted", sn["all sources"] == {"n": 2, "of": 3} and sn["u"] == {"n": 0, "of": 1})
+    ag = agreement(pd.DataFrame({"target": list("abcd"), "disease": ["x"] * 4, "source": ["s"] * 4, "both": pd.array([0, 0, 3, 0], "Int64")}),
+                   pd.DataFrame({"target": list("abcd"), "disease": ["x"] * 4, "source": ["s"] * 4, "planted": [False] * 4, "corroborated": [False, False, True, True]}))["s"]
+    ck("the two checks are set side by side on the same real pairs", ag["uncorroborated"]["share"] == 1.0 and ag["corroborated"]["share"] == 0.5 and ag["flagged_by_both"] == 2)
 
     g1, d1, dx = {"count": 10, "not_found": []}, {"count": 500, "not_found": []}, {"count": 500, "not_found": ["zz"]}
     ck("a pair is unsearchable without a symbol, without a name, or when PubMed does not find the name",
