@@ -1,0 +1,203 @@
+{
+ "a": "pharos316",
+ "b": "pharos319",
+ "sha256_a": "ed42237f2e4d0f4f85a31d9435e422afc623cca92a859d5bbf1ff08ba80e0eda",
+ "sha256_b": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "identical": [
+  "ancestry_do",
+  "ancestry_dto",
+  "ancestry_mondo",
+  "cmpd_activity",
+  "cmpd_activity_type",
+  "data_type",
+  "dataset",
+  "dbinfo",
+  "disease",
+  "disease_type",
+  "do",
+  "do_parent",
+  "drgc_resource",
+  "drug_activity",
+  "dto",
+  "gene_attribute",
+  "gene_attribute_type",
+  "goa",
+  "gwas",
+  "hgram_cdf",
+  "info_type",
+  "kegg_distance",
+  "kegg_nearest_tclin",
+  "lincs",
+  "locsig",
+  "mondo",
+  "mondo_parent",
+  "mondo_xref",
+  "mpo",
+  "ncats_d2da",
+  "ncats_dataSource",
+  "ncats_disease_ancestry",
+  "ncats_ligand_activity",
+  "ncats_ligands",
+  "ncats_p2da",
+  "ncats_ppi",
+  "ncats_typeahead_index",
+  "nhprotein",
+  "nih_list",
+  "nih_list_type",
+  "omim",
+  "omim_ps",
+  "ortholog",
+  "ortholog_disease",
+  "p2dto",
+  "p2pc",
+  "panther_class",
+  "patent_count",
+  "pathway",
+  "pathway_type",
+  "phenotype",
+  "phenotype_type",
+  "pmscore",
+  "ppi_type",
+  "protein",
+  "provenance",
+  "ptscore",
+  "sequence_annotation",
+  "sequence_variant",
+  "t2tc",
+  "tiga",
+  "tiga_provenance",
+  "tinx_disease",
+  "tinx_importance",
+  "tinx_novelty",
+  "viral_ppi",
+  "viral_protein",
+  "virus",
+  "xref",
+  "xref_type"
+ ],
+ "differ": [
+  {
+   "table": "affiliate",
+   "rows_a": 7,
+   "rows_b": 8,
+   "columns_changed": false
+  },
+  {
+   "table": "alias",
+   "rows_a": 191022,
+   "rows_b": 170524,
+   "columns_changed": false
+  },
+  {
+   "table": "ancestry_uberon",
+   "rows_a": 14444,
+   "rows_b": 14676,
+   "columns_changed": false
+  },
+  {
+   "table": "expression",
+   "rows_a": 10309294,
+   "rows_b": 10563981,
+   "columns_changed": false
+  },
+  {
+   "table": "extlink",
+   "rows_a": 80268,
+   "rows_b": 100680,
+   "columns_changed": false
+  },
+  {
+   "table": "generif",
+   "rows_a": 861171,
+   "rows_b": 888732,
+   "columns_changed": false
+  },
+  {
+   "table": "generif2pubmed",
+   "rows_a": 959519,
+   "rows_b": 989194,
+   "columns_changed": false
+  },
+  {
+   "table": "gtex",
+   "rows_a": 1045980,
+   "rows_b": 1045980,
+   "columns_changed": false
+  },
+  {
+   "table": "input_version",
+   "rows_a": 11,
+   "rows_b": 11,
+   "columns_changed": false
+  },
+  {
+   "table": "ncats_dataSource_map",
+   "rows_a": 1577656,
+   "rows_b": 1577524,
+   "columns_changed": false
+  },
+  {
+   "table": "ncats_disease",
+   "rows_a": 13953,
+   "rows_b": 13953,
+   "columns_changed": false
+  },
+  {
+   "table": "protein2pubmed",
+   "rows_a": 33283707,
+   "rows_b": 43188393,
+   "columns_changed": false
+  },
+  {
+   "table": "target",
+   "rows_a": 20412,
+   "rows_b": 20412,
+   "columns_changed": false
+  },
+  {
+   "table": "tdl_info",
+   "rows_a": 301152,
+   "rows_b": 301152,
+   "columns_changed": false
+  },
+  {
+   "table": "tissue",
+   "rows_a": 1591,
+   "rows_b": 1617,
+   "columns_changed": false
+  },
+  {
+   "table": "uberon",
+   "rows_a": 24607,
+   "rows_b": 25032,
+   "columns_changed": false
+  },
+  {
+   "table": "uberon_parent",
+   "rows_a": 38715,
+   "rows_b": 37590,
+   "columns_changed": false
+  },
+  {
+   "table": "uberon_xref",
+   "rows_a": 50443,
+   "rows_b": 50456,
+   "columns_changed": false
+  },
+  {
+   "table": "word_count",
+   "rows_a": 967380,
+   "rows_b": 986271,
+   "columns_changed": false
+  }
+ ],
+ "only_a": [],
+ "only_b": [
+  "go",
+  "go_parent",
+  "mjff_target"
+ ],
+ "rows_identical": 192787462,
+ "rows_a": 242528794,
+ "rows_b": 252875372
+}

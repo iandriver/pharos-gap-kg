@@ -1,0 +1,88 @@
+{
+ "old": "pharos316",
+ "old_sha256": "ed42237f2e4d0f4f85a31d9435e422afc623cca92a859d5bbf1ff08ba80e0eda",
+ "new": "pharos319",
+ "new_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "shared": 20412,
+ "only_old": 0,
+ "only_new": 0,
+ "matrix": {
+  "Tdark": {
+   "Tdark": 5456,
+   "Tbio": 223,
+   "Tchem": 0,
+   "Tclin": 0
+  },
+  "Tbio": {
+   "Tdark": 60,
+   "Tbio": 11998,
+   "Tchem": 0,
+   "Tclin": 0
+  },
+  "Tchem": {
+   "Tdark": 0,
+   "Tbio": 56,
+   "Tchem": 1915,
+   "Tclin": 0
+  },
+  "Tclin": {
+   "Tdark": 0,
+   "Tbio": 0,
+   "Tchem": 0,
+   "Tclin": 704
+  }
+ },
+ "up": 223,
+ "down": 116,
+ "unchanged": 20073,
+ "ligand_candidates": 17737,
+ "ligand_gained": 0,
+ "ligand_holders": 2675,
+ "ligand_lost": 56,
+ "gained_by_family": {
+  "Enzyme": {
+   "candidates": 3235,
+   "gained": 0
+  },
+  "Epigenetic": {
+   "candidates": 146,
+   "gained": 0
+  },
+  "GPCR": {
+   "candidates": 133,
+   "gained": 0
+  },
+  "IC": {
+   "candidates": 127,
+   "gained": 0
+  },
+  "Kinase": {
+   "candidates": 180,
+   "gained": 0
+  },
+  "NR": {
+   "candidates": 7,
+   "gained": 0
+  },
+  "TF": {
+   "candidates": 1354,
+   "gained": 0
+  },
+  "TF; Epigenetic": {
+   "candidates": 30,
+   "gained": 0
+  },
+  "Transporter": {
+   "candidates": 357,
+   "gained": 0
+  },
+  "none": {
+   "candidates": 11748,
+   "gained": 0
+  },
+  "oGPCR": {
+   "candidates": 420,
+   "gained": 0
+  }
+ }
+}

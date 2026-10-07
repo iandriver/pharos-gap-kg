@@ -1,0 +1,198 @@
+{
+ "release": "pharos319",
+ "sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "target_ligand": {
+  "pairs": 473207,
+  "with_a_year": 343641,
+  "every_row_dated": 334788,
+  "no_year": 129566,
+  "target_id": 2675,
+  "ncats_ligand_id": 355932,
+  "first_year": 1971,
+  "last_year": 2021,
+  "by_year_from_2010": {
+   "2010": 21531,
+   "2011": 18871,
+   "2012": 19094,
+   "2013": 17848,
+   "2014": 15938,
+   "2015": 14887,
+   "2016": 17334,
+   "2017": 18254,
+   "2018": 17217,
+   "2019": 16330,
+   "2020": 17412,
+   "2021": 12570
+  },
+  "splits": [
+   {
+    "cutoff": 2012,
+    "train": 195851,
+    "test": 143828,
+    "scorable": 1897,
+    "new_target_id": 9534,
+    "new_ncats_ligand_id": 141700,
+    "target_id_with_scorable": 569,
+    "target_id_first_seen_after": 582
+   },
+   {
+    "cutoff": 2014,
+    "train": 229637,
+    "test": 111217,
+    "scorable": 1669,
+    "new_target_id": 5959,
+    "new_ncats_ligand_id": 109355,
+    "target_id_with_scorable": 557,
+    "target_id_first_seen_after": 442
+   },
+   {
+    "cutoff": 2016,
+    "train": 261858,
+    "test": 80016,
+    "scorable": 1326,
+    "new_target_id": 3196,
+    "new_ncats_ligand_id": 78527,
+    "target_id_with_scorable": 523,
+    "target_id_first_seen_after": 316
+   },
+   {
+    "cutoff": 2017,
+    "train": 280112,
+    "test": 62326,
+    "scorable": 876,
+    "new_target_id": 2257,
+    "new_ncats_ligand_id": 61386,
+    "target_id_with_scorable": 394,
+    "target_id_first_seen_after": 220
+   },
+   {
+    "cutoff": 2018,
+    "train": 297329,
+    "test": 45491,
+    "scorable": 632,
+    "new_target_id": 1451,
+    "new_ncats_ligand_id": 44817,
+    "target_id_with_scorable": 271,
+    "target_id_first_seen_after": 141
+   },
+   {
+    "cutoff": 2019,
+    "train": 313659,
+    "test": 29431,
+    "scorable": 389,
+    "new_target_id": 734,
+    "new_ncats_ligand_id": 29026,
+    "target_id_with_scorable": 194,
+    "target_id_first_seen_after": 87
+   },
+   {
+    "cutoff": 2020,
+    "train": 331071,
+    "test": 12395,
+    "scorable": 209,
+    "new_target_id": 319,
+    "new_ncats_ligand_id": 12182,
+    "target_id_with_scorable": 102,
+    "target_id_first_seen_after": 32
+   }
+  ]
+ },
+ "gene_trait": {
+  "pairs": 295327,
+  "with_a_year": 295327,
+  "every_row_dated": 295327,
+  "no_year": 0,
+  "protein_id": 18005,
+  "efoid": 2247,
+  "first_year": 2005,
+  "last_year": 2023,
+  "by_year_from_2010": {
+   "2010": 4101,
+   "2011": 3792,
+   "2012": 7139,
+   "2013": 4743,
+   "2014": 3750,
+   "2015": 6739,
+   "2016": 24169,
+   "2017": 12360,
+   "2018": 29664,
+   "2019": 34314,
+   "2020": 63978,
+   "2021": 59683,
+   "2022": 37916,
+   "2023": 1
+  },
+  "splits": [
+   {
+    "cutoff": 2012,
+    "train": 18010,
+    "test": 277317,
+    "scorable": 54594,
+    "new_protein_id": 133536,
+    "new_efoid": 168063,
+    "protein_id_with_scorable": 4839,
+    "protein_id_first_seen_after": 13019
+   },
+   {
+    "cutoff": 2014,
+    "train": 26503,
+    "test": 268824,
+    "scorable": 75571,
+    "new_protein_id": 99665,
+    "new_efoid": 144870,
+    "protein_id_with_scorable": 6777,
+    "protein_id_first_seen_after": 10958
+   },
+   {
+    "cutoff": 2016,
+    "train": 57411,
+    "test": 237916,
+    "scorable": 115925,
+    "new_protein_id": 46572,
+    "new_efoid": 91518,
+    "protein_id_with_scorable": 10255,
+    "protein_id_first_seen_after": 7357
+   },
+   {
+    "cutoff": 2017,
+    "train": 69771,
+    "test": 225556,
+    "scorable": 134946,
+    "new_protein_id": 34489,
+    "new_efoid": 64205,
+    "protein_id_with_scorable": 11533,
+    "protein_id_first_seen_after": 6126
+   },
+   {
+    "cutoff": 2018,
+    "train": 99435,
+    "test": 195892,
+    "scorable": 130369,
+    "new_protein_id": 12922,
+    "new_efoid": 55515,
+    "protein_id_with_scorable": 13731,
+    "protein_id_first_seen_after": 3521
+   },
+   {
+    "cutoff": 2019,
+    "train": 133749,
+    "test": 161578,
+    "scorable": 116965,
+    "new_protein_id": 6626,
+    "new_efoid": 39338,
+    "protein_id_with_scorable": 14487,
+    "protein_id_first_seen_after": 2311
+   },
+   {
+    "cutoff": 2020,
+    "train": 197727,
+    "test": 97600,
+    "scorable": 72208,
+    "new_protein_id": 1653,
+    "new_efoid": 24102,
+    "protein_id_with_scorable": 13951,
+    "protein_id_first_seen_after": 910
+   }
+  ]
+ }
+}

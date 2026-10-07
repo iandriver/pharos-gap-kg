@@ -1,0 +1,63 @@
+{
+ "release": "pharos319",
+ "cutoff": 2018,
+ "source_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "source_tables": [
+  "tiga",
+  "tiga_provenance",
+  "protein"
+ ],
+ "split_train_sha256": "77529fa5abc4d9c7141c2a0e65ee01e85592165f252e369e513a4b0f6e4fa41b",
+ "nodes": 21816,
+ "edges": 99435,
+ "gaps": 0,
+ "node_categories": {
+  "biolink:Protein": 20412,
+  "biolink:DiseaseOrPhenotypicFeature": 1297,
+  "biolink:Disease": 49,
+  "biolink:BiologicalProcess": 30,
+  "biolink:PhenotypicFeature": 28
+ },
+ "edge_categories": {
+  "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation": 99015,
+  "biolink:Association": 420
+ },
+ "predicates": {
+  "biolink:genetically_associated_with": 99435
+ },
+ "names_repaired": 8,
+ "targets_with_no_edge": 5928,
+ "edges_by_first_year": {
+  "2005": 3,
+  "2006": 4,
+  "2007": 273,
+  "2008": 830,
+  "2009": 1868,
+  "2010": 4101,
+  "2011": 3792,
+  "2012": 7139,
+  "2013": 4743,
+  "2014": 3750,
+  "2015": 6739,
+  "2016": 24169,
+  "2017": 12360,
+  "2018": 29664
+ },
+ "conformance": [
+  "  C1  PASS  no association is under its own detection floor",
+  "  C2  PASS  `negated` is not used to express an under-floor result",
+  "  C3  PASS  every non-BioLink predicate has a registered rationale",
+  "  C4  PASS  every withheld row names its predicate, and its floor unless none exists",
+  "  C5  PASS  every gap carries a reason",
+  "  C6  PASS  ids are CURIEs and unique; ungrounded ids are flagged under the local prefix",
+  "  C7  PASS  every referenced node exists in nodes.tsv",
+  "  C8  PASS  evidence-derived associations + gaps account for every input row",
+  "  C9  PASS  no field serialised as nan/None",
+  "  C10  PASS  rows with no effect size are not diverted to gaps"
+ ],
+ "files": {
+  "nodes": "ae7c8b4fe43ef9e5b15e8df3565b444d9b93f46e13d5e9f942f4961e7e21906d",
+  "edges": "721ada0a695b154d0b6f0f55b15ec4b8f134a8d48ad69d41182e4c09cceb21c5",
+  "gaps": "cca11a39596d5dc52829e63dcfc68872158d7e7f4d73cfc999cf1dae18bd574d"
+ }
+}

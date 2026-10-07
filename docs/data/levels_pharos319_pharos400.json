@@ -1,0 +1,143 @@
+{
+ "old": "pharos319",
+ "old_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "new": "pharos400_canonicals",
+ "new_sha256": "ee8fdc79893235a451ab7a8a4b6099da390ae9ccd341179297d8f8730f801459",
+ "notes_sha256": "40c03514cc43e8709cf513b1ba1f26308644287fc31ab15c1ee087b44f586039",
+ "shared": 20191,
+ "only_old": 221,
+ "only_new": 463,
+ "matrix": {
+  "Tdark": {
+   "Tdark": 4526,
+   "Tbio": 759,
+   "Tchem": 46,
+   "Tclin": 0
+  },
+  "Tbio": {
+   "Tdark": 118,
+   "Tbio": 10797,
+   "Tchem": 1317,
+   "Tclin": 10
+  },
+  "Tchem": {
+   "Tdark": 3,
+   "Tbio": 26,
+   "Tchem": 1867,
+   "Tclin": 18
+  },
+  "Tclin": {
+   "Tdark": 0,
+   "Tbio": 0,
+   "Tchem": 0,
+   "Tclin": 704
+  }
+ },
+ "up": 2150,
+ "down": 147,
+ "unchanged": 17894,
+ "ligand_candidates": 17573,
+ "ligand_gained": 1373,
+ "ligand_holders": 2618,
+ "ligand_lost": 29,
+ "gained_by_family": {
+  "Enzyme": {
+   "candidates": 3246,
+   "gained": 359
+  },
+  "Epigenetic": {
+   "candidates": 147,
+   "gained": 24
+  },
+  "GPCR": {
+   "candidates": 140,
+   "gained": 7
+  },
+  "IC": {
+   "candidates": 131,
+   "gained": 13
+  },
+  "Kinase": {
+   "candidates": 186,
+   "gained": 26
+  },
+  "NR": {
+   "candidates": 7,
+   "gained": 3
+  },
+  "TF": {
+   "candidates": 1353,
+   "gained": 40
+  },
+  "TF; Epigenetic": {
+   "candidates": 30,
+   "gained": 6
+  },
+  "Transporter": {
+   "candidates": 367,
+   "gained": 26
+  },
+  "none": {
+   "candidates": 11546,
+   "gained": 869
+  },
+  "oGPCR": {
+   "candidates": 420,
+   "gained": 0
+  }
+ },
+ "release_notes": [
+  {
+   "move": "Tbio>Tchem",
+   "notes": 1320,
+   "measured": 1317,
+   "difference": -3
+  },
+  {
+   "move": "Tbio>Tclin",
+   "notes": 10,
+   "measured": 10,
+   "difference": 0
+  },
+  {
+   "move": "Tchem>Tclin",
+   "notes": 18,
+   "measured": 18,
+   "difference": 0
+  },
+  {
+   "move": "Tdark>Tbio",
+   "notes": 743,
+   "measured": 759,
+   "difference": 16
+  },
+  {
+   "move": "Tdark>Tchem",
+   "notes": 46,
+   "measured": 46,
+   "difference": 0
+  }
+ ],
+ "level_against_own_ligand_table": {
+  "targets_with_activity_rows": 2675,
+  "graded_as_holding": 2619,
+  "rows_but_graded_without": 56,
+  "rows_but_graded_without_by_level": {
+   "Tbio": 56
+  },
+  "graded_holding_but_no_rows": 0,
+  "graded_holding_but_no_rows_by_level": {}
+ },
+ "ligand_label": {
+  "candidates_by_grade": 17573,
+  "gained_by_grade": 1373,
+  "candidates_with_activity_rows": 56,
+  "of_those_counted_as_gained": 14,
+  "candidates": 17517,
+  "gained": 1359,
+  "gained_from": {
+   "Tbio": 1313,
+   "Tdark": 46
+  }
+ }
+}

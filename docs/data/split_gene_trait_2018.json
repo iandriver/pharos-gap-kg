@@ -1,0 +1,31 @@
+{
+ "release": "pharos319",
+ "sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "cutoff": 2018,
+ "train": {
+  "links": 99435,
+  "targets": 14484,
+  "traits": 1404,
+  "sha256": "77529fa5abc4d9c7141c2a0e65ee01e85592165f252e369e513a4b0f6e4fa41b"
+ },
+ "test": {
+  "links": 130369,
+  "targets": 13731,
+  "traits": 540,
+  "sha256": "673fe46f804f160313632bc37ee4ec2d18526a8475e6ab442058f22448341221"
+ },
+ "unscored": {
+  "links": 65523,
+  "targets": 15163,
+  "traits": 1165,
+  "sha256": "cd8184cc6a8967dd0cf24d06496860a92b7c4703fa06effd06f860c046b3bfb0"
+ },
+ "candidates": 20236101,
+ "test_by_year": {
+  "2019": 23972,
+  "2020": 48018,
+  "2021": 42639,
+  "2022": 15739,
+  "2023": 1
+ }
+}

@@ -28,3 +28,15 @@ def test_a_truncated_input_is_not_accepted(tmp_path, monkeypatch):
     with pytest.raises(SystemExit) as e:
         registry.require("pharos317")
     assert "interrupted or replaced" in str(e.value)
+
+
+def test_every_summary_the_documents_quote_is_tracked():
+    """`docs/data/` holds the figures the findings cite and the frozen split. A broad ignore pattern
+    once kept every file there out of the history while the commit messages said they were in it."""
+    import subprocess
+    from pharos_gaps import paths
+    if paths.ROOT is None or not (paths.ROOT / ".git").exists():
+        pytest.skip("not a git checkout")
+    ignored = subprocess.run(["git", "ls-files", "--others", "--ignored", "--exclude-standard", "docs"],
+                             cwd=paths.ROOT, capture_output=True, text=True, check=True).stdout.split()
+    assert not ignored, f"ignored by .gitignore and so never committed: {ignored}"

@@ -1,0 +1,2758 @@
+{
+ "source": "pharos316",
+ "sha256": "ed42237f2e4d0f4f85a31d9435e422afc623cca92a859d5bbf1ff08ba80e0eda",
+ "published": "2023-04-12",
+ "tables": {
+  "affiliate": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "source",
+     "type": "varchar"
+    },
+    {
+     "name": "display_name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "varchar"
+    }
+   ],
+   "rows": 7,
+   "payload_bytes": 1344,
+   "payload_sha256": "74cc08775cf6f21d797335b3b6e6885409997f3f882ffaf71154620d77b1647f"
+  },
+  "alias": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "type",
+     "type": "enum"
+    },
+    {
+     "name": "value",
+     "type": "varchar"
+    },
+    {
+     "name": "dataset_id",
+     "type": "int"
+    }
+   ],
+   "rows": 191022,
+   "payload_bytes": 6237627,
+   "payload_sha256": "4deac7a8cb719ff6c90109f930637ecf557ddb97583269282e4cad8a0aca558d"
+  },
+  "ancestry_do": {
+   "columns": [
+    {
+     "name": "oid",
+     "type": "varchar"
+    },
+    {
+     "name": "ancestor_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 85072,
+   "payload_bytes": 2302000,
+   "payload_sha256": "2dc1cc2598d3a1d84ad3cca209b93ffc3e9676ef85f83a6b9ed6313d11269638"
+  },
+  "ancestry_dto": {
+   "columns": [
+    {
+     "name": "oid",
+     "type": "varchar"
+    },
+    {
+     "name": "ancestor_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 43376,
+   "payload_bytes": 1388034,
+   "payload_sha256": "af5dbfdbc127fe2307d439231d3db20493569e396db7cdb81d710e0dcedf06c0"
+  },
+  "ancestry_mondo": {
+   "columns": [
+    {
+     "name": "oid",
+     "type": "varchar"
+    },
+    {
+     "name": "ancestor_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 167991,
+   "payload_bytes": 5711700,
+   "payload_sha256": "9567d68bad356151fee2609ae1df7575fa39d926eff18d67d0be840aed682b8b"
+  },
+  "ancestry_uberon": {
+   "columns": [
+    {
+     "name": "oid",
+     "type": "varchar"
+    },
+    {
+     "name": "ancestor_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 14444,
+   "payload_bytes": 502754,
+   "payload_sha256": "72f989890d919f73eb005c25e49e0289919c41d2066b1f9d07ffa831e748bb4a"
+  },
+  "cmpd_activity": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "catype",
+     "type": "varchar"
+    },
+    {
+     "name": "cmpd_id_in_src",
+     "type": "varchar"
+    },
+    {
+     "name": "cmpd_name_in_src",
+     "type": "text"
+    },
+    {
+     "name": "smiles",
+     "type": "text"
+    },
+    {
+     "name": "act_value",
+     "type": "decimal"
+    },
+    {
+     "name": "act_type",
+     "type": "varchar"
+    },
+    {
+     "name": "reference",
+     "type": "text"
+    },
+    {
+     "name": "pubmed_ids",
+     "type": "text"
+    },
+    {
+     "name": "cmpd_pubchem_cid",
+     "type": "int"
+    },
+    {
+     "name": "lychi_h4",
+     "type": "varchar"
+    }
+   ],
+   "rows": 640760,
+   "payload_bytes": 179190399,
+   "payload_sha256": "68a8e3c5451e97e2944f128c48b8a7752ee154e9cc5fe4993f8dc860873bd970"
+  },
+  "cmpd_activity_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    }
+   ],
+   "rows": 2,
+   "payload_bytes": 340,
+   "payload_sha256": "533db495699e97dcd20590a835cfeb97f0b45c3304c8de98a63868e964783c53"
+  },
+  "data_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    }
+   ],
+   "rows": 5,
+   "payload_bytes": 56,
+   "payload_sha256": "bb19626cbf098844c972bade9144241c9b39472a6fa45d162da296e194bcf10a"
+  },
+  "dataset": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "source",
+     "type": "text"
+    },
+    {
+     "name": "app",
+     "type": "varchar"
+    },
+    {
+     "name": "app_version",
+     "type": "varchar"
+    },
+    {
+     "name": "datetime",
+     "type": "timestamp"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    },
+    {
+     "name": "comments",
+     "type": "text"
+    }
+   ],
+   "rows": 79,
+   "payload_bytes": 17596,
+   "payload_sha256": "1c741d591f4c4bf2783a88672335167a03e8ef9032a0592f92682bc6b12d851e"
+  },
+  "dbinfo": {
+   "columns": [
+    {
+     "name": "dbname",
+     "type": "varchar"
+    },
+    {
+     "name": "schema_ver",
+     "type": "varchar"
+    },
+    {
+     "name": "data_ver",
+     "type": "varchar"
+    },
+    {
+     "name": "owner",
+     "type": "varchar"
+    },
+    {
+     "name": "is_copy",
+     "type": "tinyint"
+    },
+    {
+     "name": "dump_file",
+     "type": "varchar"
+    }
+   ],
+   "rows": 1,
+   "payload_bytes": 45,
+   "payload_sha256": "cbabe1ac11d2e6b5f88afb188ced459c8b24507721de6c56e73ba2cfd1c69d49"
+  },
+  "disease": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "dtype",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "ncats_name",
+     "type": "text"
+    },
+    {
+     "name": "did",
+     "type": "varchar"
+    },
+    {
+     "name": "evidence",
+     "type": "text"
+    },
+    {
+     "name": "zscore",
+     "type": "decimal"
+    },
+    {
+     "name": "conf",
+     "type": "decimal"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "reference",
+     "type": "varchar"
+    },
+    {
+     "name": "drug_name",
+     "type": "text"
+    },
+    {
+     "name": "log2foldchange",
+     "type": "decimal"
+    },
+    {
+     "name": "pvalue",
+     "type": "varchar"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    },
+    {
+     "name": "source",
+     "type": "varchar"
+    },
+    {
+     "name": "O2S",
+     "type": "decimal"
+    },
+    {
+     "name": "S2O",
+     "type": "decimal"
+    },
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    },
+    {
+     "name": "updated",
+     "type": "tinyint"
+    }
+   ],
+   "rows": 363134,
+   "payload_bytes": 74665356,
+   "payload_sha256": "d4337d0797a4a3fd0c20581ffce7ffcee7909522687079a73f8b1a7979a8654f"
+  },
+  "disease_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    }
+   ],
+   "rows": 12,
+   "payload_bytes": 1230,
+   "payload_sha256": "cedd8b21b66d689fb965d40796675633a8385943f9484bbc6adee5d0b171f2c2"
+  },
+  "do": {
+   "columns": [
+    {
+     "name": "doid",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "def",
+     "type": "text"
+    }
+   ],
+   "rows": 9233,
+   "payload_bytes": 1456247,
+   "payload_sha256": "a637859a26383ac6a7b1c7fbe68ce9f5231afc429fc9e88b94cd9b797f332255"
+  },
+  "do_parent": {
+   "columns": [
+    {
+     "name": "doid",
+     "type": "varchar"
+    },
+    {
+     "name": "parent_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 10880,
+   "payload_bytes": 303630,
+   "payload_sha256": "432583486ee8326bf4306c1669063e965c713641b3023f503248a47c4754c6ee"
+  },
+  "drgc_resource": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "rssid",
+     "type": "text"
+    },
+    {
+     "name": "resource_type",
+     "type": "varchar"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "json",
+     "type": "text"
+    }
+   ],
+   "rows": 2849,
+   "payload_bytes": 12297822,
+   "payload_sha256": "6c769bb066fb1178990850663f73eff67550a2603f9f3b7923908b928d0deee7"
+  },
+  "drug_activity": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "drug",
+     "type": "varchar"
+    },
+    {
+     "name": "act_value",
+     "type": "decimal"
+    },
+    {
+     "name": "act_type",
+     "type": "varchar"
+    },
+    {
+     "name": "action_type",
+     "type": "varchar"
+    },
+    {
+     "name": "has_moa",
+     "type": "tinyint"
+    },
+    {
+     "name": "source",
+     "type": "varchar"
+    },
+    {
+     "name": "reference",
+     "type": "text"
+    },
+    {
+     "name": "smiles",
+     "type": "text"
+    },
+    {
+     "name": "cmpd_chemblid",
+     "type": "varchar"
+    },
+    {
+     "name": "nlm_drug_info",
+     "type": "text"
+    },
+    {
+     "name": "cmpd_pubchem_cid",
+     "type": "int"
+    },
+    {
+     "name": "dcid",
+     "type": "int"
+    },
+    {
+     "name": "lychi_h4",
+     "type": "varchar"
+    }
+   ],
+   "rows": 4436,
+   "payload_bytes": 2125667,
+   "payload_sha256": "efe503a283b8e1af5456b1ef0f24422b7d0608321bbf8af709ce4c86ec392237"
+  },
+  "dto": {
+   "columns": [
+    {
+     "name": "dtoid",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "parent_id",
+     "type": "varchar"
+    },
+    {
+     "name": "def",
+     "type": "text"
+    }
+   ],
+   "rows": 17779,
+   "payload_bytes": 2369358,
+   "payload_sha256": "445618c849b2e49504a9c9643c2b09ec9183dc03fd42ec48831963f6a1eb9f63"
+  },
+  "expression": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "etype",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "source_id",
+     "type": "varchar"
+    },
+    {
+     "name": "tissue",
+     "type": "varchar"
+    },
+    {
+     "name": "tissue_id",
+     "type": "int"
+    },
+    {
+     "name": "qual_value",
+     "type": "enum"
+    },
+    {
+     "name": "number_value",
+     "type": "decimal"
+    },
+    {
+     "name": "expressed",
+     "type": "tinyint"
+    },
+    {
+     "name": "source_rank",
+     "type": "decimal"
+    },
+    {
+     "name": "evidence",
+     "type": "varchar"
+    },
+    {
+     "name": "oid",
+     "type": "varchar"
+    },
+    {
+     "name": "uberon_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 10309294,
+   "payload_bytes": 1315026949,
+   "payload_sha256": "370fa1b38ece5421af0ddab65e576dded0f06fb5b700d1bd4de5dd335e6be875"
+  },
+  "extlink": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "source",
+     "type": "enum"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    }
+   ],
+   "rows": 80268,
+   "payload_bytes": 5688347,
+   "payload_sha256": "e815b38c0764becb1004e07a86fc0adc9834e78dc281580b85ef35e3b8243af1"
+  },
+  "gene_attribute": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "gat_id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "value",
+     "type": "int"
+    }
+   ],
+   "rows": 65549760,
+   "payload_bytes": 6699215745,
+   "payload_sha256": "79cb4b11fc42e28ee77cff03b6f6fbb8fb1ef8df0a5888c226c4ed293d821741"
+  },
+  "gene_attribute_type": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "association",
+     "type": "text"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "resource_group",
+     "type": "enum"
+    },
+    {
+     "name": "measurement",
+     "type": "varchar"
+    },
+    {
+     "name": "attribute_group",
+     "type": "varchar"
+    },
+    {
+     "name": "attribute_type",
+     "type": "varchar"
+    },
+    {
+     "name": "pubmed_ids",
+     "type": "text"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    }
+   ],
+   "rows": 113,
+   "payload_bytes": 62551,
+   "payload_sha256": "432a3ba8f55b704ec9a076ef604548e0eca635453fa561fcb3292996379eddfc"
+  },
+  "generif": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "gene_id",
+     "type": "int"
+    },
+    {
+     "name": "text",
+     "type": "text"
+    },
+    {
+     "name": "date",
+     "type": "datetime"
+    }
+   ],
+   "rows": 861171,
+   "payload_bytes": 165408358,
+   "payload_sha256": "6676e96bd55bc3ba41949379b8447b58f989451ae30a96ab15ddf2ef0b089fda"
+  },
+  "generif2pubmed": {
+   "columns": [
+    {
+     "name": "generif_id",
+     "type": "int"
+    },
+    {
+     "name": "pubmed_id",
+     "type": "int"
+    }
+   ],
+   "rows": 959519,
+   "payload_bytes": 17151270,
+   "payload_sha256": "7aaa8b8343f393202efc04bd83de76c968b48f6c70773e72f6f9f5b3dc17381a"
+  },
+  "goa": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "go_id",
+     "type": "varchar"
+    },
+    {
+     "name": "go_term",
+     "type": "text"
+    },
+    {
+     "name": "evidence",
+     "type": "text"
+    },
+    {
+     "name": "goeco",
+     "type": "varchar"
+    },
+    {
+     "name": "assigned_by",
+     "type": "varchar"
+    },
+    {
+     "name": "go_type",
+     "type": "enum"
+    },
+    {
+     "name": "go_term_text",
+     "type": "text"
+    }
+   ],
+   "rows": 258719,
+   "payload_bytes": 35211789,
+   "payload_sha256": "8a4e2fc1d926ea793ce94845b5eb3c5dca80f04eb97b58c5cc9621ba4fa1daef"
+  },
+  "gtex": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "tissue",
+     "type": "text"
+    },
+    {
+     "name": "tpm",
+     "type": "decimal"
+    },
+    {
+     "name": "tpm_rank",
+     "type": "decimal"
+    },
+    {
+     "name": "tpm_male",
+     "type": "decimal"
+    },
+    {
+     "name": "tpm_male_rank",
+     "type": "decimal"
+    },
+    {
+     "name": "tpm_female",
+     "type": "decimal"
+    },
+    {
+     "name": "tpm_female_rank",
+     "type": "decimal"
+    },
+    {
+     "name": "uberon_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 1045980,
+   "payload_bytes": 102794403,
+   "payload_sha256": "bf6c8665cc47707c24515056408f1381a2d2eab1106be56f8d1e315bcd2fd4d6"
+  },
+  "gwas": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "disease_trait",
+     "type": "varchar"
+    },
+    {
+     "name": "snps",
+     "type": "text"
+    },
+    {
+     "name": "pmid",
+     "type": "int"
+    },
+    {
+     "name": "study",
+     "type": "text"
+    },
+    {
+     "name": "context",
+     "type": "text"
+    },
+    {
+     "name": "intergenic",
+     "type": "tinyint"
+    },
+    {
+     "name": "p_value",
+     "type": "double"
+    },
+    {
+     "name": "or_beta",
+     "type": "float"
+    },
+    {
+     "name": "cnv",
+     "type": "char"
+    },
+    {
+     "name": "mapped_trait",
+     "type": "text"
+    },
+    {
+     "name": "mapped_trait_uri",
+     "type": "text"
+    }
+   ],
+   "rows": 124149,
+   "payload_bytes": 36804772,
+   "payload_sha256": "c405be8f69c56b8a21784b6942f47ca85607ebb2ba552942f3eaecb90b42a9c1"
+  },
+  "hgram_cdf": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "type",
+     "type": "varchar"
+    },
+    {
+     "name": "attr_count",
+     "type": "int"
+    },
+    {
+     "name": "attr_cdf",
+     "type": "decimal"
+    }
+   ],
+   "rows": 1167880,
+   "payload_bytes": 103442333,
+   "payload_sha256": "a0a43e634a09f419dd46d7a802a691f5d0717b5b03a63289a86991395c0aa34b"
+  },
+  "info_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "data_type",
+     "type": "varchar"
+    },
+    {
+     "name": "unit",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    }
+   ],
+   "rows": 28,
+   "payload_bytes": 3545,
+   "payload_sha256": "0fc3ada5b01fff31363aad0b96d60419e595e393739eaf445233b868e726e572"
+  },
+  "input_version": {
+   "columns": [
+    {
+     "name": "source_key",
+     "type": "varchar"
+    },
+    {
+     "name": "data_source",
+     "type": "varchar"
+    },
+    {
+     "name": "file_key",
+     "type": "varchar"
+    },
+    {
+     "name": "file",
+     "type": "varchar"
+    },
+    {
+     "name": "version",
+     "type": "varchar"
+    },
+    {
+     "name": "release_date",
+     "type": "date"
+    },
+    {
+     "name": "download_date",
+     "type": "date"
+    }
+   ],
+   "rows": 11,
+   "payload_bytes": 1446,
+   "payload_sha256": "ae13ff0c4643960e94637daf01d875efe193560f98ed42eca1bebd0cbc373f68"
+  },
+  "kegg_distance": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "pid1",
+     "type": "int"
+    },
+    {
+     "name": "pid2",
+     "type": "int"
+    },
+    {
+     "name": "distance",
+     "type": "int"
+    }
+   ],
+   "rows": 208238,
+   "payload_bytes": 4482821,
+   "payload_sha256": "eea9793cd7d2aecb605f001d92bfd189911e68e620a2fcb991bc26d417a81d62"
+  },
+  "kegg_nearest_tclin": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "tclin_id",
+     "type": "int"
+    },
+    {
+     "name": "direction",
+     "type": "enum"
+    },
+    {
+     "name": "distance",
+     "type": "int"
+    }
+   ],
+   "rows": 15911,
+   "payload_bytes": 514523,
+   "payload_sha256": "5e85f87d9ec8601f1160b3cbe6080ba2f63e8b8700bcb8cc3cedfb90710ac7cf"
+  },
+  "lincs": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "cellid",
+     "type": "varchar"
+    },
+    {
+     "name": "zscore",
+     "type": "decimal"
+    },
+    {
+     "name": "pert_dcid",
+     "type": "int"
+    },
+    {
+     "name": "pert_smiles",
+     "type": "text"
+    }
+   ],
+   "rows": 84097720,
+   "payload_bytes": 7815847165,
+   "payload_sha256": "084917c6de7ed0b13cc806c7e6de29fc0ce8de64e8d9df553de2c7d78ac969a7"
+  },
+  "locsig": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "location",
+     "type": "varchar"
+    },
+    {
+     "name": "signal",
+     "type": "varchar"
+    },
+    {
+     "name": "pmids",
+     "type": "text"
+    }
+   ],
+   "rows": 106521,
+   "payload_bytes": 5807648,
+   "payload_sha256": "7dc6cbc758490f3c3fc19aa52a9325626492e48b5cb9b22440e84c1e5a2d6f55"
+  },
+  "mondo": {
+   "columns": [
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "def",
+     "type": "text"
+    },
+    {
+     "name": "comment",
+     "type": "text"
+    }
+   ],
+   "rows": 22311,
+   "payload_bytes": 4997920,
+   "payload_sha256": "9e46d3d0ac05e6b39799f22dc1572136484edbefb4dfb6f29162d087082bfe3a"
+  },
+  "mondo_parent": {
+   "columns": [
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    },
+    {
+     "name": "parentid",
+     "type": "varchar"
+    }
+   ],
+   "rows": 38453,
+   "payload_bytes": 1307404,
+   "payload_sha256": "97e45bb2942bcf443178ece3cf1ecca18b3145eea5d127374fcfe7cbe66bb334"
+  },
+  "mondo_xref": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    },
+    {
+     "name": "db",
+     "type": "varchar"
+    },
+    {
+     "name": "value",
+     "type": "varchar"
+    },
+    {
+     "name": "equiv_to",
+     "type": "tinyint"
+    },
+    {
+     "name": "source_info",
+     "type": "text"
+    },
+    {
+     "name": "xref",
+     "type": "varchar"
+    }
+   ],
+   "rows": 99770,
+   "payload_bytes": 11287389,
+   "payload_sha256": "e7edcaeedd2337ed0ad13eed2ae0666588d2afb1fe1ba4e6239c425a4249abae"
+  },
+  "mpo": {
+   "columns": [
+    {
+     "name": "mpid",
+     "type": "char"
+    },
+    {
+     "name": "parent_id",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "def",
+     "type": "text"
+    }
+   ],
+   "rows": 12894,
+   "payload_bytes": 2780836,
+   "payload_sha256": "58e10589674307464f32cd597eb8424a19468ea4533dadf62a1667781d4019a3"
+  },
+  "ncats_d2da": {
+   "columns": [
+    {
+     "name": "ncats_disease_id",
+     "type": "int"
+    },
+    {
+     "name": "disease_assoc_id",
+     "type": "int"
+    },
+    {
+     "name": "direct",
+     "type": "tinyint"
+    }
+   ],
+   "rows": 363134,
+   "payload_bytes": 5907212,
+   "payload_sha256": "e93805280a484756e42f7d4bac8a82aa0904c207748215b3853fad6a5cba82fa"
+  },
+  "ncats_dataSource": {
+   "columns": [
+    {
+     "name": "dataSource",
+     "type": "varchar"
+    },
+    {
+     "name": "dataSourceDescription",
+     "type": "varchar"
+    },
+    {
+     "name": "url",
+     "type": "varchar"
+    },
+    {
+     "name": "license",
+     "type": "varchar"
+    },
+    {
+     "name": "licenseURL",
+     "type": "varchar"
+    },
+    {
+     "name": "citation",
+     "type": "varchar"
+    }
+   ],
+   "rows": 83,
+   "payload_bytes": 8460,
+   "payload_sha256": "aa9fef7a27646bd7b905402f9983366b25d1bdf80a20a4e8dc0bac69489b90ab"
+  },
+  "ncats_dataSource_map": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "dataSource",
+     "type": "varchar"
+    },
+    {
+     "name": "url",
+     "type": "varchar"
+    },
+    {
+     "name": "license",
+     "type": "varchar"
+    },
+    {
+     "name": "licenseURL",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "ncats_ligand_id",
+     "type": "int"
+    },
+    {
+     "name": "disease_name",
+     "type": "text"
+    }
+   ],
+   "rows": 1577656,
+   "payload_bytes": 131243876,
+   "payload_sha256": "0f688416074b212c721731a6357df8f9efa381b2e8450d744185a2faf35d4a5f"
+  },
+  "ncats_disease": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "uniprot_description",
+     "type": "text"
+    },
+    {
+     "name": "do_description",
+     "type": "text"
+    },
+    {
+     "name": "mondo_description",
+     "type": "text"
+    },
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    },
+    {
+     "name": "maxTDL",
+     "type": "varchar"
+    },
+    {
+     "name": "target_count",
+     "type": "int"
+    },
+    {
+     "name": "direct_target_count",
+     "type": "int"
+    },
+    {
+     "name": "gard_rare",
+     "type": "tinyint"
+    }
+   ],
+   "rows": 13953,
+   "payload_bytes": 5125064,
+   "payload_sha256": "e0f69ee803841ffb3543ab619794241dfebee55707e52f9959dee03ad6c7a70c"
+  },
+  "ncats_disease_ancestry": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "ncats_disease_id",
+     "type": "int"
+    },
+    {
+     "name": "ancestor",
+     "type": "varchar"
+    },
+    {
+     "name": "mondoid",
+     "type": "varchar"
+    }
+   ],
+   "rows": 213531,
+   "payload_bytes": 12848590,
+   "payload_sha256": "00ec00b83bac9e1e527d3393dcfa7cf4602e179ccdf62be17c247aa4b0328e01"
+  },
+  "ncats_ligand_activity": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "ncats_ligand_id",
+     "type": "int"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "smiles",
+     "type": "text"
+    },
+    {
+     "name": "act_value",
+     "type": "decimal"
+    },
+    {
+     "name": "act_type",
+     "type": "varchar"
+    },
+    {
+     "name": "action_type",
+     "type": "varchar"
+    },
+    {
+     "name": "reference",
+     "type": "text"
+    },
+    {
+     "name": "reference_source",
+     "type": "varchar"
+    },
+    {
+     "name": "pubmed_ids",
+     "type": "text"
+    }
+   ],
+   "rows": 645196,
+   "payload_bytes": 102855209,
+   "payload_sha256": "08a41696a83f21216abc67c2bb5d74bc0de132ca7cf6e5c743809af10138d1f8"
+  },
+  "ncats_ligands": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "identifier",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "isDrug",
+     "type": "tinyint"
+    },
+    {
+     "name": "smiles",
+     "type": "text"
+    },
+    {
+     "name": "PubChem",
+     "type": "varchar"
+    },
+    {
+     "name": "ChEMBL",
+     "type": "varchar"
+    },
+    {
+     "name": "Guide to Pharmacology",
+     "type": "varchar"
+    },
+    {
+     "name": "DrugCentral",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "actCnt",
+     "type": "int"
+    },
+    {
+     "name": "targetCount",
+     "type": "int"
+    },
+    {
+     "name": "unii",
+     "type": "varchar"
+    },
+    {
+     "name": "pt",
+     "type": "varchar"
+    }
+   ],
+   "rows": 355932,
+   "payload_bytes": 81270524,
+   "payload_sha256": "28d7a5fc30780e0d4622a412cc029c95e1660d2f0a23fb79fe3590a71e9f1347"
+  },
+  "ncats_p2da": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "disease_assoc_id",
+     "type": "int"
+    },
+    {
+     "name": "direct",
+     "type": "tinyint"
+    }
+   ],
+   "rows": 4912143,
+   "payload_bytes": 247117195,
+   "payload_sha256": "0ea3586ebfd8cda228ce57474ab1edbb3d646c559009ae6a1316ab66591a0f58"
+  },
+  "ncats_ppi": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "ppitypes",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "other_id",
+     "type": "int"
+    },
+    {
+     "name": "p_int",
+     "type": "decimal"
+    },
+    {
+     "name": "p_ni",
+     "type": "decimal"
+    },
+    {
+     "name": "p_wrong",
+     "type": "decimal"
+    },
+    {
+     "name": "evidence",
+     "type": "varchar"
+    },
+    {
+     "name": "interaction_type",
+     "type": "varchar"
+    },
+    {
+     "name": "score",
+     "type": "int"
+    }
+   ],
+   "rows": 11691825,
+   "payload_bytes": 716826114,
+   "payload_sha256": "860b5eedf019a1b830317916483e75e41486f9d1eeef807a2e0178306396db99"
+  },
+  "ncats_typeahead_index": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "category",
+     "type": "varchar"
+    },
+    {
+     "name": "value",
+     "type": "varchar"
+    },
+    {
+     "name": "reference_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 80244,
+   "payload_bytes": 4878219,
+   "payload_sha256": "4d2705f9f8cf63e6edd0662cf0a90ed2619c958ebd2761d159d3ea71895fad34"
+  },
+  "nhprotein": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "uniprot",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "sym",
+     "type": "varchar"
+    },
+    {
+     "name": "species",
+     "type": "varchar"
+    },
+    {
+     "name": "taxid",
+     "type": "int"
+    },
+    {
+     "name": "geneid",
+     "type": "int"
+    }
+   ],
+   "rows": 121277,
+   "payload_bytes": 12319308,
+   "payload_sha256": "80df3ae34f8b06befef4232557b33d6da32484d3acd0bd487845101c1adf597f"
+  },
+  "nih_list": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "symbol",
+     "type": "varchar"
+    },
+    {
+     "name": "family",
+     "type": "varchar"
+    },
+    {
+     "name": "nih_list",
+     "type": "int"
+    }
+   ],
+   "rows": 2303,
+   "payload_bytes": 79256,
+   "payload_sha256": "6ac771af6ffe3ab163fd22139e9273e16a045ae1e39f81faac510aacc5005101"
+  },
+  "nih_list_type": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "list_type",
+     "type": "varchar"
+    }
+   ],
+   "rows": 5,
+   "payload_bytes": 122,
+   "payload_sha256": "8a86dd8039ee7301f85849480f2a3bc48290595b8a3fedebcdcbd8d6f985db24"
+  },
+  "omim": {
+   "columns": [
+    {
+     "name": "mim",
+     "type": "int"
+    },
+    {
+     "name": "title",
+     "type": "varchar"
+    }
+   ],
+   "rows": 26221,
+   "payload_bytes": 1218140,
+   "payload_sha256": "a90014f74c60e082015bd3ac3816f8d1e67d41905f51d83ba745df37942b62a8"
+  },
+  "omim_ps": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "omim_ps_id",
+     "type": "char"
+    },
+    {
+     "name": "mim",
+     "type": "int"
+    },
+    {
+     "name": "title",
+     "type": "varchar"
+    }
+   ],
+   "rows": 4375,
+   "payload_bytes": 277816,
+   "payload_sha256": "2f417545cfe151ac813b661f1aef04b83037dba96629268f69bf2134a00b4685"
+  },
+  "ortholog": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "taxid",
+     "type": "int"
+    },
+    {
+     "name": "species",
+     "type": "varchar"
+    },
+    {
+     "name": "db_id",
+     "type": "varchar"
+    },
+    {
+     "name": "geneid",
+     "type": "int"
+    },
+    {
+     "name": "symbol",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "mod_url",
+     "type": "text"
+    },
+    {
+     "name": "sources",
+     "type": "varchar"
+    }
+   ],
+   "rows": 178759,
+   "payload_bytes": 23566969,
+   "payload_sha256": "3836514656b4c018c7b5953c19f2e1c9a643a0ad64b3a3b9173badceef6f0fe3"
+  },
+  "ortholog_disease": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "did",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "ortholog_id",
+     "type": "int"
+    },
+    {
+     "name": "score",
+     "type": "varchar"
+    }
+   ],
+   "rows": 37852,
+   "payload_bytes": 3089714,
+   "payload_sha256": "ae8b2c213168bd2a8378930df5318695c1bdcf0c6ff0e14cd3ac41967499cf29"
+  },
+  "p2dto": {
+   "columns": [
+    {
+     "name": "dtoid",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "generation",
+     "type": "int"
+    }
+   ],
+   "rows": 43006,
+   "payload_bytes": 1053340,
+   "payload_sha256": "5eb8818a9f717f911f76e21f8cc28f78328bf36efdbbae1958ecfb29b6558917"
+  },
+  "p2pc": {
+   "columns": [
+    {
+     "name": "panther_class_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    }
+   ],
+   "rows": 22520,
+   "payload_bytes": 246935,
+   "payload_sha256": "82d39c2886397c90dc8e6f281135f8fd6c2dc4dff821a59d963fe5ab23cc022c"
+  },
+  "panther_class": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "pcid",
+     "type": "char"
+    },
+    {
+     "name": "parent_pcids",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    }
+   ],
+   "rows": 256,
+   "payload_bytes": 14296,
+   "payload_sha256": "9cd200ec26b712e1b951777fd850f8eee78cff9b88f3d304a7349bc6e63311e2"
+  },
+  "patent_count": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "year",
+     "type": "int"
+    },
+    {
+     "name": "count",
+     "type": "int"
+    }
+   ],
+   "rows": 41280,
+   "payload_bytes": 897549,
+   "payload_sha256": "06c775927b921f335621744f9a21da4de44886a8abf94fd2f73813542be9122b"
+  },
+  "pathway": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "pwtype",
+     "type": "varchar"
+    },
+    {
+     "name": "id_in_source",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    }
+   ],
+   "rows": 331936,
+   "payload_bytes": 49382334,
+   "payload_sha256": "b8d2872ca43c203124d661edf181b73711203327edb3b207c60fa8ed2120ef78"
+  },
+  "pathway_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    }
+   ],
+   "rows": 14,
+   "payload_bytes": 893,
+   "payload_sha256": "502f20028971bf3de1c344088c835e400862fefa9ad6dba11263e537ddfdfac3"
+  },
+  "phenotype": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "ptype",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int"
+    },
+    {
+     "name": "trait",
+     "type": "text"
+    },
+    {
+     "name": "top_level_term_id",
+     "type": "varchar"
+    },
+    {
+     "name": "top_level_term_name",
+     "type": "varchar"
+    },
+    {
+     "name": "term_id",
+     "type": "varchar"
+    },
+    {
+     "name": "term_name",
+     "type": "varchar"
+    },
+    {
+     "name": "term_description",
+     "type": "text"
+    },
+    {
+     "name": "p_value",
+     "type": "double"
+    },
+    {
+     "name": "percentage_change",
+     "type": "varchar"
+    },
+    {
+     "name": "effect_size",
+     "type": "varchar"
+    },
+    {
+     "name": "procedure_name",
+     "type": "varchar"
+    },
+    {
+     "name": "parameter_name",
+     "type": "varchar"
+    },
+    {
+     "name": "gp_assoc",
+     "type": "tinyint"
+    },
+    {
+     "name": "statistical_method",
+     "type": "text"
+    },
+    {
+     "name": "sex",
+     "type": "varchar"
+    },
+    {
+     "name": "original_id",
+     "type": "int"
+    }
+   ],
+   "rows": 424516,
+   "payload_bytes": 107579532,
+   "payload_sha256": "7e5ffd4d2fd1710b24b3ea1ffa0229bb842b371db30833421214017591f3e481"
+  },
+  "phenotype_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "ontology",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    }
+   ],
+   "rows": 4,
+   "payload_bytes": 570,
+   "payload_sha256": "c63cb2191ecf73380cf4e86099c47de18fa04996888f4c66ce5c84742aaf8357"
+  },
+  "pmscore": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "year",
+     "type": "int"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    }
+   ],
+   "rows": 446190,
+   "payload_bytes": 12688466,
+   "payload_sha256": "c57ce74a9940b900adf3cc5d89e3c9c95bc23114e4a2063380c2170c10f4aa58"
+  },
+  "ppi_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    }
+   ],
+   "rows": 2,
+   "payload_bytes": 344,
+   "payload_sha256": "f4117b08ce3ae0cfd8e81766b9dbb804a20b0104ca348682cfdc3ec87d37a2f6"
+  },
+  "protein": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "uniprot",
+     "type": "varchar"
+    },
+    {
+     "name": "up_version",
+     "type": "int"
+    },
+    {
+     "name": "geneid",
+     "type": "int"
+    },
+    {
+     "name": "sym",
+     "type": "varchar"
+    },
+    {
+     "name": "family",
+     "type": "varchar"
+    },
+    {
+     "name": "chr",
+     "type": "varchar"
+    },
+    {
+     "name": "seq",
+     "type": "text"
+    },
+    {
+     "name": "dtoid",
+     "type": "varchar"
+    },
+    {
+     "name": "stringid",
+     "type": "varchar"
+    },
+    {
+     "name": "dtoclass",
+     "type": "varchar"
+    },
+    {
+     "name": "preferred_symbol",
+     "type": "varchar"
+    }
+   ],
+   "rows": 20412,
+   "payload_bytes": 14968668,
+   "payload_sha256": "cc72820c1ff808a29d9d785455adab1bddb257196cd4c8788c5d5c02d18a792c"
+  },
+  "protein2pubmed": {
+   "columns": [
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "pubmed_id",
+     "type": "int"
+    },
+    {
+     "name": "gene_id",
+     "type": "int"
+    },
+    {
+     "name": "source",
+     "type": "varchar"
+    }
+   ],
+   "rows": 33283707,
+   "payload_bytes": 1104799728,
+   "payload_sha256": "084f306fa7aedb427893b7ba8a69e32f0beebc450146960dfb86884f1937b54b"
+  },
+  "provenance": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "dataset_id",
+     "type": "int"
+    },
+    {
+     "name": "table_name",
+     "type": "varchar"
+    },
+    {
+     "name": "column_name",
+     "type": "varchar"
+    },
+    {
+     "name": "where_clause",
+     "type": "text"
+    },
+    {
+     "name": "comment",
+     "type": "text"
+    }
+   ],
+   "rows": 132,
+   "payload_bytes": 9486,
+   "payload_sha256": "cf840f7cd7235d35217b7880718f76cf91f131fc93643e0bc542aa13ec338f1a"
+  },
+  "ptscore": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "year",
+     "type": "int"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    }
+   ],
+   "rows": 468019,
+   "payload_bytes": 13295434,
+   "payload_sha256": "e7511ad784c998424fb9f4b674625151e2533fa9810854a3ad8bc44b8ca1d457"
+  },
+  "sequence_annotation": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "dataSource",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "residue_start",
+     "type": "int"
+    },
+    {
+     "name": "residue_end",
+     "type": "int"
+    },
+    {
+     "name": "type",
+     "type": "enum"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    }
+   ],
+   "rows": 32519,
+   "payload_bytes": 1858578,
+   "payload_sha256": "69b8ab5fa94ba5f634ec341d819bfaf358698436fa664b4d74c91e3246f681ff"
+  },
+  "sequence_variant": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "dataSource",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "residue",
+     "type": "int"
+    },
+    {
+     "name": "variant",
+     "type": "varchar"
+    },
+    {
+     "name": "bits",
+     "type": "float"
+    }
+   ],
+   "rows": 1063403,
+   "payload_bytes": 49552647,
+   "payload_sha256": "0f03b7767a701d57a148cf1e27e3958807145fef41aca2ca1bd56d03d0f21bc0"
+  },
+  "t2tc": {
+   "columns": [
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "nucleic_acid_id",
+     "type": "int"
+    }
+   ],
+   "rows": 20412,
+   "payload_bytes": 365617,
+   "payload_sha256": "cc22356a6bce255783318bf64cfe391d956ac0123d39c244ebf655c3cbc936b9"
+  },
+  "target": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "ttype",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "comment",
+     "type": "text"
+    },
+    {
+     "name": "tdl",
+     "type": "enum"
+    },
+    {
+     "name": "idg",
+     "type": "tinyint"
+    },
+    {
+     "name": "fam",
+     "type": "enum"
+    },
+    {
+     "name": "famext",
+     "type": "varchar"
+    }
+   ],
+   "rows": 20412,
+   "payload_bytes": 1905684,
+   "payload_sha256": "f486202f154c7110e01287eef89883e2e99d334199916c9badd09dbbebabcf84"
+  },
+  "tdl_info": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "itype",
+     "type": "varchar"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "nucleic_acid_id",
+     "type": "int"
+    },
+    {
+     "name": "string_value",
+     "type": "text"
+    },
+    {
+     "name": "number_value",
+     "type": "decimal"
+    },
+    {
+     "name": "integer_value",
+     "type": "int"
+    },
+    {
+     "name": "date_value",
+     "type": "date"
+    },
+    {
+     "name": "boolean_value",
+     "type": "tinyint"
+    },
+    {
+     "name": "curration_level",
+     "type": "varchar"
+    }
+   ],
+   "rows": 301152,
+   "payload_bytes": 41613051,
+   "payload_sha256": "4c5cd2202594a0afe2ca631277edf5f530643953fac593aca5413ccfa2fc49c0"
+  },
+  "tiga": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "ensg",
+     "type": "varchar"
+    },
+    {
+     "name": "efoid",
+     "type": "varchar"
+    },
+    {
+     "name": "trait",
+     "type": "varchar"
+    },
+    {
+     "name": "n_study",
+     "type": "int"
+    },
+    {
+     "name": "n_snp",
+     "type": "int"
+    },
+    {
+     "name": "n_snpw",
+     "type": "decimal"
+    },
+    {
+     "name": "geneNtrait",
+     "type": "int"
+    },
+    {
+     "name": "geneNstudy",
+     "type": "int"
+    },
+    {
+     "name": "traitNgene",
+     "type": "int"
+    },
+    {
+     "name": "traitNstudy",
+     "type": "int"
+    },
+    {
+     "name": "pvalue_mlog_median",
+     "type": "decimal"
+    },
+    {
+     "name": "pvalue_mlog_max",
+     "type": "decimal"
+    },
+    {
+     "name": "or_median",
+     "type": "decimal"
+    },
+    {
+     "name": "n_beta",
+     "type": "int"
+    },
+    {
+     "name": "study_N_mean",
+     "type": "int"
+    },
+    {
+     "name": "rcras",
+     "type": "decimal"
+    },
+    {
+     "name": "meanRank",
+     "type": "decimal"
+    },
+    {
+     "name": "meanRankScore",
+     "type": "decimal"
+    },
+    {
+     "name": "ncats_disease_id",
+     "type": "int"
+    }
+   ],
+   "rows": 745611,
+   "payload_bytes": 131253272,
+   "payload_sha256": "e127bfda4490d514c5a3117ddf27769c3108e5330c53f6f26b3df4fb322fc3eb"
+  },
+  "tiga_provenance": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "ensg",
+     "type": "varchar"
+    },
+    {
+     "name": "efoid",
+     "type": "varchar"
+    },
+    {
+     "name": "study_acc",
+     "type": "varchar"
+    },
+    {
+     "name": "pubmedid",
+     "type": "int"
+    }
+   ],
+   "rows": 721164,
+   "payload_bytes": 46238018,
+   "payload_sha256": "5add6f58d7044f2952692c285ebfb6c2a3c97af1d66edea19f43311a1d3c6964"
+  },
+  "tinx_disease": {
+   "columns": [
+    {
+     "name": "doid",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "summary",
+     "type": "text"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    }
+   ],
+   "rows": 8960,
+   "payload_bytes": 1774963,
+   "payload_sha256": "817d2ea689718a71ead7bd70664357a5301a9716166a448685b8f5201140f1df"
+  },
+  "tinx_importance": {
+   "columns": [
+    {
+     "name": "doid",
+     "type": "varchar"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    }
+   ],
+   "rows": 13800890,
+   "payload_bytes": 541321898,
+   "payload_sha256": "9fec6ff3f1cb48d490d9ed724cc578da22a0474217c5b9c399493db359a1ad3e"
+  },
+  "tinx_novelty": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "score",
+     "type": "decimal"
+    }
+   ],
+   "rows": 18982,
+   "payload_bytes": 605381,
+   "payload_sha256": "4c96389373689f29e832f4d2228afbfce33ed105839d01d56f94a1cf1903ab78"
+  },
+  "tissue": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    }
+   ],
+   "rows": 1591,
+   "payload_bytes": 44550,
+   "payload_sha256": "49246d5b06de11e365d531e90acc80fd36e0eff1811460a6fc914c39339cec40"
+  },
+  "uberon": {
+   "columns": [
+    {
+     "name": "uid",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "text"
+    },
+    {
+     "name": "def",
+     "type": "text"
+    },
+    {
+     "name": "comment",
+     "type": "text"
+    }
+   ],
+   "rows": 24607,
+   "payload_bytes": 4855856,
+   "payload_sha256": "e5cfbcfd1801a7523db94073d33fda26f2fb4973d6556a2b1385800e034a547a"
+  },
+  "uberon_parent": {
+   "columns": [
+    {
+     "name": "uid",
+     "type": "varchar"
+    },
+    {
+     "name": "parent_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 38715,
+   "payload_bytes": 1269684,
+   "payload_sha256": "0899c204485c386112286a6cb6bcb5e33db9ee5fb2a62d07178b592d849810a7"
+  },
+  "uberon_xref": {
+   "columns": [
+    {
+     "name": "uid",
+     "type": "varchar"
+    },
+    {
+     "name": "db",
+     "type": "varchar"
+    },
+    {
+     "name": "value",
+     "type": "varchar"
+    }
+   ],
+   "rows": 50443,
+   "payload_bytes": 1840586,
+   "payload_sha256": "1c09e5cc4be5b75c30107d82cff8808f17ac94355d888c6fddfd5344bfbbb8cb"
+  },
+  "viral_ppi": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "viral_protein_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "dataSource",
+     "type": "varchar"
+    },
+    {
+     "name": "finalLR",
+     "type": "decimal"
+    },
+    {
+     "name": "pdbIDs",
+     "type": "varchar"
+    },
+    {
+     "name": "highConfidence",
+     "type": "tinyint"
+    }
+   ],
+   "rows": 282528,
+   "payload_bytes": 15645420,
+   "payload_sha256": "821b86787f43753857391a2d01167083d0b8b55eedcc76b5ee0438dd883e2e4b"
+  },
+  "viral_protein": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "ncbi",
+     "type": "varchar"
+    },
+    {
+     "name": "virus_id",
+     "type": "varchar"
+    }
+   ],
+   "rows": 12499,
+   "payload_bytes": 668645,
+   "payload_sha256": "ae695a0061f0fafc25cdc2e563a21a996c61a0449ecdacc99cc7e2400973e5dd"
+  },
+  "virus": {
+   "columns": [
+    {
+     "name": "virusTaxid",
+     "type": "varchar"
+    },
+    {
+     "name": "nucleic1",
+     "type": "varchar"
+    },
+    {
+     "name": "nucleic2",
+     "type": "varchar"
+    },
+    {
+     "name": "order",
+     "type": "varchar"
+    },
+    {
+     "name": "family",
+     "type": "varchar"
+    },
+    {
+     "name": "subfamily",
+     "type": "varchar"
+    },
+    {
+     "name": "genus",
+     "type": "varchar"
+    },
+    {
+     "name": "species",
+     "type": "varchar"
+    },
+    {
+     "name": "name",
+     "type": "varchar"
+    }
+   ],
+   "rows": 1001,
+   "payload_bytes": 121909,
+   "payload_sha256": "e4cdd57b084f329f290fc24cafe5ac5c0ea1191ef4674ddc80e624da0bfce96b"
+  },
+  "word_count": {
+   "columns": [
+    {
+     "name": "word",
+     "type": "varchar"
+    },
+    {
+     "name": "count",
+     "type": "int"
+    }
+   ],
+   "rows": 967380,
+   "payload_bytes": 17520198,
+   "payload_sha256": "00d932f7719bdb4779eec06592b625efb072b3bc5d611c9cad57b2c90c8e0689"
+  },
+  "xref": {
+   "columns": [
+    {
+     "name": "id",
+     "type": "int"
+    },
+    {
+     "name": "xtype",
+     "type": "varchar"
+    },
+    {
+     "name": "target_id",
+     "type": "int"
+    },
+    {
+     "name": "protein_id",
+     "type": "int"
+    },
+    {
+     "name": "nucleic_acid_id",
+     "type": "int"
+    },
+    {
+     "name": "value",
+     "type": "varchar"
+    },
+    {
+     "name": "xtra",
+     "type": "varchar"
+    },
+    {
+     "name": "dataset_id",
+     "type": "int"
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int"
+    }
+   ],
+   "rows": 2600229,
+   "payload_bytes": 160539831,
+   "payload_sha256": "f76f116e6dbd286df3267a7d1e9c9c2b43ef0b87db47a800e033e952e3628376"
+  },
+  "xref_type": {
+   "columns": [
+    {
+     "name": "name",
+     "type": "varchar"
+    },
+    {
+     "name": "description",
+     "type": "text"
+    },
+    {
+     "name": "url",
+     "type": "text"
+    },
+    {
+     "name": "eg_q_url",
+     "type": "text"
+    }
+   ],
+   "rows": 21,
+   "payload_bytes": 775,
+   "payload_sha256": "e39b3667cd7c215070ff6472201d6c619f2059aa95054c03fb8c47a784f2b53d"
+  }
+ }
+}
