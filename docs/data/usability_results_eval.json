@@ -264,6 +264,40 @@
     "not_yet-2": true
    }
   },
+  "hf.co/LiquidAI/LFM2.5-2.6B-GGUF:Q4_K_M|typed": {
+   "n": 10,
+   "correct": 9,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.0,
+   "calls": 43,
+   "by_family": {
+    "first_year": [
+     4,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "not_yet": [
+     1,
+     2
+    ]
+   },
+   "right": {
+    "first_year-2": true,
+    "first_year-3": true,
+    "studies_as_of-2": true,
+    "studies_as_of-4": true,
+    "studies_as_of-3": true,
+    "first_year-1": true,
+    "studies_as_of-1": true,
+    "not_yet-1": true,
+    "not_yet-2": false,
+    "first_year-4": true
+   }
+  },
   "inception/mercury-2.5|none": {
    "n": 35,
    "correct": 1,

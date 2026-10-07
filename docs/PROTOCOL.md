@@ -195,6 +195,71 @@ Both verdicts are reported whichever way they fall.
 **What it does not test.** A person. And with one run per cell, a difference of one or two questions
 between two cells is noise.
 
+## Context: does the rest of Pharos add to the neighbours score
+
+Defined on 7 Oct 2026 before any context scorer was computed.
+
+Context is what the 3.19 database holds besides the dated GWAS links: interactions, pathways, GO
+annotations, compound activities and the eleven disease sources that are not the GWAS data. None is
+dated except compound activities, and all are as of 2022 at the latest, so a result that uses them is
+an upper bound on what context known in 2018 could offer. That bound is the point of running them:
+if undated context adds nothing, dated context will not.
+
+Five scorers, none with a fitted parameter. For a candidate (target, trait), "linked" means a
+training link.
+
+| | score |
+|---|---|
+| X1 partners | the number of the target's interaction partners linked to the trait. A partner is a BioPlex or Reactome interaction, or a STRING interaction at combined score 700 or more. Rows that pair a protein with itself are not interactions. |
+| X2 pathways | over the pathways that contain the target, the sum of the share of each pathway's other members linked to the trait |
+| X3 GO terms | the same over GO terms |
+| X4 shared compounds | the same over compounds active on the target and on at least one other target |
+| X5 disease sources | for a trait whose live term is a MONDO id, the number of the eleven sources that assert the target with that term |
+
+Each is also combined with the neighbours score B3 by averaging the two percentile ranks among a
+trait's candidates, and all five are combined with B3 the same way.
+
+Reported for each: the primary measure, the same on disease-like traits, on new links with every
+linked candidate removed, and with each locus counted once; and the paired difference from B3.
+
+**How it will be read.** Context adds to the neighbours score if "B3 with all five" minus B3 has a
+95% interval above zero on the primary measure and on the locus-collapsed measure. Each scorer alone
+is reported against chance and against target degree.
+
+## Pruning: planted false pairs
+
+Defined on 7 Oct 2026 before any pair was planted.
+
+**The table.** The (target, disease) pairs of the eleven undated disease sources, keeping rows whose
+disease has an identifier. 276,658 pairs, of which 248,550 are asserted by one source only.
+
+**Planting.** For each source, false pairs numbering 5% of its pairs, each made by drawing two of the
+source's pairs at random and crossing them (the target of one with the disease of the other), kept
+only if no source asserts the crossed pair. A planted pair is therefore asserted by one source, and
+its target and its disease are as common in that source as a real pair's. Fixed seed.
+
+**The rule under test.** A pair is kept if it is corroborated and withheld if it is not.
+Corroborated means any of:
+
+- (a) a second source asserts the same pair;
+- (b) some source asserts the same target with a disease in this disease's lineage (the ontology's
+  `is_a`, as for traits);
+- (c) a GWAS link, of any year, joins the target to the disease or to one in its lineage;
+- (d) an interaction partner of the target (as in X1) is asserted with the same disease.
+
+A withheld pair is not deleted. It is written as a gap that names the rule and what would restore it.
+
+**Measures**, for each source: the share of planted pairs withheld; the share of the source's real
+single-source pairs withheld, which is the rule's cost (those pairs are not known to be false); and
+each of (b), (c), (d) alone. For comparison with a score rather than a rule: the area under the ROC
+curve, planted against real single-source pairs, of the neighbours score computed on this table with
+the pair itself left out, and of the product of the two degrees, which by construction should be
+near a half.
+
+**How it will be read.** The rule is applied to a source if, on that source, it withholds at least
+80% of planted pairs and at most 50% of real single-source pairs. A source where it does not is
+reported as such and is left unpruned.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
