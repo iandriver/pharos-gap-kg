@@ -26,6 +26,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.usability --selftest
 	$(PY) -m pharos_gap_kg.ctxtables --selftest
 	$(PY) -m pharos_gap_kg.enrich --selftest
+	$(PY) -m pharos_gap_kg.planted --selftest
 
 test:
 	$(PY) -m pytest -q

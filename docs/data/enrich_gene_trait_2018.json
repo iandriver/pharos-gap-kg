@@ -466,5 +466,39 @@
    }
   }
  },
- "context_adds_to_neighbours": false
+ "context_adds_to_neighbours": false,
+ "upper_bound_weight_tuned_on_test": {
+  "B3_alone_one_seed": 0.09692109785664801,
+  "weights_tried": [
+   0.5,
+   0.7,
+   0.8,
+   0.9,
+   0.95,
+   0.98,
+   1.0
+  ],
+  "by_scorer": {
+   "X1": {
+    "best_weight_on_B3": 1.0,
+    "primary_at_best_weight": 0.09692109785664801
+   },
+   "X2": {
+    "best_weight_on_B3": 1.0,
+    "primary_at_best_weight": 0.09692109785664801
+   },
+   "X3": {
+    "best_weight_on_B3": 1.0,
+    "primary_at_best_weight": 0.09692109785664801
+   },
+   "X4": {
+    "best_weight_on_B3": 1.0,
+    "primary_at_best_weight": 0.09692109785664801
+   },
+   "X5": {
+    "best_weight_on_B3": 1.0,
+    "primary_at_best_weight": 0.09692109785664801
+   }
+  }
+ }
 }

@@ -27,6 +27,7 @@ import pandas as pd
 
 from pharos_gap_kg import baselines, context, controls, ontology, paths, position, registry, score, split
 
+WEIGHTS = (0.5, 0.7, 0.8, 0.9, 0.95, 0.98, 1.0)
 NAMES = {"X1": "partners", "X2": "pathways", "X3": "GO terms", "X4": "shared compounds", "X5": "disease sources"}
 
 
@@ -173,13 +174,25 @@ def main(argv: list[str] | None = None) -> int:
     al = paired["B3+all-B3"]
     verdict = bool(al["primary"]["low"] > 0 and al["locus"]["low"] > 0)
     print(f"  context adds to the neighbours score (both intervals above zero): {verdict}")
+    # An upper bound, not a result: the weight on B3 is chosen on the test links themselves. If no
+    # weight below 1 beats B3 even so, no rank-averaging of this scorer with B3 can.
+    bound = {}
+    for k in list(NAMES):
+        best = max(((w, float(np.nanmean(score.by_axis(w * pct["B3"] + (1 - w) * pct[k], A, Y, axis=1, seeds=(0,))["ap"]))) for w in WEIGHTS),
+                   key=lambda x: x[1])
+        bound[k] = {"best_weight_on_B3": best[0], "primary_at_best_weight": best[1]}
+    alone = float(np.nanmean(score.by_axis(pct["B3"], A, Y, axis=1, seeds=(0,))["ap"]))
+    print(f"  upper bound, weight on B3 tuned on the test links (B3 alone {alone:.4f}): "
+          + "; ".join(f"{k} best at {v['best_weight_on_B3']:.2f} -> {v['primary_at_best_weight']:.4f}" for k, v in bound.items()))
     frozen = json.loads(split.frozen_path(a.cutoff).read_text())
     man = json.loads((C / "manifest.json").read_text())
     out = paths.DOCS_DATA / f"enrich_gene_trait_{a.cutoff}.json"
     out.write_text(json.dumps({"cutoff": a.cutoff, "release": a.release, "split": {k: frozen[k]["sha256"] for k in split.PARTS},
                                "context_tables": {k: v["sha256"] for k, v in man["tables"].items()}, "names": NAMES, "coverage": cover,
                                "traits_scored": int(scored.sum()), "disease_like_traits": int(len(dcols)),
-                               "results": res, "paired": paired, "context_adds_to_neighbours": verdict}, indent=1) + "\n")
+                               "results": res, "paired": paired, "context_adds_to_neighbours": verdict,
+                               "upper_bound_weight_tuned_on_test": {"B3_alone_one_seed": alone, "weights_tried": list(WEIGHTS), "by_scorer": bound}},
+                              indent=1) + "\n")
     print(f"  -> {out}")
     return 0
 
