@@ -38,7 +38,7 @@ from pharos_gap_kg import paths
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TOOL = "pharos-gap-kg"
 RECORDS, CUT, MIN_PASSAGE = 5, 1800, 20
-MAX_TOKENS = 1500                            # room for a model that reasons before it answers; 300 left three models with no answer
+MAX_TOKENS = 4000                            # room for a model that reasons before it answers (docs/PROTOCOL.md, amendments)
 EVERYTHING = "all[sb]"                       # every PubMed record: the denominator of the lift
 OPERATORS = {"and", "or", "not"}
 PUNCT = re.compile(r"[^\w\s'\-]", re.UNICODE)
@@ -219,7 +219,7 @@ def check(text: str, recs: list[dict]) -> dict:
         return {"verdict": "mentions_only"}
     if a.get("verdict") != "asserts":
         return {"verdict": None, "why": f"verdict {str(a.get('verdict'))[:30]!r} is neither of the two"}
-    pmid = str(a.get("pmid", "")).strip()
+    pmid = re.sub(r"^\s*PMID[:\s]*", "", str(a.get("pmid", "")), flags=re.I).strip()
     rec = next((shown(r) for r in recs if r["pmid"] == pmid), None)
     if rec is None:
         return {"verdict": None, "why": f"PMID {pmid[:20]!r} is not one of the records given"}
@@ -229,6 +229,12 @@ def check(text: str, recs: list[dict]) -> dict:
     if q not in normalise(rec["title"] + " " + rec["abstract"]):
         return {"verdict": None, "why": f"the passage is not in PMID {pmid}"}
     return {"verdict": "asserts", "pmid": pmid, "quote": str(a["quote"])}
+
+
+def cut_short(row: dict) -> bool:
+    """A stored reading whose answers were all empty under a smaller output limit than today's: the
+    model ran out of room before answering, so the pair is read again."""
+    return row.get("verdict") is None and bool(row.get("answers")) and not any(a.strip() for a in row["answers"]) and row.get("max_tokens", 1500) < MAX_TOKENS
 
 
 def spent() -> float:
@@ -242,10 +248,16 @@ def read(symbol: str, name: str, recs: list[dict], model: str, key: str | None, 
         from pharos_gap_kg.usability import post
     ids = [r["pmid"] for r in recs]
     f = lit_dir() / "calls" / (hashlib.sha256(f"{BRIEF_SHA}|{model}|{symbol}|{name}|{','.join(ids)}".encode()).hexdigest()[:24] + ".json")
+    earlier = None
     if f.is_file():
-        return {**json.loads(f.read_text()), "cached": True}
+        old = json.loads(f.read_text())
+        if not cut_short(old):
+            return {**old, "cached": True}
+        earlier = old
     msgs = [{"role": "system", "content": BRIEF}, {"role": "user", "content": prompt(symbol, name, recs)}]
-    row = {"model": model, "symbol": symbol, "name": name, "pmids": ids, "brief": BRIEF_SHA, "in": 0, "out": 0, "cost": 0.0, "answers": [], "error": None}
+    row = {"model": model, "symbol": symbol, "name": name, "pmids": ids, "brief": BRIEF_SHA, "max_tokens": MAX_TOKENS, "in": 0, "out": 0, "cost": 0.0, "answers": [], "error": None}
+    if earlier:   # what the reading under the smaller limit cost stays in the total
+        row.update({"cost": earlier["cost"], "in": earlier["in"], "out": earlier["out"], "read_before_under_limit": earlier.get("max_tokens", 1500)})
     res = {"verdict": None, "why": "not asked"}
     for attempt in range(2):
         body = {"model": model, "messages": msgs, "max_tokens": MAX_TOKENS, "temperature": 0}
@@ -268,6 +280,8 @@ def read(symbol: str, name: str, recs: list[dict], model: str, key: str | None, 
         msgs += [{"role": "assistant", "content": text or "(no text)"},
                  {"role": "user", "content": f"That answer was refused: {res['why']}. Answer again in the same format. A quote must be copied exactly from the record you cite."}]
     row.update({"verdict": res["verdict"], "pmid": res.get("pmid"), "quote": res.get("quote"), "why_refused": res.get("why"), "attempts": len(row["answers"])})
+    if earlier:
+        row["new_cost"] = row["cost"] - earlier["cost"]
     if row["error"] is None:
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(json.dumps(row, indent=1) + "\n")
@@ -308,6 +322,7 @@ def _selftest() -> int:
        check('{"verdict": "asserts", "pmid": "22", "quote": "The APOE e4 allele raised risk."}', rl)["verdict"] is None
        and check('{"verdict": "asserts", "pmid": "99", "quote": "The APOE e4 allele raised risk."}', rl)["why"].startswith("PMID '99'")
        and check('{"verdict": "asserts", "pmid": "11", "quote": "raised risk"}', rl)["why"].startswith("the passage is under"))
+    ck("a PMID written with its letters is read as the number", check('{"verdict": "asserts", "pmid": "PMID: 11", "quote": "The APOE e4 allele raised risk."}', rl)["verdict"] == "asserts")
     ck("mentions_only needs nothing more, and text around the JSON is ignored", check('Sure.\n{"verdict": "mentions_only"}\n', rl) == {"verdict": "mentions_only"})
     ck("no JSON, or a third verdict, is refused", check("I think it asserts.", rl)["verdict"] is None and check('{"verdict": "supported"}', rl)["verdict"] is None)
     long = {"pmid": "33", "title": "t", "abstract": "a" * CUT + " the tail states the association clearly"}
@@ -327,6 +342,15 @@ def _selftest() -> int:
             ck("a pair a model has read is not asked again, and says so", again == {**row, "cached": True})
             bad = read("APOE", "other", rl, "m", None, "http://x", post=lambda *a: {"choices": [{"message": {"content": "no idea"}}], "usage": {}})
             ck("two refused answers leave no verdict", bad["verdict"] is None and bad["attempts"] == 2 and bad["why_refused"] == "no JSON answer")
+            ck("a refused answer with text in it is not read again", read("APOE", "other", rl, "m", None, "http://x", post=None).get("cached") is True)
+            empty = lambda *a: {"choices": [{"message": {"content": ""}}], "usage": {"prompt_tokens": 50, "completion_tokens": 100}}
+            e1 = read("APOE", "third", rl, "m", None, "http://x", prices=(1.0, 1.0), post=empty)
+            f3 = next(p for p in (Path(d) / "literature" / "calls").glob("*.json") if json.loads(p.read_text())["name"] == "third")
+            f3.write_text(json.dumps({**{k: v for k, v in e1.items() if k != "max_tokens"}}))      # as stored under the old limit
+            e2 = read("APOE", "third", rl, "m", None, "http://x", prices=(1.0, 1.0), post=lambda *a: {"choices": [{"message": {"content": '{"verdict": "mentions_only"}'}}], "usage": {"prompt_tokens": 50, "completion_tokens": 10}})
+            ck("answers that were all empty under a smaller limit are read again, and the earlier cost is kept",
+               cut_short(json.loads(json.dumps({**e1, "max_tokens": 1500}))) and e2["verdict"] == "mentions_only" and abs(e2["cost"] - (e1["cost"] + 60 / 1e6)) < 1e-12 and abs(e2["new_cost"] - 60 / 1e6) < 1e-12)
+            ck("and are not read a third time", read("APOE", "third", rl, "m", None, "http://x", post=None).get("cached") is True)
         finally:
             paths.EVAL = old
     return 0 if ok else 1

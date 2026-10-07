@@ -428,3 +428,20 @@ on, so the figure is not a test of a rule. Added, and marked as added after thos
   the source, against the same bar.
 
 The comparison of the reader with a lift cut of the same cost stands as stated.
+
+**7 Oct 2026, second pruning round, the reader's output limit. Written after the development part was
+read and before any model read the test part.**
+
+The development part as first read, 225 pairs each: answers that passed the code check were 84 for
+`inception/mercury-2.5`, 213 for `deepseek/deepseek-v4-flash` and 208 for `z-ai/glm-5.3-flash`. None
+reaches 95%. Of the answers that did not pass, 141 of 141, 10 of 12 and 17 of 17 were empty: the model
+spent the whole output limit of 1,500 tokens before writing an answer, on both attempts. That measures
+the limit, not the reading. Two changes to the harness, made on the development part, which is what
+that part is for:
+
+1. The output limit is 4,000 tokens. A pair whose stored answers were all empty under the old limit is
+   read again; every other stored answer stands. What the first reading cost stays in the total.
+2. A PMID written with the letters "PMID" before the number is read as the number.
+
+The brief, the code check of the passage, the qualifying rule, the choice rule and the spend cap are
+unchanged, and are applied to the development part after the re-reading.

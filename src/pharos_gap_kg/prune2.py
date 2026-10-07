@@ -288,7 +288,7 @@ def read(release: str, which: str, models: list[str], key: str | None, base_url:
                     return {**base, "verdict": None, "why_refused": None, "attempts": 0, "cost": 0.0, "error": "spend cap reached"}
             r = litcheck.read(q.at[i, "symbol"], q.at[i, "name"], recs[i], model, key, base_url, PRICES.get(model))
             with lock:
-                total[0] += 0.0 if r.get("cached") else r["cost"]
+                total[0] += 0.0 if r.get("cached") else r.get("new_cost", r["cost"])
             return {**base, **{c: r.get(c) for c in ("verdict", "pmid", "quote", "why_refused", "attempts", "cost", "error")}}
 
         before = litcheck.spent()
