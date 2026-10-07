@@ -87,17 +87,27 @@ def mapping() -> Mapping:
     return m
 
 
-def evidence(release: str, years: pd.Series, cutoff: int) -> pd.DataFrame:
-    """One row per link known by the cutoff, with the studies and papers dated up to it."""
+def evidence_rows(release: str, years: pd.Series) -> pd.DataFrame:
+    """One row per (target, trait, study): subject, object, study_acc, pubmedid, year. Every year."""
     d = paths.tables(release)
     t = pq.read_table(d / "tiga.parquet", columns=["protein_id", "ensg", "efoid"]).to_pandas().drop_duplicates()
     p = pq.read_table(d / "tiga_provenance.parquet", columns=["ensg", "efoid", "study_acc", "pubmedid"]).to_pandas().drop_duplicates()
     prot = pq.read_table(d / "protein.parquet", columns=["id", "uniprot"]).to_pandas().rename(columns={"id": "protein_id"})
     p["year"] = p.pubmedid.map(years)
-    m = t.merge(p[p.year <= cutoff], on=["ensg", "efoid"]).merge(prot, on="protein_id")
+    if p.year.isna().any():
+        raise SystemExit(f"REFUSED: {int(p.year.isna().sum()):,} cited studies have no publication year; "
+                         f"run:  python -m pharos_gap_kg.pubyear {release}")
+    m = t.merge(p, on=["ensg", "efoid"]).merge(prot, on="protein_id")
     m["subject"] = "UniProtKB:" + m.uniprot
     m["object"] = m.efoid.map(split.curie)
-    m = m.drop_duplicates(["subject", "object", "study_acc", "pubmedid"])
+    m["year"] = m.year.astype(int)
+    return m.drop_duplicates(["subject", "object", "study_acc", "pubmedid"])[["subject", "object", "study_acc", "pubmedid", "year"]]
+
+
+def evidence(release: str, years: pd.Series, cutoff: int) -> pd.DataFrame:
+    """One row per link known by the cutoff, with the studies and papers dated up to it."""
+    m = evidence_rows(release, years)
+    m = m[m.year <= cutoff]
     g = m.sort_values(["year", "study_acc"]).groupby(["subject", "object"], sort=True)
     out = pd.DataFrame({
         "first_year": g.year.min().astype(int),

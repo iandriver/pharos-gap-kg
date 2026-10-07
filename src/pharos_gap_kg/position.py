@@ -70,6 +70,27 @@ def neighbour_pairs(tg: pd.DataFrame, index: dict[str, int], window: int = WINDO
     return np.array(sorted(pairs), dtype=np.int64).reshape(-1, 2)
 
 
+def neighbour_table(tg: pd.DataFrame, targets: list[str], window: int = WINDOW) -> pd.DataFrame:
+    """a, b, gap: every ordered pair of neighbouring targets and the fewest bases between genes of theirs."""
+    keep = set(targets)
+    tg = tg[tg.target.isin(keep)]
+    best: dict[tuple[str, str], int] = {}
+    for _, grp in tg.groupby("chr", sort=False):
+        grp = grp.sort_values("start")
+        name, start, end = grp.target.to_numpy(), grp.start.to_numpy(), grp.end.to_numpy()
+        for a in range(len(grp)):
+            reach = end[a] + window
+            b = a + 1
+            while b < len(grp) and start[b] <= reach:
+                if name[a] != name[b]:
+                    gap = max(0, int(start[b] - end[a]))
+                    for k in ((name[a], name[b]), (name[b], name[a])):
+                        if gap < best.get(k, window + 1):
+                            best[k] = gap
+                b += 1
+    return pd.DataFrame([(a, b, g) for (a, b), g in sorted(best.items())], columns=["a", "b", "gap"])
+
+
 def neighbour_count(pairs: np.ndarray, A: np.ndarray) -> np.ndarray:
     """For each (target, trait): how many of the target's neighbours have a training link to the trait."""
     out = np.zeros(A.shape, np.float32)
@@ -129,6 +150,11 @@ def _selftest() -> int:
        len(set(components(P, np.array([0, 1, 5])))) == 2 and len(set(components(P, np.array([0, 2])))) == 2
        and len(set(components(P, np.array([2, 4, 3])))) == 2)
     ck("no pairs gives every member its own locus", len(set(components(np.zeros((0, 2), np.int64), np.array([3, 4])))) == 2)
+    NT = neighbour_table(tg, list("ABCDEFG"))
+    gap = {(r.a, r.b): r.gap for r in NT.itertuples()}
+    ck("the table lists the same pairs as the index form, with the bases between them",
+       {(index[a], index[b]) for a, b in gap} == have and gap[("A", "B")] == 398_000 and gap[("B", "A")] == 398_000)
+    ck("overlapping genes are 0 apart", neighbour_table(pd.DataFrame({"target": ["P", "Q"], "ensg": ["p", "q"], "chr": ["1", "1"], "start": [10, 50], "end": [100, 60]}), ["P", "Q"]).gap.tolist() == [0, 0])
     return 0 if ok else 1
 
 

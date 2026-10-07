@@ -39,11 +39,16 @@ RAW = Path(os.environ.get("PHAROS_GAP_KG_RAW", DATA / "raw"))   # snapshots as p
 TABLES = DATA / "tables"                                      # tables/<release>/<table>.parquet
 GRAPH = DATA / "graph"                                        # graph/<release>/{nodes,edges,gaps}.tsv
 EVAL = DATA / "eval"                                          # frozen splits and scores
+BUNDLE = Path(os.environ.get("PHAROS_GAP_KG_BUNDLE", DATA / "bundle"))   # bundle/<release>: what the front end reads
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
 
 
 def tables(release: str) -> Path:
     return TABLES / release
+
+
+def bundle(release: str) -> Path:
+    return BUNDLE / release
 
 
 def _selftest() -> int:
@@ -55,7 +60,7 @@ def _selftest() -> int:
         print(f"  {'PASS' if cond else 'FAIL'}  {name}")
 
     ck("data directory resolves", isinstance(DATA, Path))
-    ck("raw, tables, graph and eval are four different places", len({RAW, TABLES, GRAPH, EVAL}) == 4)
+    ck("raw, tables, graph, eval and bundle are five different places", len({RAW, TABLES, GRAPH, EVAL, BUNDLE}) == 5)
     ck("tables('x') sits under TABLES", tables("x").parent == TABLES)
     src = _HERE.parent
     offenders = []
@@ -73,5 +78,5 @@ def _selftest() -> int:
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         raise SystemExit(_selftest())
-    for k in ("ROOT", "DATA", "RAW", "TABLES", "GRAPH", "EVAL"):
+    for k in ("ROOT", "DATA", "RAW", "TABLES", "GRAPH", "EVAL", "BUNDLE"):
         print(f"{k:7s} {globals()[k]}")
