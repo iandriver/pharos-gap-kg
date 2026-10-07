@@ -260,6 +260,111 @@ near a half.
 80% of planted pairs and at most 50% of real single-source pairs. A source where it does not is
 reported as such and is left unpruned.
 
+## Pruning, second round: evidence from outside the graph
+
+Defined on 7 Oct 2026, after the first round (`findings/PRUNING.md`) and before any second-round pair
+was planted, any field was read against a label, or any paper was searched.
+
+**What can and cannot be scored on planted pairs.** A planted pair is a row no source wrote, so it has
+no confidence, z-score or p-value. A rule that reads a source's own field cannot be scored on planted
+pairs. A literature check can be asked of any pair. This round therefore scores the literature check
+on planted pairs, as round one scored the in-graph rule, and scores each source's field on that
+source's real pairs against the literature check, with the planted pairs giving the floor.
+
+**Planting, matched.** Seed 20261009. For each source, two of its *one-source* pairs are drawn and
+crossed, kept only if no source asserts the crossed pair. The number is 5% of the source's one-source
+pairs, and at least 200 where crossing can supply them. The first 5% in drawn order are the in-graph
+set; the first 200 in drawn order are the literature sample. Check on the design: the product of the
+two degrees should separate real one-source from planted pairs about half the time; a source outside
+0.40 to 0.60 is reported as unmatched.
+
+**In-graph rule, repeated.** The round-one rule and the neighbours score are measured again on the
+in-graph set, unchanged. The 508 Monarch pairs withheld in round one stay withheld only if the rule
+clears the round-one bar on Monarch under matched planting. If it does not, they are restored and the
+restoration recorded.
+
+**The literature sample.** For each source, 200 planted pairs and 200 real one-source pairs drawn with
+the seed (all of them where fewer). In each 200, the first 20 are the development part and the next 80
+the test part for the reader; all 200 are used by the code-only check. The sample is written and its
+digest committed before any search.
+
+**The code-only check.** One PubMed search per pair (NCBI E-utilities `esearch`, relevance order):
+`"<gene symbol>"[tiab] AND (<disease name>)`, the disease name being the release's normalised name
+for that identifier with query punctuation removed, left untagged so that PubMed applies its own
+mapping to subject headings. Also one search for the symbol alone, one for the disease alone and one
+for the size of PubMed. From these: the number of papers that mention both, and the lift, which is
+that number over the number expected if the gene and the disease were mentioned independently.
+
+- *Rule L0:* withhold a pair that no paper mentions.
+- A pair whose target has no symbol, or whose disease name PubMed reports as not found, is
+  unsearchable. It is counted, left out of the shares, and never withheld on that ground.
+- Papers of any year are read. A table pruned this way is not an input to the 2018 split.
+
+**The reader.** For a pair that at least one paper mentions, a model is given the gene symbol, the
+disease name and the first five records in relevance order (title and abstract, each cut at 1,800
+characters), without being told whether the pair is planted. Its brief is fixed in
+`pharos_gap_kg.litcheck.BRIEF`: answer `asserts` with the PMID and a passage copied from that record,
+or `mentions_only`. Code checks the answer: the PMID must be one of those given and the passage, of
+at least 20 characters, must occur in that record's text. An answer that fails is asked for once more
+and then counted as no verdict.
+
+- *Rule L1:* withhold a pair that no paper mentions, and a pair the reader answers `mentions_only`.
+  A pair with no verdict is kept. The reader can only remove a pair that L0 kept; it cannot restore one.
+- *Choosing the reader.* The three hosted models of the usability test read the development part. A
+  model qualifies if at least 95% of its answers pass the code check. Among those, the one with the
+  largest difference between planted and real pairs withheld under L1 is chosen; within 0.02, the
+  cheaper. Only the chosen model reads the test part. No local model is run: the machine has no free
+  memory for one this week.
+- Spend on model calls is capped at 2.00 dollars for this round.
+
+**Measures.** For each source and over all sources: the share of planted pairs and of real one-source
+pairs withheld, under L0 on all 200 and under L1 on the test part, each with a Wilson 95% interval;
+the area under the ROC curve, planted against real, of the number of papers and of the lift; and what
+a cut on the lift would cost in real pairs if set to withhold 80% of planted ones.
+
+**How it will be read.**
+
+- *The bar is round one's.* A rule passes on a source if it withholds at least 80% of planted pairs
+  and at most 50% of real one-source pairs. A pass whose interval for planted pairs reaches below 70%
+  is called provisional.
+- *The reader against the simple score.* On the test part, over all sources, a cut on the lift is set
+  to withhold the same share of real pairs as L1 does. The reader adds something if L1 withholds more
+  planted pairs than that cut, with the 95% interval of the difference (2,000 resamples of pairs)
+  above zero.
+- *What "false" means here.* A planted pair is one no source asserts. Some will be real associations
+  that no source holds, so the share withheld is a lower bound on what the check does with pairs that
+  are false. Planted pairs the reader keeps are listed with the passage it copied.
+- This round measures on samples. Applying a rule that passes means checking every one-source pair of
+  the source, which is a separate run.
+
+**The sources' own fields.** Read for each pair as the strongest value among the source's rows:
+
+| source | field |
+|---|---|
+| DisGeNET | `score`; the number of PubMed ids in `evidence`; the number of upstream sources in `source` |
+| Expression Atlas | minus log10 of `pvalue`; the size of `log2foldchange` |
+| JensenLab Text Mining | `zscore` |
+| Monarch | `S2O` |
+| eRAM | the number of upstream sources in `source` |
+| DrugCentral Indication | the number of drugs |
+| CTD | whether `evidence` includes "therapeutic" |
+
+UniProt Disease and the three JensenLab Knowledge sources carry no field that varies.
+
+For each field, on the source's 200 sampled real one-source pairs: the area under the ROC curve of the
+field for "at least one paper mentions the pair", with a 95% interval (2,000 resamples of pairs), and
+the share no paper mentions in the lower and upper half of the field, beside the planted pairs'
+share. On all the source's one-source pairs: the same area for "some source asserts this target with
+a disease in this one's lineage" (round one's criterion b), resampling targets.
+
+- A field *grades* its source if the first area is at least 0.60 with the interval above 0.50. Where
+  fewer than 20 sampled pairs fall on either side of the label, the field is reported as not
+  measurable on this sample.
+- A field is not used alone to withhold a pair, because its recall on false pairs cannot be measured.
+  A field that grades its source orders which pairs the literature check reads first.
+- Two fields are not independent of the label and are marked so: the JensenLab z-score is itself a
+  co-mention statistic, and the DisGeNET score counts papers and upstream sources.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
