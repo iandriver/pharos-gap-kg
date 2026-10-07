@@ -19,6 +19,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.ontology --selftest
 	$(PY) -m pharos_gap_kg.position --selftest
 	$(PY) -m pharos_gap_kg.controls --selftest
+	$(PY) -m pharos_gap_kg.context --selftest
 
 test:
 	$(PY) -m pytest -q
