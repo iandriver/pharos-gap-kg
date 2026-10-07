@@ -1,0 +1,115 @@
+{
+ "release": "pharos319",
+ "seed": 20261009,
+ "fraction": 0.05,
+ "at_least": 200,
+ "sample_per_source": 200,
+ "dev": 20,
+ "test": 80,
+ "disease_links_sha256": "21ba83f737dde64c7c33a7a776d451a9de71579ad2b81f50256ed7cf046b7d6a",
+ "files": {
+  "planted.parquet": "e4bbfc4e026e58418db4798abecfd77f51d7f46fa57552458f645df1317aa006",
+  "sample.parquet": "b12395ace6dfcb766e1345fca27e8220e6f5865a5fa424e9def0b2afcd623048"
+ },
+ "sources": {
+  "CTD": {
+   "one_source_pairs": 12860,
+   "planted": 643,
+   "in_graph_set": 643,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "DisGeNET": {
+   "one_source_pairs": 59466,
+   "planted": 2974,
+   "in_graph_set": 2974,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "DrugCentral Indication": {
+   "one_source_pairs": 3145,
+   "planted": 200,
+   "in_graph_set": 158,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "Expression Atlas": {
+   "one_source_pairs": 158479,
+   "planted": 7924,
+   "in_graph_set": 7924,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "JensenLab Knowledge AmyCo": {
+   "one_source_pairs": 218,
+   "planted": 200,
+   "in_graph_set": 11,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "JensenLab Knowledge MedlinePlus": {
+   "one_source_pairs": 972,
+   "planted": 200,
+   "in_graph_set": 49,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "JensenLab Knowledge UniProtKB-KW": {
+   "one_source_pairs": 1329,
+   "planted": 200,
+   "in_graph_set": 67,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "JensenLab Text Mining": {
+   "one_source_pairs": 4994,
+   "planted": 250,
+   "in_graph_set": 250,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "Monarch": {
+   "one_source_pairs": 1692,
+   "planted": 200,
+   "in_graph_set": 85,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "UniProt Disease": {
+   "one_source_pairs": 401,
+   "planted": 200,
+   "in_graph_set": 21,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  },
+  "eRAM": {
+   "one_source_pairs": 4962,
+   "planted": 249,
+   "in_graph_set": 249,
+   "sample_planted": 200,
+   "sample_real": 200,
+   "sample_without_a_symbol": 0,
+   "sample_without_a_name": 0
+  }
+ }
+}

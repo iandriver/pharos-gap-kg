@@ -1,0 +1,94 @@
+{
+ "release": "pharos319",
+ "disease_links_sha256": "21ba83f737dde64c7c33a7a776d451a9de71579ad2b81f50256ed7cf046b7d6a",
+ "rows": 636256,
+ "sha256": "16c6db8e458a3089da5b30d9bfdac7090e866ddf1e80a4a151515bd9b234bbb7",
+ "fields": {
+  "CTD | therapeutic": {
+   "pairs_with_value": 34797,
+   "pairs_in_source": 34797,
+   "distinct_values": 2,
+   "min": 0.0,
+   "median": 0.0,
+   "max": 1.0
+  },
+  "DisGeNET | pubmed_ids": {
+   "pairs_with_value": 82453,
+   "pairs_in_source": 82453,
+   "distinct_values": 68,
+   "min": 0.0,
+   "median": 1.0,
+   "max": 124.0
+  },
+  "DisGeNET | score": {
+   "pairs_with_value": 82453,
+   "pairs_in_source": 82453,
+   "distinct_values": 83,
+   "min": 0.01,
+   "median": 0.3,
+   "max": 1.0
+  },
+  "DisGeNET | upstream_sources": {
+   "pairs_with_value": 82453,
+   "pairs_in_source": 82453,
+   "distinct_values": 5,
+   "min": 1.0,
+   "median": 1.0,
+   "max": 5.0
+  },
+  "DrugCentral Indication | drugs": {
+   "pairs_with_value": 3523,
+   "pairs_in_source": 3523,
+   "distinct_values": 29,
+   "min": 1.0,
+   "median": 1.0,
+   "max": 37.0
+  },
+  "Expression Atlas | abs_log2_fold_change": {
+   "pairs_with_value": 159748,
+   "pairs_in_source": 159748,
+   "distinct_values": 3182,
+   "min": 1.0,
+   "median": 1.4,
+   "max": 11.1
+  },
+  "Expression Atlas | minus_log10_p": {
+   "pairs_with_value": 159748,
+   "pairs_in_source": 159748,
+   "distinct_values": 136813,
+   "min": 1.3010635208849248,
+   "median": 3.098667820696659,
+   "max": 300.0
+  },
+  "JensenLab Text Mining | zscore": {
+   "pairs_with_value": 7394,
+   "pairs_in_source": 7394,
+   "distinct_values": 1945,
+   "min": 5.999,
+   "median": 6.483,
+   "max": 10.157
+  },
+  "Monarch | s2o": {
+   "pairs_with_value": 9424,
+   "pairs_in_source": 9424,
+   "distinct_values": 5571,
+   "min": 28.2232759412,
+   "median": 78.74965046,
+   "max": 100.0
+  },
+  "eRAM | upstream_sources": {
+   "pairs_with_value": 14263,
+   "pairs_in_source": 14263,
+   "distinct_values": 7,
+   "min": 1.0,
+   "median": 1.0,
+   "max": 7.0
+  }
+ },
+ "sources_with_no_field": [
+  "UniProt Disease",
+  "JensenLab Knowledge AmyCo",
+  "JensenLab Knowledge MedlinePlus",
+  "JensenLab Knowledge UniProtKB-KW"
+ ]
+}

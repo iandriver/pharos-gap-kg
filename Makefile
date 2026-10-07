@@ -28,6 +28,9 @@ selftest:
 	$(PY) -m pharos_gap_kg.enrich --selftest
 	$(PY) -m pharos_gap_kg.planted --selftest
 	$(PY) -m pharos_gap_kg.ctxgraph --selftest
+	$(PY) -m pharos_gap_kg.evidence --selftest
+	$(PY) -m pharos_gap_kg.litcheck --selftest
+	$(PY) -m pharos_gap_kg.prune2 --selftest
 
 test:
 	$(PY) -m pytest -q
