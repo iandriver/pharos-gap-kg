@@ -52,3 +52,10 @@ The neighbours gain has not been separated from two things the protocol lists as
 A trait reported under two wordings gives a target a later link that its earlier link to the other
 wording predicts. And genes that sit together on a chromosome share GWAS links by position. Either
 could account for some or all of the 0.0236, and neither has been measured.
+
+## Since: the two controls were measured (7 Oct 2026)
+
+`findings/CONTROLS.md`. A fifth of the positives are linked to a training link by trait lineage or by
+chromosomal position. On the positives that neither explains, the neighbours gain over target degree
+is +0.0121 with every linked candidate removed, and +0.0060 with an interval that includes zero when
+only the linked positives are removed. The 0.0236 above is therefore not a gain on new links.

@@ -32,6 +32,10 @@ Started 6 Oct 2026. No model has been fitted. What exists:
 - **Baselines** ([`findings/BASELINES.md`](findings/BASELINES.md)). How well-studied a target was in
   2018 ranks later links at four times chance; a parameter-free neighbour score adds to that. A fitted
   model has to beat 0.0969.
+- **Controls** ([`findings/CONTROLS.md`](findings/CONTROLS.md)). A fifth of the later links follow from
+  an earlier link by trait lineage or by chromosomal position, and the ontology alone or the
+  chromosome alone ranks later links at two and a half times chance. On links neither explains, the
+  neighbour score is not shown to beat target degree. The 130,369 later links are 34,149 loci.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -45,6 +49,8 @@ fetch command. A missing input names the command that fetches it.
 | `pharos316` | 2023-04-12 | Pharos 3.16 database; same links as 3.19 |
 | `pharos319` | 2024-04-29 | Pharos 3.19, the last full legacy database; the graph is built from it |
 | `pharos400_canonicals` | 2026-05-28 | development levels for 20,654 canonical proteins |
+| `efo_obo` | 2026-09-15 | trait ontology, for the lineage control |
+| `ensembl_gtf_113` | 2024-08-18 | gene coordinates, for the position and locus controls |
 
 ## Outputs
 
@@ -64,6 +70,9 @@ python -m pharos_gaps.split pharos319 --cutoff 2018          # rebuilds the spli
 python -m pharos_gaps.graph build pharos319 --cutoff 2018
 python -m pharos_gaps.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
 python -m pharos_gaps.baselines --cutoff 2018
+python -m pharos_gaps.fetch efo_obo ensembl_gtf_113
+python -m pharos_gaps.sqldump extract pharos319 --tables xref
+python -m pharos_gaps.controls pharos319 --cutoff 2018
 make check
 ```
 

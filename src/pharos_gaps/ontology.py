@@ -8,16 +8,23 @@ Run:  python -m pharos_gaps.ontology --selftest
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 from typing import Iterable
 
 
+IRI = re.compile(r"^https?://\S*/([A-Za-z][A-Za-z0-9]*)_([A-Za-z0-9]+)$")
+
+
 def norm(i: str) -> str:
+    """An id as a CURIE. The EFO release writes its own terms as `efo:EFO_0000249`, and names the
+    replacement of an obsolete term by its IRI (`http://purl.obolibrary.org/obo/MONDO_0004975`)."""
     i = i.strip()
     if i.startswith("efo:EFO_"):
         return "EFO:" + i[len("efo:EFO_"):]
-    return i
+    m = IRI.match(i)
+    return f"{m.group(1)}:{m.group(2)}" if m else i
 
 
 def load(lines: Iterable[str]) -> dict[str, dict]:
@@ -134,12 +141,23 @@ id: efo:EFO_0000010
 name: obsolete_gone
 is_obsolete: true
 
+[Term]
+id: efo:EFO_0000011
+name: obsolete_lung disease
+is_obsolete: true
+replaced_by: http://purl.obolibrary.org/obo/MONDO_4
+
 [Typedef]
 id: part_of
 name: part of
 """.splitlines()
     T = load(obo)
-    ck("an EFO id is read as a CURIE, and a Typedef is not a term", "EFO:0000001" in T and "part_of" not in T and len(T) == 7)
+    ck("an EFO id is read as a CURIE, and a Typedef is not a term", "EFO:0000001" in T and "part_of" not in T and len(T) == 8)
+    ck("an IRI is read as a CURIE whichever host it is under, and other text is left alone",
+       [norm(x) for x in ("http://purl.obolibrary.org/obo/MONDO_0004975", "http://www.orpha.net/ORDO/Orphanet_98",
+                          "http://www.ebi.ac.uk/efo/EFO_0000001", "http://dbpedia.org/resource/Kenya", "HP:0000118")]
+       == ["MONDO:0004975", "Orphanet:98", "EFO:0000001", "http://dbpedia.org/resource/Kenya", "HP:0000118"])
+    ck("a replacement named by its IRI is followed", canonical("EFO:0000011", T) == "MONDO:4")
     ck("a parent is read without its comment or its braces", T["MONDO:3"]["parents"] == {"MONDO:2"})
     ck("ancestors go to the root", ancestors("MONDO:3", T) == {"MONDO:2", "MONDO:1", "EFO:0000001"})
     ck("an obsolete term stands for its replacement", canonical("EFO:0000009", T) == "MONDO:3")
