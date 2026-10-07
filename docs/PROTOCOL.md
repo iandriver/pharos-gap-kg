@@ -150,6 +150,51 @@ Ties are broken at random with the five seeds and the shares averaged.
 Every share is a lower bound for the reason given at the top: a candidate not reported by 2022 is not
 known to be absent. The front end must say so wherever it quotes one.
 
+## Usability: can a small model answer through the typed questions
+
+Defined on 7 Oct 2026 before any model was run on any question.
+
+**What is tested.** Whether a model given only what the server itself says (its instructions and its
+tool descriptions) answers questions a person would put to the graph, and whether it does so better
+than with direct query access to the same data.
+
+**Questions.** 35, written by code from the bundle with a fixed seed, in ten kinds: the year a link
+was first reported; the studies behind a link as of a year; a link that did not yet exist as of a
+year; a pair with no link at all; a gene that is not in the graph; a name that means several things;
+the best-supported target of a trait and how many traits that target has; the targets two traits
+share; the links first reported after a year; and, for an absent link, a broader or narrower form of
+the trait the target already had. The expected answers are computed from the bundle's tables by code
+that does not call the question layer. The set is frozen by digest in
+`docs/data/usability_questions.json`.
+
+**Conditions.** The same rules of reading are given in each (what "as of" means, that an absence is
+not a negative, that an unknown or ambiguous name is not to be resolved by guessing).
+
+- *typed*: the seven tools, with the instructions and descriptions exactly as the MCP server serves them;
+- *sql*: one tool that runs read-only SQL over the same tables, with the schema described;
+- *none*: no tool.
+
+**Models.** Chosen by price before any was run: three hosted through OpenRouter (`qwen/qwen3.7-flash`,
+`deepseek/deepseek-v4-flash`, `z-ai/glm-5.3-flash`) and one local (LFM2.5 2.6B through Ollama). The
+local 35B model is not run: this machine is short of memory. Temperature 0 where the endpoint honours
+it, at most 8 tool calls a question, one run per cell, total spend capped at 1.50 US dollars.
+
+**Grading.** By code, from a last line `FINAL: {...}` that every question asks for. No model grades.
+The status must match, and then the fields of that kind of question: a year, a count, a symbol, or a
+trait that is one of the acceptable ones.
+
+**Measures.** Correct of 35 for each model and condition, and by kind. On the three not-in-graph
+questions, how often a model answered as if the gene were known. Typed minus sql, paired by question,
+for each model (exact sign test) and pooled over the hosted models (bootstrap over questions).
+
+**How it will be read.** The typed questions are usable by a small model if at least two of the three
+hosted models answer 28 or more of 35 under *typed* and none of them answers a not-in-graph question
+as if the gene were known. Typed is better than SQL if the pooled paired interval excludes zero.
+Both verdicts are reported whichever way they fall.
+
+**What it does not test.** A person. And with one run per cell, a difference of one or two questions
+between two cells is noise.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
