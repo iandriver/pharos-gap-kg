@@ -36,6 +36,9 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   an earlier link by trait lineage or by chromosomal position, and the ontology alone or the
   chromosome alone ranks later links at two and a half times chance. On links neither explains, the
   neighbour score is not shown to beat target degree. The 130,369 later links are 34,149 loci.
+- **Context audit** ([`findings/CONTEXT.md`](findings/CONTEXT.md)). Nine tenths of the later links are
+  to measurements, not diseases. Of Pharos's twelve undated disease sources, one is the held-out GWAS
+  data under another name: used as context it would score 0.60 by reading the answers.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -73,6 +76,8 @@ python -m pharos_gap_kg.baselines --cutoff 2018
 python -m pharos_gap_kg.fetch efo_obo ensembl_gtf_113
 python -m pharos_gap_kg.sqldump extract pharos319 --tables xref
 python -m pharos_gap_kg.controls pharos319 --cutoff 2018
+python -m pharos_gap_kg.sqldump extract pharos319 --tables disease
+python -m pharos_gap_kg.context pharos319 --cutoff 2018
 make check
 ```
 

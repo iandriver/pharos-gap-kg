@@ -1,0 +1,307 @@
+{
+ "cutoff": 2018,
+ "release": "pharos319",
+ "split": {
+  "train": "77529fa5abc4d9c7141c2a0e65ee01e85592165f252e369e513a4b0f6e4fa41b",
+  "test": "673fe46f804f160313632bc37ee4ec2d18526a8475e6ab442058f22448341221",
+  "unscored": "cd8184cc6a8967dd0cf24d06496860a92b7c4703fa06effd06f860c046b3bfb0"
+ },
+ "by_kind": {
+  "disease_like": {
+   "traits": 172,
+   "positives": 14227,
+   "candidates": 2473400,
+   "B0": [
+    0.006301220193797728,
+    0.004690359349435582,
+    0.008183398763893514
+   ],
+   "B1": [
+    0.0671300523300381,
+    0.04517764774630595,
+    0.09214646406111675
+   ],
+   "B3": [
+    0.0969012149955079,
+    0.06837256778409642,
+    0.12848278547797348
+   ],
+   "B3-B1": {
+    "difference": 0.029771162665469794,
+    "low": 0.009561703594174261,
+    "high": 0.05064738437359379
+   }
+  },
+  "measurement_or_other": {
+   "traits": 368,
+   "positives": 116142,
+   "candidates": 5275132,
+   "B0": [
+    0.023049257637209643,
+    0.019313443078464262,
+    0.027298394890628904
+   ],
+   "B1": [
+    0.07617204292082637,
+    0.064206430449719,
+    0.08984045240065287
+   ],
+   "B3": [
+    0.09687884448378167,
+    0.08215079662942533,
+    0.11358909984644315
+   ],
+   "B3-B1": {
+    "difference": 0.02070680156295532,
+    "low": 0.006944550627208295,
+    "high": 0.03495486808330448
+   }
+  }
+ },
+ "audit": {
+  "traits": 161,
+  "positives": 13989,
+  "candidates": 2314575,
+  "base_rate": 0.006043874145361459,
+  "baselines": {
+   "B0": [
+    0.006624297712345016,
+    0.004946050230868872,
+    0.008656860091269468
+   ],
+   "B1": [
+    0.0715048775622073,
+    0.04888703987156269,
+    0.09800794436755673
+   ],
+   "B3": [
+    0.10323624254093512,
+    0.07405611041029876,
+    0.13466131910097331
+   ]
+  },
+  "sources": {
+   "any source": {
+    "candidates_in_source": 41881,
+    "positives_in_source": 5739,
+    "precision": 0.13703111196007736,
+    "recall": 0.4102509114304096,
+    "training_links_in_source": 10441,
+    "primary": [
+     0.29445546521020727,
+     0.2447603947320967,
+     0.3469944979406847
+    ],
+    "minus_degree": {
+     "difference": 0.22295058764799994,
+     "low": 0.16643013839976967,
+     "high": 0.2814827667342794
+    }
+   },
+   "JensenLab Experiment TIGA": {
+    "candidates_in_source": 6302,
+    "positives_in_source": 5569,
+    "precision": 0.8836877181847033,
+    "recall": 0.3980985059689756,
+    "training_links_in_source": 9642,
+    "primary": [
+     0.5999688932493134,
+     0.5326507328570989,
+     0.6696066531077104
+    ],
+    "minus_degree": {
+     "difference": 0.5284640156871061,
+     "low": 0.4549903098831652,
+     "high": 0.6050777317369092
+    }
+   },
+   "DisGeNET": {
+    "candidates_in_source": 5674,
+    "positives_in_source": 185,
+    "precision": 0.03260486429326754,
+    "recall": 0.013224676531560512,
+    "training_links_in_source": 1047,
+    "primary": [
+     0.012032429049734627,
+     0.0059494983452486605,
+     0.022707933125260246
+    ],
+    "minus_degree": {
+     "difference": -0.059472448512472686,
+     "low": -0.0864381022755754,
+     "high": -0.03593386350689578
+    }
+   },
+   "CTD": {
+    "candidates_in_source": 4503,
+    "positives_in_source": 158,
+    "precision": 0.03508771929824561,
+    "recall": 0.01129458860533276,
+    "training_links_in_source": 1074,
+    "primary": [
+     0.012998868293453751,
+     0.006695643557300024,
+     0.02392736572987174
+    ],
+    "minus_degree": {
+     "difference": -0.05850600926875355,
+     "low": -0.08526658393082329,
+     "high": -0.03483696231089317
+    }
+   },
+   "eRAM": {
+    "candidates_in_source": 2092,
+    "positives_in_source": 131,
+    "precision": 0.06261950286806883,
+    "recall": 0.009364500679105011,
+    "training_links_in_source": 926,
+    "primary": [
+     0.013419912782939167,
+     0.007049909400582176,
+     0.024354478143046327
+    ],
+    "minus_degree": {
+     "difference": -0.05808496477926814,
+     "low": -0.08454947969508098,
+     "high": -0.035577080550266496
+    }
+   },
+   "Expression Atlas": {
+    "candidates_in_source": 26091,
+    "positives_in_source": 102,
+    "precision": 0.0039093940439231915,
+    "recall": 0.00729144327686039,
+    "training_links_in_source": 464,
+    "primary": [
+     0.006719087279886199,
+     0.005040242476899259,
+     0.008765113000919793
+    ],
+    "minus_degree": {
+     "difference": -0.0647857902823211,
+     "low": -0.09107208732901449,
+     "high": -0.042513990994557674
+    }
+   },
+   "JensenLab Knowledge MedlinePlus": {
+    "candidates_in_source": 379,
+    "positives_in_source": 69,
+    "precision": 0.1820580474934037,
+    "recall": 0.004932446922582029,
+    "training_links_in_source": 420,
+    "primary": [
+     0.011128839756810059,
+     0.00743100064568781,
+     0.015796289802459437
+    ],
+    "minus_degree": {
+     "difference": -0.06037603780539724,
+     "low": -0.08640515385717842,
+     "high": -0.03821383444019808
+    }
+   },
+   "JensenLab Text Mining": {
+    "candidates_in_source": 1153,
+    "positives_in_source": 55,
+    "precision": 0.047701647875108416,
+    "recall": 0.003931660590463936,
+    "training_links_in_source": 145,
+    "primary": [
+     0.00840285705572529,
+     0.006185660355185101,
+     0.010845368892768641
+    ],
+    "minus_degree": {
+     "difference": -0.06310202050648202,
+     "low": -0.08994832028081368,
+     "high": -0.04033773964658142
+    }
+   },
+   "Monarch": {
+    "candidates_in_source": 353,
+    "positives_in_source": 35,
+    "precision": 0.09915014164305949,
+    "recall": 0.002501965830295232,
+    "training_links_in_source": 213,
+    "primary": [
+     0.009266504067574618,
+     0.006418293921468047,
+     0.013026253796523406
+    ],
+    "minus_degree": {
+     "difference": -0.06223837349463268,
+     "low": -0.08807200247850813,
+     "high": -0.03961232755215789
+    }
+   },
+   "DrugCentral Indication": {
+    "candidates_in_source": 891,
+    "positives_in_source": 17,
+    "precision": 0.019079685746352413,
+    "recall": 0.0012152405461433983,
+    "training_links_in_source": 39,
+    "primary": [
+     0.0072871597350802385,
+     0.005339795177631792,
+     0.00937998460014481
+    ],
+    "minus_degree": {
+     "difference": -0.06421771782712705,
+     "low": -0.09100723013606168,
+     "high": -0.04174050831794925
+    }
+   },
+   "JensenLab Knowledge UniProtKB-KW": {
+    "candidates_in_source": 721,
+    "positives_in_source": 15,
+    "precision": 0.020804438280166437,
+    "recall": 0.001072271070126528,
+    "training_links_in_source": 40,
+    "primary": [
+     0.006911245588087361,
+     0.005147203805330795,
+     0.008969132071168522
+    ],
+    "minus_degree": {
+     "difference": -0.06459363197411995,
+     "low": -0.09097198928973442,
+     "high": -0.042186453331934166
+    }
+   },
+   "UniProt Disease": {
+    "candidates_in_source": 91,
+    "positives_in_source": 10,
+    "precision": 0.10989010989010989,
+    "recall": 0.000714847380084352,
+    "training_links_in_source": 34,
+    "primary": [
+     0.007036038425730158,
+     0.0052922514892923146,
+     0.00907511433634866
+    ],
+    "minus_degree": {
+     "difference": -0.06446883913647715,
+     "low": -0.0908414182010494,
+     "high": -0.04224113201990202
+    }
+   },
+   "JensenLab Knowledge AmyCo": {
+    "candidates_in_source": 31,
+    "positives_in_source": 2,
+    "precision": 0.06451612903225806,
+    "recall": 0.0001429694760168704,
+    "training_links_in_source": 5,
+    "primary": [
+     0.006619846917706155,
+     0.0049314982358071285,
+     0.008662581072017193
+    ],
+    "minus_degree": {
+     "difference": -0.06488503064450114,
+     "low": -0.0911620558873142,
+     "high": -0.042591211432551235
+    }
+   }
+  }
+ }
+}

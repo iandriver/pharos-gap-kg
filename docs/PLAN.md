@@ -77,6 +77,8 @@ To settle before a model is scored:
 - Associations per year follow cohort size (4,101 in 2010, 63,978 in 2020).
 - Only these links carry dates. Every other table is as of 2022, so as context it can hold what the
   held-out link later made known. Either date the context or report the test with and without it.
+  Measured 7 Oct for the disease table (`findings/CONTEXT.md`): the source "JensenLab Experiment TIGA"
+  is the held-out data itself and is excluded from any context; the other eleven are undated.
 - Whether each of the 1,359 ligand gains rests on evidence published after 3.19's ends, from ChEMBL.
 
 ## Schedule
