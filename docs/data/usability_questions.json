@@ -1,0 +1,329 @@
+{
+ "release": "pharos319",
+ "seed": 20261007,
+ "sha256": "0100843b823e71af6042911aca77827b049eb70db9b1c2d9727f6961ced4ad14",
+ "questions": [
+  {
+   "id": "first_year-1",
+   "family": "first_year",
+   "text": "In what year was a link between CYP17A1 and type 2 diabetes mellitus first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "year": 2020
+   }
+  },
+  {
+   "id": "first_year-2",
+   "family": "first_year",
+   "text": "In what year was a link between DNM3 and type 2 diabetes mellitus first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "year": 2020
+   }
+  },
+  {
+   "id": "first_year-3",
+   "family": "first_year",
+   "text": "In what year was a link between RCC2 and basal cell carcinoma first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "year": 2008
+   }
+  },
+  {
+   "id": "first_year-4",
+   "family": "first_year",
+   "text": "In what year was a link between BCAM and Parkinson disease first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "year": 2021
+   }
+  },
+  {
+   "id": "studies_as_of-1",
+   "family": "studies_as_of",
+   "text": "As of 2021, how many GWAS studies supported the link between KIAA1324 and myocardial infarction? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 5
+   }
+  },
+  {
+   "id": "studies_as_of-2",
+   "family": "studies_as_of",
+   "text": "As of 2018, how many GWAS studies supported the link between DYNC2LI1 and coronary artery disease? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 4
+   }
+  },
+  {
+   "id": "studies_as_of-3",
+   "family": "studies_as_of",
+   "text": "As of 2018, how many GWAS studies supported the link between SIX1 and open-angle glaucoma? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 5
+   }
+  },
+  {
+   "id": "studies_as_of-4",
+   "family": "studies_as_of",
+   "text": "As of 2015, how many GWAS studies supported the link between RPGRIP1L and breast carcinoma? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 4
+   }
+  },
+  {
+   "id": "not_yet-1",
+   "family": "not_yet",
+   "text": "As of 2019, was SLC35G6 linked to asthma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": 2020
+   }
+  },
+  {
+   "id": "not_yet-2",
+   "family": "not_yet",
+   "text": "As of 2016, was TNFAIP8 linked to asthma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": 2019
+   }
+  },
+  {
+   "id": "not_yet-3",
+   "family": "not_yet",
+   "text": "As of 2010, was PMF1 linked to testicular carcinoma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": 2013
+   }
+  },
+  {
+   "id": "not_yet-4",
+   "family": "not_yet",
+   "text": "As of 2018, was CREG1 linked to allergic rhinitis? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": 2019
+   }
+  },
+  {
+   "id": "never-1",
+   "family": "never",
+   "text": "As of 2020, was DGKI linked to marginal zone B-cell lymphoma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-2",
+   "family": "never",
+   "text": "As of 2020, was CUL4A linked to small cell lung carcinoma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-3",
+   "family": "never",
+   "text": "As of 2020, was RPAP3 linked to Sarcoidosis? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-4",
+   "family": "never",
+   "text": "As of 2020, was BCAR1 linked to adolescent idiopathic scoliosis? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"status\": S, \"reported_later\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "reported_later": null
+   }
+  },
+  {
+   "id": "not_in_graph-1",
+   "family": "not_in_graph",
+   "text": "In what year was a link between ZQXP1 and alcohol dependence first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-2",
+   "family": "not_in_graph",
+   "text": "In what year was a link between VRTK9 and Oral ulcer first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-3",
+   "family": "not_in_graph",
+   "text": "In what year was a link between QJMB4 and colorectal adenoma first reported? End with a last line  FINAL: {\"status\": S, \"year\": YEAR or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "not_in_graph"
+   }
+  },
+  {
+   "id": "ambiguous-1",
+   "family": "ambiguous",
+   "text": "How many targets is alzheimer linked to in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-2",
+   "family": "ambiguous",
+   "text": "How many targets is diabetes linked to in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-3",
+   "family": "ambiguous",
+   "text": "How many targets is cholesterol linked to in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "ambiguous"
+   }
+  },
+  {
+   "id": "top_then_count-1",
+   "family": "top_then_count",
+   "text": "Which target is linked to esophageal adenocarcinoma by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"status\": S, \"symbol\": GENE SYMBOL, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "symbol": "FOXP1",
+    "count": 88
+   }
+  },
+  {
+   "id": "top_then_count-2",
+   "family": "top_then_count",
+   "text": "Which target is linked to prostate carcinoma by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"status\": S, \"symbol\": GENE SYMBOL, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "symbol": "POU5F1B",
+    "count": 16
+   }
+  },
+  {
+   "id": "top_then_count-3",
+   "family": "top_then_count",
+   "text": "Which target is linked to breast carcinoma by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"status\": S, \"symbol\": GENE SYMBOL, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "symbol": "TOX3",
+    "count": 22
+   }
+  },
+  {
+   "id": "top_then_count-4",
+   "family": "top_then_count",
+   "text": "Which target is linked to anorexia nervosa by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"status\": S, \"symbol\": GENE SYMBOL, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "symbol": "CADM1",
+    "count": 14
+   }
+  },
+  {
+   "id": "shared-1",
+   "family": "shared",
+   "text": "How many targets are linked to both childhood onset asthma and age-related macular degeneration in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 9
+   }
+  },
+  {
+   "id": "shared-2",
+   "family": "shared",
+   "text": "How many targets are linked to both type 2 diabetes mellitus and chronic hepatitis B virus infection in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 109
+   }
+  },
+  {
+   "id": "shared-3",
+   "family": "shared",
+   "text": "How many targets are linked to both allergic disease and COVID-19 in this graph? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 38
+   }
+  },
+  {
+   "id": "new_since-1",
+   "family": "new_since",
+   "text": "How many links to gastric carcinoma were first reported after 2015? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 40
+   }
+  },
+  {
+   "id": "new_since-2",
+   "family": "new_since",
+   "text": "How many links to cancer were first reported after 2017? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 310
+   }
+  },
+  {
+   "id": "new_since-3",
+   "family": "new_since",
+   "text": "How many links to substance abuse were first reported after 2019? End with a last line  FINAL: {\"status\": S, \"count\": N}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "answered",
+    "count": 1101
+   }
+  },
+  {
+   "id": "related_wording-1",
+   "family": "related_wording",
+   "text": "As of 2010, SLC12A3 was not linked to Takayasu arteritis. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"status\": S, \"related_trait\": TRAIT NAME OR ID or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "related_trait_any_of": [
+     "EFO:0000319",
+     "cardiovascular disease"
+    ]
+   }
+  },
+  {
+   "id": "related_wording-2",
+   "family": "related_wording",
+   "text": "As of 2014, MARCH8 was not linked to cancer. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"status\": S, \"related_trait\": TRAIT NAME OR ID or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "related_trait_any_of": [
+     "EFO:0001663",
+     "prostate carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "related_wording-3",
+   "family": "related_wording",
+   "text": "As of 2019, IL4R was not linked to seasonal allergic rhinitis. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"status\": S, \"related_trait\": TRAIT NAME OR ID or null}  where S is one of \"answered\", \"no_link_reported\", \"not_in_graph\", \"ambiguous\", \"unknown\". Use null for a field that does not apply.",
+   "gold": {
+    "status": "no_link_reported",
+    "related_trait_any_of": [
+     "EFO:0005854",
+     "allergic rhinitis"
+    ]
+   }
+  }
+ ]
+}

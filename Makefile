@@ -23,6 +23,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.bundle --selftest
 	$(PY) -m pharos_gap_kg.calibrate --selftest
 	$(PY) -m pharos_gap_kg.ask --selftest
+	$(PY) -m pharos_gap_kg.usability --selftest
 
 test:
 	$(PY) -m pytest -q

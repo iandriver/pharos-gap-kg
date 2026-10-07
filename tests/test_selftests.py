@@ -1,5 +1,5 @@
 """Each module's own self-test also runs under pytest, so one command covers both."""
-from pharos_gap_kg import ask_selftest, baselines, bundle, calibrate, context, controls, dated, graph, levels, ontology, paths, position, pubyear, score, snapshots, split, sqldump
+from pharos_gap_kg import ask_selftest, baselines, bundle, calibrate, context, controls, dated, usability, graph, levels, ontology, paths, position, pubyear, score, snapshots, split, sqldump
 
 
 def test_paths_selftest():
@@ -68,3 +68,7 @@ def test_calibrate_selftest():
 
 def test_ask_selftest():
     assert ask_selftest.run() == 0
+
+
+def test_usability_selftest():
+    assert usability._selftest() == 0
