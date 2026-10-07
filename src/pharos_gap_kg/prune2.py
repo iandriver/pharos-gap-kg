@@ -391,6 +391,19 @@ def field_rows(release: str, se: pd.DataFrame, lineage: pd.DataFrame) -> dict:
     return out
 
 
+def split_cut(ok: pd.DataFrame) -> dict:
+    """Rule L0b (protocol amendment): for each source a cut on the lift, set to withhold 80% of the planted
+    pairs of the part the reader does not use, and scored on the source's other pairs."""
+    fit, score = ok[ok.part == "rest"], ok[ok.part != "rest"]
+    cut = {s: float(np.quantile(g[g.planted].lift, round1.KEEP_AT_LEAST)) for s, g in fit.groupby("source")}
+    x = score.assign(l0b=(score.lift.to_numpy(float) <= score.source.map(cut).to_numpy(float)))
+    out = rule_rows(x, "l0b")
+    for s in cut:
+        out[s]["cut"] = cut[s]
+        out[s]["planted_pairs_the_cut_was_set_on"] = int((fit[fit.source == s].planted).sum())
+    return out
+
+
 def reader_against_lift(t: pd.DataFrame, seed: int = SEED) -> dict:
     """On the test part: L1 against a cut on the lift set to withhold at least as many real pairs."""
     p, r = t[t.planted], t[~t.planted]
@@ -429,6 +442,7 @@ def report(release: str) -> dict:
                         "real_withheld_by_a_lift_cut_that_withholds_80pct_of_planted": round1.cost_at(r.lift.to_numpy(float), p.lift.to_numpy(float), round1.KEEP_AT_LEAST),
                         "median_papers": {"planted": float(p.both.median()), "real": float(r.both.median())}})
     out["code_only_L0"] = l0
+    out["lift_cut_L0b"] = split_cut(ok)
 
     out["reader"] = {"chosen": chosen}
     if chosen:
@@ -466,6 +480,9 @@ def show(out: dict) -> None:
     for s, r in order(out["code_only_L0"]):
         print(f"    {s:34s} planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  AUC papers {r['auc_papers']:.3f}  lift {r['auc_lift']:.3f}  "
               f"lift-cut cost {r['real_withheld_by_a_lift_cut_that_withholds_80pct_of_planted']:.3f}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}")
+    print("  L0b, a lift cut set on the part the reader does not use, scored on the rest")
+    for s, r in order(out["lift_cut_L0b"]):
+        print(f"    {s:34s} planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  cut {r.get('cut', float('nan')):8.3f}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}")
     rd = out["reader"]
     if rd.get("chosen"):
         print(f"  L1 on the test part, reader {rd['chosen']}")
@@ -628,6 +645,11 @@ def _selftest() -> int:
     ck("the bar is 80% of planted and at most 50% of real, provisional when the interval reaches under 70%",
        bar(share([True] * 9 + [False]), share([False] * 10)) == {"passes": True, "provisional": True} and bar(share([True] * 190 + [False] * 10), share([True] * 90 + [False] * 110)) == {"passes": True, "provisional": False}
        and not bar(share([True] * 10), share([True] * 6 + [False] * 4))["passes"])
+    sc = pd.DataFrame({"source": ["s"] * 20, "planted": [True] * 10 + [False] * 10, "part": (["rest"] * 5 + ["test"] * 5) * 2,
+                       "lift": [0.0, 0, 0, 1, 9, 0, 0, 1, 2, 9] + [0.0, 5, 5, 5, 5, 0, 1, 5, 5, 5]})
+    sp = split_cut(sc)["s"]
+    # the cut is the 80th percentile of the five planted lifts it is set on (0, 0, 0, 1, 9), which is 2.6
+    ck("a lift cut is set on one part and scored on the other", abs(sp["cut"] - 2.6) < 1e-9 and sp["planted_withheld"]["share"] == 0.8 and sp["real_withheld"]["share"] == 0.4 and sp["planted_withheld"]["n"] == 5)
     t = pd.DataFrame({"planted": [True] * 10 + [False] * 10, "lift": [0.0] * 5 + [1.0] * 5 + [0.0] * 2 + [5.0] * 8, "l1": [True] * 9 + [False] + [True] * 2 + [False] * 8})
     ra = reader_against_lift(t)
     ck("the reader is set against a lift cut of the same cost in real pairs", ra["l1_planted_withheld"] == 0.9 and ra["lift_cut_planted_withheld"] == 0.5 and ra["lift_cut_real_withheld"] == 0.2 and abs(ra["difference"] - 0.4) < 1e-12)
