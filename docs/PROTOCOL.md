@@ -413,3 +413,18 @@ A second set of 35 questions of the same ten kinds is generated with a different
 invented symbols and different ambiguous words, and frozen before any model sees it. Models, limits,
 grading by code, measures and the two verdict rules are those stated above, applied to the second set.
 The spend cap of 1.50 dollars covers both rounds together. The first round's results stand as recorded.
+
+**7 Oct 2026, second pruning round. Written after the code-only counts were seen and before any reading
+was scored.**
+
+The stated measures include what a cut on the lift would cost in real pairs if set to withhold 80% of
+planted ones. Seen on all 200 pairs of each source, that cost is under 50% for eight sources, which
+the count of papers alone (rule L0) does not achieve. But the cut is set on the pairs it is scored
+on, so the figure is not a test of a rule. Added, and marked as added after those figures were seen:
+
+- *Rule L0b.* For each source, the cut is the lift at or below which 80% of the planted pairs in the
+  part of the sample the reader does not use (the last 100 in drawn order) fall. A pair is withheld if
+  its lift is at or below the cut. The rule is scored on the other 100 planted and 100 real pairs of
+  the source, against the same bar.
+
+The comparison of the reader with a lift cut of the same cost stands as stated.
