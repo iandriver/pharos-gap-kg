@@ -1,0 +1,337 @@
+{
+ "release": "pharos319",
+ "seed": 20261008,
+ "sha256": "7f543091500458fbe0a46433383b18874f0a08334901333d9c11c8aa11282392",
+ "questions": [
+  {
+   "id": "first_year-1",
+   "family": "first_year",
+   "text": "In what year was a link between PFDN2 and Eczema first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "year": 2019
+   }
+  },
+  {
+   "id": "first_year-2",
+   "family": "first_year",
+   "text": "In what year was a link between FAM149A and venous thromboembolism first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "year": 2011
+   }
+  },
+  {
+   "id": "first_year-3",
+   "family": "first_year",
+   "text": "In what year was a link between SMG9 and breast carcinoma first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "year": 2013
+   }
+  },
+  {
+   "id": "first_year-4",
+   "family": "first_year",
+   "text": "In what year was a link between BDH2 and Testicular Germ Cell Tumor first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "year": 2015
+   }
+  },
+  {
+   "id": "studies_as_of-1",
+   "family": "studies_as_of",
+   "text": "As of 2013, how many GWAS studies supported the link between VAV1 and age-related macular degeneration? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 4
+   }
+  },
+  {
+   "id": "studies_as_of-2",
+   "family": "studies_as_of",
+   "text": "As of 2018, how many GWAS studies supported the link between SMAD3 and coronary artery disease? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 5
+   }
+  },
+  {
+   "id": "studies_as_of-3",
+   "family": "studies_as_of",
+   "text": "As of 2018, how many GWAS studies supported the link between TOMM40 and coronary artery disease? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 5
+   }
+  },
+  {
+   "id": "studies_as_of-4",
+   "family": "studies_as_of",
+   "text": "As of 2019, how many GWAS studies supported the link between CDK2AP1 and schizophrenia? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 8
+   }
+  },
+  {
+   "id": "not_yet-1",
+   "family": "not_yet",
+   "text": "As of 2010, was FHL5 linked to migraine disorder? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": 2013
+   }
+  },
+  {
+   "id": "not_yet-2",
+   "family": "not_yet",
+   "text": "As of 2013, was ACTRT3 linked to central nervous system cancer? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": 2014
+   }
+  },
+  {
+   "id": "not_yet-3",
+   "family": "not_yet",
+   "text": "As of 2019, was DECR1 linked to attention deficit hyperactivity disorder? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": 2021
+   }
+  },
+  {
+   "id": "not_yet-4",
+   "family": "not_yet",
+   "text": "As of 2018, was RAP1GAP2 linked to Thyrotoxic periodic paralysis? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": 2019
+   }
+  },
+  {
+   "id": "never-1",
+   "family": "never",
+   "text": "As of 2020, was XKR9 linked to major depressive disorder? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-2",
+   "family": "never",
+   "text": "As of 2020, was GPN2 linked to glomerulonephritis? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-3",
+   "family": "never",
+   "text": "As of 2020, was TMEM187 linked to asthma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": null
+   }
+  },
+  {
+   "id": "never-4",
+   "family": "never",
+   "text": "As of 2020, was HMGCLL1 linked to cervical carcinoma? If not, was a link reported later, and in what year? End with a last line  FINAL: {\"problem\": P, \"linked\": true or false, \"reported_later\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "linked": false,
+    "reported_later": null
+   }
+  },
+  {
+   "id": "not_in_graph-1",
+   "family": "not_in_graph",
+   "text": "In what year was a link between XQVT3 and kidney disease first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-2",
+   "family": "not_in_graph",
+   "text": "In what year was a link between ZJKP8 and Headache first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-3",
+   "family": "not_in_graph",
+   "text": "In what year was a link between WQZR5 and allergic rhinitis first reported? End with a last line  FINAL: {\"problem\": P, \"year\": YEAR or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "ambiguous-1",
+   "family": "ambiguous",
+   "text": "How many targets is arthritis linked to in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-2",
+   "family": "ambiguous",
+   "text": "How many targets is leukemia linked to in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-3",
+   "family": "ambiguous",
+   "text": "How many targets is sclerosis linked to in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "top_then_count-1",
+   "family": "top_then_count",
+   "text": "Which target is linked to Moderate albuminuria by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "CUBN",
+    "count": 21
+   }
+  },
+  {
+   "id": "top_then_count-2",
+   "family": "top_then_count",
+   "text": "Which target is linked to childhood onset asthma by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "IKZF3",
+    "count": 59
+   }
+  },
+  {
+   "id": "top_then_count-3",
+   "family": "top_then_count",
+   "text": "Which target is linked to colorectal cancer by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "POU5F1B",
+    "count": 16
+   }
+  },
+  {
+   "id": "top_then_count-4",
+   "family": "top_then_count",
+   "text": "Which target is linked to hypospadias by the most GWAS studies in this graph, and to how many traits in total is that target linked? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "DGKK",
+    "count": 6
+   }
+  },
+  {
+   "id": "shared-1",
+   "family": "shared",
+   "text": "How many targets are linked to both central nervous system cancer and lung adenocarcinoma in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 17
+   }
+  },
+  {
+   "id": "shared-2",
+   "family": "shared",
+   "text": "How many targets are linked to both breast carcinoma and allergic disease in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 17
+   }
+  },
+  {
+   "id": "shared-3",
+   "family": "shared",
+   "text": "How many targets are linked to both type 2 diabetes mellitus and inflammatory bowel disease in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 228
+   }
+  },
+  {
+   "id": "new_since-1",
+   "family": "new_since",
+   "text": "How many links to interstitial lung disease were first reported after 2015? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 4
+   }
+  },
+  {
+   "id": "new_since-2",
+   "family": "new_since",
+   "text": "How many links to celiac disease were first reported after 2017? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 33
+   }
+  },
+  {
+   "id": "new_since-3",
+   "family": "new_since",
+   "text": "How many links to anterior uveitis were first reported after 2019? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 0
+   }
+  },
+  {
+   "id": "related_wording-1",
+   "family": "related_wording",
+   "text": "As of 2020, CCDC170 was not linked to lung adenocarcinoma. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"problem\": P, \"related_trait\": TRAIT NAME OR ID or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "related_trait_any_of": [
+     "EFO:0000311",
+     "cancer"
+    ]
+   }
+  },
+  {
+   "id": "related_wording-2",
+   "family": "related_wording",
+   "text": "As of 2016, CD68 was not linked to Abnormality of refraction. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"problem\": P, \"related_trait\": TRAIT NAME OR ID or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "related_trait_any_of": [
+     "HP:0000545",
+     "Myopia"
+    ]
+   }
+  },
+  {
+   "id": "related_wording-3",
+   "family": "related_wording",
+   "text": "As of 2014, CAMK2D was not linked to acute lymphoblastic leukemia. Was it already linked to the same trait under another id, or to a broader or narrower form of it? Name one such trait. End with a last line  FINAL: {\"problem\": P, \"related_trait\": TRAIT NAME OR ID or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "related_trait_any_of": [
+     "EFO:0000095",
+     "chronic lymphocytic leukemia"
+    ]
+   }
+  }
+ ]
+}
