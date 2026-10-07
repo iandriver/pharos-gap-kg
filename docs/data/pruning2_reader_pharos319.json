@@ -1,0 +1,49 @@
+{
+ "release": "pharos319",
+ "brief_sha": "8ddacd384504",
+ "dev_pairs": 440,
+ "dev_unsearchable": 1,
+ "models": {
+  "deepseek/deepseek-v4-flash": {
+   "read": 225,
+   "passed_the_check": 0.9866666666666667,
+   "planted_withheld": 0.8493150684931506,
+   "real_withheld": 0.41363636363636364,
+   "difference": 0.435678704856787,
+   "price_in_out": [
+    0.09,
+    0.18
+   ],
+   "cost": 0.1841602855,
+   "qualifies": true
+  },
+  "inception/mercury-2.5": {
+   "read": 225,
+   "passed_the_check": 0.9466666666666667,
+   "planted_withheld": 0.817351598173516,
+   "real_withheld": 0.4090909090909091,
+   "difference": 0.4082606890826069,
+   "price_in_out": [
+    0.04,
+    0.15
+   ],
+   "cost": 0.162766896,
+   "qualifies": false
+  },
+  "z-ai/glm-5.3-flash": {
+   "read": 225,
+   "passed_the_check": 0.9777777777777777,
+   "planted_withheld": 0.8264840182648402,
+   "real_withheld": 0.38636363636363635,
+   "difference": 0.44012038190120384,
+   "price_in_out": [
+    0.15,
+    0.5
+   ],
+   "cost": 0.17369131848,
+   "qualifies": true
+  }
+ },
+ "chosen": "deepseek/deepseek-v4-flash",
+ "rule": "passes the check on at least 95% of answers; then the largest planted minus real withheld; within 0.02, the cheaper"
+}
