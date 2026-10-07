@@ -468,12 +468,32 @@ def ingraph(release: str) -> dict:
     res, _ = round1.evaluate(links, pl[pl.in_graph_set][KEY], gwas, partners, terms)
     for s, r in res.items():
         r["matched"] = bool(MATCHED[0] <= r["auc_degree_product"] <= MATCHED[1])
+    # Added after the first run, as description. The stated check counts a pair's OTHER pairs (the
+    # degrees less the pair itself). Beside it: the same area on the degrees as they stand in the
+    # source, which says whether a planted pair's target and disease are as common as a real pair's.
+    for s, r in commonness(links, pl[pl.in_graph_set]).items():
+        res[s].update(r)
     m = res["Monarch"]
     out = {"sources": res, "monarch_round_one_gaps": "kept" if m["rule_applied"] else "restored",
            "rule_applied_to": sorted(s for s, r in res.items() if s != "all sources" and r["rule_applied"])}
     (W / "ingraph.json").write_text(dump(out))
     if out["monarch_round_one_gaps"] == "restored":
         restore(release)
+    return out
+
+
+def commonness(links: pd.DataFrame, pl: pd.DataFrame) -> dict:
+    """For each source: the area, real one-source against planted, of the product of the target's and
+    the disease's number of pairs in the source, and the medians of the two for real one-source pairs."""
+    dt = links.groupby(["source", "target"]).disease.nunique().to_dict()
+    dd = links.groupby(["source", "disease"]).target.nunique().to_dict()
+    out = {}
+    for src, g in one_source(links).groupby("source"):
+        p = pl[pl.source == src]
+        rt, rd = np.array([dt[(src, t)] for t in g.target]), np.array([dd[(src, d)] for d in g.disease])
+        pt, pd_ = np.array([dt[(src, t)] for t in p.target]), np.array([dd[(src, d)] for d in p.disease])
+        out[src] = {"auc_degree_counting_the_pair_itself": round1.auc((rt * rd).astype(float), (pt * pd_).astype(float)),
+                    "median_diseases_per_target": float(np.median(rt)), "median_targets_per_disease": float(np.median(rd))}
     return out
 
 
@@ -523,6 +543,9 @@ def _selftest() -> int:
     ck("a cut matched to a real share withholds at least that share of real pairs", matched_cut(np.array([0.0, 0, 1, 2, 3, 4, 5, 6, 7, 8]), np.array([0.0, 0, 0, 1, 9]), 0.25) == (0.8, 0.3))
     ck("a cut matched to nothing withholds nothing", matched_cut(np.array([1.0, 2]), np.array([0.0]), 0.0) == (0.0, 0.0))
     ck("a number that is not a number is written as null", json.loads(dump({"a": float("nan"), "b": [1.5, float("nan")]})) == {"a": None, "b": [1.5, None]})
+
+    cm = commonness(links, pl)["s"]
+    ck("commonness is read on the degrees as they stand in the source", 0.3 < cm["auc_degree_counting_the_pair_itself"] < 0.7 and cm["median_diseases_per_target"] == 1.0 and cm["median_targets_per_disease"] == 10.0)
 
     g1, d1, dx = {"count": 10, "not_found": []}, {"count": 500, "not_found": []}, {"count": 500, "not_found": ["zz"]}
     ck("a pair is unsearchable without a symbol, without a name, or when PubMed does not find the name",

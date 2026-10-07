@@ -38,6 +38,7 @@ from pharos_gap_kg import paths
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 TOOL = "pharos-gap-kg"
 RECORDS, CUT, MIN_PASSAGE = 5, 1800, 20
+MAX_TOKENS = 1500                            # room for a model that reasons before it answers; 300 left three models with no answer
 EVERYTHING = "all[sb]"                       # every PubMed record: the denominator of the lift
 OPERATORS = {"and", "or", "not"}
 PUNCT = re.compile(r"[^\w\s'\-]", re.UNICODE)
@@ -247,7 +248,7 @@ def read(symbol: str, name: str, recs: list[dict], model: str, key: str | None, 
     row = {"model": model, "symbol": symbol, "name": name, "pmids": ids, "brief": BRIEF_SHA, "in": 0, "out": 0, "cost": 0.0, "answers": [], "error": None}
     res = {"verdict": None, "why": "not asked"}
     for attempt in range(2):
-        body = {"model": model, "messages": msgs, "max_tokens": 300, "temperature": 0}
+        body = {"model": model, "messages": msgs, "max_tokens": MAX_TOKENS, "temperature": 0}
         if "openrouter.ai" in base_url:
             body["usage"] = {"include": True}
         r = post(base_url, key, body)
