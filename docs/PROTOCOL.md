@@ -113,6 +113,28 @@ the 2018 ontology did not have, and is reported with that caveat. A target with 
 chromosome has no neighbours, and a trait the ontology does not hold has no lineage; both counts are
 reported.
 
+## Disease traits, and the undated disease table
+
+Defined on 7 Oct 2026 before either was computed.
+
+**By kind of trait.** A trait is *disease-like* when the live ontology term it stands for is a MONDO,
+Orphanet or HP term, and a *measurement or other* trait otherwise. The primary measure is reported
+for each kind as well as overall. What was already known when this was written: 14,227 of the
+130,369 positives are on disease-like traits.
+
+**The undated disease table.** Pharos holds target and disease associations from twelve sources with
+no dates, as of 2022. A candidate (target, trait) is *in a source* when that source has a row for the
+target whose MONDO id is the trait's live term. For each source, over the scored traits whose live
+term is a MONDO id:
+
+- how many candidates are in it, and how many of those are positives;
+- how many training links are in it;
+- the primary measure of the source used as a scorer (1 if the candidate is in it, else 0).
+
+A source that ranks later links well is either prior knowledge or the later links themselves under
+another name. Without dates the two cannot be told apart, which is why a result that uses such a
+table must also be reported without it.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
