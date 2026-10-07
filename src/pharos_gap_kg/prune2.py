@@ -458,6 +458,34 @@ def report(release: str) -> dict:
     return out
 
 
+def show(out: dict) -> None:
+    pc = lambda d: f"{d['share']:6.1%} [{d['low']:5.1%}, {d['high']:5.1%}] n={d['n']:<4d}"
+    order = lambda rows: sorted(rows.items(), key=lambda kv: (kv[0] == "all sources", kv[0]))
+    print(f"  unsearchable: {out['unsearchable']}")
+    print("  L0, no paper mentions the pair")
+    for s, r in order(out["code_only_L0"]):
+        print(f"    {s:34s} planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  AUC papers {r['auc_papers']:.3f}  lift {r['auc_lift']:.3f}  "
+              f"lift-cut cost {r['real_withheld_by_a_lift_cut_that_withholds_80pct_of_planted']:.3f}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}")
+    rd = out["reader"]
+    if rd.get("chosen"):
+        print(f"  L1 on the test part, reader {rd['chosen']}")
+        for s, r in order(rd["test_L1"]):
+            print(f"    {s:34s} planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  read {r['read']:<4d} no verdict {r['no_verdict']:<3d} "
+                  f"{'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}")
+        a = rd["against_lift"]
+        print(f"  reader against a lift cut of the same cost: L1 {a['l1_planted_withheld']:.3f} planted at {a['l1_real_withheld']:.3f} real; lift cut {a['lift_cut_planted_withheld']:.3f} at {a['lift_cut_real_withheld']:.3f}; "
+              f"difference {a['difference']:+.3f} [{a['low']:+.3f}, {a['high']:+.3f}]  adds: {a['reader_adds']}")
+        print(f"  planted pairs the reader kept with a passage: {rd['planted_kept_with_a_passage']} of {rd['planted_read']} read")
+    print("  fields")
+    for k, r in out["fields"].items():
+        a, f = r["auc_for_mentioned"], r["auc_for_lineage_all_one_source_pairs"]
+        bands = "  ".join(f"{n.split('_')[0]} {d['share']:.2f} (n={d['n']})" for n, d in r["not_mentioned_by_band"].items())
+        print(f"    {k:44s} AUC mentioned {a['auc'] if a['auc'] is not None else float('nan'):.3f} [{a['low']:.3f}, {a['high']:.3f}] ({r['mentioned']}/{r['not_mentioned']})  "
+              f"{'GRADES' if r['grades_its_source'] else 'no' if r['measurable'] else 'not measurable'}{'' if r['independent_of_the_label'] else ' (not independent)'}  "
+              f"not mentioned: {bands}; planted {r['planted_not_mentioned']['share']:.2f}  | lineage AUC {f['auc']:.3f} [{f['low']:.3f}, {f['high']:.3f}]")
+    print(f"  spent on model calls: {out['spent_on_model_calls']:.3f} of {out['spend_cap']:.2f}")
+
+
 def ingraph(release: str) -> dict:
     C, W = paths.context(release), work(release)
     pl, _ = frozen(release)
@@ -465,13 +493,16 @@ def ingraph(release: str) -> dict:
     partners = pd.read_parquet(C / "partners.parquet")
     gwas = pd.read_parquet(paths.bundle(release) / "links.parquet", columns=["target", "trait"])
     terms = ontology.read(registry.require("efo_obo"))
-    res, _ = round1.evaluate(links, pl[pl.in_graph_set][KEY], gwas, partners, terms)
+    res, detail = round1.evaluate(links, pl[pl.in_graph_set][KEY], gwas, partners, terms)
+    detail.to_parquet(W / "ingraph_detail.parquet", index=False)
     for s, r in res.items():
         r["matched"] = bool(MATCHED[0] <= r["auc_degree_product"] <= MATCHED[1])
     # Added after the first run, as description. The stated check counts a pair's OTHER pairs (the
     # degrees less the pair itself). Beside it: the same area on the degrees as they stand in the
     # source, which says whether a planted pair's target and disease are as common as a real pair's.
     for s, r in commonness(links, pl[pl.in_graph_set]).items():
+        res[s].update(r)
+    for s, r in standardised(detail).items():
         res[s].update(r)
     m = res["Monarch"]
     out = {"sources": res, "monarch_round_one_gaps": "kept" if m["rule_applied"] else "restored",
@@ -494,6 +525,25 @@ def commonness(links: pd.DataFrame, pl: pd.DataFrame) -> dict:
         pt, pd_ = np.array([dt[(src, t)] for t in p.target]), np.array([dd[(src, d)] for d in p.disease])
         out[src] = {"auc_degree_counting_the_pair_itself": round1.auc((rt * rd).astype(float), (pt * pd_).astype(float)),
                     "median_diseases_per_target": float(np.median(rt)), "median_targets_per_disease": float(np.median(rd))}
+    return out
+
+
+def standardised(detail: pd.DataFrame) -> dict:
+    """For each source: the share of planted pairs withheld when they are weighted to have the real
+    one-source pairs' spread of other-pair counts (fifths of the real pairs' degree product)."""
+    out = {}
+    for src, g in detail.groupby("source"):
+        r, p = g[~g.planted], g[g.planted]
+        edges = np.unique(np.quantile(r.degree_product, np.linspace(0, 1, 6)))
+        rb, pb = np.searchsorted(edges, r.degree_product, side="right"), np.searchsorted(edges, p.degree_product, side="right")
+        num = den = 0.0
+        for k in np.unique(rb):
+            m = pb == k
+            if m.any():
+                w = float((rb == k).mean())
+                num += w * float((~p.corroborated[m]).mean())
+                den += w
+        out[src] = {"planted_withheld_at_the_real_pairs_other_pair_counts": num / den if den else float("nan"), "share_of_real_pairs_in_strata_with_a_planted_pair": den}
     return out
 
 
@@ -546,6 +596,12 @@ def _selftest() -> int:
 
     cm = commonness(links, pl)["s"]
     ck("commonness is read on the degrees as they stand in the source", 0.3 < cm["auc_degree_counting_the_pair_itself"] < 0.7 and cm["median_diseases_per_target"] == 1.0 and cm["median_targets_per_disease"] == 10.0)
+
+    det = pd.DataFrame({"source": ["s"] * 12, "planted": [False] * 6 + [True] * 6, "degree_product": [0, 0, 0, 9, 9, 9, 0, 9, 9, 9, 9, 9],
+                        "corroborated": [False] * 6 + [False, True, True, True, True, True]})
+    st = standardised(det)["s"]
+    # real pairs are half at 0 and half at 9; planted withheld is 1.0 at 0 and 0.0 at 9, so 0.5 once weighted (0.167 unweighted)
+    ck("planted pairs are reweighted to the real pairs' other-pair counts", abs(st["planted_withheld_at_the_real_pairs_other_pair_counts"] - 0.5) < 1e-12 and st["share_of_real_pairs_in_strata_with_a_planted_pair"] == 1.0)
 
     g1, d1, dx = {"count": 10, "not_found": []}, {"count": 500, "not_found": []}, {"count": 500, "not_found": ["zz"]}
     ck("a pair is unsearchable without a symbol, without a name, or when PubMed does not find the name",
@@ -612,7 +668,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {m:30s} read {r['read']}  passed the check {r['passed_the_check']:.3f}  planted withheld {r['planted_withheld']:.3f}  real withheld {r['real_withheld']:.3f}  difference {r['difference']:+.3f}  qualifies {r['qualifies']}")
         print(f"  chosen: {out['chosen']}")
     elif stage == "report":
-        out = report(release)
+        show(report(release))
         print(f"  -> {paths.DOCS_DATA / f'pruning2_{release}.json'}")
     else:
         raise SystemExit(__doc__)
