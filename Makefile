@@ -16,6 +16,9 @@ selftest:
 	$(PY) -m pharos_gaps.graph --selftest
 	$(PY) -m pharos_gaps.score --selftest
 	$(PY) -m pharos_gaps.baselines --selftest
+	$(PY) -m pharos_gaps.ontology --selftest
+	$(PY) -m pharos_gaps.position --selftest
+	$(PY) -m pharos_gaps.controls --selftest
 
 test:
 	$(PY) -m pytest -q

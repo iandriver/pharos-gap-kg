@@ -90,8 +90,16 @@ Reported for every scorer:
 
 - the share of positives that are lineage-linked, position-linked, and either;
 - the primary measure on positives that are neither, with linked positives removed from the candidates;
+- the same with every linked candidate removed, positive or not;
 - the locus-collapsed primary measure;
-- the paired comparisons, repeated on the positives that are neither.
+- the paired comparisons, repeated on the positives that are neither, both ways.
+
+The two ways of setting linked pairs aside differ in what they ask. Removing only the linked
+positives leaves linked non-links among the candidates, so a scorer that ranks linked pairs high now
+ranks mostly negatives high: that reading is a lower bound for any scorer that uses lineage or
+position. Removing every linked candidate asks only how well the scorer orders the pairs nothing else
+explains. A claim that one scorer beats another on new links needs both. (Second way added on 7 Oct
+before either was computed.)
 
 Two further baselines, also without a fitted parameter:
 
