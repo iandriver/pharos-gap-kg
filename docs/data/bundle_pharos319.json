@@ -26,11 +26,13 @@
  "dated_graphs": [
   "pharos319_asof2018: 99,435 edges found under the same ids"
  ],
+ "backtest": "split frozen at 2018",
  "files": {
-  "nodes.parquet": "7dd9e1f9ebc7f7e9d1602cd58279686b7dcf371f659ba49bfbcba215a61b446a",
+  "nodes.parquet": "2ba937e2bb8bd4ebc86b867ea2f429d46dacff48e90fcb43e6c62c2786a8bde4",
   "links.parquet": "9e54546a9b42ca00dbdb49a9fce8fc3898a4237cd7f5e1dbefd85cebc97d68fe",
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
-  "neighbours.parquet": "9431cf08e7ef9bfee456947237fe912eab8d8d49bc804510573b38494a7a59f6"
+  "neighbours.parquet": "9431cf08e7ef9bfee456947237fe912eab8d8d49bc804510573b38494a7a59f6",
+  "backtest.json": "372b0f95bf93b4483a06ad8db6a5bbe42393a2871581b307c14966fcda379ac2"
  }
 }

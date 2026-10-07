@@ -1,13 +1,14 @@
 """Everything the question-answering front end reads, built once into one directory with a manifest.
 
 The front end answers from the bundle and from nothing else, so what a user is told can be traced to
-six files and their digests:
+these files and their digests:
 
     nodes.parquet        every Pharos target and every GWAS trait, with what names and grades them
     links.parquet        one row per target-trait link: its edge id, first and last year, study counts
     evidence.parquet     one row per (link, study): the study, its paper and the paper's year
     lineage.parquet      pairs of traits that are one term, or broader and narrower
     neighbours.parquet   pairs of targets within 500,000 bases, and the bases between them
+    backtest.json        how the ranking the front end offers has held on the frozen split, when measured
     manifest.json        the inputs' digests, each file's digest, and the counts
 
 The links are every link in the release, whatever its year. "As of 2018" is a filter the front end
@@ -45,7 +46,7 @@ def lineage_table(traits: list[str], terms: dict) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["a", "b", "relation"])
 
 
-def node_table(release: str, known: dict, terms: dict) -> pd.DataFrame:
+def node_table(release: str, known: dict, terms: dict, where: pd.DataFrame | None = None) -> pd.DataFrame:
     d = paths.tables(release)
     prot = pq.read_table(d / "protein.parquet", columns=["id", "uniprot", "sym", "description", "geneid"]).to_pandas()
     tgt = pq.read_table(d / "target.parquet", columns=["id", "tdl", "fam"]).to_pandas().rename(columns={"id": "target_id"})
@@ -54,6 +55,7 @@ def node_table(release: str, known: dict, terms: dict) -> pd.DataFrame:
     p["node"] = "UniProtKB:" + p.uniprot
     p = p.set_index("node")
     rows = []
+    at = {} if where is None else where.sort_values(["target", "start"]).drop_duplicates("target").set_index("target")[["chr", "start", "end"]].to_dict("index")
     traits = [c for c, v in known.items() if v[1] != "biolink:Protein"]
     canon, dis = context.kinds(traits, terms)
     live = dict(zip(traits, canon))
@@ -63,10 +65,11 @@ def node_table(release: str, known: dict, terms: dict) -> pd.DataFrame:
             r = p.loc[c]
             rows.append({"id": c, "kind": "target", "category": cat, "name": name, "full_name": r.description or "",
                          "level": r.tdl or "", "family": r.fam if isinstance(r.fam, str) else "",
-                         "xref": f"NCBIGene:{int(r.geneid)}" if pd.notna(r.geneid) else "", "live_term": "", "disease_like": False})
+                         "xref": f"NCBIGene:{int(r.geneid)}" if pd.notna(r.geneid) else "", "live_term": "", "disease_like": False,
+                         "chr": at.get(c, {}).get("chr", ""), "start": int(at.get(c, {}).get("start", 0)), "end": int(at.get(c, {}).get("end", 0))})
         else:
             rows.append({"id": c, "kind": "trait", "category": cat, "name": name, "full_name": "", "level": "", "family": "",
-                         "xref": "", "live_term": live[c] or "", "disease_like": bool(disease[c])})
+                         "xref": "", "live_term": live[c] or "", "disease_like": bool(disease[c]), "chr": "", "start": 0, "end": 0})
     return pd.DataFrame(rows)
 
 
@@ -82,6 +85,32 @@ def check_against_dated_graphs(release: str, links: pd.DataFrame) -> list[str]:
             raise SystemExit(f"REFUSED: {len(bad):,} edges of {g.name} are missing from the bundle or sit under another id")
         said.append(f"{g.name}: {len(e):,} edges found under the same ids")
     return said
+
+
+def backtest() -> dict | None:
+    """What the front end may say about how well its ranking has held: the headline scores of the
+    frozen backtest and the calibration by rank. Read from the committed summaries, newest cutoff."""
+    cal = sorted(paths.DOCS_DATA.glob("calibration_gene_trait_*.json"))
+    if not cal:
+        return None
+    c = json.loads(cal[-1].read_text())
+    b = paths.DOCS_DATA / f"baselines_gene_trait_{c['cutoff']}.json"
+    k = paths.DOCS_DATA / f"controls_gene_trait_{c['cutoff']}.json"
+    if not (b.is_file() and k.is_file()):
+        return None
+    base, ctl = json.loads(b.read_text()), json.loads(k.read_text())
+    if base["split"] != c["split"] or ctl["split"] != c["split"]:
+        raise SystemExit("REFUSED: the baseline, control and calibration summaries are not from one split")
+    pair = ctl["paired"]["B3-B1"]
+    head = {"cutoff": c["cutoff"], "data_ends": c["data_ends"], "measure": "mean average precision over traits",
+            "chance": base["results"]["B0"]["primary"][0], "degree": base["results"]["B1"]["primary"][0],
+            "neighbours": base["results"]["B3"]["primary"][0], "positives": base["positives"], "traits_scored": base["traits_scored"],
+            "share_of_later_links_explained_by_wording_or_position": ctl["shares"]["either"] / ctl["shares"]["positives"],
+            "neighbours_minus_degree_all": [pair["full"]["difference"], pair["full"]["low"], pair["full"]["high"]],
+            "neighbours_minus_degree_unexplained_lower_bound": [pair["low"]["difference"], pair["low"]["low"], pair["low"]["high"]],
+            "neighbours_minus_degree_unexplained_neutral": [pair["neutral"]["difference"], pair["neutral"]["low"], pair["neutral"]["high"]],
+            "split": c["split"]}
+    return {"headline": head, "calibration": {k_: c[k_] for k_ in ("cutoff", "data_ends", "base_rate", "by_trait", "by_target")}}
 
 
 def build(release: str) -> dict:
@@ -105,17 +134,25 @@ def build(release: str) -> dict:
     for c in ("first_year", "last_year", "n_studies", "n_papers"):
         links[c] = links[c].astype(int)
     terms = ontology.read(registry.require("efo_obo"))
-    nodes = node_table(release, known, terms)
+    genes = position.genes(registry.require("ensembl_gtf_113"))
+    where = position.target_genes(release, genes)
+    nodes = node_table(release, known, terms, where)
     traits = nodes[nodes.kind == "trait"].id.tolist()
     targets = nodes[nodes.kind == "target"].id.tolist()
     lin = lineage_table(traits, terms)
-    genes = position.genes(registry.require("ensembl_gtf_113"))
-    nb = position.neighbour_table(position.target_genes(release, genes), targets)
+    nb = position.neighbour_table(where, targets)
     evidence = rows.rename(columns={"subject": "target", "object": "trait", "study_acc": "study", "pubmedid": "pmid"})
     out = paths.bundle(release)
     out.mkdir(parents=True, exist_ok=True)
     for name, df in (("nodes", nodes), ("links", links), ("evidence", evidence), ("lineage", lin), ("neighbours", nb)):
         df.to_parquet(out / f"{name}.parquet", index=False)
+    files = list(FILES)
+    bt = backtest()
+    if bt is not None:
+        (out / "backtest.json").write_text(json.dumps(bt, indent=1) + "\n")
+        files.append("backtest.json")
+    elif (out / "backtest.json").exists():
+        (out / "backtest.json").unlink()
     side = lambda k: json.loads(registry.SOURCES[k].path.with_name(registry.SOURCES[k].filename + ".lineage.json").read_text())["sha256"]
     src = registry.SOURCES[release]
     man = {
@@ -128,7 +165,8 @@ def build(release: str) -> dict:
         "lineage_pairs": int(len(lin) // 2), "neighbour_pairs": int(len(nb) // 2),
         "conformance": "10 of 10 checks passed" if rep.passed else "failed",
         "dated_graphs": check_against_dated_graphs(release, links),
-        "files": {f: graph.file_sha(out / f) for f in FILES},
+        "backtest": (f"split frozen at {bt['headline']['cutoff']}" if bt else "none"),
+        "files": {f: graph.file_sha(out / f) for f in files},
     }
     (out / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")

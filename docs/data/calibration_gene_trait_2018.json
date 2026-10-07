@@ -1,0 +1,277 @@
+{
+ "cutoff": 2018,
+ "release": "pharos319",
+ "scorer": "B3 neighbours",
+ "base_rate": 0.006442397179179922,
+ "data_ends": 2023,
+ "split": {
+  "train": "77529fa5abc4d9c7141c2a0e65ee01e85592165f252e369e513a4b0f6e4fa41b",
+  "test": "673fe46f804f160313632bc37ee4ec2d18526a8475e6ab442058f22448341221",
+  "unscored": "cd8184cc6a8967dd0cf24d06496860a92b7c4703fa06effd06f860c046b3bfb0"
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "by_trait": {
+  "1-10": {
+   "all": {
+    "candidates": 5400.0,
+    "positives": 952.8,
+    "share": 0.17644444444444443
+   },
+   "linked": {
+    "candidates": 2265.4,
+    "positives": 637.2,
+    "share": 0.2812748300520879
+   },
+   "not_linked": {
+    "candidates": 3134.6,
+    "positives": 315.6,
+    "share": 0.10068270273719136
+   },
+   "disease_like": {
+    "candidates": 1720.0,
+    "positives": 243.8,
+    "share": 0.14174418604651162
+   },
+   "measurement_or_other": {
+    "candidates": 3680.0,
+    "positives": 709.0,
+    "share": 0.19266304347826088
+   },
+   "disease_like_not_linked": {
+    "candidates": 1156.0,
+    "positives": 108.2,
+    "share": 0.09359861591695502
+   }
+  },
+  "11-50": {
+   "all": {
+    "candidates": 21600.0,
+    "positives": 2851.2,
+    "share": 0.13199999999999998
+   },
+   "linked": {
+    "candidates": 6228.6,
+    "positives": 1559.4,
+    "share": 0.25036123687506023
+   },
+   "not_linked": {
+    "candidates": 15371.4,
+    "positives": 1291.8,
+    "share": 0.08403918966392131
+   },
+   "disease_like": {
+    "candidates": 6880.0,
+    "positives": 757.0,
+    "share": 0.11002906976744187
+   },
+   "measurement_or_other": {
+    "candidates": 14720.0,
+    "positives": 2094.2,
+    "share": 0.14226902173913042
+   },
+   "disease_like_not_linked": {
+    "candidates": 5379.2,
+    "positives": 429.0,
+    "share": 0.07975163593099346
+   }
+  },
+  "51-100": {
+   "all": {
+    "candidates": 27000.0,
+    "positives": 2660.4,
+    "share": 0.09853333333333333
+   },
+   "linked": {
+    "candidates": 6812.2,
+    "positives": 1211.2,
+    "share": 0.17779865535363026
+   },
+   "not_linked": {
+    "candidates": 20187.8,
+    "positives": 1449.2,
+    "share": 0.0717859301162088
+   },
+   "disease_like": {
+    "candidates": 8600.0,
+    "positives": 492.8,
+    "share": 0.05730232558139535
+   },
+   "measurement_or_other": {
+    "candidates": 18400.0,
+    "positives": 2167.6,
+    "share": 0.11780434782608695
+   },
+   "disease_like_not_linked": {
+    "candidates": 6543.0,
+    "positives": 259.4,
+    "share": 0.03964542258902644
+   }
+  },
+  "101-500": {
+   "all": {
+    "candidates": 216000.0,
+    "positives": 14583.6,
+    "share": 0.06751666666666667
+   },
+   "linked": {
+    "candidates": 33349.0,
+    "positives": 5516.0,
+    "share": 0.16540226093735944
+   },
+   "not_linked": {
+    "candidates": 182651.0,
+    "positives": 9067.6,
+    "share": 0.04964440380835583
+   },
+   "disease_like": {
+    "candidates": 68800.0,
+    "positives": 1984.6,
+    "share": 0.028845930232558138
+   },
+   "measurement_or_other": {
+    "candidates": 147200.0,
+    "positives": 12599.0,
+    "share": 0.08559103260869565
+   },
+   "disease_like_not_linked": {
+    "candidates": 62006.8,
+    "positives": 1340.6,
+    "share": 0.02162020939638878
+   }
+  }
+ },
+ "by_target": {
+  "1-5": {
+   "all": {
+    "candidates": 68655.0,
+    "positives": 7613.6,
+    "share": 0.11089651154322337
+   },
+   "linked": {
+    "candidates": 17919.6,
+    "positives": 3334.0,
+    "share": 0.18605326011741335
+   },
+   "not_linked": {
+    "candidates": 50735.4,
+    "positives": 4279.6,
+    "share": 0.08435136019426279
+   },
+   "disease_like": {
+    "candidates": 17116.4,
+    "positives": 869.0,
+    "share": 0.050770021733542094
+   },
+   "measurement_or_other": {
+    "candidates": 51538.6,
+    "positives": 6744.6,
+    "share": 0.13086502155665852
+   },
+   "disease_like_not_linked": {
+    "candidates": 14079.0,
+    "positives": 532.0,
+    "share": 0.037786774628879895
+   }
+  },
+  "6-20": {
+   "all": {
+    "candidates": 205965.0,
+    "positives": 9258.4,
+    "share": 0.044951326681717765
+   },
+   "linked": {
+    "candidates": 26987.8,
+    "positives": 3187.4,
+    "share": 0.11810521791327934
+   },
+   "not_linked": {
+    "candidates": 178977.2,
+    "positives": 6071.0,
+    "share": 0.033920521720085015
+   },
+   "disease_like": {
+    "candidates": 57601.2,
+    "positives": 1062.2,
+    "share": 0.018440588043304656
+   },
+   "measurement_or_other": {
+    "candidates": 148363.8,
+    "positives": 8196.2,
+    "share": 0.05524393416722948
+   },
+   "disease_like_not_linked": {
+    "candidates": 53343.0,
+    "positives": 688.2,
+    "share": 0.012901411619144031
+   }
+  },
+  "21-50": {
+   "all": {
+    "candidates": 411930.0,
+    "positives": 12809.2,
+    "share": 0.03109557449081155
+   },
+   "linked": {
+    "candidates": 40183.0,
+    "positives": 3634.2,
+    "share": 0.09044123136649826
+   },
+   "not_linked": {
+    "candidates": 371747.0,
+    "positives": 9175.0,
+    "share": 0.02468076406803552
+   },
+   "disease_like": {
+    "candidates": 127735.2,
+    "positives": 1515.2,
+    "share": 0.011862039594410938
+   },
+   "measurement_or_other": {
+    "candidates": 284194.8,
+    "positives": 11294.0,
+    "share": 0.039740347114021794
+   },
+   "disease_like_not_linked": {
+    "candidates": 120562.2,
+    "positives": 977.2,
+    "share": 0.008105359723030933
+   }
+  }
+ },
+ "degree_by_trait": {
+  "1-10": {
+   "all": {
+    "candidates": 5400.0,
+    "positives": 816.4,
+    "share": 0.15118518518518517
+   }
+  },
+  "11-50": {
+   "all": {
+    "candidates": 21600.0,
+    "positives": 2582.2,
+    "share": 0.11954629629629629
+   }
+  },
+  "51-100": {
+   "all": {
+    "candidates": 27000.0,
+    "positives": 2172.4,
+    "share": 0.08045925925925926
+   }
+  },
+  "101-500": {
+   "all": {
+    "candidates": 216000.0,
+    "positives": 12207.2,
+    "share": 0.056514814814814816
+   }
+  }
+ }
+}
