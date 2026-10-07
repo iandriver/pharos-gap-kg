@@ -46,6 +46,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   against a manifest of digests. A name that matches nothing is "not in the graph"; an absent link is
   never reported as a negative; a prediction comes with how often its rank held in the backtest.
 
+- **A usability test** ([`findings/USABILITY.md`](findings/USABILITY.md)). On a fresh set of 35
+  code-graded questions, three cheap hosted models each answered 35 through the typed questions, and
+  31, 33 and 35 with raw SQL over the same tables. None invented an answer for a gene that is not in
+  the graph. A first round failed both of its stated verdicts and exposed two faults in the test and
+  one in the tools; both rounds are recorded. No person has tested it yet.
+
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Inputs

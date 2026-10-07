@@ -88,7 +88,7 @@ To settle before a model is scored:
 | 6 to 12 Oct | done 6 Oct: snapshots read and compared, split frozen at 2018, protocol committed, graph as of 2018 built, four baselines scored. 7 Oct: the lineage, position and locus controls defined and measured. Next: the context tables, each with a pruning rule and its planted-edge test |
 | 13 to 26 Oct | baselines and one graph model on Pharos alone; first pruning rules |
 | 27 Oct | progress report; the public repository `iandriver/pharos-gap-kg` is created with it |
-| 27 Oct to 9 Nov | (the typed questions and the MCP server were built on 7 Oct, `docs/ASK.md`) a usability test with a small model and with a person; one enrichment arm; planted-edge test |
+| 27 Oct to 9 Nov | (the typed questions and the MCP server were built on 7 Oct, `docs/ASK.md`) a usability test with a person (the test with small models was run on 7 Oct, `findings/USABILITY.md`); one enrichment arm; planted-edge test |
 | 10 to 17 Nov | usability test, standards pass, reproduction from a clean clone, submission |
 
 Another deadline-bearing project shares this machine and these weeks (22 Oct, 5 Nov). The enrichment

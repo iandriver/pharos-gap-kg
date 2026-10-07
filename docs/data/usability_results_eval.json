@@ -1,0 +1,826 @@
+{
+ "set": "eval",
+ "questions": 35,
+ "sha256": "7f543091500458fbe0a46433383b18874f0a08334901333d9c11c8aa11282392",
+ "cells": {
+  "deepseek/deepseek-v4-flash|none": {
+   "n": 35,
+   "correct": 4,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.019326886900000003,
+   "calls": 0,
+   "by_family": {
+    "new_since": [
+     0,
+     3
+    ],
+    "studies_as_of": [
+     0,
+     4
+    ],
+    "not_yet": [
+     0,
+     4
+    ],
+    "never": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     2,
+     3
+    ],
+    "ambiguous": [
+     2,
+     3
+    ],
+    "first_year": [
+     0,
+     4
+    ],
+    "top_then_count": [
+     0,
+     4
+    ],
+    "related_wording": [
+     0,
+     3
+    ],
+    "shared": [
+     0,
+     3
+    ]
+   },
+   "right": {
+    "new_since-1": false,
+    "studies_as_of-3": false,
+    "not_yet-3": false,
+    "never-1": false,
+    "not_in_graph-3": false,
+    "never-2": false,
+    "ambiguous-1": true,
+    "first_year-3": false,
+    "top_then_count-4": false,
+    "new_since-3": false,
+    "new_since-2": false,
+    "related_wording-1": false,
+    "first_year-2": false,
+    "not_yet-4": false,
+    "not_in_graph-2": true,
+    "shared-3": false,
+    "top_then_count-2": false,
+    "related_wording-3": false,
+    "not_yet-1": false,
+    "top_then_count-1": false,
+    "studies_as_of-2": false,
+    "related_wording-2": false,
+    "ambiguous-2": false,
+    "not_yet-2": false,
+    "first_year-4": false,
+    "ambiguous-3": true,
+    "never-4": false,
+    "top_then_count-3": false,
+    "shared-2": false,
+    "studies_as_of-1": false,
+    "first_year-1": false,
+    "shared-1": false,
+    "studies_as_of-4": false,
+    "never-3": false,
+    "not_in_graph-1": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|sql": {
+   "n": 35,
+   "correct": 33,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.07556762899999998,
+   "calls": 194,
+   "by_family": {
+    "never": [
+     4,
+     4
+    ],
+    "related_wording": [
+     3,
+     3
+    ],
+    "top_then_count": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     2,
+     3
+    ],
+    "not_yet": [
+     4,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "new_since": [
+     3,
+     3
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "shared": [
+     2,
+     3
+    ]
+   },
+   "right": {
+    "never-2": true,
+    "related_wording-2": true,
+    "top_then_count-2": true,
+    "ambiguous-2": true,
+    "not_yet-1": true,
+    "ambiguous-1": false,
+    "studies_as_of-3": true,
+    "never-4": true,
+    "not_in_graph-2": true,
+    "new_since-1": true,
+    "related_wording-1": true,
+    "top_then_count-4": true,
+    "studies_as_of-4": true,
+    "related_wording-3": true,
+    "new_since-2": true,
+    "first_year-3": true,
+    "studies_as_of-2": true,
+    "not_in_graph-3": true,
+    "shared-1": false,
+    "shared-3": true,
+    "top_then_count-1": true,
+    "first_year-2": true,
+    "first_year-4": true,
+    "never-1": true,
+    "new_since-3": true,
+    "ambiguous-3": true,
+    "not_in_graph-1": true,
+    "never-3": true,
+    "studies_as_of-1": true,
+    "not_yet-2": true,
+    "not_yet-4": true,
+    "not_yet-3": true,
+    "first_year-1": true,
+    "top_then_count-3": true,
+    "shared-2": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.037744150000000004,
+   "calls": 106,
+   "by_family": {
+    "ambiguous": [
+     3,
+     3
+    ],
+    "shared": [
+     3,
+     3
+    ],
+    "never": [
+     4,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "related_wording": [
+     3,
+     3
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "not_yet": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "top_then_count": [
+     4,
+     4
+    ],
+    "new_since": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "ambiguous-1": true,
+    "shared-3": true,
+    "never-3": true,
+    "never-1": true,
+    "never-2": true,
+    "studies_as_of-3": true,
+    "ambiguous-2": true,
+    "related_wording-1": true,
+    "never-4": true,
+    "shared-1": true,
+    "ambiguous-3": true,
+    "first_year-3": true,
+    "not_yet-4": true,
+    "not_yet-3": true,
+    "not_in_graph-1": true,
+    "studies_as_of-1": true,
+    "related_wording-2": true,
+    "studies_as_of-4": true,
+    "top_then_count-3": true,
+    "not_yet-1": true,
+    "first_year-4": true,
+    "related_wording-3": true,
+    "first_year-2": true,
+    "new_since-2": true,
+    "new_since-1": true,
+    "not_in_graph-3": true,
+    "top_then_count-1": true,
+    "not_in_graph-2": true,
+    "top_then_count-2": true,
+    "shared-2": true,
+    "first_year-1": true,
+    "top_then_count-4": true,
+    "new_since-3": true,
+    "studies_as_of-2": true,
+    "not_yet-2": true
+   }
+  },
+  "inception/mercury-2.5|none": {
+   "n": 35,
+   "correct": 1,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.006703640000000001,
+   "calls": 0,
+   "by_family": {
+    "never": [
+     0,
+     4
+    ],
+    "first_year": [
+     0,
+     4
+    ],
+    "related_wording": [
+     0,
+     3
+    ],
+    "studies_as_of": [
+     0,
+     4
+    ],
+    "shared": [
+     0,
+     3
+    ],
+    "new_since": [
+     0,
+     3
+    ],
+    "top_then_count": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     1,
+     3
+    ],
+    "ambiguous": [
+     0,
+     3
+    ],
+    "not_yet": [
+     0,
+     4
+    ]
+   },
+   "right": {
+    "never-4": false,
+    "first_year-4": false,
+    "related_wording-1": false,
+    "first_year-3": false,
+    "studies_as_of-3": false,
+    "shared-1": false,
+    "related_wording-2": false,
+    "studies_as_of-4": false,
+    "related_wording-3": false,
+    "new_since-3": false,
+    "first_year-1": false,
+    "top_then_count-3": false,
+    "not_in_graph-1": false,
+    "ambiguous-3": false,
+    "top_then_count-2": false,
+    "ambiguous-1": false,
+    "never-2": false,
+    "never-1": false,
+    "not_yet-2": false,
+    "not_in_graph-2": true,
+    "shared-3": false,
+    "new_since-2": false,
+    "not_yet-1": false,
+    "not_yet-3": false,
+    "studies_as_of-1": false,
+    "top_then_count-4": false,
+    "not_in_graph-3": false,
+    "ambiguous-2": false,
+    "never-3": false,
+    "not_yet-4": false,
+    "new_since-1": false,
+    "shared-2": false,
+    "first_year-2": false,
+    "top_then_count-1": false,
+    "studies_as_of-2": false
+   }
+  },
+  "inception/mercury-2.5|sql": {
+   "n": 35,
+   "correct": 31,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.012324524000000002,
+   "calls": 101,
+   "by_family": {
+    "top_then_count": [
+     4,
+     4
+    ],
+    "never": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "shared": [
+     3,
+     3
+    ],
+    "related_wording": [
+     2,
+     3
+    ],
+    "ambiguous": [
+     2,
+     3
+    ],
+    "new_since": [
+     3,
+     3
+    ],
+    "not_yet": [
+     2,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ]
+   },
+   "right": {
+    "top_then_count-1": true,
+    "never-1": true,
+    "not_in_graph-3": true,
+    "top_then_count-2": true,
+    "first_year-4": true,
+    "shared-2": true,
+    "first_year-2": true,
+    "first_year-1": true,
+    "related_wording-1": true,
+    "ambiguous-3": true,
+    "related_wording-2": false,
+    "not_in_graph-2": true,
+    "not_in_graph-1": true,
+    "never-3": true,
+    "ambiguous-1": false,
+    "new_since-1": true,
+    "top_then_count-3": true,
+    "not_yet-3": true,
+    "studies_as_of-4": true,
+    "not_yet-1": false,
+    "not_yet-2": true,
+    "studies_as_of-1": true,
+    "top_then_count-4": true,
+    "ambiguous-2": true,
+    "studies_as_of-3": true,
+    "new_since-2": true,
+    "related_wording-3": true,
+    "first_year-3": true,
+    "studies_as_of-2": true,
+    "shared-3": true,
+    "shared-1": true,
+    "never-2": true,
+    "not_yet-4": false,
+    "new_since-3": true,
+    "never-4": true
+   }
+  },
+  "inception/mercury-2.5|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.015456236,
+   "calls": 78,
+   "by_family": {
+    "ambiguous": [
+     3,
+     3
+    ],
+    "never": [
+     4,
+     4
+    ],
+    "not_yet": [
+     4,
+     4
+    ],
+    "top_then_count": [
+     4,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "shared": [
+     3,
+     3
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "new_since": [
+     3,
+     3
+    ],
+    "related_wording": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "ambiguous-2": true,
+    "never-1": true,
+    "not_yet-3": true,
+    "top_then_count-2": true,
+    "studies_as_of-1": true,
+    "shared-3": true,
+    "first_year-2": true,
+    "not_in_graph-3": true,
+    "new_since-1": true,
+    "first_year-1": true,
+    "related_wording-2": true,
+    "not_yet-4": true,
+    "first_year-3": true,
+    "shared-1": true,
+    "new_since-2": true,
+    "top_then_count-3": true,
+    "never-3": true,
+    "related_wording-3": true,
+    "not_yet-2": true,
+    "never-2": true,
+    "not_yet-1": true,
+    "ambiguous-1": true,
+    "shared-2": true,
+    "not_in_graph-2": true,
+    "new_since-3": true,
+    "never-4": true,
+    "not_in_graph-1": true,
+    "studies_as_of-4": true,
+    "top_then_count-1": true,
+    "related_wording-1": true,
+    "studies_as_of-3": true,
+    "studies_as_of-2": true,
+    "first_year-4": true,
+    "ambiguous-3": true,
+    "top_then_count-4": true
+   }
+  },
+  "z-ai/glm-5.3-flash|none": {
+   "n": 35,
+   "correct": 1,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.0188831429,
+   "calls": 0,
+   "by_family": {
+    "new_since": [
+     0,
+     3
+    ],
+    "ambiguous": [
+     1,
+     3
+    ],
+    "never": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "not_yet": [
+     0,
+     4
+    ],
+    "first_year": [
+     0,
+     4
+    ],
+    "related_wording": [
+     0,
+     3
+    ],
+    "shared": [
+     0,
+     3
+    ],
+    "studies_as_of": [
+     0,
+     4
+    ],
+    "top_then_count": [
+     0,
+     4
+    ]
+   },
+   "right": {
+    "new_since-1": false,
+    "new_since-2": false,
+    "ambiguous-2": false,
+    "never-1": false,
+    "not_in_graph-2": false,
+    "not_yet-1": false,
+    "not_yet-3": false,
+    "first_year-3": false,
+    "first_year-1": false,
+    "related_wording-1": false,
+    "related_wording-2": false,
+    "never-3": false,
+    "shared-2": false,
+    "not_yet-4": false,
+    "first_year-2": false,
+    "studies_as_of-4": false,
+    "top_then_count-2": false,
+    "ambiguous-1": false,
+    "top_then_count-1": false,
+    "ambiguous-3": true,
+    "studies_as_of-1": false,
+    "shared-3": false,
+    "not_yet-2": false,
+    "never-4": false,
+    "studies_as_of-3": false,
+    "first_year-4": false,
+    "not_in_graph-3": false,
+    "never-2": false,
+    "not_in_graph-1": false,
+    "top_then_count-3": false,
+    "shared-1": false,
+    "studies_as_of-2": false,
+    "top_then_count-4": false,
+    "related_wording-3": false,
+    "new_since-3": false
+   }
+  },
+  "z-ai/glm-5.3-flash|sql": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.020327139999999994,
+   "calls": 130,
+   "by_family": {
+    "not_yet": [
+     4,
+     4
+    ],
+    "shared": [
+     3,
+     3
+    ],
+    "never": [
+     4,
+     4
+    ],
+    "top_then_count": [
+     4,
+     4
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "related_wording": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "new_since": [
+     3,
+     3
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "not_yet-2": true,
+    "shared-2": true,
+    "never-1": true,
+    "top_then_count-1": true,
+    "never-2": true,
+    "first_year-3": true,
+    "related_wording-2": true,
+    "not_yet-4": true,
+    "ambiguous-1": true,
+    "new_since-3": true,
+    "top_then_count-3": true,
+    "ambiguous-2": true,
+    "related_wording-1": true,
+    "new_since-1": true,
+    "studies_as_of-4": true,
+    "not_yet-3": true,
+    "not_yet-1": true,
+    "not_in_graph-2": true,
+    "studies_as_of-2": true,
+    "never-4": true,
+    "related_wording-3": true,
+    "shared-1": true,
+    "not_in_graph-3": true,
+    "studies_as_of-3": true,
+    "never-3": true,
+    "top_then_count-2": true,
+    "ambiguous-3": true,
+    "new_since-2": true,
+    "shared-3": true,
+    "first_year-1": true,
+    "top_then_count-4": true,
+    "studies_as_of-1": true,
+    "first_year-4": true,
+    "first_year-2": true,
+    "not_in_graph-1": true
+   }
+  },
+  "z-ai/glm-5.3-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.022315686,
+   "calls": 71,
+   "by_family": {
+    "not_yet": [
+     4,
+     4
+    ],
+    "top_then_count": [
+     4,
+     4
+    ],
+    "studies_as_of": [
+     4,
+     4
+    ],
+    "first_year": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "related_wording": [
+     3,
+     3
+    ],
+    "new_since": [
+     3,
+     3
+    ],
+    "never": [
+     4,
+     4
+    ],
+    "shared": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "not_yet-3": true,
+    "top_then_count-2": true,
+    "studies_as_of-4": true,
+    "first_year-4": true,
+    "ambiguous-2": true,
+    "ambiguous-3": true,
+    "first_year-1": true,
+    "related_wording-1": true,
+    "studies_as_of-1": true,
+    "not_yet-1": true,
+    "new_since-2": true,
+    "studies_as_of-3": true,
+    "top_then_count-1": true,
+    "never-3": true,
+    "not_yet-4": true,
+    "shared-1": true,
+    "not_yet-2": true,
+    "studies_as_of-2": true,
+    "ambiguous-1": true,
+    "shared-3": true,
+    "never-2": true,
+    "top_then_count-3": true,
+    "never-1": true,
+    "top_then_count-4": true,
+    "related_wording-2": true,
+    "new_since-1": true,
+    "not_in_graph-2": true,
+    "new_since-3": true,
+    "not_in_graph-3": true,
+    "related_wording-3": true,
+    "never-4": true,
+    "not_in_graph-1": true,
+    "first_year-2": true,
+    "first_year-3": true,
+    "shared-2": true
+   }
+  }
+ },
+ "typed_minus_sql": {
+  "deepseek/deepseek-v4-flash": {
+   "questions": 35,
+   "a_only": 2,
+   "b_only": 0,
+   "p_sign": 0.5
+  },
+  "inception/mercury-2.5": {
+   "questions": 35,
+   "a_only": 4,
+   "b_only": 0,
+   "p_sign": 0.125
+  },
+  "z-ai/glm-5.3-flash": {
+   "questions": 35,
+   "a_only": 0,
+   "b_only": 0,
+   "p_sign": 1.0
+  }
+ },
+ "pooled_typed_minus_sql": {
+  "models": [
+   "inception/mercury-2.5",
+   "deepseek/deepseek-v4-flash",
+   "z-ai/glm-5.3-flash"
+  ],
+  "questions": 35,
+  "difference": 0.05714285714285714,
+  "low": 0.009523809523809525,
+  "high": 0.10476190476190478
+ },
+ "verdicts": {
+  "all_hosted_cells_complete": true,
+  "usable_by_a_small_model": true,
+  "typed_better_than_sql": true
+ }
+}
