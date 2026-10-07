@@ -457,7 +457,41 @@ def report() -> dict:
         f[0] += ok
         f[1] += 1
         c["right"][qid] = bool(ok)
-    return {"questions": len(qs), "cells": {f"{m}|{c}": v for (m, c), v in sorted(cells.items())}}
+    out = {"questions": len(qs), "sha256": json.loads(frozen_path().read_text())["sha256"],
+           "cells": {f"{m}|{c}": v for (m, c), v in sorted(cells.items())}}
+    out.update(compare(out["cells"]))
+    return out
+
+
+HOSTED = list(PRICES)
+PASS_MARK = 28
+
+
+def compare(cells: dict) -> dict:
+    """Typed against sql for each model, the pooled interval over hosted models, and the two verdicts
+    the protocol stated in advance."""
+    models = sorted({k.split("|")[0] for k in cells})
+    per = {}
+    for m in models:
+        a, b = cells.get(f"{m}|typed"), cells.get(f"{m}|sql")
+        if a and b:
+            per[m] = paired(a["right"], b["right"])
+    hosted = [m for m in HOSTED if f"{m}|typed" in cells and f"{m}|sql" in cells]
+    pooled = None
+    if hosted:
+        ids = sorted(set.intersection(*(set(cells[f"{m}|{c}"]["right"]) for m in hosted for c in ("typed", "sql"))))
+        d = np.array([np.mean([cells[f"{m}|typed"]["right"][i] for m in hosted]) - np.mean([cells[f"{m}|sql"]["right"][i] for m in hosted]) for i in ids])
+        rng = np.random.default_rng(0)
+        boot = d[rng.integers(0, len(d), (2000, len(d)))].mean(axis=1)
+        lo, hi = np.percentile(boot, [2.5, 97.5])
+        pooled = {"models": hosted, "questions": len(ids), "difference": float(d.mean()), "low": float(lo), "high": float(hi)}
+    typed = {m: cells[f"{m}|typed"] for m in HOSTED if f"{m}|typed" in cells}
+    complete = len(typed) == len(HOSTED) and all(v["n"] == len(v["right"]) and v["n"] >= 35 for v in typed.values())
+    usable = complete and sum(v["correct"] >= PASS_MARK for v in typed.values()) >= 2 and sum(v["fabricated"] for v in typed.values()) == 0
+    return {"typed_minus_sql": per, "pooled_typed_minus_sql": pooled,
+            "verdicts": {"all_hosted_cells_complete": complete,
+                         "usable_by_a_small_model": bool(usable) if complete else None,
+                         "typed_better_than_sql": (bool(pooled["low"] > 0) if pooled and complete else None)}}
 
 
 def paired(a: dict[str, bool], b: dict[str, bool]) -> dict:
@@ -498,6 +532,19 @@ def _selftest() -> int:
     q = {"family": "not_in_graph", "gold": {"status": "not_in_graph"}}
     ck("answering about a gene that is not in the graph is counted as invention; declining is not",
        fabricated(q, {"status": "answered", "year": 2010}) and not fabricated(q, {"status": "not_in_graph"}) and not fabricated(q, {"status": "unknown"}))
+    mk = lambda right, fab=0: {"n": 35, "correct": sum(right.values()), "fabricated": fab, "right": right}
+    good = {f"q{i}": i < 30 for i in range(35)}
+    poor = {f"q{i}": i < 20 for i in range(35)}
+    C = {f"{m}|{c}": mk(good if c == "typed" else poor) for m in HOSTED for c in ("typed", "sql")}
+    v = compare(C)
+    ck("the stated verdicts follow from the cells: usable at 28 or more for two models with nothing invented, and better than sql when the interval clears zero",
+       v["verdicts"] == {"all_hosted_cells_complete": True, "usable_by_a_small_model": True, "typed_better_than_sql": True}
+       and abs(v["pooled_typed_minus_sql"]["difference"] - 10 / 35) < 1e-9)
+    C2 = dict(C)
+    C2[f"{HOSTED[0]}|typed"] = mk(good, fab=1)
+    ck("one invented answer under typed fails the usability verdict", compare(C2)["verdicts"]["usable_by_a_small_model"] is False)
+    C3 = {k: v_ for k, v_ in C.items() if not k.startswith(HOSTED[2])}
+    ck("with a hosted model missing there is no verdict", compare(C3)["verdicts"]["usable_by_a_small_model"] is None)
     p = paired({"a": True, "b": True, "c": False, "d": True}, {"a": True, "b": False, "c": False, "d": False})
     ck("the paired test counts questions only one side got right", (p["a_only"], p["b_only"], p["questions"]) == (2, 0, 4) and abs(p["p_sign"] - 0.5) < 1e-12)
     import tempfile
@@ -567,6 +614,17 @@ def main(argv: list[str] | None = None) -> int:
     out.write_text(json.dumps(r, indent=1) + "\n")
     for k, v in r["cells"].items():
         print(f"  {k:44s} {v['correct']:>2d} of {v['n']:>2d}  invented {v['fabricated']}  no FINAL {v['no_final']}  calls {v['calls']:>3d}  ${v['cost']:.4f}")
+    fams = sorted({f for v in r["cells"].values() for f in v["by_family"]})
+    print("  by kind (correct of asked):")
+    for k, v in r["cells"].items():
+        print(f"    {k:44s} " + " ".join(f"{f[:9]}:{v['by_family'].get(f, [0, 0])[0]}/{v['by_family'].get(f, [0, 0])[1]}" for f in fams))
+    for m, pz in r["typed_minus_sql"].items():
+        print(f"  typed vs sql, {m}: typed only {pz['a_only']}, sql only {pz['b_only']}, sign test p = {pz['p_sign']:.3f}")
+    if r["pooled_typed_minus_sql"]:
+        z = r["pooled_typed_minus_sql"]
+        print(f"  pooled over {len(z['models'])} hosted models: typed minus sql {z['difference']:+.3f} [{z['low']:+.3f}, {z['high']:+.3f}] of a question")
+    print(f"  verdicts: {r['verdicts']}")
+    print(f"  total cost ${sum(v['cost'] for v in r['cells'].values()):.4f}")
     print(f"  -> {out}")
     return 0
 
