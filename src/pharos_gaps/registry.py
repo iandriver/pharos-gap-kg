@@ -63,6 +63,13 @@ _S = [
            "Pharos 4.0.0 release notes: level definitions, activity cutoffs, source versions",
            sha256="40c03514cc43e8709cf513b1ba1f26308644287fc31ab15c1ee087b44f586039"),
 ]
+# Reference files from outside Pharos. Neither is a model input: they define controls on the test.
+_S += [
+    Source("efo_obo", "https://github.com/EBISPOT/efo/releases/download/v3.94.0/efo.obo", 88_303_602, "2026-09-15",
+           "Experimental Factor Ontology v3.94.0 (OBO): which GWAS traits are ancestors or descendants of which"),
+    Source("ensembl_gtf_113", "https://ftp.ensembl.org/pub/release-113/gtf/homo_sapiens/Homo_sapiens.GRCh38.113.gtf.gz",
+           64_141_785, "2024-08-18", "Ensembl release 113 gene annotation, GRCh38: where each gene sits on its chromosome"),
+]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
 

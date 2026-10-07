@@ -64,13 +64,46 @@ The graph as of 2018 (`data/graph/pharos319_asof2018`) and anything else dated 2
 table with no dates may be used as context only if the result names it and is reported with and
 without it.
 
-## Not yet defined
+## Controls
 
-These must be defined in this file, and committed, before a fitted model is scored. The baselines
-above may be scored first, since they have nothing to tune.
+Defined on 7 Oct 2026, after the baselines were scored and before any control was computed. No fitted
+model had been scored. Each control removes positives that something other than biology could
+predict, so each can only make the test harder.
 
-- near-duplicate traits: a later link to a trait that is another wording of one the target already has;
-- chromosomal neighbours: a later link that a neighbouring gene's training link predicts by position.
+**Trait lineage.** From the Experimental Factor Ontology v3.94.0, `is_a` relations only, with an
+obsolete term standing for the term that replaced it. Two traits are in one lineage if they are the
+same term or one is an ancestor of the other. A positive (target, trait) is *lineage-linked* if the
+target has a training link to another trait in that trait's lineage: the later link is the earlier
+one under a broader, narrower or second name.
+
+**Position.** From Ensembl release 113, GRCh38, primary chromosomes. Two targets are neighbours if
+genes of theirs lie on one chromosome with at most 500,000 bases between them. A positive is
+*position-linked* if a neighbour of the target has a training link to the same trait. The window is
+500,000 bases and is not tuned.
+
+**Locus.** Within one trait, positives whose targets chain together as neighbours form one locus. In
+the locus-collapsed measure a locus counts once, at the rank of its best-ranked member under the
+scorer being measured, and its other members leave the candidates. GWAS assigns one signal to several
+neighbouring genes, so positives are not independent; this counts signals, not genes.
+
+Reported for every scorer:
+
+- the share of positives that are lineage-linked, position-linked, and either;
+- the primary measure on positives that are neither, with linked positives removed from the candidates;
+- the locus-collapsed primary measure;
+- the paired comparisons, repeated on the positives that are neither.
+
+Two further baselines, also without a fitted parameter:
+
+| | score of a candidate (target, trait) |
+|---|---|
+| B4 lineage | the number of the target's training traits that are in the candidate trait's lineage |
+| B5 position | the number of the target's neighbours with a training link to the candidate trait |
+
+The ontology is the 2026 release. As a control that is harmless. As a scorer, B4 may use a relation
+the 2018 ontology did not have, and is reported with that caveat. A target with no gene on a primary
+chromosome has no neighbours, and a trait the ontology does not hold has no lineage; both counts are
+reported.
 
 ## Not claimed
 
