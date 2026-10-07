@@ -45,7 +45,7 @@ STATUSES = ["answered", "no_link_reported", "not_in_graph", "ambiguous", "unknow
 CONDITIONS = ["typed", "sql", "none"]
 MAX_TOOL_CALLS = 8
 PROMPT_VERSION = 1
-PRICES = {"qwen/qwen3.7-flash": (0.03, 0.13), "deepseek/deepseek-v4-flash": (0.09, 0.18), "z-ai/glm-5.3-flash": (0.15, 0.50)}
+PRICES = {"inception/mercury-2.5": (0.04, 0.15), "deepseek/deepseek-v4-flash": (0.09, 0.18), "z-ai/glm-5.3-flash": (0.15, 0.50)}
 
 RULES = """You answer questions about a graph of dated GWAS links between human protein targets and traits, built from NIH Pharos.
 - A link exists from the year of the first study behind it. "As of YEAR" means using only what had been reported by the end of that year.

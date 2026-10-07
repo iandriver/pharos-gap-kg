@@ -204,3 +204,8 @@ links well has learned biology and not the order in which cohorts grew.
 
 A change to this file after a fitted model has been scored is added below with its date and reason.
 Results under the earlier text are kept.
+
+**7 Oct 2026, usability models, before any question reached a model.** `qwen/qwen3.7-flash` has no
+endpoint that this account's zero-data-retention setting admits; the provider refused both smoke-test
+requests before they reached a model. It is replaced by the next cheapest model the setting admits
+that can call a tool, `inception/mercury-2.5`. The other two hosted models stand.
