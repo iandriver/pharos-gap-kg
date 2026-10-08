@@ -81,6 +81,15 @@ host (`user@address`) in place of the name. The Brev quickstart documents `login
    Each model's chosen setting is `docs/data/model_<name>_2018.json`. The protocol requires it to be
    committed before the model is scored on the test links.
 
+   Once it is committed, freeze it and commit the record that makes:
+
+   ```bash
+   python -m pharos_gap_kg.model freeze pharos319 --cutoff 2018 --model lightgcn
+   ```
+
+   `final` refuses a setting that was not frozen from a committed file, a record of other settings
+   than the protocol declares, and one made by other fitting code.
+
 4. **Score on the test links, once per model.** Push again so the instance has the committed
    settings, then:
 
