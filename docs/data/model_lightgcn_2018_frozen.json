@@ -1,0 +1,17 @@
+{
+ "model": "lightgcn",
+ "cutoff": 2018,
+ "chosen": {
+  "dim": 256,
+  "layers": 5,
+  "lr": 0.005,
+  "l2": 0.0001,
+  "passes": 60
+ },
+ "validation": 0.07661201642650621,
+ "settings": 44,
+ "implementation": "37067d61bf481404",
+ "chosen_file": "docs/data/model_lightgcn_2018.json",
+ "chosen_sha256": "b8467f01671cbe402081838c9f19595b45051b53855b774c78f3ab72454a0b56",
+ "commit": "d9a7f7496c8c027d06816e8f0ccd3269c753a9fc"
+}

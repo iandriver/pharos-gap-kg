@@ -1,0 +1,17 @@
+{
+ "model": "mf",
+ "cutoff": 2018,
+ "chosen": {
+  "dim": 64,
+  "layers": 0,
+  "lr": 0.001,
+  "l2": 0.0001,
+  "passes": 300
+ },
+ "validation": 0.054582132666407324,
+ "settings": 8,
+ "implementation": "37067d61bf481404",
+ "chosen_file": "docs/data/model_mf_2018.json",
+ "chosen_sha256": "770309c26abac9750c299bff9d9e9a3d03caf51831ce2539f71f4b2e5bcf18b6",
+ "commit": "d9a7f7496c8c027d06816e8f0ccd3269c753a9fc"
+}
