@@ -18,6 +18,7 @@ Stages, in order. `final` scores on the test links, so it runs once per model, a
 `tune` chose has been committed:
 
     python -m pharos_gap_kg.model tune  pharos319 --cutoff 2018 --model lightgcn
+    python -m pharos_gap_kg.model validation pharos319 --cutoff 2018 --model lightgcn   # the chosen setting beside the baselines, on validation
     python -m pharos_gap_kg.model final pharos319 --cutoff 2018 --model lightgcn
     python -m pharos_gap_kg.model score pharos319 --cutoff 2018 --model lightgcn
     python -m pharos_gap_kg.model --selftest
@@ -262,6 +263,33 @@ def tune(release: str, cutoff: int, model: str, only: int | None = None) -> dict
     return out
 
 
+def validation(release: str, cutoff: int, model: str) -> dict:
+    """The chosen setting refitted on the inner split and set beside the baselines there, trait by trait.
+
+    Description only. The setting was picked on these same links, so the comparison flatters the model;
+    the test links are where it counts. No test link is read here."""
+    ch = json.loads(chosen_path(cutoff, model).read_text())
+    M, _ = inner_matrices(cutoff)
+    A, Y = M["train"], M["test"]
+    edges, n_nodes, _ = graph_for(release, model, M)
+    s = ch["chosen"]
+    S, _ = fit(A, s, 0, device(), s["passes"], edges, n_nodes)
+    ap = score.by_axis(S, A, Y, axis=1, seeds=(0,))["ap"]
+    if abs(float(np.nanmean(ap)) - ch["validation"]) > 1e-4:
+        raise SystemExit(f"REFUSED: the chosen setting refitted scores {np.nanmean(ap):.4f} on validation, and tuning recorded {ch['validation']:.4f}")
+    against = {}
+    for k, B in baselines.scorers(A).items():
+        if k in ("B1", "B3"):
+            b = score.by_axis(B, A, Y, axis=1, seeds=(0,))["ap"]
+            m, lo, hi = score.interval(ap - b)
+            against[k] = {"baseline": float(np.nanmean(b)), "difference": m, "low": lo, "high": hi, "half_width": (hi - lo) / 2,
+                          "traits_where_the_model_is_higher": int((ap > b).sum())}
+    out = {"model": model, "cutoff": cutoff, "inner_cutoff": INNER, "setting": s, "validation": float(np.nanmean(ap)), "traits": int(len(ap)), "against": against,
+           "settings_tried": len(ch["tried"]), "read_as": "the setting was chosen on these links, so this comparison flatters the model"}
+    (paths.DOCS_DATA / f"model_{model}_{cutoff}_validation.json").write_text(json.dumps(out, indent=1) + "\n")
+    return out
+
+
 def final(release: str, cutoff: int, model: str) -> dict:
     import torch
     cp, d = chosen_path(cutoff, model), out_dir(cutoff, model)
@@ -393,7 +421,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("stage", choices=("tune", "final", "score"))
+    ap.add_argument("stage", choices=("tune", "validation", "final", "score"))
     ap.add_argument("release")
     ap.add_argument("--cutoff", type=int, required=True)
     ap.add_argument("--model", choices=list(MODELS), required=True)
@@ -402,6 +430,10 @@ def main(argv: list[str] | None = None) -> int:
     if a.stage == "tune":
         out = tune(a.release, a.cutoff, a.model, a.only)
         print(f"  best: {out['chosen']} validation {out['validation']:.4f} (neighbours baseline {out['baselines_on_validation']['B3']:.4f})" + ("" if out["complete"] else "  [partial grid: nothing chosen]"))
+    elif a.stage == "validation":
+        out = validation(a.release, a.cutoff, a.model)
+        for k, v in out["against"].items():
+            print(f"  {a.model} {out['validation']:.4f} against {k} {v['baseline']:.4f}: {v['difference']:+.4f} [{v['low']:+.4f}, {v['high']:+.4f}], higher on {v['traits_where_the_model_is_higher']} of {out['traits']} traits")
     elif a.stage == "final":
         out = final(a.release, a.cutoff, a.model)
         print(f"  {a.model}: primary {out['primary_of_the_mean_matrix']:.4f} for the mean of five seeds")
