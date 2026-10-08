@@ -42,6 +42,9 @@
    0.0001
   ]
  },
+ "added": [],
+ "settings": 8,
+ "first_settings": 8,
  "tried": [
   {
    "dim": 64,
@@ -737,6 +740,14 @@
   "passes": 300
  },
  "validation": 0.054582132666407324,
+ "best_of_the_first_settings": {
+  "dim": 64,
+  "layers": 0,
+  "lr": 0.001,
+  "l2": 0.0001,
+  "passes": 300,
+  "validation": 0.054582132666407324
+ },
  "torch": "2.14.1",
  "device": "cpu"
 }

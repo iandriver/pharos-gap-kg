@@ -28,6 +28,7 @@ Needs the [model] extra (torch). A GPU is used when there is one.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import sys
@@ -42,6 +43,9 @@ from pharos_gap_kg import baselines, graph, paths, score, split
 INNER = 2016
 SEEDS = (0, 1, 2, 3, 4)
 GRID = {"dim": (64, 128), "layers": (1, 2, 3), "lr": (0.001, 0.005), "l2": (1e-6, 1e-4)}
+# (vector length, steps) added for the graph models on 8 Oct 2026, beyond the edge where the best of
+# the first settings sat (docs/PROTOCOL.md, amendments). They follow the first settings in the order tried.
+ADDED = ((256, 3), (256, 4), (256, 5), (128, 4), (128, 5))
 BATCH, MAX_PASSES, EVERY, PATIENCE = 4096, 300, 10, 50
 MODELS = {"mf": {"graph": False, "context": None}, "lightgcn": {"graph": True, "context": None},
           "lightgcn_ctx": {"graph": True, "context": "disease_links"}, "lightgcn_ctx_pruned": {"graph": True, "context": "disease_links_pruned"}}
@@ -51,7 +55,15 @@ MEMBERSHIPS = ("pathways", "go_terms", "compounds")
 def settings(model: str) -> list[dict]:
     """Every setting the protocol says is tried for this model, in a fixed order."""
     layers = GRID["layers"] if MODELS[model]["graph"] else (0,)
-    return [{"dim": d, "layers": k, "lr": lr, "l2": l2} for d, k, lr, l2 in itertools.product(GRID["dim"], layers, GRID["lr"], GRID["l2"])]
+    out = [{"dim": d, "layers": k, "lr": lr, "l2": l2} for d, k, lr, l2 in itertools.product(GRID["dim"], layers, GRID["lr"], GRID["l2"])]
+    if MODELS[model]["graph"]:
+        out += [{"dim": d, "layers": k, "lr": lr, "l2": l2} for (d, k), lr, l2 in itertools.product(ADDED, GRID["lr"], GRID["l2"])]
+    return out
+
+
+def first_settings(model: str) -> int:
+    """How many of a model's settings were declared before any was tried."""
+    return len(settings(model)) - (len(ADDED) * len(GRID["lr"]) * len(GRID["l2"]) if MODELS[model]["graph"] else 0)
 
 
 def out_dir(cutoff: int, model: str) -> Path:
@@ -234,32 +246,88 @@ def primary(S: np.ndarray, A: np.ndarray, Y: np.ndarray, seeds: tuple[int, ...] 
     return float(np.nanmean(score.by_axis(S, A, Y, axis=1, seeds=seeds)["ap"]))
 
 
-def tune(release: str, cutoff: int, model: str, only: int | None = None) -> dict:
+def setting_file(cutoff: int, model: str, s: dict, parts: dict, joined: dict) -> Path:
+    """Where one setting's result on the inner split is kept, so a tuning run that stops can go on."""
+    what = {"model": model, "setting": s, "inner": {k: v["sha256"] for k, v in parts.items()}, "joined": joined, "how": [INNER, BATCH, MAX_PASSES, EVERY, PATIENCE]}
+    return out_dir(cutoff, model) / "settings" / (hashlib.sha256(json.dumps(what, sort_keys=True).encode()).hexdigest()[:20] + ".json")
+
+
+def put(path: Path, text: str) -> None:
+    """Write a file so that a reader never sees half of it."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f"{path.name}.{time.time_ns()}.tmp")
+    tmp.write_text(text)
+    tmp.replace(path)
+
+
+def reuse_committed(cutoff: int, model: str, parts: dict, joined: dict) -> int:
+    """Settings the committed record already holds, tried on this same inner split and graph, are kept
+    and not fitted again. Returns how many were taken from it."""
+    cp = chosen_path(cutoff, model)
+    if not cp.is_file():
+        return 0
+    rec = json.loads(cp.read_text())
+    if rec.get("inner_split") != json.loads(json.dumps(parts)) or rec.get("joined") != json.loads(json.dumps(joined)):
+        return 0
+    mine, n = settings(model), 0
+    for r in rec["tried"]:
+        s = {k: r[k] for k in ("dim", "layers", "lr", "l2")}
+        f = setting_file(cutoff, model, s, parts, joined)
+        if "history" in r and s in mine and not f.is_file():
+            put(f, json.dumps(r) + "\n")
+            n += 1
+    return n
+
+
+def mine(i: int, shard: tuple[int, int] | None) -> bool:
+    """Whether setting number i falls to this run: every setting, or every n-th from the k-th."""
+    return shard is None or i % shard[1] == shard[0]
+
+
+def tune(release: str, cutoff: int, model: str, only: int | None = None, shard: tuple[int, int] | None = None) -> dict:
+    """Try the model's settings on the inner split. Each result is kept as it is made, so a run can be
+    split over several processes (`shard`) or stopped and started; the setting is chosen, and its file
+    written, only by a run that finds every setting done."""
     import torch
     M, parts = inner_matrices(cutoff)
     A, Y = M["train"], M["test"]
     dev = device()
     edges, n_nodes, joined = graph_for(release, model, M)
     base = {k: primary(v, A, Y) for k, v in baselines.scorers(A).items() if k in ("B0", "B1", "B3")}
-    print(f"  {model} on {dev}: fit {int(A.sum()):,} links, validate {int(Y.sum()):,}; baselines on validation {base}; joined {joined}", flush=True)
-    rows = []
-    for i, s in enumerate(settings(model)[:only]):
+    reused = reuse_committed(cutoff, model, parts, joined)
+    todo = settings(model)[:only]
+    print(f"  {model} on {dev}: fit {int(A.sum()):,} links, validate {int(Y.sum()):,}; baselines on validation {base}; joined {joined}; "
+          f"{reused} settings taken from the committed record", flush=True)
+    rows = {}
+    for i, s in enumerate(todo):
+        f = setting_file(cutoff, model, s, parts, joined)
+        if f.is_file():
+            rows[i] = json.loads(f.read_text())
+            continue
+        if not mine(i, shard):
+            continue
         t0 = time.time()
         _, hist = fit(A, s, 0, dev, MAX_PASSES, edges, n_nodes, validate=lambda S: primary(S, A, Y), log=None)
         best = max(hist, key=lambda h: h["validation"])
-        rows.append({**s, "validation": best["validation"], "passes": best["passes"], "passes_run": hist[-1]["passes"], "seconds": round(time.time() - t0, 1),
-                     "history": [[h["passes"], round(h["validation"], 6)] for h in hist]})
-        print(f"    {i + 1:2d}/{len(settings(model))}  {s}  validation {best['validation']:.4f} at {best['passes']} passes  ({rows[-1]['seconds']} s)", flush=True)
-    top = max(rows, key=lambda r: r["validation"])          # the first of equals, in grid order
+        rows[i] = {**s, "validation": best["validation"], "passes": best["passes"], "passes_run": hist[-1]["passes"], "seconds": round(time.time() - t0, 1),
+                   "history": [[h["passes"], round(h["validation"], 6)] for h in hist]}
+        put(f, json.dumps(rows[i]) + "\n")
+        print(f"    {i + 1:2d}/{len(settings(model))}  {s}  validation {best['validation']:.4f} at {best['passes']} passes  ({rows[i]['seconds']} s)", flush=True)
+    tried = [rows[i] for i in sorted(rows)]
+    complete = only is None and len(tried) == len(settings(model))
+    top = max(tried, key=lambda r: r["validation"])          # the first of equals, in the order tried
+    n_first = first_settings(model)
+    first = max((rows[i] for i in sorted(rows) if i < n_first), key=lambda r: r["validation"], default=None)
+    pick = lambda r: {k: r[k] for k in ("dim", "layers", "lr", "l2", "passes")}
     out = {"model": model, "release": release, "cutoff": cutoff, "inner_cutoff": INNER, "inner_split": parts, "baselines_on_validation": base, "joined": joined,
-           "grid": {k: list(v) for k, v in GRID.items()}, "tried": rows, "complete": only is None,
-           "chosen": {k: top[k] for k in ("dim", "layers", "lr", "l2", "passes")}, "validation": top["validation"],
+           "grid": {k: list(v) for k, v in GRID.items()}, "added": [list(x) for x in ADDED] if MODELS[model]["graph"] else [],
+           "settings": len(settings(model)), "first_settings": n_first, "tried": tried, "complete": complete,
+           "chosen": pick(top), "validation": top["validation"],
+           "best_of_the_first_settings": None if first is None else {**pick(first), "validation": first["validation"]},
            "torch": torch.__version__, "device": dev}
-    d = out_dir(cutoff, model)
-    d.mkdir(parents=True, exist_ok=True)
-    (d / "tune.json").write_text(json.dumps(out, indent=1) + "\n")
-    if only is None:
-        chosen_path(cutoff, model).write_text(json.dumps(out, indent=1) + "\n")
+    put(out_dir(cutoff, model) / "tune.json", json.dumps(out, indent=1) + "\n")
+    if complete:
+        put(chosen_path(cutoff, model), json.dumps(out, indent=1) + "\n")
     return out
 
 
@@ -376,7 +444,25 @@ def _selftest() -> int:
         ok &= bool(cond)
         print(f"  {'PASS' if cond else 'FAIL'}  {name}")
 
-    ck("the grid is every combination, and the model without a graph has no steps", len(settings("lightgcn")) == 24 and len(settings("mf")) == 8 and {s["layers"] for s in settings("mf")} == {0})
+    g = settings("lightgcn")
+    ck("the first settings are every combination, and the model without a graph has no steps", first_settings("lightgcn") == 24 and len(settings("mf")) == 8 and first_settings("mf") == 8 and {s["layers"] for s in settings("mf")} == {0})
+    ck("the added settings follow the first, are new, and are the same for the three graph models",
+       len(g) == 44 and g[:24] == [x for x in g if x["dim"] <= 128 and x["layers"] <= 3] and {(x["dim"], x["layers"]) for x in g[24:]} == set(ADDED)
+       and len({json.dumps(x, sort_keys=True) for x in g}) == 44 and g == settings("lightgcn_ctx") == settings("lightgcn_ctx_pruned"))
+    ck("a split run covers every setting once", sorted(i for k in range(3) for i in range(44) if mine(i, (k, 3))) == list(range(44)) and all(mine(i, None) for i in range(44)))
+    parts_, old_root = {"train": {"links": 1, "sha256": "aa"}, "test": {"links": 1, "sha256": "bb"}}, paths.EVAL
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        paths.EVAL = Path(tmp)
+        try:
+            f1, f2 = setting_file(2018, "lightgcn", g[0], parts_, {"link_edges": 5}), setting_file(2018, "lightgcn", g[1], parts_, {"link_edges": 5})
+            ck("a setting's result is kept under a name that changes with the setting, the split or the graph",
+               f1 != f2 and f1 == setting_file(2018, "lightgcn", dict(g[0]), parts_, {"link_edges": 5}) and f1 != setting_file(2018, "lightgcn", g[0], parts_, {"link_edges": 6})
+               and f1 != setting_file(2018, "lightgcn", g[0], {**parts_, "test": {"links": 1, "sha256": "cc"}}, {"link_edges": 5}))
+            put(f1, "x\n")
+            ck("a result is written whole", f1.read_text() == "x\n" and [p.name for p in f1.parent.iterdir()] == [f1.name])
+        finally:
+            paths.EVAL = old_root
     A = np.zeros((4, 3), bool)
     A[[0, 1, 2, 3, 0], [0, 0, 1, 2, 1]] = True
     e = link_edges(A)
@@ -426,10 +512,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--cutoff", type=int, required=True)
     ap.add_argument("--model", choices=list(MODELS), required=True)
     ap.add_argument("--only", type=int, help="tune: try the first N settings only (a dry run; chooses nothing)")
+    ap.add_argument("--shard", help="tune: K/N fits every N-th setting from the K-th, so N runs share the work; the run that finds all done chooses")
     a = ap.parse_args(argv)
     if a.stage == "tune":
-        out = tune(a.release, a.cutoff, a.model, a.only)
-        print(f"  best: {out['chosen']} validation {out['validation']:.4f} (neighbours baseline {out['baselines_on_validation']['B3']:.4f})" + ("" if out["complete"] else "  [partial grid: nothing chosen]"))
+        shard = tuple(int(x) for x in a.shard.split("/")) if a.shard else None
+        out = tune(a.release, a.cutoff, a.model, a.only, shard)
+        print(f"  best of {len(out['tried'])} of {out['settings']} settings: {out['chosen']} validation {out['validation']:.4f} (neighbours baseline {out['baselines_on_validation']['B3']:.4f})"
+              + ("" if out["complete"] else "  [not every setting is done: nothing chosen]"))
     elif a.stage == "validation":
         out = validation(a.release, a.cutoff, a.model)
         for k, v in out["against"].items():
