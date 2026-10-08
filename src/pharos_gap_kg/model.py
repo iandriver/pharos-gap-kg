@@ -246,7 +246,8 @@ def tune(release: str, cutoff: int, model: str, only: int | None = None) -> dict
         t0 = time.time()
         _, hist = fit(A, s, 0, dev, MAX_PASSES, edges, n_nodes, validate=lambda S: primary(S, A, Y), log=None)
         best = max(hist, key=lambda h: h["validation"])
-        rows.append({**s, "validation": best["validation"], "passes": best["passes"], "passes_run": hist[-1]["passes"], "seconds": round(time.time() - t0, 1)})
+        rows.append({**s, "validation": best["validation"], "passes": best["passes"], "passes_run": hist[-1]["passes"], "seconds": round(time.time() - t0, 1),
+                     "history": [[h["passes"], round(h["validation"], 6)] for h in hist]})
         print(f"    {i + 1:2d}/{len(settings(model))}  {s}  validation {best['validation']:.4f} at {best['passes']} passes  ({rows[-1]['seconds']} s)", flush=True)
     top = max(rows, key=lambda r: r["validation"])          # the first of equals, in grid order
     out = {"model": model, "release": release, "cutoff": cutoff, "inner_cutoff": INNER, "inner_split": parts, "baselines_on_validation": base, "joined": joined,
