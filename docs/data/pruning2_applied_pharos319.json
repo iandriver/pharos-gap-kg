@@ -1,0 +1,212 @@
+{
+ "release": "pharos319",
+ "pubmed": {
+  "pubmed_records": 41252707,
+  "searches": 25303
+ },
+ "sources": {
+  "CTD": {
+   "cut": 2.6264937460710533,
+   "one_source_pairs": 12860,
+   "unsearchable": 8,
+   "withheld_by_the_cut": 5982,
+   "share_of_searchable_withheld": 0.465452847805789,
+   "share_on_the_pairs_the_cut_was_scored_on": {
+    "n": 100,
+    "share": 0.35,
+    "low": 0.26364248181460326,
+    "high": 0.4474555678160957
+   },
+   "inside_that_interval": false,
+   "share_on_all_sampled_real_pairs": {
+    "n": 200,
+    "share": 0.445,
+    "low": 0.377806009517404,
+    "high": 0.5142669764161818
+   },
+   "withheld_in_all": 5982,
+   "by_rule": {
+    "literature_lift": 5982
+   },
+   "share_of_one_source_pairs_withheld_in_all": 0.46516329704510107
+  },
+  "JensenLab Knowledge MedlinePlus": {
+   "cut": 0.382619073485973,
+   "one_source_pairs": 972,
+   "unsearchable": 1,
+   "withheld_by_the_cut": 103,
+   "share_of_searchable_withheld": 0.10607621009268794,
+   "share_on_the_pairs_the_cut_was_scored_on": {
+    "n": 100,
+    "share": 0.14,
+    "low": 0.08526343626497378,
+    "high": 0.2213718828487036
+   },
+   "inside_that_interval": true,
+   "share_on_all_sampled_real_pairs": {
+    "n": 200,
+    "share": 0.095,
+    "low": 0.061663102507449205,
+    "high": 0.14360161209441077
+   },
+   "withheld_in_all": 103,
+   "by_rule": {
+    "literature_lift": 103
+   },
+   "share_of_one_source_pairs_withheld_in_all": 0.10596707818930041
+  },
+  "JensenLab Knowledge UniProtKB-KW": {
+   "cut": 2.9628446118574487,
+   "one_source_pairs": 1329,
+   "unsearchable": 0,
+   "withheld_by_the_cut": 273,
+   "share_of_searchable_withheld": 0.2054176072234763,
+   "share_on_the_pairs_the_cut_was_scored_on": {
+    "n": 100,
+    "share": 0.2,
+    "low": 0.13336693289714838,
+    "high": 0.2888291663642495
+   },
+   "inside_that_interval": true,
+   "share_on_all_sampled_real_pairs": {
+    "n": 200,
+    "share": 0.21,
+    "low": 0.15928412034547004,
+    "high": 0.2716461691225284
+   },
+   "withheld_in_all": 273,
+   "by_rule": {
+    "literature_lift": 273
+   },
+   "share_of_one_source_pairs_withheld_in_all": 0.2054176072234763
+  },
+  "Monarch": {
+   "cut": 0.0,
+   "one_source_pairs": 1692,
+   "unsearchable": 24,
+   "withheld_by_the_cut": 547,
+   "share_of_searchable_withheld": 0.32793764988009594,
+   "share_on_the_pairs_the_cut_was_scored_on": {
+    "n": 100,
+    "share": 0.45,
+    "low": 0.3561453790959721,
+    "high": 0.5475539707809277
+   },
+   "inside_that_interval": false,
+   "share_on_all_sampled_real_pairs": {
+    "n": 198,
+    "share": 0.36363636363636365,
+    "low": 0.29981742412707973,
+    "high": 0.43264586513324177
+   },
+   "withheld_in_all": 796,
+   "by_rule": {
+    "literature_lift": 287,
+    "literature_lift|uncorroborated": 260,
+    "uncorroborated": 249
+   },
+   "share_of_one_source_pairs_withheld_in_all": 0.47044917257683216
+  },
+  "UniProt Disease": {
+   "cut": 0.0,
+   "one_source_pairs": 401,
+   "unsearchable": 6,
+   "withheld_by_the_cut": 94,
+   "share_of_searchable_withheld": 0.2379746835443038,
+   "share_on_the_pairs_the_cut_was_scored_on": {
+    "n": 98,
+    "share": 0.21428571428571427,
+    "low": 0.1446454340416877,
+    "high": 0.30548027492648133
+   },
+   "inside_that_interval": true,
+   "share_on_all_sampled_real_pairs": {
+    "n": 196,
+    "share": 0.24489795918367346,
+    "low": 0.1899791481764734,
+    "high": 0.309624184586429
+   },
+   "withheld_in_all": 94,
+   "by_rule": {
+    "literature_lift": 94
+   },
+   "share_of_one_source_pairs_withheld_in_all": 0.2344139650872818
+  }
+ },
+ "sampled_real_pairs_checked_against_the_sample": 1000,
+ "in_graph_list": {
+  "sources": [
+   "Monarch"
+  ],
+  "as_round_one_wrote_it": 508,
+  "on_the_real_table_alone": 509
+ },
+ "two_rules_on_one_source": {
+  "Monarch": {
+   "planted": {
+    "n": 83,
+    "in_graph": {
+     "n": 83,
+     "share": 0.891566265060241,
+     "low": 0.8065953345482727,
+     "high": 0.9418950850892971
+    },
+    "literature": {
+     "n": 83,
+     "share": 0.8674698795180723,
+     "low": 0.7780725353308386,
+     "high": 0.9243569354059576
+    },
+    "either": {
+     "n": 83,
+     "share": 0.9518072289156626,
+     "low": 0.8825414072615146,
+     "high": 0.9811013846279888
+    },
+    "both": {
+     "n": 83,
+     "share": 0.8072289156626506,
+     "low": 0.7095661274982524,
+     "high": 0.8777109709866101
+    }
+   },
+   "real": {
+    "n": 198,
+    "in_graph": {
+     "n": 198,
+     "share": 0.2676767676767677,
+     "low": 0.21085843942466595,
+     "high": 0.3333382756114375
+    },
+    "literature": {
+     "n": 198,
+     "share": 0.36363636363636365,
+     "low": 0.29981742412707973,
+     "high": 0.43264586513324177
+    },
+    "either": {
+     "n": 198,
+     "share": 0.4898989898989899,
+     "low": 0.4211266749088136,
+     "high": 0.5590557909623214
+    },
+    "both": {
+     "n": 198,
+     "share": 0.1414141414141414,
+     "low": 0.09968595589325516,
+     "high": 0.19679158253203471
+    }
+   },
+   "union_applies": true
+  }
+ },
+ "rule_dropped_for_cost": [],
+ "withheld": 7248,
+ "rows_before": 324882,
+ "rows_kept": 317634,
+ "files": {
+  "disease_links_pruned.parquet": "b8d9ac27e63a6f9fa57983f0aee9320bf9a8da88d63d8273c9b4b2482934e685",
+  "disease_links_withheld.parquet": "21ecdd0915a175c708062bdbe7ff4ae5e69f5b6680177da0dd763d249f1068c9"
+ },
+ "disease_links_sha256": "21ba83f737dde64c7c33a7a776d451a9de71579ad2b81f50256ed7cf046b7d6a"
+}

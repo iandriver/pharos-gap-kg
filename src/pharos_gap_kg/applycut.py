@@ -156,6 +156,8 @@ def write(release: str) -> dict:
     kept.to_parquet(C / "disease_links_pruned.parquet", index=False)
 
     per = {}
+    sampled = pd.read_parquet(W / "search.parquet")
+    sampled = sampled[~sampled.planted & sampled.unsearchable.isna()]
     for s in sorted(c):
         g = lit[lit.source == s]
         ok = g[g.unsearchable.isna()]
@@ -165,6 +167,8 @@ def write(release: str) -> dict:
         per[s] = {"cut": c[s], "one_source_pairs": int(len(g)), "unsearchable": int(g.unsearchable.notna().sum()), "withheld_by_the_cut": int(g.lit_withheld.sum()),
                   "share_of_searchable_withheld": sh["share"], "share_on_the_pairs_the_cut_was_scored_on": exp,
                   "inside_that_interval": bool(exp["low"] <= sh["share"] <= exp["high"]),
+                  # added after the stated check was read: the same share on all the source's sampled real pairs, not the scored half
+                  "share_on_all_sampled_real_pairs": prune2.share((sampled[sampled.source == s].lift.to_numpy(float) <= c[s])),
                   "withheld_in_all": int(len(ws)), "by_rule": {k: int(v) for k, v in ws.rules.value_counts().items()},
                   "share_of_one_source_pairs_withheld_in_all": float(len(ws) / len(g))}
     out = {"release": release, "pubmed": json.loads((W / "applied.json").read_text()), "sources": per,
@@ -225,7 +229,8 @@ def main(argv: list[str] | None = None) -> int:
     for s, r in out["sources"].items():
         e = r["share_on_the_pairs_the_cut_was_scored_on"]
         print(f"  {s:34s} cut {r['cut']:6.3f}  one-source {r['one_source_pairs']:>6,}  unsearchable {r['unsearchable']:>4,}  withheld by the cut {r['withheld_by_the_cut']:>5,} "
-              f"({r['share_of_searchable_withheld']:.1%}; scored {e['share']:.1%} [{e['low']:.1%}, {e['high']:.1%}] {'inside' if r['inside_that_interval'] else 'OUTSIDE'})  in all {r['withheld_in_all']:>5,} {r['by_rule']}")
+              f"({r['share_of_searchable_withheld']:.1%}; scored {e['share']:.1%} [{e['low']:.1%}, {e['high']:.1%}] {'inside' if r['inside_that_interval'] else 'OUTSIDE'}; "
+              f"all sampled {r['share_on_all_sampled_real_pairs']['share']:.1%} [{r['share_on_all_sampled_real_pairs']['low']:.1%}, {r['share_on_all_sampled_real_pairs']['high']:.1%}])  in all {r['withheld_in_all']:>5,} {r['by_rule']}")
     g = out["in_graph_list"]
     print(f"  in-graph list {g['sources']}: {g['as_round_one_wrote_it']} as round one wrote it, {g['on_the_real_table_alone']} on the real table alone")
     for s, u in out["two_rules_on_one_source"].items():

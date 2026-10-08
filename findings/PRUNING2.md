@@ -248,3 +248,62 @@ the chosen reader read. No local model was run: the machine had no free memory f
   the row, and the drug's activity on the target with the drug's indication.
 - Planting by adding pairs gives a planted pair's target one more neighbour than a real pair's. A
   future in-graph test should plant by swapping the diseases of two real pairs.
+
+## Added 8 Oct 2026: the lift cut applied
+
+`python -m pharos_gap_kg.applycut search pharos319` and `write` produce
+`docs/data/pruning2_applied_pharos319.json`. How the cut is applied was added to the protocol before
+any pair outside the sample was searched. Every one-source pair of the five sources was searched,
+25,303 searches in all, and a pair at or below its source's cut is withheld.
+
+| source | cut | one-source pairs | withheld by the cut | share | share on the 100 pairs the cut was scored on |
+|---|---|---|---|---|---|
+| CTD | 2.626 | 12,860 | 5,982 | 46.5% | 35.0% [26.4%, 44.7%] |
+| Monarch | 0 | 1,692 | 547 | 32.8% | 45.0% [35.6%, 54.8%] |
+| JensenLab Knowledge UniProtKB-KW | 2.963 | 1,329 | 273 | 20.5% | 20.0% [13.3%, 28.9%] |
+| JensenLab Knowledge MedlinePlus | 0.383 | 972 | 103 | 10.6% | 14.0% [8.5%, 22.1%] |
+| UniProt Disease | 0 | 401 | 94 | 23.8% | 21.4% [14.5%, 30.5%] |
+
+Shares are of searchable pairs. 39 pairs were unsearchable and are kept. All 1,000 sampled real pairs
+of these sources got the counts they had in the sample.
+
+**Two sources fall outside the interval the check stated**, CTD above it and Monarch below. On all 200
+of a source's sampled real pairs, and not only the half the cut was scored on, the share at the cut is
+44.5% [37.8%, 51.4%] for CTD and 36.4% [30.0%, 43.3%] for Monarch, and both whole-source figures are
+inside those. (This second comparison was added after the stated check was read.) The halves the cut
+was scored on were unrepresentative, in opposite directions.
+
+**CTD's cost is 46.5% of its one-source pairs, not the 35.0% in the table further up.** That is still
+under the bar's 50%, by 3.5 points. The share of planted pairs withheld on CTD, 83.0% [74.5%, 89.1%],
+does not depend on which real pairs were sampled, and rests on 100 planted pairs.
+
+**Monarch has two rules.** Its in-graph list was recomputed on the real table alone: round one had
+decided it with planted pairs still in the table, and a planted pair can corroborate a real one. It
+is 509 pairs, where round one wrote 508. On the sampled Monarch pairs that carry both verdicts (83
+planted, since 2 of the 85 are unsearchable, and 198 real):
+
+| | planted withheld | real withheld |
+|---|---|---|
+| in-graph rule | 89.2% | 26.8% |
+| lift cut | 86.7% | 36.4% |
+| either | 95.2% | 49.0% |
+| both | 80.7% | 14.1% |
+
+Either rule together stays inside the bar's cost, by one point, so both are applied, as the protocol
+said. On the whole source 796 of Monarch's 1,692 one-source pairs are withheld (47.0%): 287 by the cut
+alone, 249 by the in-graph rule alone, and 260 by both. The 260 are flagged by two kinds of evidence
+that share nothing, and each gap says which rules made it.
+
+**The graph.** 7,248 of 324,882 rows are withheld. The export is 317,634 edges and 7,248 gaps and
+passes all ten conformance checks. A gap from the cut carries the number of papers that mention both,
+the lift and the cut. Of the 6,999 pairs the cut withholds, 3,672 have no paper at all and 3,327 are
+mentioned together, but no more often than the cut for their source.
+
+**What this rests on, and what it does not show.**
+
+- 5,982 of the 7,248 withheld pairs are CTD's (82.5%). CTD's pass rests on 100 planted pairs, and its
+  cost in real pairs is within 3.5 points of the bar. A larger planted sample for CTD is the first
+  check to make before relying on these gaps.
+- Withholding is not deletion. Every pair is in the gaps file with what would restore it.
+- No link-prediction result uses the pruned table yet. Whether pruning changes prediction is what the
+  fourth fitted model (`lightgcn_ctx_pruned`, `docs/PROTOCOL.md`) is for.

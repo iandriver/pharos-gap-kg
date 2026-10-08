@@ -66,6 +66,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   that reads the abstracts and must copy the passage it relies on clears it on three, and at the same
   cost in real pairs it withholds fewer planted ones than the cut does. No source's own confidence
   field orders its pairs the way the literature does. Three sources are out of reach of every rule.
+  The cut is applied to the five sources: 7,248 of 324,882 rows are withheld, each a typed gap that
+  carries the papers counted, the lift and the cut. 5,982 of them are CTD's, where the cut costs 46.5%
+  of one-source pairs against a bar of 50%.
+- **Fitted models** are defined and not yet scored: four declared models, tuned inside the training
+  years, each scored on the test links once ([`docs/PROTOCOL.md`](docs/PROTOCOL.md), "Fitted models";
+  [`docs/BREV.md`](docs/BREV.md) for fitting them on a rented GPU).
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
