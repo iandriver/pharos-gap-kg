@@ -365,6 +365,49 @@ a disease in this one's lineage" (round one's criterion b), resampling targets.
 - Two fields are not independent of the label and are marked so: the JensenLab z-score is itself a
   co-mention statistic, and the DisGeNET score counts papers and upstream sources.
 
+## Fitted models
+
+Defined on 7 Oct 2026, before any fitted model was trained or scored on anything.
+
+**Tuning sees training links only.** The training links are split again by year: links first reported
+in or before 2016 are fitted on (57,411, over 10,648 targets and 850 traits), and links of 2017 and
+2018 between a target and a trait already seen are the validation positives (22,610, over 284 traits;
+8,993,389 candidates). On that inner split the baselines score 0.0084 (chance), 0.0393 (target degree)
+and 0.0712 (neighbours) on the primary measure. Every setting of a model, including when to stop, is
+chosen by the primary measure on the validation positives, ties broken with one seed.
+
+**The models**, each scoring a (target, trait) pair by the dot product of two learned vectors and
+trained to rank a linked target above a target drawn at random for the same trait:
+
+| | what it is fitted on |
+|---|---|
+| M1 `mf` | the training links, as two tables of vectors and a number per target and per trait |
+| M2 `lightgcn` | the training links as a graph, vectors smoothed over one to three steps |
+| M3 `lightgcn_ctx` | the same with the undated context joined on: interaction partners, pathway, GO and compound memberships, and the disease sources as released |
+| M4 `lightgcn_ctx_pruned` | M3 with the disease pairs the pruning rules withheld left out |
+
+The disease source that repeats the GWAS data ("JensenLab Experiment TIGA") is in none of them.
+
+**Settings tried**, all of them, for each model: vector length 64 or 128; steps 1, 2 or 3 (M2 to M4);
+learning rate 0.001 or 0.005; weight on the squared length of the vectors 1e-6 or 1e-4. Batches of
+4,096 links, one random target per link, at most 300 passes over the links, validation every 10
+passes, stopping after 50 passes without improvement. Tuning uses seed 0.
+
+**Scoring on the test links, once per model.** The chosen setting and its number of passes are
+written to `docs/data` and committed. The model is then fitted on all 99,435 training links under
+seeds 0 to 4, with that setting and that number of passes and nothing else changed. Its score for a
+pair is the mean over the five. That one matrix is scored with every measure and control above. The
+primary measure under each seed alone is reported beside it.
+
+**What counts.** As stated under Baselines and Controls: a model helps if it beats the neighbours
+baseline on the primary measure with the paired interval excluding zero, and the claim that it
+predicts new links needs the same on the positives neither lineage nor position explains, both ways,
+and on loci. M3 against M2 is the reading with and without undated context that "What a scorer may
+see" requires. M4 against M3 says whether pruning the disease sources changes prediction.
+
+**What is not claimed in advance.** That any of the four beats the neighbours baseline. A model added
+after one of these has been scored on the test links is marked as such.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
