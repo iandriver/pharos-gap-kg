@@ -111,6 +111,9 @@ python -m pharos_gap_kg.enrich pharos319 --cutoff 2018       # needs the [eval] 
 python -m pharos_gap_kg.planted pharos319
 python -m pharos_gap_kg.evidence pharos319                   # each source's own evidence field, per pair
 python -m pharos_gap_kg.prune2 freeze pharos319              # second pruning round; stages in its docstring
+python -m pharos_gap_kg.applycut search pharos319            # the lift cut on the sources it passed on (hours; resumes)
+python -m pharos_gap_kg.applycut write pharos319
+python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
 python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc

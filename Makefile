@@ -1,6 +1,6 @@
 PY ?= $(firstword $(wildcard $(CURDIR)/.venv/bin/python) python3)
 
-.PHONY: check paths selftest test
+.PHONY: check paths selftest test model
 check: paths selftest test
 
 paths:
@@ -35,3 +35,7 @@ selftest:
 
 test:
 	$(PY) -m pytest -q
+
+# the fitted models need the [model] extra (torch), so their self-test is not part of `check`
+model:
+	$(PY) -m pharos_gap_kg.model --selftest

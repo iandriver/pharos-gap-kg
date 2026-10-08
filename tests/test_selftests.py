@@ -104,3 +104,10 @@ def test_prune2_selftest():
 
 def test_applycut_selftest():
     assert applycut._selftest() == 0
+
+
+def test_model_selftest():
+    import pytest
+    pytest.importorskip("torch")
+    from pharos_gap_kg import model
+    assert model._selftest() == 0

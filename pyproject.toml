@@ -21,6 +21,7 @@ dependencies = [
 test = ["pytest>=7"]
 server = ["mcp>=2,<3"]
 eval = ["scipy>=1.11"]
+model = ["torch>=2.2"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
