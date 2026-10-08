@@ -233,10 +233,11 @@ def classify(symbol, name, pair: dict | None, gene: dict | None, disease: dict |
     return pair["count"], None
 
 
-def search(release: str) -> pd.DataFrame:
-    _, s = frozen(release)
-    ok = s.symbol.notna() & s.name.map(lambda n: isinstance(n, str) and bool(litcheck.clean_name(n)))
-    q = s[ok]
+def counts(pairs: pd.DataFrame) -> tuple[pd.DataFrame, int, int]:
+    """For rows with `symbol` and `name`: both, gene_papers, disease_papers, lift, ids, unsearchable, in the
+    rows' order, and the size of PubMed. Every search is asked of NCBI once and kept."""
+    ok = pairs.symbol.notna() & pairs.name.map(lambda n: isinstance(n, str) and bool(litcheck.clean_name(n)))
+    q = pairs[ok]
     terms = [litcheck.EVERYTHING] + [litcheck.pair_term(a, b) for a, b in zip(q.symbol, q.name)] + [litcheck.gene_term(a) for a in q.symbol] + [litcheck.disease_term(b) for b in q.name]
     R = litcheck.search_many(terms)
     bad = [t for t, r in R.items() if r["error"]]
@@ -244,7 +245,7 @@ def search(release: str) -> pd.DataFrame:
         raise SystemExit(f"REFUSED: {len(bad)} searches came back as errors, e.g. {bad[0]!r}: {R[bad[0]]['error']}; re-run to ask them again")
     total = R[litcheck.EVERYTHING]["count"]
     rows = []
-    for sym, name, good in zip(s.symbol, s.name, ok):
+    for sym, name, good in zip(pairs.symbol, pairs.name, ok):
         pr = R[litcheck.pair_term(sym, name)] if good else None
         g = R[litcheck.gene_term(sym)] if good else None
         d = R[litcheck.disease_term(name)] if good else None
@@ -252,12 +253,18 @@ def search(release: str) -> pd.DataFrame:
         rows.append({"both": both, "gene_papers": g["count"] if good else None, "disease_papers": d["count"] if good else None,
                      "lift": litcheck.lift(both, g["count"], d["count"], total) if both is not None else None,
                      "ids": "|".join(pr["ids"]) if both else "", "unsearchable": why})
-    out = pd.concat([s[KEY + ["planted", "order", "part"]].reset_index(drop=True), pd.DataFrame(rows)], axis=1)
+    out = pd.DataFrame(rows, index=pairs.index)
     out["both"] = out.both.astype("Int64")
-    out.attrs = {}
+    return out, len(R), total
+
+
+def search(release: str) -> pd.DataFrame:
+    _, s = frozen(release)
+    found, n_searches, total = counts(s)
+    out = pd.concat([s[KEY + ["planted", "order", "part"]].reset_index(drop=True), found.reset_index(drop=True)], axis=1)
     W = work(release)
     out.to_parquet(W / "search.parquet", index=False)
-    (W / "search.json").write_text(json.dumps({"pubmed_records": total, "searches": len(R), "sample_sha256": graph.file_sha(W / "sample.parquet")}, indent=1) + "\n")
+    (W / "search.json").write_text(json.dumps({"pubmed_records": total, "searches": n_searches, "sample_sha256": graph.file_sha(W / "sample.parquet")}, indent=1) + "\n")
     return out
 
 
