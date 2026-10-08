@@ -511,3 +511,23 @@ and before any pair outside the sample was searched.**
   198 real). If the union withholds more than 50% of those real pairs it is over the bar's cost, and
   only the rule that withholds fewer of Monarch's real pairs is applied. From figures already
   reported, the union is 97 of the 198, so both are expected to apply.
+
+**8 Oct 2026, fitted models, the settings tried for the graph models. Written after M1 and M2 were
+tuned on validation (`findings/MODELS.md`) and before any model was scored on the test links.**
+
+M2's best setting on validation sits at the edge of the declared settings in both directions: the
+longest vector (128) and the most steps (3). Validation rises with each step added: at most 0.0670
+with one, 0.0726 with two and 0.0743 with three. The settings stopped where the score was still
+rising, so the best the model can do on validation was not found.
+
+Added for M2, M3 and M4, to the 24 settings already declared: vectors of 256 with 3, 4 or 5 steps, and
+vectors of 128 with 4 or 5 steps, each with both learning rates and both weights. That is 20 more
+settings, 44 in all, the same for the three models so that M3 and M4 are compared with M2 on equal
+terms. Everything else stands: the batches, the cap of 300 passes, validation every 10, the stopping
+rule, seed 0, and the choice of the best on validation, the first of equals in the order tried.
+
+- The 24 settings already tried for M2 are not fitted again. Their recorded values are used.
+- The settings are widened once. If the chosen setting is again at the edge, that is reported and
+  nothing more is added.
+- M1's setting stands as committed. Its eight settings differ by 0.003 and its curve is flat at the cap.
+- No test link has been read, and tuning reads none.
