@@ -72,8 +72,8 @@ Started 6 Oct 2026. No model has been fitted. What exists:
 - **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)) are defined and not yet scored on the
   test links: four declared models, tuned inside the training years, each scored once
   ([`docs/PROTOCOL.md`](docs/PROTOCOL.md), "Fitted models"). Two are tuned. On validation the best
-  LightGCN setting cannot be told from the neighbour baseline (+0.0031 [-0.0058, +0.0120]) and matrix
-  factorisation is worse than it. [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for the
+  LightGCN setting of 44 cannot be told from the neighbour baseline (+0.0054 [-0.0034, +0.0145]) and
+  matrix factorisation is worse than it. [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for the
   two models that join the context on.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).

@@ -748,6 +748,7 @@
   "passes": 300,
   "validation": 0.054582132666407324
  },
+ "implementation": "37067d61bf481404",
  "torch": "2.14.1",
  "device": "cpu"
 }

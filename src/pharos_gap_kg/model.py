@@ -19,6 +19,7 @@ Stages, in order. `final` scores on the test links, so it runs once per model, a
 
     python -m pharos_gap_kg.model tune  pharos319 --cutoff 2018 --model lightgcn
     python -m pharos_gap_kg.model validation pharos319 --cutoff 2018 --model lightgcn   # the chosen setting beside the baselines, on validation
+    python -m pharos_gap_kg.model freeze pharos319 --cutoff 2018 --model lightgcn      # after the setting's file is committed
     python -m pharos_gap_kg.model final pharos319 --cutoff 2018 --model lightgcn
     python -m pharos_gap_kg.model score pharos319 --cutoff 2018 --model lightgcn
     python -m pharos_gap_kg.model --selftest
@@ -50,6 +51,19 @@ BATCH, MAX_PASSES, EVERY, PATIENCE = 4096, 300, 10, 50
 MODELS = {"mf": {"graph": False, "context": None}, "lightgcn": {"graph": True, "context": None},
           "lightgcn_ctx": {"graph": True, "context": "disease_links"}, "lightgcn_ctx_pruned": {"graph": True, "context": "disease_links_pruned"}}
 MEMBERSHIPS = ("pathways", "go_terms", "compounds")
+FITTING = ("link_edges", "context_edges", "adjacency", "build", "draw_negatives", "fit", "primary")
+
+
+def implementation(text: str | None = None) -> str:
+    """An identity for the code that fits and validates: the source of those functions, hashed. A kept
+    result is reused, and a chosen setting scored, only under the code that made it."""
+    import ast
+    text = Path(__file__).read_text() if text is None else text
+    found = {n.name: ast.get_source_segment(text, n) for n in ast.parse(text).body if isinstance(n, ast.FunctionDef) and n.name in FITTING}
+    missing = [f for f in FITTING if f not in found]
+    if missing:
+        raise SystemExit(f"REFUSED: the fitting code has no function {missing}")
+    return hashlib.sha256("\n".join(found[f] for f in FITTING).encode()).hexdigest()[:16]
 
 
 def settings(model: str) -> list[dict]:
@@ -233,7 +247,15 @@ def graph_for(release: str, model: str, M: dict) -> tuple[np.ndarray | None, int
     if MODELS[model]["context"] is None:
         return e, A.shape[0] + A.shape[1], {"link_edges": int(len(e))}
     ce, n, counts = context_edges(load_context(release, MODELS[model]["context"]), M["targets"], M["traits"])
-    return np.concatenate([e, ce]), n, {"link_edges": int(len(e)), **counts, "nodes": n}
+    edges = np.concatenate([e, ce])
+    return edges, n, {"link_edges": int(len(e)), **counts, "nodes": n, "edges_sha256": edges_digest(edges, n)}
+
+
+def edges_digest(edges: np.ndarray, n: int) -> str:
+    """The graph by content: its node count and its undirected edges in one fixed order. Two context
+    graphs with the same counts and different edges get different digests."""
+    e = np.unique(np.sort(np.asarray(edges, np.int64), axis=1), axis=0)
+    return hashlib.sha256(np.int64(n).tobytes() + np.ascontiguousarray(e).tobytes()).hexdigest()
 
 
 def inner_matrices(cutoff: int) -> tuple[dict, dict]:
@@ -248,7 +270,8 @@ def primary(S: np.ndarray, A: np.ndarray, Y: np.ndarray, seeds: tuple[int, ...] 
 
 def setting_file(cutoff: int, model: str, s: dict, parts: dict, joined: dict) -> Path:
     """Where one setting's result on the inner split is kept, so a tuning run that stops can go on."""
-    what = {"model": model, "setting": s, "inner": {k: v["sha256"] for k, v in parts.items()}, "joined": joined, "how": [INNER, BATCH, MAX_PASSES, EVERY, PATIENCE]}
+    what = {"model": model, "setting": s, "inner": {k: v["sha256"] for k, v in parts.items()}, "joined": joined, "how": [INNER, BATCH, MAX_PASSES, EVERY, PATIENCE],
+            "code": implementation()}
     return out_dir(cutoff, model) / "settings" / (hashlib.sha256(json.dumps(what, sort_keys=True).encode()).hexdigest()[:20] + ".json")
 
 
@@ -267,7 +290,7 @@ def reuse_committed(cutoff: int, model: str, parts: dict, joined: dict) -> int:
     if not cp.is_file():
         return 0
     rec = json.loads(cp.read_text())
-    if rec.get("inner_split") != json.loads(json.dumps(parts)) or rec.get("joined") != json.loads(json.dumps(joined)):
+    if rec.get("inner_split") != json.loads(json.dumps(parts)) or rec.get("joined") != json.loads(json.dumps(joined)) or rec.get("implementation") != implementation():
         return 0
     mine, n = settings(model), 0
     for r in rec["tried"]:
@@ -324,7 +347,7 @@ def tune(release: str, cutoff: int, model: str, only: int | None = None, shard: 
            "settings": len(settings(model)), "first_settings": n_first, "tried": tried, "complete": complete,
            "chosen": pick(top), "validation": top["validation"],
            "best_of_the_first_settings": None if first is None else {**pick(first), "validation": first["validation"]},
-           "torch": torch.__version__, "device": dev}
+           "implementation": implementation(), "torch": torch.__version__, "device": dev}
     put(out_dir(cutoff, model) / "tune.json", json.dumps(out, indent=1) + "\n")
     if complete:
         put(chosen_path(cutoff, model), json.dumps(out, indent=1) + "\n")
@@ -358,6 +381,52 @@ def validation(release: str, cutoff: int, model: str) -> dict:
     return out
 
 
+def frozen_path(cutoff: int, model: str) -> Path:
+    return paths.DOCS_DATA / f"model_{model}_{cutoff}_frozen.json"
+
+
+def preflight(rec: dict, model: str) -> list[str]:
+    """What stands between a tuning record and a scoring on the test links; empty when nothing does."""
+    out = []
+    if not rec.get("complete"):
+        out.append("the record is from a run that did not finish every setting")
+    tried = [{k: r[k] for k in ("dim", "layers", "lr", "l2")} for r in rec.get("tried", [])]
+    if tried != settings(model):
+        out.append(f"the record tried {len(tried)} settings and the protocol now declares {len(settings(model))}, or they differ")
+    if rec.get("implementation") != implementation():
+        out.append("the record was made by other fitting code than this")
+    if rec.get("tried"):
+        top = max(rec["tried"], key=lambda r: r["validation"])
+        if rec.get("chosen") != {k: top[k] for k in ("dim", "layers", "lr", "l2", "passes")}:
+            out.append("the chosen setting is not the best of those tried")
+    return out
+
+
+def freeze(release: str, cutoff: int, model: str) -> dict:
+    """Record which committed file holds the setting to be scored. Run in the checkout, where git can say
+    the file is committed; the record travels to a machine that has no git history."""
+    import subprocess
+    cp = chosen_path(cutoff, model)
+    if paths.ROOT is None or not (paths.ROOT / ".git").exists():
+        raise SystemExit("REFUSED: freeze runs in the git checkout, where a file can be shown to be committed")
+    if not cp.is_file():
+        raise SystemExit(f"no setting for {model}; run:  python -m pharos_gap_kg.model tune {release} --cutoff {cutoff} --model {model}")
+    rec = json.loads(cp.read_text())
+    problems = preflight(rec, model)
+    git = lambda *a: subprocess.run(["git", "-C", str(paths.ROOT), *a], capture_output=True, text=True)
+    rel = str(cp.relative_to(paths.ROOT))
+    if git("ls-files", "--error-unmatch", rel).returncode != 0:
+        problems.append(f"{rel} is not tracked by git")
+    elif git("diff", "--quiet", "HEAD", "--", rel).returncode != 0:
+        problems.append(f"{rel} differs from the committed copy")
+    if problems:
+        raise SystemExit(f"REFUSED: {model} cannot be frozen: " + "; ".join(problems))
+    out = {"model": model, "cutoff": cutoff, "chosen": rec["chosen"], "validation": rec["validation"], "settings": rec["settings"],
+           "implementation": rec["implementation"], "chosen_file": rel, "chosen_sha256": graph.file_sha(cp), "commit": git("log", "-1", "--format=%H", "--", rel).stdout.strip()}
+    put(frozen_path(cutoff, model), json.dumps(out, indent=1) + "\n")
+    return out
+
+
 def final(release: str, cutoff: int, model: str) -> dict:
     import torch
     cp, d = chosen_path(cutoff, model), out_dir(cutoff, model)
@@ -366,8 +435,14 @@ def final(release: str, cutoff: int, model: str) -> dict:
     if (d / "final.json").is_file():
         raise SystemExit(f"REFUSED: {model} has been scored on the test links ({d / 'final.json'}); the protocol scores a model once")
     ch = json.loads(cp.read_text())
-    if not ch.get("complete"):
-        raise SystemExit(f"REFUSED: {cp.name} is from a partial run of the grid")
+    problems = preflight(ch, model)
+    fz = frozen_path(cutoff, model)
+    if not fz.is_file():
+        problems.append(f"the setting is not frozen; commit {cp.name}, then run:  python -m pharos_gap_kg.model freeze {release} --cutoff {cutoff} --model {model}")
+    elif json.loads(fz.read_text())["chosen_sha256"] != graph.file_sha(cp):
+        problems.append(f"{cp.name} is not the file that was frozen ({fz.name})")
+    if problems:
+        raise SystemExit(f"REFUSED: {model} is not ready to be scored on the test links: " + "; ".join(problems))
     M = baselines.matrices(split.load(cutoff))
     A, Y = M["train"], M["test"]
     dev = device()
@@ -449,6 +524,21 @@ def _selftest() -> int:
     ck("the added settings follow the first, are new, and are the same for the three graph models",
        len(g) == 44 and g[:24] == [x for x in g if x["dim"] <= 128 and x["layers"] <= 3] and {(x["dim"], x["layers"]) for x in g[24:]} == set(ADDED)
        and len({json.dumps(x, sort_keys=True) for x in g}) == 44 and g == settings("lightgcn_ctx") == settings("lightgcn_ctx_pruned"))
+    here = Path(__file__).read_text()
+    ck("the fitting code has one identity, and it changes when a fitting function changes and not when another does",
+       implementation() == implementation(here) and implementation(here.replace("softplus(-gap)", "softplus(gap)")) != implementation()
+       and implementation(here.replace("def out_dir(", "def out_dir_(")) == implementation())
+    ea = np.array([[0, 5], [1, 5], [2, 6]])
+    ck("a graph's digest does not depend on the order or direction its edges are listed in", edges_digest(ea, 7) == edges_digest(ea[::-1, ::-1], 7))
+    ck("two graphs with the same counts and different edges have different digests", edges_digest(ea, 7) != edges_digest(np.array([[0, 5], [1, 6], [2, 6]]), 7) and edges_digest(ea, 7) != edges_digest(ea, 8))
+    rows_ = [{**x, "validation": 0.01 * (i == 30) + 0.001 * i, "passes": 10} for i, x in enumerate(g)]
+    good = {"complete": True, "tried": rows_, "implementation": implementation(), "chosen": {**g[43], "passes": 10} if rows_[43]["validation"] > rows_[30]["validation"] else {**g[30], "passes": 10}}
+    ck("a complete record of the declared settings, made by this code, is ready to be scored", preflight(good, "lightgcn") == [])
+    ck("a record of the first 24 settings cannot authorise a scoring after the settings were widened",
+       any("declares 44" in x for x in preflight({**good, "tried": rows_[:24]}, "lightgcn")))
+    ck("a record made by other code, an unfinished one, and one whose choice is not its best are each refused",
+       len(preflight({**good, "implementation": "0" * 16}, "lightgcn")) == 1 and len(preflight({**good, "complete": False}, "lightgcn")) == 1
+       and preflight({**good, "chosen": {**g[0], "passes": 10}}, "lightgcn") == ["the chosen setting is not the best of those tried"])
     ck("a split run covers every setting once", sorted(i for k in range(3) for i in range(44) if mine(i, (k, 3))) == list(range(44)) and all(mine(i, None) for i in range(44)))
     parts_, old_root = {"train": {"links": 1, "sha256": "aa"}, "test": {"links": 1, "sha256": "bb"}}, paths.EVAL
     import tempfile
@@ -507,7 +597,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("stage", choices=("tune", "validation", "final", "score"))
+    ap.add_argument("stage", choices=("tune", "validation", "freeze", "final", "score"))
     ap.add_argument("release")
     ap.add_argument("--cutoff", type=int, required=True)
     ap.add_argument("--model", choices=list(MODELS), required=True)
@@ -523,6 +613,9 @@ def main(argv: list[str] | None = None) -> int:
         out = validation(a.release, a.cutoff, a.model)
         for k, v in out["against"].items():
             print(f"  {a.model} {out['validation']:.4f} against {k} {v['baseline']:.4f}: {v['difference']:+.4f} [{v['low']:+.4f}, {v['high']:+.4f}], higher on {v['traits_where_the_model_is_higher']} of {out['traits']} traits")
+    elif a.stage == "freeze":
+        out = freeze(a.release, a.cutoff, a.model)
+        print(f"  {a.model}: {out['chosen']} frozen from {out['chosen_file']} at {out['commit'][:7]}")
     elif a.stage == "final":
         out = final(a.release, a.cutoff, a.model)
         print(f"  {a.model}: primary {out['primary_of_the_mean_matrix']:.4f} for the mean of five seeds")
