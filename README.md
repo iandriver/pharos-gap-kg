@@ -69,9 +69,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   The cut is applied to the five sources: 7,248 of 324,882 rows are withheld, each a typed gap that
   carries the papers counted, the lift and the cut. 5,982 of them are CTD's, where the cut costs 46.5%
   of one-source pairs against a bar of 50%.
-- **Fitted models** are defined and not yet scored: four declared models, tuned inside the training
-  years, each scored on the test links once ([`docs/PROTOCOL.md`](docs/PROTOCOL.md), "Fitted models";
-  [`docs/BREV.md`](docs/BREV.md) for fitting them on a rented GPU).
+- **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)) are defined and not yet scored on the
+  test links: four declared models, tuned inside the training years, each scored once
+  ([`docs/PROTOCOL.md`](docs/PROTOCOL.md), "Fitted models"). Two are tuned. On validation the best
+  LightGCN setting cannot be told from the neighbour baseline (+0.0031 [-0.0058, +0.0120]) and matrix
+  factorisation is worse than it. [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for the
+  two models that join the context on.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 

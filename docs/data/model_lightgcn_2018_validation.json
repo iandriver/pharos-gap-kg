@@ -1,0 +1,34 @@
+{
+ "model": "lightgcn",
+ "cutoff": 2018,
+ "inner_cutoff": 2016,
+ "setting": {
+  "dim": 128,
+  "layers": 3,
+  "lr": 0.005,
+  "l2": 1e-06,
+  "passes": 60
+ },
+ "validation": 0.07428153178439868,
+ "traits": 284,
+ "against": {
+  "B1": {
+   "baseline": 0.03937522563619701,
+   "difference": 0.03490630614820168,
+   "low": 0.017218649729867686,
+   "high": 0.05532270363779939,
+   "half_width": 0.01905202695396585,
+   "traits_where_the_model_is_higher": 178
+  },
+  "B3": {
+   "baseline": 0.07119169798578848,
+   "difference": 0.003089833798610202,
+   "low": -0.005781747846248734,
+   "high": 0.011994055522511982,
+   "half_width": 0.008887901684380358,
+   "traits_where_the_model_is_higher": 157
+  }
+ },
+ "settings_tried": 24,
+ "read_as": "the setting was chosen on these links, so this comparison flatters the model"
+}

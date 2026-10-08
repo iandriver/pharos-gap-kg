@@ -1,0 +1,34 @@
+{
+ "model": "mf",
+ "cutoff": 2018,
+ "inner_cutoff": 2016,
+ "setting": {
+  "dim": 64,
+  "layers": 0,
+  "lr": 0.001,
+  "l2": 0.0001,
+  "passes": 300
+ },
+ "validation": 0.05458213472212619,
+ "traits": 284,
+ "against": {
+  "B1": {
+   "baseline": 0.03937522563619701,
+   "difference": 0.01520690908592918,
+   "low": 0.0001062680033171716,
+   "high": 0.03191204198689414,
+   "half_width": 0.015902886991788483,
+   "traits_where_the_model_is_higher": 169
+  },
+  "B3": {
+   "baseline": 0.07119169798578848,
+   "difference": -0.016609563263662298,
+   "low": -0.027274901356658984,
+   "high": -0.008173048083242094,
+   "half_width": 0.009550926636708444,
+   "traits_where_the_model_is_higher": 122
+  }
+ },
+ "settings_tried": 8,
+ "read_as": "the setting was chosen on these links, so this comparison flatters the model"
+}
