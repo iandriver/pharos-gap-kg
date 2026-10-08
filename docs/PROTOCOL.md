@@ -445,3 +445,26 @@ that part is for:
 
 The brief, the code check of the passage, the qualifying rule, the choice rule and the spend cap are
 unchanged, and are applied to the development part after the re-reading.
+
+**7 Oct 2026, applying the lift cut. Written after the second round's results (`findings/PRUNING2.md`)
+and before any pair outside the sample was searched.**
+
+- *Where.* The five sources on which rule L0b passed, each with the cut that was scored for it: CTD
+  2.626, JensenLab Knowledge MedlinePlus 0.383, JensenLab Knowledge UniProtKB-KW 2.963, Monarch 0,
+  UniProt Disease 0. A cut of 0 withholds a pair no paper mentions, which is rule L0.
+- *What.* Every one-source pair of those sources is searched as in the code-only check. A pair whose
+  lift is at or below its source's cut is withheld. An unsearchable pair is kept and counted. A pair
+  with a second source is not examined.
+- *How it is written.* A withheld pair is a gap that names the rule, the number of papers that mention
+  both, the lift, the cut, and what would restore it: a lift above the cut, or a second source.
+- *Checks.* Each sampled real pair must get the verdict it had in the sample. The share of a source's
+  one-source pairs withheld is expected inside the 95% interval of the share on the 100 real pairs the
+  cut was scored on; a source outside it is reported.
+- *The in-graph list for Monarch is recomputed.* Round one decided which real pairs were
+  uncorroborated while its planted pairs were still in the table, and a planted pair can corroborate a
+  real one. The list is now computed on the real table alone. The change in its size is reported.
+- *Monarch has two passing rules.* A pair is withheld if either withholds it, and the gap names which.
+  The union and the overlap are measured on the sampled pairs that carry both verdicts (85 planted,
+  198 real). If the union withholds more than 50% of those real pairs it is over the bar's cost, and
+  only the rule that withholds fewer of Monarch's real pairs is applied. From figures already
+  reported, the union is 97 of the 198, so both are expected to apply.
