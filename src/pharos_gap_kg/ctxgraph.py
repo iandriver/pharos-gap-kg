@@ -1,8 +1,10 @@
 """The eleven disease sources as KGX: what each asserts, and what the pruning rule withheld, as gaps.
 
 Every row of the disease-source table becomes an association or a gap, and none is dropped. A row is
-a gap when (1) the pruning rule withheld it (findings/PRUNING.md), or (2) the source gives a gene
-identifier where a disease belongs. A gap names the rule that made it one and what would restore it.
+a gap when (1) a pruning rule withheld it (findings/PRUNING.md, findings/PRUNING2.md), or (2) the
+source gives a gene identifier where a disease belongs. A gap names the rule or rules that made it one
+and what would restore it. A pair withheld by the literature rule also carries what was counted: the
+papers that mention both, the lift, and the cut for its source.
 
 Each source is exported under its own knowledge source, so one (target, disease) pair asserted by
 three sources is three edges with three ids, and a reader can see who said what.
@@ -42,18 +44,37 @@ SOURCES = {
 NOT_A_DISEASE = ("NCBIGene:",)
 RULES = {"uncorroborated": ("one source, and nothing else in the graph corroborates it",
                             "a second source, the same target with a broader or narrower disease, a GWAS link, or an interaction partner with this disease"),
+         "literature_lift": ("PubMed mentions this gene with this disease no more often than the cut for its source",
+                             "a lift above the cut for its source, or a second source"),
          "not_a_disease": ("the source gives a gene identifier where a disease belongs", "a disease identifier from the source")}
 # A gap edge runs from the target to the kind of gap, so by itself it does not say WHICH disease the
 # withheld association was about. That is carried here, and it is part of what the gap is: two
 # diseases withheld for one target are two gaps.
 WITHHELD_OBJECT = f"{PREFIX}:withheld_object"
-EXTRA_GAP = ["aggregator_knowledge_source", WITHHELD_OBJECT, f"{PREFIX}:rule", f"{PREFIX}:restored_by"]
+PAPERS, LIFT, CUT = f"{PREFIX}:papers_mentioning_both", f"{PREFIX}:lift", f"{PREFIX}:lift_cut"
+EXTRA_GAP = ["aggregator_knowledge_source", WITHHELD_OBJECT, f"{PREFIX}:rule", f"{PREFIX}:restored_by", PAPERS, LIFT, CUT]
+
+
+def rules_of(row: dict) -> list[str]:
+    """The rules that make this row a gap, none if it is an association. A withheld row that names no
+    rule is round one's, the in-graph rule."""
+    if str(row["object"]).startswith(NOT_A_DISEASE):
+        return ["not_a_disease"]
+    if not row.get("withheld"):
+        return []
+    named = row.get("rules")
+    return named.split("|") if isinstance(named, str) and named else ["uncorroborated"]
 
 
 def why_withheld(row: dict) -> str:
-    if str(row["object"]).startswith(NOT_A_DISEASE):
-        return RULES["not_a_disease"][0]
-    return RULES["uncorroborated"][0] if row.get("withheld") else ""
+    return "; ".join(RULES[r][0] for r in rules_of(row))
+
+
+def figure(v, integer: bool = False) -> str:
+    """A counted figure as text, empty where none was counted."""
+    if v is None or pd.isna(v):
+        return ""
+    return str(int(v)) if integer else format(float(v), ".4g")
 
 
 def mapping(ks: str) -> Mapping:
@@ -81,9 +102,11 @@ def export(rows: pd.DataFrame, names: dict) -> tuple[pd.DataFrame, pd.DataFrame,
     def extras(row, kind):
         if kind == "edge":
             return {"aggregator_knowledge_source": graph.AGGREGATOR}
-        rule = "not_a_disease" if str(row["object"]).startswith(NOT_A_DISEASE) else "uncorroborated"
-        return {"aggregator_knowledge_source": graph.AGGREGATOR, WITHHELD_OBJECT: row["object"], f"{PREFIX}:rule": rule,
-                f"{PREFIX}:restored_by": RULES[rule][1]}
+        rules = rules_of(row)
+        counted = "literature_lift" in rules
+        return {"aggregator_knowledge_source": graph.AGGREGATOR, WITHHELD_OBJECT: row["object"], f"{PREFIX}:rule": "|".join(rules),
+                f"{PREFIX}:restored_by": "; or ".join(RULES[r][1] for r in rules),
+                PAPERS: figure(row.get("papers"), integer=True) if counted else "", LIFT: figure(row.get("lift")) if counted else "", CUT: figure(row.get("cut")) if counted else ""}
 
     N, E, G, merged = [], [], [], 0
     for ks in sorted({v[0] for v in SOURCES.values()}):
@@ -106,8 +129,12 @@ def build(release: str) -> dict:
     links = pd.read_parquet(C / "disease_links.parquet")
     wp = C / "disease_links_withheld.parquet"
     if not wp.is_file():
-        raise SystemExit(f"the pruning test has not been run; run:  python -m pharos_gap_kg.planted {release}")
-    withheld = pd.read_parquet(wp)[["target", "disease", "source"]].assign(withheld=True)
+        raise SystemExit(f"nothing says which pairs are withheld; run:  python -m pharos_gap_kg.planted {release}  (and applycut write, for the literature rule)")
+    withheld = pd.read_parquet(wp)
+    for col in ("rules", "papers", "lift", "cut"):       # round one's file names no rule and counted nothing
+        if col not in withheld:
+            withheld[col] = None
+    withheld = withheld[["target", "disease", "source", "rules", "papers", "lift", "cut"]].assign(withheld=True)
     rows = links.merge(withheld, on=["target", "disease", "source"], how="left")
     rows["withheld"] = rows.withheld.fillna(False).astype(bool)
     rows = rows.rename(columns={"target": "subject", "disease": "object", "source": "type"})
@@ -149,6 +176,16 @@ def _selftest() -> int:
                          ("UniProtKB:B", "NCBIGene:7", "CTD", False), ("UniProtKB:C", "MONDO:1", "Expression Atlas", False),
                          ("UniProtKB:C", "MONDO:2", "JensenLab Text Mining", False), ("UniProtKB:C", "MONDO:2", "JensenLab Knowledge AmyCo", False)],
                         columns=["subject", "object", "type", "withheld"])
+    counted = pd.DataFrame([("UniProtKB:D", "MONDO:4", "CTD", True, "literature_lift", 3, 1.23456, 2.626), ("UniProtKB:D", "MONDO:5", "Monarch", True, "literature_lift|uncorroborated", 0, 0.0, 0.0),
+                            ("UniProtKB:D", "MONDO:6", "Monarch", True, "uncorroborated", None, None, None)], columns=["subject", "object", "type", "withheld", "rules", "papers", "lift", "cut"])
+    _, e2, g2, _ = export(pd.concat([rows, counted], ignore_index=True), {})
+    g2 = g2[g2.subject == "UniProtKB:D"].set_index(WITHHELD_OBJECT)
+    ck("a pair withheld by the literature rule carries the papers, the lift and the cut it was judged on",
+       (g2.at["MONDO:4", PAPERS], g2.at["MONDO:4", LIFT], g2.at["MONDO:4", CUT]) == ("3", "1.235", "2.626") and g2.at["MONDO:5", PAPERS] == "0" and g2.at["MONDO:5", LIFT] == "0")
+    ck("a pair two rules withhold names both, with both reasons and both ways back",
+       g2.at["MONDO:5", f"{PREFIX}:rule"] == "literature_lift|uncorroborated" and g2.at["MONDO:5", f"{PREFIX}:gap_reason"] == RULES["literature_lift"][0] + "; " + RULES["uncorroborated"][0]
+       and g2.at["MONDO:5", f"{PREFIX}:restored_by"] == RULES["literature_lift"][1] + "; or " + RULES["uncorroborated"][1])
+    ck("a pair the in-graph rule alone withholds carries no counts", (g2.at["MONDO:6", PAPERS], g2.at["MONDO:6", LIFT], g2.at["MONDO:6", CUT]) == ("", "", ""))
     n, e, g, merged = export(rows, {"UniProtKB:A": "AAA", "MONDO:1": "a disease"})
     rep = conformance.check(n, e, g, mapping("infores:ctd"), n_input_rows=len(rows), n_merged=merged)
     ck("every row is an association or a gap, and the result passes conformance with nothing skipped", len(e) + len(g) == len(rows) and rep.passed and not rep.n_skipped)

@@ -21,14 +21,12 @@ import sys
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import graph, ontology, paths, planted as round1, prune2, registry
+from pharos_gap_kg import ctxgraph, graph, ontology, paths, planted as round1, prune2, registry
 
 KEY = prune2.KEY
 LIFT, INGRAPH = "literature_lift", "uncorroborated"
-REASON = {LIFT: "PubMed mentions this gene with this disease no more often than the cut for its source",
-          INGRAPH: "one source, and nothing else in the graph corroborates it"}
-RESTORED_BY = {LIFT: "a lift above the cut for its source, or a second source",
-               INGRAPH: "a second source, the same target with a broader or narrower disease, a GWAS link, or an interaction partner with this disease"}
+REASON = {k: ctxgraph.RULES[k][0] for k in (LIFT, INGRAPH)}            # the graph export holds the wording of every rule
+RESTORED_BY = {k: ctxgraph.RULES[k][1] for k in (LIFT, INGRAPH)}
 UNION_AT_MOST = round1.LOSE_AT_MOST
 
 
