@@ -531,3 +531,40 @@ rule, seed 0, and the choice of the best on validation, the first of equals in t
   nothing more is added.
 - M1's setting stands as committed. Its eight settings differ by 0.003 and its curve is flat at the cap.
 - No test link has been read, and tuning reads none.
+
+**9 Oct 2026, full text for the three sources no rule reached. Written after a pilot on five hand-picked
+Expression Atlas pairs outside the sample, and before any sample pair was searched in the form fixed
+here.**
+
+More than half of the real one-source pairs of Expression Atlas, DrugCentral Indication and JensenLab
+Knowledge AmyCo have no PubMed abstract that mentions the gene with the disease (61.0%, 53.0%, 61.5%),
+so no literature rule built on abstracts cleans them. This asks whether full text does.
+
+- *The service and its allowance.* Paperclip (paperclip.gxl.ai) searches the full text of PubMed
+  Central and preprints. Its free allowance is 100 requests a day and 25 a minute. This check sends
+  at most 90 a day and one request for each pair. Every request is written to a log before it is sent,
+  and an answer is kept and not asked for again. The check is optional: nothing else in the package
+  needs the service or its key.
+- *Rule F.* A pair is withheld if no full text holds the gene symbol within 200 characters, on one
+  line, of one of the disease's names, in either order and any letter case, by an exhaustive scan. The
+  names are the release's own, the ontology's label and its exact synonyms (EFO v3.94.0), cleaned as
+  for PubMed, none shorter than 5 characters, at most 12.
+- *Pairs.* From the frozen sample: for each of the three sources, the first 50 planted and the first
+  50 real one-source pairs in drawn order. They are asked source by source in the order above, and
+  within a source planted and real in turn, so that wherever a day stops the two groups are level. 300
+  requests, four days.
+- *Measures.* For each source, the shares of planted and of real pairs withheld with Wilson intervals,
+  against the round-two bar (80% and 50%), beside the abstract rule L0 on the same pairs; and how many
+  of the real and of the planted pairs that no abstract mentions are found in full text.
+- *How it will be read.* With 50 pairs a share of 80% has an interval of about 67% to 89%, so a pass at
+  this size is provisional whatever the code's flag says. A source whose two shares are each inside
+  the bar or within 10 points of it is extended to the first 100 of each; another source stops at 50.
+- *What it cannot do.* At 100 requests a day the rule cannot be applied to Expression Atlas's 158,479
+  one-source pairs, and DrugCentral's 3,145 would take five weeks. This measures whether full text
+  carries the signal.
+- *What was seen before this was written.* The pilot's five pairs, none in the sample: under the form
+  that asks for the symbol and every word of one name anywhere in a paper, the answers stop counting
+  at 20 and a pair named "malignant pancreatic neoplasm" finds nothing, while Rule F with synonyms
+  finds 10 papers for it; a crossing of two real pairs (SLC20A1 with breast cancer) finds 45. One
+  sample pair, CENPV with lung carcinoma (Expression Atlas, real, first in drawn order), was searched
+  in the whole-paper form while the tool was being explored and returned 2 papers. It stays in the sample.

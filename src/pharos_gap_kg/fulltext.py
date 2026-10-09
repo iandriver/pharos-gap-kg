@@ -17,8 +17,11 @@ fixed in docs/PROTOCOL.md before a sample pair was searched:
     near   some full text holds the symbol within 200 characters, on one line, of the disease's name
            or of another name the ontology gives it as exact
 
+THE FORM FIXED is `near`, as an exhaustive scan. The whole-paper form needs every word of one name
+and stops counting at 20.
+
 Run:  python -m pharos_gap_kg.fulltext pilot pharos319
-      python -m pharos_gap_kg.fulltext run pharos319 --calls 60
+      python -m pharos_gap_kg.fulltext run pharos319 --calls 30    # the next pairs in the fixed order
       python -m pharos_gap_kg.fulltext report pharos319
       python -m pharos_gap_kg.fulltext --selftest
 """
@@ -43,6 +46,7 @@ MCP = "https://paperclip.gxl.ai/mcp"
 DAY, MINUTE = 100, 25           # the free allowance, as Ian gave it on 9 Oct 2026
 PER_DAY, GAP = 90, 3.0          # what this module lets itself use: some of the day is left, and 20 a minute
 SOURCES = ("Expression Atlas", "DrugCentral Indication", "JensenLab Knowledge AmyCo")
+FIRST = 50                      # of each source: the first 50 planted and the first 50 real pairs, in drawn order
 WINDOW = 200
 MAX_NAMES, MIN_NAME = 12, 5     # how many names of a disease go into one question, and the shortest one used
 PILOT_SEED, PILOT_EACH = 20261010, 3
@@ -116,7 +120,7 @@ def names_of(disease: str, name: str, terms: dict, synonyms: dict) -> list[str]:
 
 def near_question(symbol: str, names: list[str]) -> tuple[str, dict]:
     g, d = literal(symbol), "(" + "|".join(literal(n) for n in names) + ")"
-    return "grep", {"pattern": f"{g}.{{0,{WINDOW}}}{d}|{d}.{{0,{WINDOW}}}{g}", "path": "/papers/", "count_only": True, "ignore_case": True}
+    return "grep", {"pattern": f"{g}.{{0,{WINDOW}}}{d}|{d}.{{0,{WINDOW}}}{g}", "path": "/papers/", "count_only": True, "ignore_case": True, "exhaustive": True}
 
 
 
@@ -129,6 +133,8 @@ def parse_count(tool: str, text: str) -> int | None:
             return 0
         m = re.match(r"Found (\d+) papers?", t)
         return int(m.group(1)) if m else None
+    if t.startswith("No matches for"):
+        return 0
     m = re.match(r"(\d+)\s*$", t.splitlines()[0]) if t else None
     return int(m.group(1)) if m else None
 
@@ -253,6 +259,71 @@ def pilot(release: str) -> pd.DataFrame:
     return p
 
 
+# ---- the sample, in a fixed order, a day's share at a time --------------------------------------------------
+
+def ordered(sample: pd.DataFrame, first: int = FIRST) -> pd.DataFrame:
+    """The sample pairs this check asks about, in the order it asks: source by source, and within a source
+    planted and real pairs in turn by drawn order, so that wherever a day stops the two groups are level."""
+    s = sample[sample.source.isin(SOURCES) & (sample.order < first)].copy()
+    s["_src"] = s.source.map({x: i for i, x in enumerate(SOURCES)})
+    return s.sort_values(["_src", "order", "planted"], ascending=[True, True, False]).drop(columns="_src").reset_index(drop=True)
+
+
+def run(release: str, calls: int) -> pd.DataFrame:
+    """Ask about the next pairs, at most `calls` new requests, and write what is known so far."""
+    _, sample = prune2.frozen(release)
+    plan = with_names(ordered(sample))
+    c = Client()
+    rows, new, why = [], 0, None
+    for r in plan.itertuples():
+        row = {k: getattr(r, k) for k in KEY + ["planted", "order"]}
+        if not isinstance(r.symbol, str) or not r.names:
+            rows.append({**row, "count": None, "state": "unsearchable"})
+            continue
+        q = near_question(r.symbol, r.names)
+        if why is None and new >= calls:
+            why = f"the {calls} requests asked for were sent"
+        try:
+            a = c.ask(*q) if why is None else Client(per_day=0).ask(*q)      # once stopped, only kept answers are read
+        except Spent as e:
+            why = why or str(e)
+            rows.append({**row, "count": None, "state": "not asked yet"})
+            continue
+        new += 0 if a.get("kept") else 1
+        rows.append({**row, "count": a["count"], "state": "answered" if a["count"] is not None else "error: " + str(a["error"])[:80]})
+    out = pd.DataFrame(rows)
+    out["count"] = out["count"].astype("Int64")
+    W = prune2.work(release)
+    out.to_parquet(W / "fulltext.parquet", index=False)
+    print(f"  {new} new requests; stopped because {why or 'every pair is answered'}; requests today {sent_today()}")
+    return out
+
+
+def report(release: str) -> dict:
+    W = prune2.work(release)
+    ft = pd.read_parquet(W / "fulltext.parquet")
+    se = pd.read_parquet(W / "search.parquet")[KEY + ["planted", "both", "unsearchable"]]
+    x = ft.merge(se, on=KEY + ["planted"])
+    done = x[x.state == "answered"].copy()
+    done["f"] = (done["count"] == 0).to_numpy()
+    done["l0"] = (done.both == 0).to_numpy()
+    out = {"release": release, "first": FIRST, "window": WINDOW, "sample_sha256": prune2.graph.file_sha(W / "sample.parquet"),
+           "states": {str(k): int(v) for k, v in ft.state.str.replace(r"^error.*", "error", regex=True).value_counts().items()}, "sources": {}}
+    for src in SOURCES:
+        g = done[done.source == src]
+        p, r = g[g.planted], g[~g.planted]
+        if not len(g):
+            continue
+        fp, fr = prune2.share(p.f.to_numpy()), prune2.share(r.f.to_numpy())
+        out["sources"][src] = {"planted_withheld": fp, "real_withheld": fr, **prune2.bar(fp, fr), "complete": bool(len(p) == FIRST and len(r) == FIRST),
+                               "abstracts_on_the_same_pairs": {"planted_withheld": prune2.share(p.l0.to_numpy()), "real_withheld": prune2.share(r.l0.to_numpy())},
+                               "real_pairs_no_abstract_mentions": {"n": int(r.l0.sum()), "found_in_full_text": int((r.l0 & ~r.f).sum())},
+                               "planted_pairs_no_abstract_mentions": {"n": int(p.l0.sum()), "found_in_full_text": int((p.l0 & ~p.f).sum())},
+                               "real_pairs_an_abstract_mentions": {"n": int((~r.l0).sum()), "not_found_in_full_text": int((~r.l0 & r.f).sum())}}
+    (paths.DOCS_DATA / f"pruning2_fulltext_{release}.json").write_text(prune2.dump(out))
+    return out
+
+
 def _selftest() -> int:
     ok = True
 
@@ -263,7 +334,8 @@ def _selftest() -> int:
 
     ck("a search answer is read as its count, none found as zero, and anything else as no count",
        [parse_count("search", t) for t in ("Found 14 papers  [s_1]\n\n  1. A title", "Found 1 paper [s_2]", "No papers found.\nTry broader terms", "Error: search requires a source flag (-s).")] == [14, 1, 0, None])
-    ck("a grep answer is read as its count, and an error as no count", [parse_count("grep", t) for t in ("100\n", "0\n", "ERR: vsh: grep: X: Cannot read path", "")] == [100, 0, None, None])
+    ck("a grep answer is read as its count, no match as zero, and an error as no count",
+       [parse_count("grep", t) for t in ("100\n", "0\n", "No matches for /A.{0,200}(b)/ across corpus\n[exit 1]\n", "ERR: vsh: grep: X: Cannot read path", "")] == [100, 0, 0, None, None])
     ck("text becomes an exact pattern, whatever punctuation it holds", literal("HLA-A") == r"HLA\-A" and literal("crohn's disease") == r"crohn\'s\s+disease" and re.fullmatch(literal("a.b c"), "a.b   c") and not re.fullmatch(literal("a.b"), "axb"))
     tool, args = doc_question("CENPV", "Lung carcinoma, NOS")
     ck("the whole-paper form asks for the symbol and every word of the name in PubMed Central", tool == "search" and args == {"query": "CENPV lung carcinoma nos", "source": "pmc", "mode": "all", "count_only": True})
@@ -292,9 +364,14 @@ synonym: "x" EXACT []
        nm == ["gastric cancer", "stomach cancer", "cancer of stomach"] and names_of("UMLS:9", "Some disease", terms, syn) == ["some disease"])
     tool, args = near_question("PLOD1", nm)
     ck("the nearby form asks for the symbol within 200 characters of any of the names, either order, any case",
-       tool == "grep" and args["ignore_case"] and args["count_only"] and re.search(args["pattern"], "plod1 was high in stomach  cancer", re.I)
+       tool == "grep" and args["ignore_case"] and args["count_only"] and args["exhaustive"] and re.search(args["pattern"], "plod1 was high in stomach  cancer", re.I)
        and re.search(args["pattern"], "Gastric cancer cells lacking PLOD1", re.I) and not re.search(args["pattern"], "PLOD1 " + "x" * 300 + " gastric cancer", re.I)
        and not re.search(args["pattern"], "PLOD1 in gastric tumour", re.I))
+    sm = pd.DataFrame([(s, pl_, o) for s in (SOURCES[1], SOURCES[0], "CTD") for pl_ in (False, True) for o in (2, 0, 1)], columns=["source", "planted", "order"])
+    od = ordered(sm, first=2)
+    ck("pairs are asked source by source, planted and real in turn by drawn order, and only the first of each",
+       list(zip(od.source, od.planted, od.order)) == [(SOURCES[0], True, 0), (SOURCES[0], False, 0), (SOURCES[0], True, 1), (SOURCES[0], False, 1),
+                                                       (SOURCES[1], True, 0), (SOURCES[1], False, 0), (SOURCES[1], True, 1), (SOURCES[1], False, 1)])
     import tempfile
     old = paths.EVAL
     with tempfile.TemporaryDirectory() as d:
@@ -329,8 +406,22 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return _selftest()
-    if len(argv) < 2 or argv[0] not in ("pilot",):
+    if len(argv) < 2 or argv[0] not in ("pilot", "run", "report"):
         raise SystemExit(__doc__)
+    if argv[0] == "run":
+        calls = int(argv[argv.index("--calls") + 1]) if "--calls" in argv else PER_DAY
+        out = run(argv[1], calls)
+        print(out.groupby(["source", "planted"]).state.apply(lambda v: int((v == "answered").sum())).unstack().to_string())
+        return 0
+    if argv[0] == "report":
+        out = report(argv[1])
+        pc = lambda d: f"{d['share']:.1%} [{d['low']:.1%}, {d['high']:.1%}] n={d['n']}"
+        print(f"  states: {out['states']}")
+        for src, r in out["sources"].items():
+            a = r["abstracts_on_the_same_pairs"]
+            print(f"  {src:28s} full text: planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}{'' if r['complete'] else '  [not complete]'}")
+            print(f"  {'':28s} abstracts: planted {pc(a['planted_withheld'])}  real {pc(a['real_withheld'])}; real pairs no abstract mentions: {r['real_pairs_no_abstract_mentions']}; planted: {r['planted_pairs_no_abstract_mentions']}")
+        return 0
     if argv[0] == "pilot":
         try:
             p = pilot(argv[1])
