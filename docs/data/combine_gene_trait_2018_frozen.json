@@ -1,0 +1,42 @@
+{
+ "cutoff": 2018,
+ "form": "F3",
+ "weights": {
+  "combine": [
+   0.015625,
+   1.0,
+   -0.015625,
+   -0.125
+  ],
+  "combine_pos": [
+   0.015625,
+   1.0,
+   0.5,
+   0.0,
+   0.125,
+   0.015625
+  ],
+  "combine_lin": [
+   0.03125,
+   1.0,
+   0.0625,
+   -0.015625,
+   -0.125,
+   0.03125
+  ],
+  "combine_lin_pos": [
+   0.03125,
+   1.0,
+   -0.5,
+   0.125,
+   -0.015625,
+   -0.125,
+   0.25,
+   0.0
+  ]
+ },
+ "implementation": "952ebffc97073680",
+ "record_file": "docs/data/combine_gene_trait_2018.json",
+ "record_sha256": "6a815c860e157fcd81a12ca0f78ea652ca15bb6cb35a47d3c4065fee3a564dd9",
+ "commit": "4e5859a7e139bab039a83fe879ae8c8f95687275"
+}
