@@ -1,0 +1,319 @@
+{
+ "release": "pharos319",
+ "seed": 20261011,
+ "sha256": "5b7df6147675f4de36dae35a5e2282928f108f0300fa5d5f30420957ffbfe1b4",
+ "questions": [
+  {
+   "id": "flips-1",
+   "family": "flips",
+   "text": "HDHD2 is a Tdark target. How many criteria does it still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criteria_to_clear": 1
+   }
+  },
+  {
+   "id": "flips-2",
+   "family": "flips",
+   "text": "SPTSSB is a Tdark target. How many criteria does it still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criteria_to_clear": 1
+   }
+  },
+  {
+   "id": "flips-3",
+   "family": "flips",
+   "text": "PROSER2 is a Tdark target. How many criteria does it still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criteria_to_clear": 2
+   }
+  },
+  {
+   "id": "flips-4",
+   "family": "flips",
+   "text": "TMEM52B is a Tdark target. How many criteria does it still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criteria_to_clear": 2
+   }
+  },
+  {
+   "id": "nearest-1",
+   "family": "nearest",
+   "text": "For the Tdark target KRT36, which one criterion is nearest to clearing: the PubMed score, GeneRIFs or antibodies? End with a last line  FINAL: {\"problem\": P, \"criterion\": \"pubmed_score\" or \"generifs\" or \"antibodies\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criterion": "pubmed_score"
+   }
+  },
+  {
+   "id": "nearest-2",
+   "family": "nearest",
+   "text": "For the Tdark target EIF1AY, which one criterion is nearest to clearing: the PubMed score, GeneRIFs or antibodies? End with a last line  FINAL: {\"problem\": P, \"criterion\": \"pubmed_score\" or \"generifs\" or \"antibodies\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criterion": "generifs"
+   }
+  },
+  {
+   "id": "nearest-3",
+   "family": "nearest",
+   "text": "For the Tdark target CYHR1, which one criterion is nearest to clearing: the PubMed score, GeneRIFs or antibodies? End with a last line  FINAL: {\"problem\": P, \"criterion\": \"pubmed_score\" or \"generifs\" or \"antibodies\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criterion": "antibodies"
+   }
+  },
+  {
+   "id": "nearest-4",
+   "family": "nearest",
+   "text": "For the Tdark target RRNAD1, which one criterion is nearest to clearing: the PubMed score, GeneRIFs or antibodies? End with a last line  FINAL: {\"problem\": P, \"criterion\": \"pubmed_score\" or \"generifs\" or \"antibodies\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "criterion": "generifs"
+   }
+  },
+  {
+   "id": "shortfall-1",
+   "family": "shortfall",
+   "text": "How many more GeneRIFs does the Tdark target PANO1 need for that criterion to clear? End with a last line  FINAL: {\"problem\": P, \"more\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "more": 3
+   }
+  },
+  {
+   "id": "shortfall-2",
+   "family": "shortfall",
+   "text": "How many more GeneRIFs does the Tdark target IGLON5 need for that criterion to clear? End with a last line  FINAL: {\"problem\": P, \"more\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "more": 1
+   }
+  },
+  {
+   "id": "shortfall-3",
+   "family": "shortfall",
+   "text": "How many more antibodies does the Tdark target SLC22A14 need for that criterion to clear? End with a last line  FINAL: {\"problem\": P, \"more\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "more": 6
+   }
+  },
+  {
+   "id": "shortfall-4",
+   "family": "shortfall",
+   "text": "How many more antibodies does the Tdark target OR6C2 need for that criterion to clear? End with a last line  FINAL: {\"problem\": P, \"more\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "more": 15
+   }
+  },
+  {
+   "id": "rate-1",
+   "family": "rate",
+   "text": "Of the Tdark targets in the same band as AJM1, what percentage were no longer Tdark in Pharos 4.0.0? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 53.6
+   }
+  },
+  {
+   "id": "rate-2",
+   "family": "rate",
+   "text": "Of the Tdark targets in the same band as ANKRD18B, what percentage were no longer Tdark in Pharos 4.0.0? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 19.8
+   }
+  },
+  {
+   "id": "rate-3",
+   "family": "rate",
+   "text": "Of the Tdark targets in the same band as ZNF878, what percentage were no longer Tdark in Pharos 4.0.0? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 2.6
+   }
+  },
+  {
+   "id": "rate-4",
+   "family": "rate",
+   "text": "Of the Tdark targets in the same band as Q9BRP9, what percentage were no longer Tdark in Pharos 4.0.0? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 0.6
+   }
+  },
+  {
+   "id": "ligand_cutoff-1",
+   "family": "ligand_cutoff",
+   "text": "GUK1 has no qualifying compound. What potency would a compound have to reach for it to count, given the target's family? End with a last line  FINAL: {\"problem\": P, \"cutoff\": \"30 nM\" or \"100 nM\" or \"10 uM\" or \"1 uM\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "cutoff": "30 nM"
+   }
+  },
+  {
+   "id": "ligand_cutoff-2",
+   "family": "ligand_cutoff",
+   "text": "RHO has no qualifying compound. What potency would a compound have to reach for it to count, given the target's family? End with a last line  FINAL: {\"problem\": P, \"cutoff\": \"30 nM\" or \"100 nM\" or \"10 uM\" or \"1 uM\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "cutoff": "100 nM"
+   }
+  },
+  {
+   "id": "ligand_cutoff-3",
+   "family": "ligand_cutoff",
+   "text": "FXYD7 has no qualifying compound. What potency would a compound have to reach for it to count, given the target's family? End with a last line  FINAL: {\"problem\": P, \"cutoff\": \"30 nM\" or \"100 nM\" or \"10 uM\" or \"1 uM\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "cutoff": "10 uM"
+   }
+  },
+  {
+   "id": "ligand_cutoff-4",
+   "family": "ligand_cutoff",
+   "text": "ADIRF has no qualifying compound. What potency would a compound have to reach for it to count, given the target's family? End with a last line  FINAL: {\"problem\": P, \"cutoff\": \"30 nM\" or \"100 nM\" or \"10 uM\" or \"1 uM\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "cutoff": "1 uM"
+   }
+  },
+  {
+   "id": "no_gap-1",
+   "family": "no_gap",
+   "text": "What does CACNA2D1 lack for the next Pharos level? Give its level, and whether it has a gap of this kind. End with a last line  FINAL: {\"problem\": P, \"level\": LEVEL, \"has_gap\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "level": "Tclin",
+    "has_gap": false
+   }
+  },
+  {
+   "id": "no_gap-2",
+   "family": "no_gap",
+   "text": "What does SIGMAR1 lack for the next Pharos level? Give its level, and whether it has a gap of this kind. End with a last line  FINAL: {\"problem\": P, \"level\": LEVEL, \"has_gap\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "level": "Tclin",
+    "has_gap": false
+   }
+  },
+  {
+   "id": "no_gap-3",
+   "family": "no_gap",
+   "text": "What does RRM1 lack for the next Pharos level? Give its level, and whether it has a gap of this kind. End with a last line  FINAL: {\"problem\": P, \"level\": LEVEL, \"has_gap\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "level": "Tclin",
+    "has_gap": false
+   }
+  },
+  {
+   "id": "not_in_graph-1",
+   "family": "not_in_graph",
+   "text": "How many criteria does ZWQK6 still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-2",
+   "family": "not_in_graph",
+   "text": "How many criteria does JXVP3 still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-3",
+   "family": "not_in_graph",
+   "text": "How many criteria does QKZT9 still have to clear to leave Tdark? End with a last line  FINAL: {\"problem\": P, \"criteria_to_clear\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "ambiguous-1",
+   "family": "ambiguous",
+   "text": "What potency cutoff does KRTAP lack a compound at? End with a last line  FINAL: {\"problem\": P, \"cutoff\": CUTOFF or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-2",
+   "family": "ambiguous",
+   "text": "What potency cutoff does CYP2 lack a compound at? End with a last line  FINAL: {\"problem\": P, \"cutoff\": CUTOFF or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-3",
+   "family": "ambiguous",
+   "text": "What potency cutoff does HLA lack a compound at? End with a last line  FINAL: {\"problem\": P, \"cutoff\": CUTOFF or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "nearest_in_family-1",
+   "family": "nearest_in_family",
+   "text": "Which Tdark target in the Pharos family 'Enzyme' is nearest to leaving Tdark? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "GFOD1"
+   }
+  },
+  {
+   "id": "nearest_in_family-2",
+   "family": "nearest_in_family",
+   "text": "Which Tdark target in the Pharos family 'Epigenetic' is nearest to leaving Tdark? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "PRDM7"
+   }
+  },
+  {
+   "id": "nearest_in_family-3",
+   "family": "nearest_in_family",
+   "text": "Which Tdark target in the Pharos family 'GPCR' is nearest to leaving Tdark? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "ADGRF4"
+   }
+  },
+  {
+   "id": "two_step-1",
+   "family": "two_step",
+   "text": "Of the three Tdark targets in the Pharos family 'Transporter' nearest to leaving Tdark, how many have at least one GWAS link in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 1
+   }
+  },
+  {
+   "id": "two_step-2",
+   "family": "two_step",
+   "text": "Of the three Tdark targets in the Pharos family 'TF' nearest to leaving Tdark, how many have at least one GWAS link in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 3
+   }
+  },
+  {
+   "id": "two_step-3",
+   "family": "two_step",
+   "text": "Of the three Tdark targets in the Pharos family 'oGPCR' nearest to leaving Tdark, how many have at least one GWAS link in this graph? End with a last line  FINAL: {\"problem\": P, \"count\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "count": 1
+   }
+  }
+ ]
+}

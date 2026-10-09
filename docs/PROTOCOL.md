@@ -678,3 +678,16 @@ would have earned an extension. The remaining 34 pairs of each kind are not aske
 requests they would have used go to the other two sources. Expression Atlas is reported on 16 of each,
 as stopped, and is not said to have completed the test. DrugCentral Indication and JensenLab Knowledge
 AmyCo are asked about as stated above: the first 50 planted and the first 50 real pairs of each.
+
+**9 Oct 2026, usability of the gaps question, between the two rounds. Written after the development
+round and before the evaluation questions were generated.**
+
+The development round, 35 questions: under *typed* the three models answered 35, 35 and 35; under
+*sql* 35, 32 and 32. No answer was invented. Reading the wrong answers found no fault in the
+questions, the expected answers or the tool, so none of those is changed. One thing is added:
+
+- *A provider that does not answer.* For one model the provider timed out on one question in each of
+  several attempts before it answered. From here on a question is put up to three times, and one that
+  the provider fails each time is recorded as not answered and counts as wrong.
+
+The evaluation set is generated and frozen next, and no model has seen it.

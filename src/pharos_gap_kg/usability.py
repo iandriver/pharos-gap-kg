@@ -611,7 +611,7 @@ def calls_dir() -> Path:
 
 
 async def run(bundle: Path, model: str, condition: str, base_url: str, key: str | None, max_cost: float, workers: int, max_tokens: int,
-              only: set[str] | None = None, set_: str = "dev") -> list[dict]:
+              only: set[str] | None = None, set_: str = "dev", record_failures: bool = False) -> list[dict]:
     qs = [q for q in load_questions(set_) if not only or q["id"] in only]
     schema = SETS[set_]["schema"]
     v2 = schema >= 2
@@ -642,7 +642,9 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                     r["cost"] = (r["in"] * PRICES[model][0] + r["out"] * PRICES[model][1]) / 1e6
                 spent += r["cost"]
                 row = {"set": set_, "model": model, "condition": condition, "id": q["id"], "family": q["family"], "tool_fingerprint": fp, **r}
-                if not r["error"]:
+                if r["error"] and record_failures:      # the provider failed again: kept as a question that got no answer
+                    row.update({"final": None, "gave_up": True})
+                if not r["error"] or record_failures:
                     f.write_text(json.dumps(row, indent=1) + "\n")
                 return row
 
@@ -858,6 +860,7 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("--workers", type=int, default=6)
     rp.add_argument("--max-tokens", type=int, default=4000)
     rp.add_argument("--only", default="")
+    rp.add_argument("--record-failures", action="store_true", help="keep a conversation the provider failed as a question with no answer (use on the third attempt)")
     rp.add_argument("--set", dest="set_", choices=sorted(SETS), default="dev")
     sub.add_parser("report").add_argument("--set", dest="set_", choices=sorted(SETS), default="dev")
     a = ap.parse_args(argv)
@@ -891,7 +894,7 @@ def main(argv: list[str] | None = None) -> int:
         if "openrouter.ai" in a.base_url and not key:
             raise SystemExit(f"{a.key_env} is not set")
         rows = asyncio.run(run(paths.bundle(a.release), a.model, a.condition, a.base_url, key, a.max_cost, a.workers, a.max_tokens,
-                               set(a.only.split(",")) if a.only else None, a.set_))
+                               set(a.only.split(",")) if a.only else None, a.set_, a.record_failures))
         qs = {q["id"]: q for q in load_questions(a.set_)}
         done = [r for r in rows if "final" in r]
         right = sum(grade(qs[r["id"]], r["final"]) for r in done)
