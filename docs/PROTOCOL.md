@@ -508,6 +508,100 @@ SQL if the pooled paired interval excludes zero.
 **What it does not test.** A person. Nor whether these are the questions a user would ask: they were
 written by the author of the tool.
 
+## Lineage and position as inputs
+
+Defined on 9 Oct 2026, before any model here was fitted. Every model in this section is **added after
+M1 and M2 were scored on the test links** and is marked so wherever it is reported.
+
+**What was known when this was written.** The test scores of every parameter-free scorer and of M1 and
+M2 (neighbours 0.0969, `mf` 0.0906, `lightgcn` 0.0825), and the controls: 26,346 of the 130,369 test
+positives (20.2%) are lineage-linked or position-linked, and the two scorers built on those relations
+alone reach 0.0459 (B4 lineage) and 0.0468 (B5 position). The decision to use lineage and position as
+inputs was taken after seeing those figures, which are computed on the test links. Nothing else here
+is: every weight and setting below is fitted or chosen inside the training years.
+
+**The inputs** are the two relations of the Controls section, unchanged. Two traits are in one lineage
+if one is an ancestor of the other in the Experimental Factor Ontology v3.94.0. Two targets are
+neighbours if genes of theirs lie within 500,000 bases on one chromosome (Ensembl 113). A gene's
+position has no date. The ontology is the 2026 release and may hold a relation the 2018 ontology did
+not, so by "What a scorer may see" every result that uses lineage is reported beside the same model
+without it.
+
+**Used in two ways.**
+
+*As scores, combined with fitted weights.* A combiner scores a candidate by a weighted sum of
+parameter-free scores of that candidate:
+
+| | scores combined |
+|---|---|
+| C0 `combine` | B1 target degree and B3 neighbours |
+| C1 `combine_pos` | C0 and B5 position |
+| C2 `combine_lin` | C0 and B4 lineage |
+| C3 `combine_lin_pos` | C0, B4 and B5 |
+
+C0 uses neither input. It is there so that what the inputs add can be told from what fitting two
+weights adds.
+
+The weights are fitted on the inner split of "Fitted models". The scores are computed from the links
+of 2016 and earlier. For each of the 284 traits with a validation positive, a candidate's probability
+is the softmax of its weighted sum over that trait's candidates, and the weights maximise the mean log
+probability of the trait's validation positives, averaged over traits so that each trait counts once.
+There is no penalty on the weights, no sampling and no seed, so one fit gives one answer.
+
+Three forms of the sum are declared:
+
+| | each score enters as |
+|---|---|
+| F1 | log(1 + score) |
+| F2 | its percentile rank among the trait's candidates, ties sharing the mean rank |
+| F3 | F1, and again multiplied by log(1 + the number of fitting links the trait has) |
+
+The form is chosen once, for C3, by five-fold cross-validation over the 284 traits (folds from a
+permutation under seed 0): the weights are fitted on four fifths of the traits and the primary measure
+is taken on the rest, with ties broken under seed 0. The form with the highest mean over the 284
+traits is used for all four combiners, the earlier form on a tie. The weights are then fitted on all
+284 traits. The form, the weights and the cross-validated scores are written to `docs/data` and
+committed.
+
+Scored on the test links once, the four together: the scores are computed again from all 99,435
+training links, combined with the committed weights, and each matrix is scored with every measure and
+control. Nothing in a combiner is random, so there are no seeds to average.
+
+*As edges, in the graph model.*
+
+| | what it is fitted on |
+|---|---|
+| M5 `lightgcn_pos` | M2's graph with an edge between every two training targets that are neighbours |
+| M6 `lightgcn_lin_pos` | M5 with an edge between every two training traits in one lineage |
+
+The same 44 settings as M2, tuned, chosen and scored on the test links as "Fitted models" says: seed 0
+for tuning, the chosen setting committed, five seeds on all training links, one scoring per model.
+
+**What counts.**
+
+- A model helps if it beats the neighbours baseline B3 on the primary measure with the paired interval
+  excluding zero, as before.
+- What the inputs add is read from paired differences on the primary measure and on the
+  locus-collapsed measure: C1, C2 and C3 each against C0; M5 against M2; M6 against M5.
+- A graph model is kept over a combiner only if it beats the combiner with the same inputs (M5 against
+  C1, M6 against C3) on the primary measure with the interval excluding zero. A combiner has at most
+  eight fitted numbers, so on a tie the combiner is the model.
+
+**What these inputs cannot show.** A candidate is lineage-linked exactly when B4 is above zero and
+position-linked exactly when B5 is above zero. With every linked candidate removed, B4 and B5 are zero
+for all that remain, so C1 to C3 order them by degree and neighbours alone. With only the linked
+positives removed, the linked candidates that remain are all negatives and a combiner that ranks them
+high is expected to score below C0. A gain from C1 to C3 is therefore a gain on all links and on loci,
+and says nothing about new links. It measures how much of later GWAS reporting is an earlier link
+under a related trait name or at the same locus, which a link-prediction score counts as correct. The
+graph models can pass a linked trait's or a neighbour's vectors on to pairs that are not linked, so
+for M5 and M6 the claim about new links is open and needs what it always needed: both ways of setting
+linked pairs aside, and loci.
+
+**What is not claimed in advance.** That any of these beats the neighbours baseline. That a rank
+average of B3 with B4 or B5 is a fair simple baseline: it is not computed, because the same average
+lost to B3 at every weight for each of the five context scorers (`findings/ENRICH.md`).
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
