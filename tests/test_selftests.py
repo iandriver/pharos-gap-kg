@@ -106,6 +106,11 @@ def test_applycut_selftest():
     assert applycut._selftest() == 0
 
 
+def test_fulltext_selftest():
+    from pharos_gap_kg import fulltext
+    assert fulltext._selftest() == 0
+
+
 def test_model_selftest():
     import pytest
     pytest.importorskip("torch")
