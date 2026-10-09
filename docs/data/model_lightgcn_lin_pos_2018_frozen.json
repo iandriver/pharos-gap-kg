@@ -1,0 +1,17 @@
+{
+ "model": "lightgcn_lin_pos",
+ "cutoff": 2018,
+ "chosen": {
+  "dim": 64,
+  "layers": 2,
+  "lr": 0.005,
+  "l2": 0.0001,
+  "passes": 110
+ },
+ "validation": 0.07919829318464493,
+ "settings": 44,
+ "implementation": "37067d61bf481404",
+ "chosen_file": "docs/data/model_lightgcn_lin_pos_2018.json",
+ "chosen_sha256": "6d431d1767acaff0fa6e5c90b8685f2d2330ad9b72bff4f8910913504f471ae2",
+ "commit": "2f48edb6ab2d1ada0b7b428af29994882a2a815f"
+}

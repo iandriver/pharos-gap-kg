@@ -100,3 +100,53 @@ The fitted weights. A term not listed has weight 0. "size" is log(1 + the trait'
 The sign of the weight on B3 x size differs between C1 and the other three, and C3 sets B5 x size to
 0 where C1 uses it. Weights that move this much between neighbouring models are not individually
 meaningful; the cross-validated score is what the fit is judged on.
+
+## The graph models
+
+`lightgcn_pos` is `lightgcn`'s graph with an edge between every two targets that are neighbours, and
+`lightgcn_lin_pos` adds an edge between every two traits in one lineage. Both were tuned over the same
+44 settings as `lightgcn`, seed 0, on the inner split (`docs/data/model_<name>_2018.json` and
+`_validation.json`). The fitting code is the code that fitted `lightgcn`.
+
+| | edges joined on | chosen setting | validation | against neighbours, 0.0712 |
+|---|---|---|---|---|
+| `lightgcn`, for reference | none | vectors of 256, 5 steps, rate 0.005, weight 1e-4, 60 passes | 0.0766 | +0.0054 [-0.0034, +0.0145] |
+| `lightgcn_pos` | 76,011 neighbour edges | vectors of 128, 4 steps, rate 0.001, weight 1e-6, 250 passes | 0.0777 | +0.0065 [-0.0049, +0.0183] |
+| `lightgcn_lin_pos` | 76,011 neighbour and 855 lineage edges | vectors of 64, 2 steps, rate 0.005, weight 1e-4, 110 passes | 0.0792 | +0.0080 [-0.0050, +0.0199] |
+
+The last column is the paired difference over the 284 traits. It flatters each model, because its
+setting was chosen on these links.
+
+- **Neither graph model can be told from the neighbours baseline on validation.** Both intervals span
+  zero. Their half-widths, 0.0116 and 0.0124, are the smallest differences these comparisons resolve.
+- **The edges raise the best validation score by 0.0011 and 0.0026 over `lightgcn`.** No paired
+  interval between the graph models was computed on validation.
+- **With the edges, smaller settings do best.** For `lightgcn` the score rose with vector length and
+  steps up to the edge of the settings (0.0750 to 0.0766 at vectors of 256 and 5 steps). With neighbour
+  edges that corner is the lowest of the settings with three or more steps (0.0707 to 0.0748), and
+  neither chosen setting is at an edge.
+- **One step of smoothing gains most.** With one step `lightgcn` scores 0.0644 to 0.0670,
+  `lightgcn_pos` 0.0689 to 0.0737 and `lightgcn_lin_pos` 0.0699 to 0.0764.
+- **On validation the combiner with position is above both graph models**: 0.0813 cross-validated,
+  against 0.0777 and 0.0792 for the best of 44 settings chosen on the same links. That is two figures
+  side by side and not a paired test. The protocol's comparison is on the test links.
+
+Fitting the 44 settings took 3.3 and 3.4 hours of processor time for the two models, on a laptop CPU.
+
+## What is waiting
+
+The six models are frozen: the four combiners' weights (`docs/data/combine_gene_trait_2018_frozen.json`)
+and the two graph models' settings (`docs/data/model_lightgcn_pos_2018_frozen.json`,
+`docs/data/model_lightgcn_lin_pos_2018_frozen.json`). None has been scored on the test links. Under
+the protocol the four combiners are scored together once, and each graph model once under five seeds.
+
+What the test can and cannot show is fixed in the protocol:
+
+- A model helps if it beats the neighbours baseline (0.0969 on the test links) with the paired
+  interval excluding zero.
+- A gain from a combiner that uses lineage or position is a gain on all links and on loci. With every
+  linked candidate set aside the two inputs are zero for all that remain, so such a gain says nothing
+  about new links.
+- A graph model is kept over a combiner only if it beats the combiner with the same inputs.
+- Validation has not predicted the test comparison before: `lightgcn` was +0.0054 against neighbours
+  on validation and -0.0144 on the test links (`findings/MODELS.md`).

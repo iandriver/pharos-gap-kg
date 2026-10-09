@@ -163,3 +163,9 @@ By year of the later link (2019, 2020, 2021, 2022): neighbours 0.0696, 0.0916, 0
   claim of improvement has to beat.
 - Averaging over seeds mattered more than the choice of model. The protocol fixed five seeds before
   either model was scored and that stands for the remaining two.
+
+## Added 9 Oct 2026: models with lineage and position as inputs
+
+Six further models, added after the two above were scored, use trait lineage and gene position as
+inputs. They are fitted and frozen on validation and none is scored on the test links yet. They are
+in `findings/INPUTS.md`.

@@ -86,6 +86,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   [-0.0232, -0.0064]). On links that lineage and position do not explain both are worse than it. Counted
   by locus, matrix factorisation is ahead of it (0.0662 against 0.0512). The two models that join the
   context on are not fitted yet; [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for them.
+- **Trait lineage and gene position as inputs** ([`findings/INPUTS.md`](findings/INPUTS.md)). Added
+  after the two models above were scored, and marked so. Four combiners of parameter-free scores with
+  fitted weights and two graph models with neighbour and lineage edges, all fitted inside the training
+  years and frozen. On validation the combiner that adds gene position is 0.0101 above the neighbours
+  baseline [+0.0036, +0.0173]. Lineage is not shown to add, and neither graph model can be told from
+  the baseline. None of the six has been scored on the test links.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -134,6 +140,7 @@ python -m pharos_gap_kg.prune2 freeze pharos319              # second pruning ro
 python -m pharos_gap_kg.applycut search pharos319            # the lift cut on the sources it passed on (hours; resumes)
 python -m pharos_gap_kg.applycut write pharos319
 python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
+python -m pharos_gap_kg.combine fit pharos319 --cutoff 2018   # fitted weights over the baselines, lineage and position; [eval] extra
 python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
 python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
 python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
