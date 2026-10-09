@@ -785,3 +785,37 @@ questions, the expected answers or the tool, so none of those is changed. One th
   the provider fails each time is recorded as not answered and counts as wrong.
 
 The evaluation set is generated and frozen next, and no model has seen it.
+
+**9 Oct 2026, how the combiners' weights are fitted. Written after the four combiners were fitted on
+validation as first declared and before any model of "Lineage and position as inputs" was scored on
+the test links.**
+
+Fitted as declared (`docs/data/combine_gene_trait_2018_first.json`, code at commit `86b57d5`), the form
+chosen is F2, and the cross-validated scores on the 284 validation traits are C0 0.0511, C1 0.0717,
+C2 0.0556 and C3 0.0774, beside 0.0712 for the neighbours baseline B3 alone. C0 combines B3 with
+target degree and scores 0.0201 below B3 [-0.0345, -0.0082], although a weight of zero on degree
+would rank every trait's candidates exactly as B3 does. The likelihood the weights maximise counts a
+positive the same wherever it ranks, and the primary measure counts the top of the list most, so the
+fit gives up the top of B3's ranking for a better average position. That defeats what C0 is for: it
+would make the inputs look as if they added 0.026 when C3 is 0.006 above B3. It would also make C3
+an easy bar for the graph models.
+
+Changed, once:
+
+1. *What the weights maximise.* The primary measure itself on the validation positives: the mean over
+   traits of average precision, ties broken under seed 0.
+2. *Where the search starts.* The weight on B3's own term is fixed at 1, since multiplying every weight
+   by one positive number changes no ranking, and every other weight starts at 0. The search starts
+   at B3 alone and cannot end below it on the links it is fitted on.
+3. *The search.* One weight at a time, in the order the terms are listed, each is set to the value
+   that scores highest with the others held, among 0 and plus or minus 2 to the power -6, -5, up to 4,
+   keeping its current value on a tie. Passes over the weights repeat until one changes nothing, at
+   most ten. Nothing is random.
+
+Unchanged: the four combiners, the three forms (in F3, B3's product with the trait's size has a free
+weight), the five folds, the choice of form by C3's cross-validated score, what is committed, one
+scoring of the four on the test links, and what counts.
+
+The combiners are fitted this once more. If C3 again cannot be told from B3 in cross-validation, that
+is what is reported, and nothing further is tried on the combiners. The first fit stays on record as
+a validation result. It is not scored on the test links.
