@@ -568,3 +568,13 @@ so no literature rule built on abstracts cleans them. This asks whether full tex
   finds 10 papers for it; a crossing of two real pairs (SLC20A1 with breast cancer) finds 45. One
   sample pair, CENPV with lung carcinoma (Expression Atlas, real, first in drawn order), was searched
   in the whole-paper form while the tool was being explored and returned 2 papers. It stays in the sample.
+
+**9 Oct 2026, full text: Expression Atlas is stopped. Written after the first day's 32 answers were
+read, on Ian's decision, so this is a change made after seeing data.**
+
+After 16 planted and 16 real Expression Atlas pairs, Rule F withholds 14 of the 16 real ones. The
+interval for that share, 64.0% to 96.5%, lies above the 50% the bar allows and above the 60% that
+would have earned an extension. The remaining 34 pairs of each kind are not asked about, and the
+requests they would have used go to the other two sources. Expression Atlas is reported on 16 of each,
+as stopped, and is not said to have completed the test. DrugCentral Indication and JensenLab Knowledge
+AmyCo are asked about as stated above: the first 50 planted and the first 50 real pairs of each.

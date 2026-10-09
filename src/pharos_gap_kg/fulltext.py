@@ -47,6 +47,7 @@ DAY, MINUTE = 100, 25           # the free allowance, as Ian gave it on 9 Oct 20
 PER_DAY, GAP = 90, 3.0          # what this module lets itself use: some of the day is left, and 20 a minute
 SOURCES = ("Expression Atlas", "DrugCentral Indication", "JensenLab Knowledge AmyCo")
 FIRST = 50                      # of each source: the first 50 planted and the first 50 real pairs, in drawn order
+STOPPED = {"Expression Atlas": 16}   # stopped after this many of each, by an amendment made after its answers were read
 WINDOW = 200
 MAX_NAMES, MIN_NAME = 12, 5     # how many names of a disease go into one question, and the shortest one used
 PILOT_SEED, PILOT_EACH = 20261010, 3
@@ -264,7 +265,8 @@ def pilot(release: str) -> pd.DataFrame:
 def ordered(sample: pd.DataFrame, first: int = FIRST) -> pd.DataFrame:
     """The sample pairs this check asks about, in the order it asks: source by source, and within a source
     planted and real pairs in turn by drawn order, so that wherever a day stops the two groups are level."""
-    s = sample[sample.source.isin(SOURCES) & (sample.order < first)].copy()
+    upto = sample.source.map(lambda x: min(first, STOPPED.get(x, first)))
+    s = sample[sample.source.isin(SOURCES) & (sample.order < upto)].copy()
     s["_src"] = s.source.map({x: i for i, x in enumerate(SOURCES)})
     return s.sort_values(["_src", "order", "planted"], ascending=[True, True, False]).drop(columns="_src").reset_index(drop=True)
 
@@ -316,6 +318,7 @@ def report(release: str) -> dict:
             continue
         fp, fr = prune2.share(p.f.to_numpy()), prune2.share(r.f.to_numpy())
         out["sources"][src] = {"planted_withheld": fp, "real_withheld": fr, **prune2.bar(fp, fr), "complete": bool(len(p) == FIRST and len(r) == FIRST),
+                               "stopped_after": STOPPED.get(src),
                                "abstracts_on_the_same_pairs": {"planted_withheld": prune2.share(p.l0.to_numpy()), "real_withheld": prune2.share(r.l0.to_numpy())},
                                "real_pairs_no_abstract_mentions": {"n": int(r.l0.sum()), "found_in_full_text": int((r.l0 & ~r.f).sum())},
                                "planted_pairs_no_abstract_mentions": {"n": int(p.l0.sum()), "found_in_full_text": int((p.l0 & ~p.f).sum())},
@@ -368,6 +371,10 @@ synonym: "x" EXACT []
        and re.search(args["pattern"], "Gastric cancer cells lacking PLOD1", re.I) and not re.search(args["pattern"], "PLOD1 " + "x" * 300 + " gastric cancer", re.I)
        and not re.search(args["pattern"], "PLOD1 in gastric tumour", re.I))
     sm = pd.DataFrame([(s, pl_, o) for s in (SOURCES[1], SOURCES[0], "CTD") for pl_ in (False, True) for o in (2, 0, 1)], columns=["source", "planted", "order"])
+    od = ordered(sm.assign(source=sm.source.replace({SOURCES[0]: "x", "CTD": SOURCES[2]})), first=3)
+    ck("a source without a stop is asked about up to the first of each asked for", sorted(od[od.source == SOURCES[2]].order) == [0, 0, 1, 1, 2, 2])
+    stopped = ordered(pd.DataFrame([(SOURCES[0], pl_, o) for pl_ in (False, True) for o in range(40)], columns=["source", "planted", "order"]))
+    ck("a stopped source is asked about no further than where it stopped", len(stopped) == 2 * STOPPED[SOURCES[0]] and stopped.order.max() == STOPPED[SOURCES[0]] - 1)
     od = ordered(sm, first=2)
     ck("pairs are asked source by source, planted and real in turn by drawn order, and only the first of each",
        list(zip(od.source, od.planted, od.order)) == [(SOURCES[0], True, 0), (SOURCES[0], False, 0), (SOURCES[0], True, 1), (SOURCES[0], False, 1),
@@ -419,7 +426,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  states: {out['states']}")
         for src, r in out["sources"].items():
             a = r["abstracts_on_the_same_pairs"]
-            print(f"  {src:28s} full text: planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}{'' if r['complete'] else '  [not complete]'}")
+            print(f"  {src:28s} full text: planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}{'' if r['complete'] else f"  [stopped after {r['stopped_after']} of each]" if r['stopped_after'] else '  [not complete]'}")
             print(f"  {'':28s} abstracts: planted {pc(a['planted_withheld'])}  real {pc(a['real_withheld'])}; real pairs no abstract mentions: {r['real_pairs_no_abstract_mentions']}; planted: {r['planted_pairs_no_abstract_mentions']}")
         return 0
     if argv[0] == "pilot":

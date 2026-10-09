@@ -4,7 +4,7 @@
  "window": 200,
  "sample_sha256": "b12395ace6dfcb766e1345fca27e8220e6f5865a5fa424e9def0b2afcd623048",
  "states": {
-  "not asked yet": 268,
+  "not asked yet": 200,
   "answered": 32
  },
  "sources": {
@@ -24,6 +24,7 @@
    "passes": false,
    "provisional": false,
    "complete": false,
+   "stopped_after": 16,
    "abstracts_on_the_same_pairs": {
     "planted_withheld": {
      "n": 16,

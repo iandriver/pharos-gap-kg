@@ -334,3 +334,8 @@ disease's names.
   abstract mentions, it finds 4.
 
 DrugCentral Indication and JensenLab Knowledge AmyCo have not been asked about yet.
+
+**Expression Atlas was stopped at these 16 of each**, by a protocol amendment made the same day after
+these answers were read, on Ian's decision: the interval for real pairs withheld lies above both the
+bar and the margin that would have earned an extension. It is reported as stopped, not as having
+completed the test. The requests saved go to the other two sources, 200 pairs, asked at up to 90 a day.
