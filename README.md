@@ -52,6 +52,8 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   the graph. A first round failed both of its stated verdicts and exposed two faults in the test and
   one in the tools; both rounds are recorded. No person has tested it yet.
 
+  The eighth question, `gaps`, was tested the same way on a fresh set: 35, 35 and 34 of 35 through the
+  typed questions and 33, 34 and 33 with SQL, a difference that does not clear zero.
 - **Context** ([`findings/ENRICH.md`](findings/ENRICH.md)). Interactions, pathways, GO terms, compounds
   and eleven disease sources, each scored alone and blended with the neighbour score. Each carries
   some signal alone; every blend is worse than the neighbour score, and with the blending weight

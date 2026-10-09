@@ -93,3 +93,61 @@ The wrong answers showed two faults in the test and one in the tools.
 Requests that returned an API error were retried and are not in that total. One model named in the
 protocol could not be run: the account's zero-data-retention setting excludes its only endpoint, and
 the next cheapest admitted model replaced it before any question reached a model.
+
+## Added 9 Oct 2026: the gaps question
+
+`python -m pharos_gap_kg.usability run pharos319 --set gaps ...` and `report --set gaps` write
+`docs/data/usability_results_gaps.json`; the development set is `gaps_dev`. The test was written into
+`docs/PROTOCOL.md` ("Usability of the gaps question") before any model was asked about gaps: 35
+questions in ten kinds about what a target lacks, three conditions, the same three hosted models, and
+the two verdicts of the first test. The expected answers come from the bundle's tables, and the
+question layer, asked separately, gives the same answer to all 35 of each set.
+
+**Development round** (typed and SQL only; reported, not read against the verdicts):
+
+| model | typed | SQL |
+|---|---|---|
+| deepseek-v4-flash | 35 | 32 |
+| glm-5.3-flash | 35 | 35 |
+| mercury-2.5 | 35 | 32 |
+
+Reading the wrong answers found no fault in the questions, the expected answers or the tool, so
+nothing was changed but one rule: a question the provider fails three times is recorded as not
+answered. None was in either round.
+
+**Evaluation round**, on a set generated and frozen after the development round:
+
+| model | typed | SQL | no tool |
+|---|---|---|---|
+| deepseek-v4-flash | 35 | 33 | 11 |
+| glm-5.3-flash | 35 | 34 | 9 |
+| mercury-2.5 | 34 | 33 | 3 |
+
+- **Usable by a small model: met.** All three answer 28 or more of 35 through the typed questions, and
+  no model in any condition answered a not-in-graph question as if the gene were known.
+- **Better than SQL: not met.** Pooled over the three models, typed minus SQL is +0.038
+  [+0.000, +0.086] of a question, and the interval reaches zero. Typed was right where SQL was wrong
+  on five answers, and SQL where typed was wrong on one.
+- **Where SQL went wrong.** Two models reported a target named by its accession (Q9BRP9) as not in the
+  graph, though it is in the table. The other errors were on the nearest target of a family and on
+  the two-step question, which one model also failed under typed by answering "unknown".
+- **The two-step question works through the tools.** Asked how many of a family's three nearest
+  targets have a GWAS link, the models called `gaps` and then `known` and were right in 8 of 9 answers.
+- **Without a tool the models score 3 to 11**, well above the 1 to 4 of the first test. A quarter of
+  these questions can be answered from the rules every condition is given and from general knowledge:
+  the level of a target with a well-known drug, or the cutoff for a kinase.
+
+The typed condition used 1.62 tool calls a question (`gaps` 89 times, `find` 57, `known` 24) and SQL
+2.25.
+
+**What this shows and what it does not.**
+
+- Three small models can use the eighth question, alone and with the others.
+- SQL over the same tables does nearly as well. The gap table already holds each answer in a column,
+  so little is left for the tool to add beyond resolving a name.
+- Two of the 35 evaluation questions are also in the development set, because the family questions
+  draw on ten families. No model carries anything from one round to the next.
+- The questions were written by the author of the tool, and no person has used it.
+
+**Cost.** 525 conversations over the two rounds cost 0.26 dollars against this test's cap of 0.75.
+All usability testing to date has cost 0.72 dollars of the 1.50 stated.

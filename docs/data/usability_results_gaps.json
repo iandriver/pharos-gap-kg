@@ -1,0 +1,826 @@
+{
+ "set": "gaps",
+ "questions": 35,
+ "sha256": "5b7df6147675f4de36dae35a5e2282928f108f0300fa5d5f30420957ffbfe1b4",
+ "cells": {
+  "deepseek/deepseek-v4-flash|none": {
+   "n": 35,
+   "correct": 11,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.010280188442000002,
+   "calls": 0,
+   "by_family": {
+    "ambiguous": [
+     3,
+     3
+    ],
+    "nearest_in_family": [
+     0,
+     3
+    ],
+    "ligand_cutoff": [
+     2,
+     4
+    ],
+    "flips": [
+     1,
+     4
+    ],
+    "two_step": [
+     0,
+     3
+    ],
+    "rate": [
+     0,
+     4
+    ],
+    "nearest": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     2,
+     3
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "shortfall": [
+     0,
+     4
+    ]
+   },
+   "right": {
+    "ambiguous-1": true,
+    "nearest_in_family-2": false,
+    "ligand_cutoff-4": false,
+    "flips-3": true,
+    "nearest_in_family-3": false,
+    "two_step-1": false,
+    "rate-3": false,
+    "nearest-3": false,
+    "ligand_cutoff-3": false,
+    "not_in_graph-2": false,
+    "flips-2": false,
+    "no_gap-1": true,
+    "not_in_graph-3": true,
+    "nearest-2": false,
+    "no_gap-2": true,
+    "flips-4": false,
+    "ambiguous-2": true,
+    "nearest_in_family-1": false,
+    "flips-1": false,
+    "shortfall-4": false,
+    "ligand_cutoff-1": true,
+    "two_step-2": false,
+    "ligand_cutoff-2": true,
+    "not_in_graph-1": true,
+    "rate-2": false,
+    "rate-1": false,
+    "no_gap-3": true,
+    "two_step-3": false,
+    "rate-4": false,
+    "nearest-4": false,
+    "ambiguous-3": true,
+    "shortfall-1": false,
+    "nearest-1": false,
+    "shortfall-2": false,
+    "shortfall-3": false
+   }
+  },
+  "deepseek/deepseek-v4-flash|sql": {
+   "n": 35,
+   "correct": 33,
+   "fabricated": 0,
+   "no_final": 1,
+   "cost": 0.026546659194000004,
+   "calls": 91,
+   "by_family": {
+    "nearest_in_family": [
+     3,
+     3
+    ],
+    "flips": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "nearest": [
+     4,
+     4
+    ],
+    "two_step": [
+     2,
+     3
+    ],
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "rate": [
+     3,
+     4
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "shortfall": [
+     4,
+     4
+    ]
+   },
+   "right": {
+    "nearest_in_family-1": true,
+    "flips-1": true,
+    "ambiguous-2": true,
+    "nearest-3": true,
+    "two_step-1": true,
+    "ambiguous-1": true,
+    "nearest_in_family-2": true,
+    "ligand_cutoff-1": true,
+    "two_step-2": true,
+    "rate-1": true,
+    "ligand_cutoff-3": true,
+    "ambiguous-3": true,
+    "no_gap-3": true,
+    "not_in_graph-3": true,
+    "rate-3": true,
+    "flips-4": true,
+    "nearest-2": true,
+    "ligand_cutoff-4": true,
+    "nearest-1": true,
+    "flips-2": true,
+    "no_gap-1": true,
+    "no_gap-2": true,
+    "rate-4": false,
+    "two_step-3": false,
+    "flips-3": true,
+    "shortfall-2": true,
+    "nearest_in_family-3": true,
+    "rate-2": true,
+    "nearest-4": true,
+    "shortfall-1": true,
+    "shortfall-3": true,
+    "shortfall-4": true,
+    "ligand_cutoff-2": true,
+    "not_in_graph-1": true,
+    "not_in_graph-2": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.020946408499999996,
+   "calls": 64,
+   "by_family": {
+    "shortfall": [
+     4,
+     4
+    ],
+    "nearest_in_family": [
+     3,
+     3
+    ],
+    "two_step": [
+     3,
+     3
+    ],
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "rate": [
+     4,
+     4
+    ],
+    "nearest": [
+     4,
+     4
+    ],
+    "flips": [
+     4,
+     4
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "shortfall-1": true,
+    "nearest_in_family-1": true,
+    "two_step-1": true,
+    "ligand_cutoff-3": true,
+    "shortfall-2": true,
+    "rate-4": true,
+    "nearest-2": true,
+    "rate-3": true,
+    "rate-1": true,
+    "ligand_cutoff-4": true,
+    "ligand_cutoff-1": true,
+    "flips-1": true,
+    "no_gap-3": true,
+    "nearest_in_family-2": true,
+    "shortfall-4": true,
+    "ambiguous-3": true,
+    "two_step-3": true,
+    "nearest-4": true,
+    "ambiguous-2": true,
+    "ligand_cutoff-2": true,
+    "nearest_in_family-3": true,
+    "not_in_graph-3": true,
+    "not_in_graph-1": true,
+    "two_step-2": true,
+    "ambiguous-1": true,
+    "shortfall-3": true,
+    "no_gap-2": true,
+    "flips-4": true,
+    "nearest-3": true,
+    "rate-2": true,
+    "flips-2": true,
+    "not_in_graph-2": true,
+    "flips-3": true,
+    "nearest-1": true,
+    "no_gap-1": true
+   }
+  },
+  "inception/mercury-2.5|none": {
+   "n": 35,
+   "correct": 3,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.008560850000000002,
+   "calls": 0,
+   "by_family": {
+    "ambiguous": [
+     1,
+     3
+    ],
+    "ligand_cutoff": [
+     1,
+     4
+    ],
+    "nearest": [
+     0,
+     4
+    ],
+    "no_gap": [
+     0,
+     3
+    ],
+    "flips": [
+     0,
+     4
+    ],
+    "shortfall": [
+     0,
+     4
+    ],
+    "nearest_in_family": [
+     0,
+     3
+    ],
+    "not_in_graph": [
+     1,
+     3
+    ],
+    "rate": [
+     0,
+     4
+    ],
+    "two_step": [
+     0,
+     3
+    ]
+   },
+   "right": {
+    "ambiguous-2": true,
+    "ligand_cutoff-3": false,
+    "nearest-1": false,
+    "no_gap-3": false,
+    "flips-4": false,
+    "shortfall-4": false,
+    "nearest-4": false,
+    "nearest_in_family-2": false,
+    "no_gap-1": false,
+    "not_in_graph-3": false,
+    "shortfall-3": false,
+    "not_in_graph-1": false,
+    "ligand_cutoff-2": true,
+    "ligand_cutoff-1": false,
+    "rate-2": false,
+    "rate-1": false,
+    "nearest-3": false,
+    "shortfall-2": false,
+    "nearest_in_family-1": false,
+    "two_step-3": false,
+    "ambiguous-3": false,
+    "two_step-2": false,
+    "rate-4": false,
+    "nearest_in_family-3": false,
+    "rate-3": false,
+    "flips-1": false,
+    "flips-2": false,
+    "shortfall-1": false,
+    "flips-3": false,
+    "ligand_cutoff-4": false,
+    "two_step-1": false,
+    "ambiguous-1": false,
+    "not_in_graph-2": true,
+    "nearest-2": false,
+    "no_gap-2": false
+   }
+  },
+  "inception/mercury-2.5|sql": {
+   "n": 35,
+   "correct": 33,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.011808780000000001,
+   "calls": 57,
+   "by_family": {
+    "nearest": [
+     4,
+     4
+    ],
+    "shortfall": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "two_step": [
+     2,
+     3
+    ],
+    "flips": [
+     4,
+     4
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "nearest_in_family": [
+     2,
+     3
+    ],
+    "rate": [
+     4,
+     4
+    ]
+   },
+   "right": {
+    "nearest-3": true,
+    "shortfall-2": true,
+    "not_in_graph-1": true,
+    "nearest-2": true,
+    "shortfall-1": true,
+    "two_step-3": true,
+    "nearest-4": true,
+    "flips-1": true,
+    "no_gap-2": true,
+    "ambiguous-1": true,
+    "ligand_cutoff-3": true,
+    "ligand_cutoff-1": true,
+    "nearest-1": true,
+    "nearest_in_family-1": true,
+    "shortfall-4": true,
+    "nearest_in_family-3": false,
+    "no_gap-3": true,
+    "ambiguous-3": true,
+    "flips-4": true,
+    "ligand_cutoff-4": true,
+    "flips-2": true,
+    "flips-3": true,
+    "nearest_in_family-2": true,
+    "shortfall-3": true,
+    "rate-2": true,
+    "rate-4": true,
+    "ligand_cutoff-2": true,
+    "not_in_graph-2": true,
+    "no_gap-1": true,
+    "rate-1": true,
+    "two_step-1": false,
+    "ambiguous-2": true,
+    "not_in_graph-3": true,
+    "rate-3": true,
+    "two_step-2": true
+   }
+  },
+  "inception/mercury-2.5|typed": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.012694116000000002,
+   "calls": 51,
+   "by_family": {
+    "flips": [
+     4,
+     4
+    ],
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "shortfall": [
+     4,
+     4
+    ],
+    "rate": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "two_step": [
+     2,
+     3
+    ],
+    "nearest": [
+     4,
+     4
+    ],
+    "nearest_in_family": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "flips-3": true,
+    "ligand_cutoff-4": true,
+    "ambiguous-2": true,
+    "no_gap-1": true,
+    "shortfall-1": true,
+    "ambiguous-1": true,
+    "rate-2": true,
+    "shortfall-3": true,
+    "not_in_graph-3": true,
+    "flips-4": true,
+    "two_step-2": true,
+    "not_in_graph-2": true,
+    "flips-1": true,
+    "flips-2": true,
+    "nearest-1": true,
+    "ambiguous-3": true,
+    "nearest_in_family-1": true,
+    "no_gap-3": true,
+    "nearest_in_family-2": true,
+    "two_step-3": false,
+    "nearest-4": true,
+    "ligand_cutoff-1": true,
+    "shortfall-4": true,
+    "rate-3": true,
+    "nearest-2": true,
+    "nearest-3": true,
+    "no_gap-2": true,
+    "ligand_cutoff-3": true,
+    "rate-4": true,
+    "not_in_graph-1": true,
+    "two_step-1": true,
+    "rate-1": true,
+    "shortfall-2": true,
+    "nearest_in_family-3": true,
+    "ligand_cutoff-2": true
+   }
+  },
+  "z-ai/glm-5.3-flash|none": {
+   "n": 35,
+   "correct": 9,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.016804517371999998,
+   "calls": 0,
+   "by_family": {
+    "flips": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     1,
+     3
+    ],
+    "shortfall": [
+     0,
+     4
+    ],
+    "two_step": [
+     0,
+     3
+    ],
+    "nearest_in_family": [
+     0,
+     3
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     2,
+     3
+    ],
+    "nearest": [
+     0,
+     4
+    ],
+    "rate": [
+     0,
+     4
+    ],
+    "ligand_cutoff": [
+     3,
+     4
+    ]
+   },
+   "right": {
+    "flips-4": false,
+    "not_in_graph-3": false,
+    "shortfall-4": false,
+    "two_step-3": false,
+    "shortfall-2": false,
+    "nearest_in_family-3": false,
+    "no_gap-3": true,
+    "flips-3": false,
+    "ambiguous-3": true,
+    "two_step-2": false,
+    "shortfall-3": false,
+    "nearest_in_family-1": false,
+    "nearest-2": false,
+    "no_gap-1": true,
+    "flips-1": false,
+    "rate-3": false,
+    "not_in_graph-1": false,
+    "ligand_cutoff-2": true,
+    "rate-2": false,
+    "two_step-1": false,
+    "shortfall-1": false,
+    "no_gap-2": true,
+    "nearest-1": false,
+    "flips-2": false,
+    "rate-1": false,
+    "ligand_cutoff-3": false,
+    "ambiguous-1": false,
+    "ambiguous-2": true,
+    "not_in_graph-2": true,
+    "rate-4": false,
+    "nearest-4": false,
+    "nearest_in_family-2": false,
+    "ligand_cutoff-1": true,
+    "ligand_cutoff-4": true,
+    "nearest-3": false
+   }
+  },
+  "z-ai/glm-5.3-flash|sql": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.016572817894,
+   "calls": 88,
+   "by_family": {
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "flips": [
+     4,
+     4
+    ],
+    "two_step": [
+     3,
+     3
+    ],
+    "shortfall": [
+     4,
+     4
+    ],
+    "nearest_in_family": [
+     3,
+     3
+    ],
+    "nearest": [
+     4,
+     4
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "rate": [
+     3,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "ligand_cutoff-1": true,
+    "flips-3": true,
+    "two_step-1": true,
+    "shortfall-2": true,
+    "flips-1": true,
+    "nearest_in_family-2": true,
+    "shortfall-4": true,
+    "nearest-2": true,
+    "nearest_in_family-3": true,
+    "flips-2": true,
+    "two_step-3": true,
+    "ligand_cutoff-2": true,
+    "no_gap-1": true,
+    "two_step-2": true,
+    "rate-3": true,
+    "shortfall-1": true,
+    "nearest-4": true,
+    "not_in_graph-2": true,
+    "no_gap-2": true,
+    "ambiguous-1": true,
+    "ambiguous-3": true,
+    "ligand_cutoff-4": true,
+    "not_in_graph-1": true,
+    "no_gap-3": true,
+    "rate-1": true,
+    "nearest-3": true,
+    "nearest_in_family-1": true,
+    "ambiguous-2": true,
+    "ligand_cutoff-3": true,
+    "rate-4": false,
+    "nearest-1": true,
+    "not_in_graph-3": true,
+    "flips-4": true,
+    "shortfall-3": true,
+    "rate-2": true
+   }
+  },
+  "z-ai/glm-5.3-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.016997127286000002,
+   "calls": 55,
+   "by_family": {
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     3,
+     3
+    ],
+    "two_step": [
+     3,
+     3
+    ],
+    "rate": [
+     4,
+     4
+    ],
+    "nearest": [
+     4,
+     4
+    ],
+    "ligand_cutoff": [
+     4,
+     4
+    ],
+    "flips": [
+     4,
+     4
+    ],
+    "no_gap": [
+     3,
+     3
+    ],
+    "shortfall": [
+     4,
+     4
+    ],
+    "nearest_in_family": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "not_in_graph-3": true,
+    "not_in_graph-2": true,
+    "ambiguous-2": true,
+    "two_step-3": true,
+    "rate-4": true,
+    "nearest-1": true,
+    "nearest-2": true,
+    "nearest-4": true,
+    "ligand_cutoff-3": true,
+    "rate-1": true,
+    "flips-4": true,
+    "no_gap-2": true,
+    "shortfall-3": true,
+    "rate-2": true,
+    "ligand_cutoff-1": true,
+    "shortfall-4": true,
+    "nearest_in_family-2": true,
+    "shortfall-2": true,
+    "two_step-2": true,
+    "shortfall-1": true,
+    "flips-2": true,
+    "flips-3": true,
+    "ambiguous-1": true,
+    "flips-1": true,
+    "rate-3": true,
+    "nearest_in_family-1": true,
+    "not_in_graph-1": true,
+    "ambiguous-3": true,
+    "no_gap-1": true,
+    "ligand_cutoff-4": true,
+    "two_step-1": true,
+    "nearest-3": true,
+    "ligand_cutoff-2": true,
+    "no_gap-3": true,
+    "nearest_in_family-3": true
+   }
+  }
+ },
+ "typed_minus_sql": {
+  "deepseek/deepseek-v4-flash": {
+   "questions": 35,
+   "a_only": 2,
+   "b_only": 0,
+   "p_sign": 0.5
+  },
+  "inception/mercury-2.5": {
+   "questions": 35,
+   "a_only": 2,
+   "b_only": 1,
+   "p_sign": 1.0
+  },
+  "z-ai/glm-5.3-flash": {
+   "questions": 35,
+   "a_only": 1,
+   "b_only": 0,
+   "p_sign": 1.0
+  }
+ },
+ "pooled_typed_minus_sql": {
+  "models": [
+   "inception/mercury-2.5",
+   "deepseek/deepseek-v4-flash",
+   "z-ai/glm-5.3-flash"
+  ],
+  "questions": 35,
+  "difference": 0.0380952380952381,
+  "low": 0.0,
+  "high": 0.08571428571428573
+ },
+ "verdicts": {
+  "all_hosted_cells_complete": true,
+  "usable_by_a_small_model": true,
+  "typed_better_than_sql": false
+ }
+}
