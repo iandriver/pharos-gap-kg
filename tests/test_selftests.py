@@ -111,6 +111,11 @@ def test_fulltext_selftest():
     assert fulltext._selftest() == 0
 
 
+def test_tgaps_selftest():
+    from pharos_gap_kg import tgaps
+    assert tgaps._selftest() == 0
+
+
 def test_model_selftest():
     import pytest
     pytest.importorskip("torch")
