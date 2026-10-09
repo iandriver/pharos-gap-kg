@@ -1,0 +1,55 @@
+{
+ "release": "pharos319",
+ "first": 50,
+ "window": 200,
+ "sample_sha256": "b12395ace6dfcb766e1345fca27e8220e6f5865a5fa424e9def0b2afcd623048",
+ "states": {
+  "not asked yet": 268,
+  "answered": 32
+ },
+ "sources": {
+  "Expression Atlas": {
+   "planted_withheld": {
+    "n": 16,
+    "share": 0.5625,
+    "low": 0.33178556243938107,
+    "high": 0.7690134771859434
+   },
+   "real_withheld": {
+    "n": 16,
+    "share": 0.875,
+    "low": 0.6397717251782153,
+    "high": 0.965022512573731
+   },
+   "passes": false,
+   "provisional": false,
+   "complete": false,
+   "abstracts_on_the_same_pairs": {
+    "planted_withheld": {
+     "n": 16,
+     "share": 0.75,
+     "low": 0.5050168327029684,
+     "high": 0.8981793257983293
+    },
+    "real_withheld": {
+     "n": 16,
+     "share": 0.8125,
+     "low": 0.5699111883245088,
+     "high": 0.9340840098021131
+    }
+   },
+   "real_pairs_no_abstract_mentions": {
+    "n": 13,
+    "found_in_full_text": 2
+   },
+   "planted_pairs_no_abstract_mentions": {
+    "n": 12,
+    "found_in_full_text": 4
+   },
+   "real_pairs_an_abstract_mentions": {
+    "n": 3,
+    "not_found_in_full_text": 3
+   }
+  }
+ }
+}

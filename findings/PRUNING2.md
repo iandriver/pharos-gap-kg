@@ -307,3 +307,30 @@ mentioned together, but no more often than the cut for their source.
 - Withholding is not deletion. Every pair is in the gaps file with what would restore it.
 - No link-prediction result uses the pruned table yet. Whether pruning changes prediction is what the
   fourth fitted model (`lightgcn_ctx_pruned`, `docs/PROTOCOL.md`) is for.
+
+## Added 9 Oct 2026: full text for the sources abstracts could not reach, first day
+
+`python -m pharos_gap_kg.fulltext run pharos319`, then `report`, which writes
+`docs/data/pruning2_fulltext_pharos319.json`. The rule, the pairs and the order they are asked in were
+added to the protocol after a pilot on five hand-picked pairs and before any sample pair was searched
+in this form. The service (Paperclip) allows 100 requests a day, so the 300 pairs take four days.
+This is the first: 32 Expression Atlas pairs, 16 planted and 16 real. It is not complete and is not a
+verdict.
+
+Rule F withholds a pair if no full text holds the gene symbol within 200 characters of one of the
+disease's names.
+
+| Expression Atlas, first 16 of each | planted withheld | real withheld |
+|---|---|---|
+| full text, rule F | 56.2% [33.2%, 76.9%] | 87.5% [64.0%, 96.5%] |
+| abstracts, rule L0, same pairs | 75.0% | 81.2% |
+
+- **So far full text does not find Expression Atlas's real pairs.** 14 of the 16 real pairs have no full
+  text that mentions the gene near the disease. The interval's lower end, 64.0%, is already above
+  the 50% the bar allows.
+- **Planted pairs are found at least as often as real ones**, 7 of 16 against 2 of 16. At this size
+  that difference is not established.
+- Of the 13 real pairs that no abstract mentions, full text finds 2. Of the 12 planted pairs that no
+  abstract mentions, it finds 4.
+
+DrugCentral Indication and JensenLab Knowledge AmyCo have not been asked about yet.
