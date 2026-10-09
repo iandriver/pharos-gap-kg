@@ -8,7 +8,7 @@ import pytest
 mcp = pytest.importorskip("mcp")
 from pharos_gap_kg import ask_selftest  # noqa: E402
 
-NAMES = ["connect", "find", "known", "predict", "status", "whats_new", "why"]
+NAMES = ["connect", "find", "gaps", "known", "predict", "status", "whats_new", "why"]
 
 
 async def _session(bundle, work):
@@ -25,7 +25,7 @@ def _payload(result):
     return structured if structured else json.loads(result.content[0].text)
 
 
-def test_the_server_offers_the_seven_questions_and_answers_them(tmp_path):
+def test_the_server_offers_the_eight_questions_and_answers_them(tmp_path):
     ask_selftest.tiny(tmp_path)
 
     async def work(s, init):
@@ -35,9 +35,13 @@ def test_the_server_offers_the_seven_questions_and_answers_them(tmp_path):
         unknown = _payload(await s.call_tool("why", {"target": "QQQ", "trait": "MONDO:1"}))
         ambiguous = _payload(await s.call_tool("known", {"node": "disease"}))
         predict = _payload(await s.call_tool("predict", {"node": "arrhythmia", "as_of": 2018, "top": 5}))
-        return tools, init, status, why, unknown, ambiguous, predict
+        gaps = _payload(await s.call_tool("gaps", {"target": "DDD"}))
+        nearest = _payload(await s.call_tool("gaps", {}))
+        return tools, init, status, why, unknown, ambiguous, predict, gaps, nearest
 
-    tools, init, status, why, unknown, ambiguous, predict = asyncio.run(_session(tmp_path, work))
+    tools, init, status, why, unknown, ambiguous, predict, gaps, nearest = asyncio.run(_session(tmp_path, work))
+    assert [g["kind"] for g in gaps["gaps"]] == ["dark", "ligand"] and "nearest route" in gaps["answer"] and "function" in gaps["reading"]
+    assert [t["symbol"] for t in nearest["targets"]] == ["DDD"]
     assert sorted(t.name for t in tools) == NAMES
     assert all(len(t.description or "") > 80 for t in tools), "each tool says what kind of request it answers"
     assert "do not choose" in (init.instructions or "") and "not in the graph" in (init.instructions or "")

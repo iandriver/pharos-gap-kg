@@ -1,6 +1,6 @@
 # Asking the graph
 
-Seven questions, answered from one bundle of files with their digests. They can be asked from the
+Eight questions, answered from one bundle of files with their digests. They can be asked from the
 command line, or by any MCP client through `python -m pharos_gap_kg.server`.
 
 | question | what it answers |
@@ -11,6 +11,7 @@ command line, or by any MCP client through `python -m pharos_gap_kg.server`.
 | `connect(a, b)` | what ties two things together when no link does |
 | `predict(node)` | what may be linked next, and how often that has held |
 | `whats_new(node, since)` | what was first reported after a year |
+| `gaps(target)` | what a target lacks for the next Pharos level, the nearest way to close it, and how often that closed |
 | `status()` | what the graph is, where it came from, what it leaves out |
 
 Three rules hold for every answer.
@@ -154,6 +155,45 @@ measured in `findings/BASELINES.md` and `findings/CONTROLS.md`; the `method` fie
 quotes those results, including that on links wording and position do not explain it was not shown to
 beat ranking by how well-studied a target is.
 
+### What does a target lack
+
+Pharos grades each target by explicit evidence, so what a target lacks for the next level is on
+record. `gaps` reads it, names the nearest way to close it, and says how often targets that close were
+promoted between two releases (`findings/TGAPS.md`).
+
+```bash
+python -m pharos_gap_kg.ask gaps LSM14B
+```
+
+> LSM14B is Tdark. To leave it needs 2 criteria to clear; the nearest route is: PubMed score up by
+> 0.085 (now 4.915, clears at 5); and 1 more antibody (now 50, clears at 51). Of 1,021 targets in this
+> band in the Pharos 3.19 database, 11% (10% to 13%) were no longer Tdark in Pharos 4.0.0 (May 2026).
+> In the mirror band, 0% of 1,589 targets fell the other way, which is what the pipeline alone moves
+> at this distance.
+
+Every answer carries the same caution: a gap is what the grade lacks, and closing it is not the same
+as learning the protein's function. A target with biological evidence and no compound has a different
+gap, without a distance:
+
+```bash
+python -m pharos_gap_kg.ask gaps TREM2
+```
+
+> TREM2 is Tbio: it has biological evidence and no qualifying compound. It lacks a compound at 1 uM or
+> better, the potency cutoff for its family. Of 17,517 targets with no qualifying compound in the
+> Pharos 3.19 database, 1,359 (8%) held one in Pharos 4.0.0 (May 2026).
+
+With no target it lists the Tdark targets nearest to leaving, optionally within one family:
+
+```bash
+python -m pharos_gap_kg.ask gaps --family Kinase --top 3
+```
+
+> The 3 Tdark targets in the family Kinase nearest to leaving Tdark, of 5,499 with a gap. Nearest
+> first.
+
+SBK2 (6 more antibodies), NRK (12 more antibodies) and RPS6KC1 (1 more GeneRIF).
+
 ## From an MCP client
 
 ```bash
@@ -182,7 +222,8 @@ For a client configured by JSON:
 ## What the bundle is
 
 `python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 11 MB: nodes,
-links, the study behind each link, trait lineage, neighbouring genes, the backtest summary, and a
-manifest with the digest of every file and of every input. The links are every link in the release;
+links, the study behind each link, trait lineage, neighbouring genes, the backtest summary, the
+target-level gaps where they have been computed, and a manifest with the digest of every file and of
+every input. The links are every link in the release;
 "as of 2018" is a filter the questions apply. Where a dated KGX graph has been built, its edges must
 be in the bundle under the same ids or the build refuses.

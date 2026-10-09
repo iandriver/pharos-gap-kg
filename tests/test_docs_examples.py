@@ -46,3 +46,20 @@ def test_predict(G):
     later = {c["symbol"]: c["any_gene_at_this_locus_reported_after_as_of"] for c in p["candidates"]}
     assert {k for k, v in later.items() if v} == {"HIST1H4A", "TMEM258", "HLA-A"} and later["TMEM258"] == 2020
     assert p["candidates"][0]["how_often_this_held"].startswith("In the 2018 backtest, 8% of candidates at ranks 1-10 for a disease")
+
+
+def test_gaps(G):
+    if G.tg is None:
+        pytest.skip("the bundle was built without target-level gaps")
+    d = G.gaps("LSM14B")
+    assert d["answer"] == ("LSM14B is Tdark. To leave it needs 2 criteria to clear; the nearest route is: PubMed score up by 0.085 (now 4.915, clears at 5); "
+                           "and 1 more antibody (now 50, clears at 51). Of 1,021 targets in this band in the Pharos 3.19 database, 11% (10% to 13%) were no "
+                           "longer Tdark in Pharos 4.0.0 (May 2026). In the mirror band, 0% of 1,589 targets fell the other way, which is what the pipeline "
+                           "alone moves at this distance.")
+    assert G.gaps("TREM2")["answer"] == ("TREM2 is Tbio: it has biological evidence and no qualifying compound. It lacks a compound at 1 uM or better, the "
+                                         "potency cutoff for its family. Of 17,517 targets with no qualifying compound in the Pharos 3.19 database, 1,359 (8%) "
+                                         "held one in Pharos 4.0.0 (May 2026).")
+    k = G.gaps(family="Kinase", top=3)
+    assert k["answer"] == "The 3 Tdark targets in the family Kinase nearest to leaving Tdark, of 5,499 with a gap. Nearest first."
+    assert [(t["symbol"], t["nearest_route"].split(" (")[0]) for t in k["targets"]] == [("SBK2", "6 more antibodies"), ("NRK", "12 more antibodies"), ("RPS6KC1", "1 more GeneRIF")]
+    assert "not the same as learning its function" in d["reading"]

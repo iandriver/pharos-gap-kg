@@ -33,6 +33,9 @@
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
   "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
-  "backtest.json": "32ec57d5c87710c34ccddec98000fd30f165b591cd9b30a33d27cd3b7dc37830"
- }
+  "backtest.json": "32ec57d5c87710c34ccddec98000fd30f165b591cd9b30a33d27cd3b7dc37830",
+  "target_gaps.parquet": "35a9fe38c868b3a635f13dd27f0dc0fea142ae1afd18522c4a0195121513c408",
+  "target_gaps.json": "0bdf8b9f9ad52eb32d35d8f51cbde999cfb575253b05edb85f334fc7aa25312e"
+ },
+ "target_gaps": 17737
 }

@@ -1,4 +1,4 @@
-"""The seven questions as an MCP server, so any MCP client can put them to the graph.
+"""The eight questions as an MCP server, so any MCP client can put them to the graph.
 
 The server holds no model and makes no network call. It loads one bundle, checks each file against
 the manifest's digest, and answers from it. A client's language model chooses which question to ask
@@ -22,7 +22,7 @@ from pathlib import Path
 
 from pharos_gap_kg import ask
 
-INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (from NIH Pharos) and traits. Seven tools; pick by what is asked.
+INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (from NIH Pharos) and traits. Eight tools; pick by what is asked.
 
 - Someone names a gene, protein or disease loosely -> find. If it reports an exact match, use that id. If it reports no exact match and several names, ask which is meant; do not pick one.
 - "What is known about X" -> known.
@@ -30,6 +30,7 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - "How are X and Y related" (two genes, two diseases, or a gene and a disease with no direct link) -> connect.
 - "What might be linked to X next", "candidate targets for Y" -> predict. Quote its how_often_this_held text with any candidate you pass on.
 - "What changed since YEAR" -> whats_new.
+- "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps. Quote its how_often_this_closed text with any gap you pass on, and its reading.
 - "What is this, where is it from, can I trust it" -> status.
 
 Rules for using the answers:
@@ -82,6 +83,13 @@ def build(bundle_dir: Path):
     @app.tool(description="Links to one target or trait that were first reported after a year, counted by year, best-supported first.")
     def whats_new(node: str, since: int, limit: int = 10) -> dict:
         return G.whats_new(node, since, max(1, min(int(limit), 50)))
+
+    @app.tool(description="What a target lacks for the next Pharos development level, read from the release's own evidence: for a Tdark target, "
+                          "how many criteria must clear, the nearest route, and how often targets that close were promoted in the back-test; for a "
+                          "target with no qualifying compound, the potency cutoff it lacks. With no target, lists the Tdark targets nearest to "
+                          "leaving Tdark (optionally within one family, such as Kinase, GPCR or IC).")
+    def gaps(target: str | None = None, family: str | None = None, top: int = 10) -> dict:
+        return G.gaps(target, family, top)
 
     @app.tool(description="What this graph is: its size and years, the published file it was built from and that file's digest, the checks "
                           "it passed, what it leaves out and why, and how its ranking performed in the backtest.")

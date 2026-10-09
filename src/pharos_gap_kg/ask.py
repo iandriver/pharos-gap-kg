@@ -1,4 +1,4 @@
-"""Seven questions a person can put to the graph, each answered from the bundle with its sources.
+"""Eight questions a person can put to the graph, each answered from the bundle with its sources.
 
     find(text)                    which target or trait is meant
     known(node)                   what is linked to it, and since when
@@ -108,6 +108,10 @@ class Graph:
             self.neigh.setdefault(int(a), []).append((int(b), int(gap)))
         bt = self.dir / "backtest.json"
         self.backtest = json.loads(bt.read_text()) if bt.is_file() else None
+        self.tg, self.tg_rates = None, None
+        if "target_gaps.parquet" in self.manifest["files"]:
+            self.tg = pd.read_parquet(self.dir / "target_gaps.parquet").set_index("id")
+            self.tg_rates = json.loads((self.dir / "target_gaps.json").read_text())
         self._ev = None
         self._sym = {}
         for i, s in enumerate(t.name):
@@ -289,7 +293,7 @@ class Graph:
         return (f"In the {c['cutoff']} backtest, {v['share']:.0%} of candidates at ranks {b} {what} were reported by {c['data_ends']} "
                 f"(base rate {c['base_rate']:.1%}). A candidate not reported is not known to be absent.")
 
-    # ------------------------------------------------------------------ the seven questions
+    # ------------------------------------------------------------------ the questions
     def find(self, text: str, kind: str = "any", limit: int = 8) -> dict:
         ms = self._match(text, kind)
         if not ms:
@@ -610,6 +614,87 @@ class Graph:
                 "answer": (f"{len(rows):,} link(s) to {name} were first reported after {since} (data to {self.latest})."
                            if len(rows) else f"No link to {name} was first reported after {since} (data to {self.latest}). {NOT_ABSENCE}")}
 
+    def _gap_row(self, tid: str) -> dict | None:
+        return self.tg.loc[tid].to_dict() if tid in self.tg.index else None
+
+    def _dark_gap(self, g: dict) -> dict:
+        R = self.tg_rates
+        b = R["dark"]["bands"][g["band"]]
+        pr, fl = b["promoted"], b["fell_in_the_mirror"]
+        return {"lacks": "enough recorded evidence to leave Tdark", "criteria_to_clear": int(g["flips"]),
+                "evidence_now": {"pubmed_score": round(float(g["pubmed_score"]), 3), "generifs": int(g["generifs"]), "antibodies": int(g["antibodies"])},
+                "nearest_route": g["proposal"], "other_route": "an experimental Gene Ontology function or process annotation, which has no distance",
+                "band": g["band"],
+                "how_often_this_closed": (f"Of {pr['n']:,} targets in this band in the {R['earlier']} database, {pr['share']:.0%} "
+                                          f"({pr['low']:.0%} to {pr['high']:.0%}) were no longer Tdark in {R['later']}. "
+                                          f"In the mirror band, {fl['share']:.0%} of {fl['n']:,} targets fell the other way, which is what "
+                                          f"the pipeline alone moves at this distance.")}
+
+    def _ligand_gap(self, g: dict) -> dict:
+        R = self.tg_rates["ligand"]
+        return {"lacks": f"a compound at {g['cutoff']} or better, the potency cutoff for its family",
+                "distance": "not recorded: the release keeps only compounds that pass the cutoff",
+                "interaction_partners_with_a_ligand": int(g["partners_with_ligand"]),
+                "how_often_this_closed": (f"Of {R['candidates']:,} targets with no qualifying compound in the {self.tg_rates['earlier']} database, "
+                                          f"{R['gained']:,} ({R['gained'] / R['candidates']:.0%}) held one in {self.tg_rates['later']}.")}
+
+    def gaps(self, target: str | None = None, family: str | None = None, top: int = 10) -> dict:
+        """What a target lacks for the next Pharos development level; or, with no target, the Tdark
+        targets nearest to leaving it."""
+        reading = ("A gap is what Pharos's grade lacks, read from the release's own evidence. A PubMed score or an antibody count "
+                   "measures attention to a protein. Closing the gap is not the same as learning its function.")
+        if self.tg is None:
+            return {"found": False, "problem": "not built", "answer": "This bundle holds no target-level gaps. They are added by:  "
+                    "python -m pharos_gap_kg.tgaps <release>  and then  python -m pharos_gap_kg.bundle <release> --gaps-only"}
+        R = self.tg_rates
+        if target is None:
+            d = self.tg[self.tg.flips.notna()]
+            if family:
+                d = d[d.family.fillna("").str.casefold() == family.casefold()]
+                if d.empty:
+                    return {"found": False, "problem": "no such family", "answer": f"No Tdark target with a gap has the family {family!r}. "
+                            f"Families: {', '.join(sorted(set(self.tg.family.dropna())))}."}
+            d = d.sort_values(["cost", "id"]).head(max(1, min(int(top), 50)))
+            rows = [{**self._tlabel(self.ti[i]), "nearest_route": r.proposal, "band": r.band,
+                     "promoted_in_this_band": f"{R['dark']['bands'][r.band]['promoted']['share']:.0%}"} for i, r in d.iterrows() if i in self.ti]
+            return {"found": True, "answer": (f"The {len(rows)} Tdark targets{' in the family ' + family if family else ''} nearest to leaving Tdark, of "
+                                             f"{R['dark']['targets']:,} with a gap. Nearest first."),
+                    "targets": rows, "how_this_ranking_did": (f"In the back-test this distance ranked a promoted target above an unpromoted one "
+                                                               f"{R['dark']['route_cost_auc']:.0%} of the time ({R['dark']['best_single_count']} alone: "
+                                                               f"{R['dark']['best_single_count_auc']:.0%}); {R['dark']['promoted']:,} of {R['dark']['in_both_releases']:,} were promoted."),
+                    "reading": reading}
+        r, miss = self._need(target, "target")
+        if miss:
+            return miss
+        i = r["i"]
+        lab, level = self._tlabel(i), self.t.level[i]
+        out = {"found": True, "target": lab, "note": r["note"], "gaps": [], "reading": reading}
+        g = self._gap_row(self.t.id[i])
+        if level == "Tclin":
+            out["answer"] = f"{lab['symbol']} is Tclin: it has an approved drug with a known mechanism, the top level. It has no gap of this kind."
+        elif level == "Tchem":
+            out["answer"] = (f"{lab['symbol']} is Tchem: it holds a compound that passes its family's potency cutoff. What it lacks for Tclin is an "
+                             f"approved drug acting through it, which this release does not grade by distance.")
+        elif g is None:
+            out["answer"] = (f"{lab['symbol']} is graded {level}, yet the release's ligand table holds compound activities for it. The grade and the "
+                             f"table disagree, so no gap is given.")
+        else:
+            if pd.notna(g["flips"]):
+                out["gaps"].append({"kind": "dark", **self._dark_gap(g)})
+            if g["lacks_ligand"] is True:
+                out["gaps"].append({"kind": "ligand", **self._ligand_gap(g)})
+            if level == "Tdark" and pd.isna(g["flips"]):
+                out["answer"] = (f"{lab['symbol']} is graded Tdark, but its recorded evidence does not meet the Tdark rule, so no distance is given. "
+                                 f"It lacks a compound at {g['cutoff']}.")
+            elif level == "Tdark":
+                d = out["gaps"][0]
+                out["answer"] = (f"{lab['symbol']} is Tdark. To leave it needs {d['criteria_to_clear']} criteri{'on' if d['criteria_to_clear'] == 1 else 'a'} "
+                                 f"to clear; the nearest route is: {d['nearest_route']}. {d['how_often_this_closed']}")
+            else:
+                out["answer"] = (f"{lab['symbol']} is {level}: it has biological evidence and no qualifying compound. "
+                                 f"It lacks {out['gaps'][-1]['lacks']}. {out['gaps'][-1]['how_often_this_closed']}")
+        return out
+
     def status(self) -> dict:
         m = self.manifest
         out = {"found": True,
@@ -624,7 +709,7 @@ class Graph:
                             "Compound activities: after any year nearly every new target-compound pair involves a compound not seen before.",
                             f"{m['targets'] - m['targets_with_a_link']:,} targets have no link. They are in the graph, and asking about one says so."],
                "reading_a_link": "A GWAS link places an associated variant at a gene. It does not say the gene causes the trait.",
-               "questions": ["find", "known", "why", "connect", "predict", "whats_new", "status"]}
+               "questions": ["find", "known", "why", "connect", "predict", "whats_new", "gaps", "status"]}
         if self.backtest and "headline" in self.backtest:
             out["backtest"] = self.backtest["headline"]
         return out
@@ -645,7 +730,8 @@ def main(argv: list[str] | None = None) -> int:
         from pharos_gap_kg import ask_selftest
         return ask_selftest.run()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("question", choices=["find", "known", "why", "connect", "predict", "whats_new", "status"])
+    ap.add_argument("question", choices=["find", "known", "why", "connect", "predict", "whats_new", "gaps", "status"])
+    ap.add_argument("--family")
     ap.add_argument("args", nargs="*")
     ap.add_argument("--as-of", type=int)
     ap.add_argument("--top", type=int, default=10)
@@ -666,6 +752,8 @@ def main(argv: list[str] | None = None) -> int:
         out = G.connect(a.args[0], a.args[1], a.as_of)
     elif q == "predict":
         out = G.predict(a.args[0], a.as_of, a.top, a.unexplained_only)
+    elif q == "gaps":
+        out = G.gaps(a.args[0] if a.args else None, a.family, a.top)
     else:
         out = G.whats_new(a.args[0], int(a.args[1]), a.top)
     print(json.dumps(out, indent=1, default=str))

@@ -9,6 +9,8 @@ these files and their digests:
     lineage.parquet      pairs of traits that are one term, or broader and narrower
     neighbours.parquet   pairs of targets within 500,000 bases, and the bases between them
     backtest.json        how the ranking the front end offers has held on the frozen split, when measured
+    target_gaps.*        what each target lacks for the next development level, and how often targets in
+                         each band were promoted in the back-test (where `tgaps` has been run)
     manifest.json        the inputs' digests, each file's digest, and the counts
 
 The links are every link in the release, whatever its year. "As of 2018" is a filter the front end
@@ -21,6 +23,7 @@ Run:  python -m pharos_gap_kg.bundle pharos319
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -31,6 +34,56 @@ from kgx_gaps import conformance
 from pharos_gap_kg import context, graph, ontology, paths, position, pubyear, registry
 
 FILES = ["nodes.parquet", "links.parquet", "evidence.parquet", "lineage.parquet", "neighbours.parquet"]
+GAP_FILES = ["target_gaps.parquet", "target_gaps.json"]
+
+
+def gap_files(release: str, out: Path) -> list[str]:
+    """Write what the `gaps` question reads, where the target-level gaps have been computed
+    (`python -m pharos_gap_kg.tgaps <release>`), and return the files written. One table of what each
+    target lacks, and the rates at which targets in each band were promoted in the back-test."""
+    C, summary = paths.context(release), paths.DOCS_DATA / f"target_gaps_{release}.json"
+    dark, lig = C / "target_gaps_dark.parquet", C / "target_gaps_ligand.parquet"
+    if not (dark.is_file() and lig.is_file() and summary.is_file()):
+        return []
+    s = json.loads(summary.read_text())
+    for f, want in s["files"].items():
+        if graph.file_sha(C / f) != want:
+            raise SystemExit(f"REFUSED: {C / f} is not the table {summary.name} describes; run the target-level gaps again")
+    d = pd.read_parquet(dark)[["uniprot", "pubmed_score", "generifs", "antibodies", "flips", "cost", "route", "proposal", "band"]]
+    g = pd.read_parquet(lig)[["uniprot", "tdl", "fam", "cutoff", "partners_with_ligand"]].assign(lacks_ligand=True)
+    t = g.merge(d, on="uniprot", how="outer")
+    t.insert(0, "id", "UniProtKB:" + t.uniprot)
+    t = t.drop(columns="uniprot").rename(columns={"tdl": "level", "fam": "family"}).sort_values("id").reset_index(drop=True)
+    t["flips"] = t.flips.astype("Int64")
+    t.to_parquet(out / GAP_FILES[0], index=False)
+    dg, lg = s["dark_gap"], s["ligand_gap"]
+    m = re.fullmatch(r"pharos(\d)(\d+)", release)
+    rates = {"earlier": f"Pharos {m.group(1)}.{m.group(2)}" if m else release, "later": "Pharos 4.0.0 (May 2026)", "summary_sha256": graph.file_sha(summary),
+             "dark": {"targets": dg["with_a_gap"], "in_both_releases": dg["in_both_releases"], "promoted": dg["promoted"],
+                      "bands": {b: {"promoted": v, "fell_in_the_mirror": dg["mirror"]["bands"][b]} for b, v in dg["bands"].items()},
+                      "route_cost_auc": dg["scores"]["route cost"]["auc"], "best_single_count": dg["best_single_count"],
+                      "best_single_count_auc": dg["scores"][dg["best_single_count"]]["auc"],
+                      "named_criterion_cleared": dg["proposal"]["named_criterion_cleared"], "by_naming_at_random": dg["proposal"]["by_naming_at_random"]},
+             "ligand": {"candidates": lg["candidates"], "gained": lg["gained"]}}
+    (out / GAP_FILES[1]).write_text(json.dumps(rates, indent=1) + "\n")
+    return list(GAP_FILES)
+
+
+def add_gaps(release: str) -> dict:
+    """Add the target-level gaps to a bundle that is already built, and record them in its manifest."""
+    out = paths.bundle(release)
+    mf = out / "manifest.json"
+    if not mf.is_file():
+        raise SystemExit(f"no bundle at {out}; build one with:  python -m pharos_gap_kg.bundle {release}")
+    files = gap_files(release, out)
+    if not files:
+        raise SystemExit(f"no target-level gaps to add; run:  python -m pharos_gap_kg.tgaps {release}")
+    man = json.loads(mf.read_text())
+    man["files"].update({f: graph.file_sha(out / f) for f in files})
+    man["target_gaps"] = int(len(pd.read_parquet(out / GAP_FILES[0])))
+    mf.write_text(json.dumps(man, indent=1) + "\n")
+    (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
+    return man
 
 
 def lineage_table(traits: list[str], terms: dict) -> pd.DataFrame:
@@ -153,6 +206,7 @@ def build(release: str) -> dict:
         files.append("backtest.json")
     elif (out / "backtest.json").exists():
         (out / "backtest.json").unlink()
+    files += gap_files(release, out)
     side = lambda k: json.loads(registry.SOURCES[k].path.with_name(registry.SOURCES[k].filename + ".lineage.json").read_text())["sha256"]
     src = registry.SOURCES[release]
     man = {
@@ -168,6 +222,8 @@ def build(release: str) -> dict:
         "backtest": (f"split frozen at {bt['headline']['cutoff']}" if bt else "none"),
         "files": {f: graph.file_sha(out / f) for f in files},
     }
+    if GAP_FILES[0] in files:
+        man["target_gaps"] = int(len(pd.read_parquet(out / GAP_FILES[0])))
     (out / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
     return man
@@ -214,6 +270,10 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return _selftest()
+    if len(argv) == 2 and argv[1] == "--gaps-only":
+        man = add_gaps(argv[0])
+        print(f"{man['release']}: {man['target_gaps']:,} target-level gaps added to {paths.bundle(man['release'])}")
+        return 0
     if len(argv) != 1:
         raise SystemExit(__doc__)
     man = build(argv[0])

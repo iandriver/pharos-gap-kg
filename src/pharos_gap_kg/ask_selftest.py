@@ -10,7 +10,7 @@ import pandas as pd
 from pharos_gap_kg import ask, graph
 
 
-def tiny(d: Path) -> None:
+def tiny(d: Path, gaps: bool = True) -> None:
     T = lambda i, sym, lvl="Tbio": {"id": f"UniProtKB:P{i}", "kind": "target", "category": "biolink:Protein", "name": sym, "full_name": f"protein {sym}",
                                     "level": lvl, "family": "", "xref": "", "live_term": "", "disease_like": False,
                                     "chr": "6" if sym == "BBB" else "1", "start": 30_000_000 if sym == "BBB" else 1000 * i, "end": 30_000_500 if sym == "BBB" else 1000 * i + 500}
@@ -38,6 +38,22 @@ def tiny(d: Path) -> None:
                           "by_trait": {f"{a}-{b}": cal for a, b in ask.TRAIT_BINS}, "by_target": {f"{a}-{b}": cal for a, b in ask.TARGET_BINS}}}
     (d / "backtest.json").write_text(json.dumps(bt))
     files = ["nodes.parquet", "links.parquet", "evidence.parquet", "lineage.parquet", "neighbours.parquet", "backtest.json"]
+    if gaps:
+        # DDD is Tdark, one criterion short; CCC is Tbio with no compound
+        tg = pd.DataFrame([{"id": "UniProtKB:P4", "level": "Tdark", "family": "Kinase", "cutoff": "30 nM", "partners_with_ligand": 2, "lacks_ligand": True,
+                            "pubmed_score": 4.2, "generifs": 3, "antibodies": 90.0, "flips": 1, "cost": 0.16, "route": "pubmed_score",
+                            "proposal": "PubMed score up by 0.8 (now 4.2, clears at 5)", "band": "1 flip, nearest third"},
+                           {"id": "UniProtKB:P3", "level": "Tbio", "family": None, "cutoff": "1 uM", "partners_with_ligand": 0, "lacks_ligand": True,
+                            "pubmed_score": None, "generifs": None, "antibodies": None, "flips": None, "cost": None, "route": None, "proposal": None, "band": None}])
+        tg["flips"] = tg.flips.astype("Int64")
+        tg.to_parquet(d / "target_gaps.parquet", index=False)
+        sh = lambda p, n: {"n": n, "share": p, "low": p - 0.05, "high": p + 0.05}
+        rates = {"earlier": "Tiny 1", "later": "Tiny 2", "dark": {"targets": 1, "in_both_releases": 1, "promoted": 1, "route_cost_auc": 0.86,
+                                                                    "best_single_count": "pubmed score", "best_single_count_auc": 0.79,
+                                                                    "bands": {"1 flip, nearest third": {"promoted": sh(0.5, 40), "fell_in_the_mirror": sh(0.06, 30)}}},
+                 "ligand": {"candidates": 200, "gained": 20}}
+        (d / "target_gaps.json").write_text(json.dumps(rates))
+        files += ["target_gaps.parquet", "target_gaps.json"]
     man = {"release": "tiny", "source_file": "tiny.sql.gz", "source_url": "https://example.org/tiny.sql.gz", "source_published": "2024-01-01",
            "source_sha256": "0" * 64, "source_tables": ["tiga"], "ontology_sha256": "1" * 64, "coordinates_sha256": "2" * 64, "window": 500000,
            "first_year": 2010, "latest_year": 2021, "targets": 6, "targets_with_a_link": 4, "traits": 5, "links": len(links), "studies": 11,
@@ -100,6 +116,25 @@ def run() -> int:
         w = G.why("BBB", "arrhythmia", as_of=2018)
         ck("an absent link to a gene in the MHC region says a high rank there means little", "MHC" in w.get("caution", "") and w["candidates_for_this_trait"] == 5)
         ck("an unknown argument stops the question", G.why("QQQ", "arrhythmia")["found"] is False and G.why("QQQ", "arrhythmia")["problem"] == "not in the graph")
+
+        # gaps
+        g = G.gaps("DDD")
+        ck("a dark target is told how many criteria must clear, the nearest route, and how often that closed",
+           g["found"] and [x["kind"] for x in g["gaps"]] == ["dark", "ligand"] and g["gaps"][0]["criteria_to_clear"] == 1
+           and "PubMed score up by 0.8" in g["answer"] and "50% (45% to 55%)" in g["answer"] and "6% of 30 targets fell the other way" in g["answer"])
+        ck("its ligand gap names the cutoff for its family and says the distance is not recorded", "30 nM" in g["gaps"][1]["lacks"] and "not recorded" in g["gaps"][1]["distance"]
+           and "20 (10%)" in g["gaps"][1]["how_often_this_closed"])
+        g = G.gaps("CCC")
+        ck("a target with biology and no compound has only the ligand gap", [x["kind"] for x in g["gaps"]] == ["ligand"] and "1 uM" in g["answer"])
+        ck("every gap answer says what a gap is and is not", "not the same as learning its function" in g["reading"])
+        ck("a target graded without a compound that the ligand table gives one is told the two disagree", G.gaps("BBB")["gaps"] == [] and "disagree" in G.gaps("BBB")["answer"])
+        ck("an unknown name stops the question", G.gaps("QQQ")["found"] is False and G.gaps("QQQ")["problem"] == "not in the graph")
+        ls = G.gaps(top=5)
+        ck("with no target, the dark targets nearest to leaving are listed with their routes", [t["symbol"] for t in ls["targets"]] == ["DDD"] and "86%" in ls["how_this_ranking_did"])
+        ck("a family narrows the list, and a family with none says which exist", G.gaps(family="kinase")["targets"][0]["symbol"] == "DDD" and "Kinase" in G.gaps(family="GPCR")["answer"])
+        with tempfile.TemporaryDirectory() as tmp2:
+            tiny(Path(tmp2), gaps=False)
+            ck("a bundle built without the gaps says how to add them", ask.Graph(Path(tmp2)).gaps("DDD")["problem"] == "not built")
 
         # connect
         c = G.connect("arrhythmia", "AAA", as_of=2018)

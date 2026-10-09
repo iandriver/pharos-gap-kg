@@ -41,7 +41,7 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   to measurements, not diseases. Of Pharos's twelve undated disease sources, one is the held-out GWAS
   data under another name: used as context it would score 0.60 by reading the answers.
 
-- **Seven questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`,
+- **Eight questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`, `gaps`,
   `connect`, `predict`, `whats_new`, `status`, answered from an 11 MB bundle whose files are checked
   against a manifest of digests. A name that matches nothing is "not in the graph"; an absent link is
   never reported as a negative; a prediction comes with how often its rank held in the backtest.
