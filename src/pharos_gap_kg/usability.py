@@ -48,11 +48,17 @@ SETS = {
     "eval": {"seed": 20261008, "schema": 2, "fakes": ("XQVT3", "ZJKP8", "WQZR5"),
              "words": ("lymphoma", "arthritis", "leukemia", "hepatitis", "sclerosis", "carcinoma", "anemia", "dermatitis"),
              "file": "usability_questions_eval.json", "results": "usability_results_eval.json"},
+    # the gaps question (docs/PROTOCOL.md, "Usability of the gaps question"): a development set, then the set the verdicts are read on
+    "gaps_dev": {"seed": 20261010, "schema": 3, "fakes": ("QZVK2", "XJWP7", "VQXT4"), "words": ("ZNF", "TMEM", "SLC25"),
+                 "file": "usability_questions_gaps_dev.json", "results": "usability_results_gaps_dev.json"},
+    "gaps": {"seed": 20261011, "schema": 3, "fakes": ("ZWQK6", "JXVP3", "QKZT9"), "words": ("KRTAP", "CYP2", "HLA"),
+             "file": "usability_questions_gaps.json", "results": "usability_results_gaps.json"},
 }
 STATUSES = ["answered", "no_link_reported", "not_in_graph", "ambiguous", "unknown"]
 CONDITIONS = ["typed", "sql", "none"]
 MAX_TOOL_CALLS = 8
 PROMPT_VERSION = 1
+GAPS_CAP = 0.75          # dollars, over both sets of the gaps test (docs/PROTOCOL.md)
 PRICES = {"inception/mercury-2.5": (0.04, 0.15), "deepseek/deepseek-v4-flash": (0.09, 0.18), "z-ai/glm-5.3-flash": (0.15, 0.50)}
 
 RULES = """You answer questions about a graph of dated GWAS links between human protein targets and traits, built from NIH Pharos.
@@ -73,6 +79,28 @@ Every FINAL object has a "problem" field:
   "ambiguous"      a name in the question matches nothing in the graph exactly and could mean more than one thing. Do not choose one.
   "unknown"        you could not determine the answer.
 When "problem" is not null, set the other fields to null."""
+
+RULES_GAPS = """You answer questions about human protein targets from NIH Pharos: what each lacks for the next development level, and the dated GWAS links between targets and traits.
+- Pharos grades a target Tdark, Tbio, Tchem or Tclin, lowest first. Tclin is the top level and has no gap.
+- A Tdark target meets at least two of three dark criteria: a PubMed score under 5, at most 3 GeneRIFs, at most 50 antibodies. A criterion clears at a PubMed score of 5, at 4 GeneRIFs, or at 51 antibodies.
+- "Criteria to clear" is the number of dark criteria the target meets, less one: 1 or 2. The nearest criterion is the one whose shortfall is the smallest share of its threshold.
+- Tdark targets are grouped in bands by how far they are from leaving Tdark. For each band a back-test gives the share that was no longer Tdark in Pharos 4.0.0.
+- A target with no qualifying compound lacks one at its family's potency cutoff: 30 nM for kinases, 100 nM for GPCRs and nuclear receptors, 10 uM for ion channels, 1 uM for every other target.
+Explain briefly, then end with one last line of the form  FINAL: {...}  holding the JSON object the question asks for.
+Every FINAL object has a "problem" field:
+  null             you found what was asked.
+  "not_in_graph"   the target is not in the graph. Do not answer from your own knowledge.
+  "ambiguous"      a name in the question matches nothing in the graph exactly and could mean more than one thing. Do not choose one.
+  "unknown"        you could not determine the answer.
+When "problem" is not null, set the other fields to null."""
+
+SQL_SCHEMA_GAPS = """
+  target_gaps(target_id, level, family, lacks_compound, potency_cutoff, pubmed_score, generifs, antibodies, criteria_to_clear, route_cost, nearest_route, proposal, band)
+      -- one row per target with a gap. The columns from pubmed_score to band are null unless the target is Tdark. nearest_route names the
+      -- nearest criteria, joined by '|'; proposal says in words what clearing them takes; a lower route_cost is nearer to leaving Tdark
+  gap_band_rates(band, promoted_share, promoted_low, promoted_high, targets)   -- of the Tdark targets in each band, the share no longer Tdark in Pharos 4.0.0"""
+
+RULES_BY_SCHEMA = {1: RULES, 2: RULES_V2, 3: RULES_GAPS}
 
 SQL_SCHEMA = """You have one tool, sql(query), which runs one read-only SQLite SELECT and returns up to 50 rows.
 Tables:
@@ -220,6 +248,129 @@ def make_questions(bundle: Path, seed: int = SEED, schema: int = 1, fakes: tuple
     return qs
 
 
+CRITERIA = {"pubmed_score": "PubMed score", "generifs": "GeneRIFs", "antibodies": "antibodies"}
+
+
+def make_gap_questions(bundle: Path, seed: int, fakes: tuple, words: tuple) -> list[dict]:
+    """35 questions about what a target lacks, in ten kinds. Expected answers are read from the bundle's
+    tables here; `ask` is used only to choose names it resolves without a note, and names it finds ambiguous."""
+    G = ask.Graph(bundle)
+    rng = random.Random(seed)
+    nodes = pd.read_parquet(bundle / "nodes.parquet")
+    links = pd.read_parquet(bundle / "links.parquet")
+    tg = pd.read_parquet(bundle / "target_gaps.parquet")
+    rates = json.loads((bundle / "target_gaps.json").read_text())["dark"]["bands"]
+    t = nodes[nodes.kind == "target"]
+    sym = dict(zip(t.id, t.name))
+    level = dict(zip(t.id, t.level))
+    n_sym = t.groupby("name").id.transform("size")
+    clean = {r.id for r in t[n_sym == 1].itertuples()
+             if (lambda x: x["ok"] and not x["note"] and G.t.id[x["i"]] == r.id)(G.resolve(r.name, "target"))}
+    dark = tg[tg.flips.notna() & tg.id.isin(clean)].sort_values("id").reset_index(drop=True)
+    used: set[str] = set()
+    qs: list[dict] = []
+
+    def add(fam: str, text: str, gold: dict) -> None:
+        qs.append({"id": f"{fam}-{sum(1 for q in qs if q['family'] == fam) + 1}", "family": fam, "text": text, "gold": gold})
+
+    def pick(df: pd.DataFrame, n: int) -> list:
+        df = df[~df.id.isin(used)]
+        rows = [df.iloc[i] for i in rng.sample(range(len(df)), n)]
+        used.update(r.id for r in rows)
+        return rows
+
+    for r in pick(dark[dark.flips == 1], 2) + pick(dark[dark.flips == 2], 2):
+        add("flips", f"{sym[r.id]} is a Tdark target. How many criteria does it still have to clear to leave Tdark?" + _final2('"criteria_to_clear": N'),
+            {"problem": None, "criteria_to_clear": int(r.flips)})
+
+    one = dark[dark.flips == 1]
+    for route in ("pubmed_score", "generifs", "antibodies", rng.choice(list(CRITERIA))):
+        r = pick(one[one.route == route], 1)[0]
+        add("nearest", f"For the Tdark target {sym[r.id]}, which one criterion is nearest to clearing: the PubMed score, GeneRIFs or antibodies?"
+            + _final2('"criterion": "pubmed_score" or "generifs" or "antibodies"'), {"problem": None, "criterion": route})
+
+    for route, clears in (("generifs", 4), ("generifs", 4), ("antibodies", 51), ("antibodies", 51)):
+        r = pick(one[one.route == route], 1)[0]
+        add("shortfall", f"How many more {CRITERIA[route]} does the Tdark target {sym[r.id]} need for that criterion to clear?" + _final2('"more": N'),
+            {"problem": None, "more": int(round(clears - r[route]))})
+
+    for band in rng.sample(sorted(rates), 4):
+        r = pick(dark[dark.band == band], 1)[0]
+        add("rate", f"Of the Tdark targets in the same band as {sym[r.id]}, what percentage were no longer Tdark in Pharos 4.0.0?" + _final2('"percent": NUMBER'),
+            {"problem": None, "percent": round(100 * rates[band]["promoted"]["share"], 1)})
+
+    bio = tg[(tg.level == "Tbio") & tg.id.isin(clean)].sort_values("id")
+    for fam, cut in (("Kinase", "30 nM"), ("GPCR", "100 nM"), ("IC", "10 uM"), (None, "1 uM")):
+        pool = bio[bio.family.isna()] if fam is None else bio[bio.family == fam]
+        r = pick(pool, 1)[0]
+        if r.cutoff != cut:
+            raise SystemExit(f"REFUSED: {sym[r.id]} is in the family {fam} and its cutoff is {r.cutoff}, not {cut}")
+        add("ligand_cutoff", f"{sym[r.id]} has no qualifying compound. What potency would a compound have to reach for it to count, given the target's family?"
+            + _final2('"cutoff": "30 nM" or "100 nM" or "10 uM" or "1 uM"'), {"problem": None, "cutoff": cut})
+
+    clin = t[(t.level == "Tclin") & t.id.isin(clean)].sort_values("id")
+    for r in pick(clin, 3):
+        add("no_gap", f"What does {sym[r.id]} lack for the next Pharos level? Give its level, and whether it has a gap of this kind."
+            + _final2('"level": LEVEL, "has_gap": true or false'), {"problem": None, "level": "Tclin", "has_gap": False})
+
+    for fake in fakes:
+        if G.resolve(fake, "target").get("problem") != "not in the graph":
+            raise SystemExit(f"REFUSED: the invented symbol {fake} matches something in the graph")
+        add("not_in_graph", f"How many criteria does {fake} still have to clear to leave Tdark?" + _final2('"criteria_to_clear": N or null'), {"problem": "not_in_graph"})
+
+    for word in words:
+        if G.resolve(word, "target").get("problem") != "ambiguous":
+            raise SystemExit(f"REFUSED: {word!r} is not ambiguous among the targets of this graph")
+        add("ambiguous", f"What potency cutoff does {word} lack a compound at?" + _final2('"cutoff": CUTOFF or null'), {"problem": "ambiguous"})
+
+    alld = tg[tg.flips.notna()].sort_values(["cost", "id"])
+    fams = [f for f in sorted(set(alld.family.dropna())) if (alld.family == f).sum() >= 5]
+    deg = links.target.value_counts()
+    usable = [f for f in fams if (lambda x: x.cost.iloc[0] < x.cost.iloc[1] and x.id.iloc[0] in clean)(alld[alld.family == f])]
+    chosen = rng.sample(usable, 3)
+    for f in chosen:
+        top = alld[alld.family == f].iloc[0]
+        add("nearest_in_family", f"Which Tdark target in the Pharos family '{f}' is nearest to leaving Tdark?" + _final2('"symbol": GENE SYMBOL'),
+            {"problem": None, "symbol": sym[top.id]})
+    rest = [f for f in fams if f not in chosen and (lambda x: x.cost.iloc[2] < x.cost.iloc[3])(alld[alld.family == f])]
+    for f in rng.sample(rest, 3):
+        top3 = alld[alld.family == f].head(3)
+        add("two_step", f"Of the three Tdark targets in the Pharos family '{f}' nearest to leaving Tdark, how many have at least one GWAS link in this graph?"
+            + _final2('"count": N'), {"problem": None, "count": int(sum(deg.get(i, 0) > 0 for i in top3.id))})
+    if len(qs) != 35 or any(level[i] != "Tdark" for i in dark.id):
+        raise SystemExit(f"REFUSED: {len(qs)} questions were made, not 35, or a dark-gap target is not Tdark in the node table")
+    return qs
+
+
+def via_ask(q: dict, G) -> dict | None:
+    """What the question layer itself would put in FINAL for a gaps question. Used only to cross-check
+    the expected answers, which are computed without it: where the two disagree, one of them is wrong."""
+    text, fam = q["text"], q["family"]
+    name = re.search(r"'([^']+)'", text).group(1) if fam in ("nearest_in_family", "two_step") else None
+    if fam == "nearest_in_family":
+        return {"problem": None, "symbol": G.gaps(family=name, top=1)["targets"][0]["symbol"]}
+    if fam == "two_step":
+        deg = np.bincount(G.lt, minlength=len(G.t))
+        return {"problem": None, "count": sum(int(deg[G.ti[t["id"]]] > 0) for t in G.gaps(family=name, top=3)["targets"])}
+    sym = {"flips": r"^(\S+) is a Tdark", "nearest": r"Tdark target (\S+),", "shortfall": r"Tdark target (\S+) need", "rate": r"same band as (\S+),",
+           "ligand_cutoff": r"^(\S+) has no", "no_gap": r"What does (\S+) lack", "not_in_graph": r"does (\S+) still", "ambiguous": r"does (\S+) lack"}[fam]
+    a = G.gaps(re.search(sym, text).group(1))
+    if not a["found"]:
+        return {"problem": {"not in the graph": "not_in_graph", "ambiguous": "ambiguous"}.get(a["problem"], a["problem"])}
+    if fam == "no_gap":
+        return {"problem": None, "level": a["target"]["pharos_level"], "has_gap": bool(a["gaps"])}
+    if fam == "ligand_cutoff":
+        return {"problem": None, "cutoff": re.search(r"compound at (.+?) or better", a["gaps"][-1]["lacks"]).group(1)}
+    d = a["gaps"][0]
+    if fam == "flips":
+        return {"problem": None, "criteria_to_clear": d["criteria_to_clear"]}
+    if fam == "nearest":
+        return {"problem": None, "criterion": d["nearest_route"]}
+    if fam == "shortfall":
+        return {"problem": None, "more": re.match(r"(\d+) more", d["nearest_route"]).group(1)}
+    return {"problem": None, "percent": re.search(r", (\d+)% \(", d["how_often_this_closed"]).group(1)}
+
+
 def digest(qs: list[dict]) -> str:
     return hashlib.sha256(json.dumps(qs, sort_keys=True).encode()).hexdigest()
 
@@ -291,12 +442,40 @@ def grade(q: dict, final: dict | None) -> bool:
         elif k == "symbol":
             if str(final.get("symbol") or "").strip().casefold() != want.casefold():
                 return False
+        elif k == "criterion":
+            if _criterion(final.get("criterion")) != want:
+                return False
+        elif k == "cutoff":
+            if _cutoff(final.get("cutoff")) != _cutoff(want):
+                return False
+        elif k == "percent":
+            try:
+                if abs(float(str(final.get("percent")).replace("%", "").strip()) - want) > 1.0:
+                    return False
+            except (TypeError, ValueError):
+                return False
+        elif k == "has_gap":
+            if final.get("has_gap") not in (want, str(want).lower()):
+                return False
+        elif k == "level":
+            if str(final.get("level") or "").strip().casefold() != want.casefold():
+                return False
         elif want is None:
             if final.get(k) not in (None, "null", ""):
                 return False
         elif _int(final.get(k)) != want:
             return False
     return True
+
+
+def _criterion(v) -> str | None:
+    s = str(v or "").casefold()
+    hits = [k for k, word in (("pubmed_score", "pubmed"), ("generifs", "generif"), ("antibodies", "antibod")) if word in s]
+    return hits[0] if len(hits) == 1 else None
+
+
+def _cutoff(v) -> str:
+    return re.sub(r"\s+", "", str(v or "")).casefold().replace("µ", "u").replace("μ", "u").rstrip(".")
 
 
 def fabricated(q: dict, final: dict | None) -> bool:
@@ -323,6 +502,15 @@ def sql_db(bundle: Path) -> sqlite3.Connection:
     T["evidence"].rename(columns={"target": "target_id", "trait": "trait_id"}).to_sql("studies", con, index=False)
     T["lineage"].rename(columns={"a": "trait_a", "b": "trait_b"}).to_sql("trait_lineage", con, index=False)
     nb.rename(columns={"a": "target_a", "b": "target_b", "gap": "bases_apart"}).to_sql("neighbours", con, index=False)
+    if (bundle / "target_gaps.parquet").is_file():
+        g = pd.read_parquet(bundle / "target_gaps.parquet")
+        pd.DataFrame({"target_id": g.id, "level": g.level, "family": g.family, "lacks_compound": g.lacks_ligand, "potency_cutoff": g.cutoff,
+                      "pubmed_score": g.pubmed_score, "generifs": g.generifs, "antibodies": g.antibodies, "criteria_to_clear": g.flips.astype("float"),
+                      "route_cost": g.cost, "nearest_route": g.route, "proposal": g.proposal, "band": g.band}).to_sql("target_gaps", con, index=False)
+        b = json.loads((bundle / "target_gaps.json").read_text())["dark"]["bands"]
+        pd.DataFrame([{"band": k, "promoted_share": v["promoted"]["share"], "promoted_low": v["promoted"]["low"], "promoted_high": v["promoted"]["high"],
+                       "targets": v["promoted"]["n"]} for k, v in sorted(b.items())]).to_sql("gap_band_rates", con, index=False)
+        con.execute("CREATE INDEX i6 ON target_gaps(target_id)")
     for stmt in ("CREATE INDEX i1 ON links(target_id)", "CREATE INDEX i2 ON links(trait_id)", "CREATE INDEX i3 ON studies(target_id, trait_id)",
                  "CREATE INDEX i4 ON targets(symbol)", "CREATE INDEX i5 ON traits(name)", "PRAGMA query_only = ON"):
         con.execute(stmt)
@@ -425,10 +613,16 @@ def calls_dir() -> Path:
 async def run(bundle: Path, model: str, condition: str, base_url: str, key: str | None, max_cost: float, workers: int, max_tokens: int,
               only: set[str] | None = None, set_: str = "dev") -> list[dict]:
     qs = [q for q in load_questions(set_) if not only or q["id"] in only]
-    v2 = SETS[set_]["schema"] == 2
-    rules = RULES_V2 if v2 else RULES
+    schema = SETS[set_]["schema"]
+    v2 = schema >= 2
+    rules = RULES_BY_SCHEMA[schema]
     out_dir = calls_dir()
     out_dir.mkdir(parents=True, exist_ok=True)
+    if schema == 3:      # the gaps test has one cap over its two sets, whatever a single run is allowed
+        gone = sum(r.get("cost") or 0.0 for r in (json.loads(p.read_text()) for p in out_dir.glob("*.json")) if SETS.get(r.get("set", "dev"), {}).get("schema") == 3)
+        max_cost = min(max_cost, GAPS_CAP - gone)
+        if max_cost <= 0:
+            raise SystemExit(f"REFUSED: the gaps test has spent {gone:.2f} of its {GAPS_CAP:.2f} dollars")
     spent = 0.0
     sem = asyncio.Semaphore(workers)
 
@@ -465,7 +659,7 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                                                            "parameters": getattr(t, "input_schema", None) or getattr(t, "inputSchema")}} for t in listed]
                 # first round: the server's instructions and the format line only. Second round: the same
                 # rules text as every other condition, after the server's instructions.
-                system = (init.instructions or "") + "\n\n" + (RULES_V2 if v2 else RULES.split("\n")[-1])
+                system = (init.instructions or "") + "\n\n" + (rules if v2 else RULES.split("\n")[-1])
                 lock = asyncio.Lock()
 
                 async def call_tool(name: str, args: dict) -> str:
@@ -482,7 +676,7 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
         async def call_tool(name: str, args: dict) -> str:
             return run_sql(con, args.get("query", "")) if name == "sql" else f"unknown tool {name}; the only tool is sql"
 
-        system = rules + "\n\n" + SQL_SCHEMA
+        system = rules + "\n\n" + SQL_SCHEMA + (SQL_SCHEMA_GAPS if schema == 3 else "")
         fp = hashlib.sha256(json.dumps([system, SQL_TOOL], sort_keys=True).encode()).hexdigest()[:12]
         rows = await body(None, system, SQL_TOOL, call_tool, fp)
     else:
@@ -601,6 +795,20 @@ def _selftest() -> int:
     ck("second schema: a problem is right by itself, and answering a not-in-graph question is invention",
        grade(q2, {"problem": "not_in_graph", "year": None}) and not grade(q2, {"problem": None, "year": 2010})
        and fabricated(q2, {"problem": None, "year": 2010}) and not fabricated(q2, {"problem": "unknown"}))
+    q3 = {"family": "nearest", "gold": {"problem": None, "criterion": "generifs"}}
+    ck("a criterion is right however it is written, and naming two is wrong",
+       grade(q3, {"problem": None, "criterion": "GeneRIFs"}) and grade(q3, {"problem": None, "criterion": "generif count"})
+       and not grade(q3, {"problem": None, "criterion": "antibodies"}) and not grade(q3, {"problem": None, "criterion": "GeneRIFs or antibodies"}))
+    q3 = {"family": "ligand_cutoff", "gold": {"problem": None, "cutoff": "10 uM"}}
+    ck("a cutoff is right whatever its spacing or its micro sign, and another cutoff is wrong",
+       grade(q3, {"problem": None, "cutoff": "10uM"}) and grade(q3, {"problem": None, "cutoff": "10 µM"}) and not grade(q3, {"problem": None, "cutoff": "1 uM"}))
+    q3 = {"family": "rate", "gold": {"problem": None, "percent": 53.6}}
+    ck("a percentage is right within one point, as a number or as text",
+       grade(q3, {"problem": None, "percent": 54}) and grade(q3, {"problem": None, "percent": "53.6%"}) and not grade(q3, {"problem": None, "percent": 51})
+       and not grade(q3, {"problem": None, "percent": None}))
+    q3 = {"family": "no_gap", "gold": {"problem": None, "level": "Tclin", "has_gap": False}}
+    ck("a level and a yes or no are both needed", grade(q3, {"problem": None, "level": "tclin", "has_gap": "false"}) and not grade(q3, {"problem": None, "level": "Tclin", "has_gap": True})
+       and not grade(q3, {"problem": None, "level": "Tchem", "has_gap": False}))
     mk = lambda right, fab=0: {"n": 35, "correct": sum(right.values()), "fabricated": fab, "right": right}
     good = {f"q{i}": i < 30 for i in range(35)}
     poor = {f"q{i}": i < 20 for i in range(35)}
@@ -622,6 +830,9 @@ def _selftest() -> int:
         ask_selftest.tiny(Path(tmp))
         con = sql_db(Path(tmp))
         ck("the SQL tool answers a SELECT", json.loads(run_sql(con, "select count(*) as n from links"))["rows"] == [[11]])
+        ck("the SQL tool holds the gap table and the band rates where the bundle has them",
+           json.loads(run_sql(con, "select criteria_to_clear, nearest_route from target_gaps where level = 'Tdark'"))["rows"] == [[1.0, "pubmed_score"]]
+           and json.loads(run_sql(con, "select promoted_share, targets from gap_band_rates"))["rows"] == [[0.5, 40]])
         ck("the SQL tool refuses anything that is not one SELECT", run_sql(con, "delete from links").startswith("error") and run_sql(con, "select 1; select 2").startswith("error"))
         ck("a bad query returns its error as text", run_sql(con, "select nope from links").startswith("error"))
     return 0 if ok else 1
@@ -652,8 +863,15 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "questions":
         S = SETS[a.set_]
-        qs = make_questions(paths.bundle(a.release), S["seed"], S["schema"], S["fakes"], S["words"])
+        qs = (make_gap_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 3
+              else make_questions(paths.bundle(a.release), S["seed"], S["schema"], S["fakes"], S["words"]))
         d = {"release": a.release, "seed": S["seed"], "sha256": digest(qs), "questions": qs}
+        if S["schema"] == 3:
+            G = ask.Graph(paths.bundle(a.release))
+            differ = [q["id"] for q in qs if not grade(q, via_ask(q, G))]
+            if differ:
+                raise SystemExit(f"REFUSED: the expected answer and the question layer disagree on {differ}; one of them is wrong. Nothing was written.")
+            print(f"the question layer gives the expected answer to all {len(qs)}")
         fz = frozen_path(a.set_)
         if fz.is_file():
             old = json.loads(fz.read_text())
