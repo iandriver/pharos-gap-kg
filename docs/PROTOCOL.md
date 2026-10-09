@@ -408,6 +408,66 @@ see" requires. M4 against M3 says whether pruning the disease sources changes pr
 **What is not claimed in advance.** That any of the four beats the neighbours baseline. A model added
 after one of these has been scored on the test links is marked as such.
 
+## Target-level gaps
+
+Defined on 9 Oct 2026, before any target's level in Pharos 4.0.0 was joined to anything computed
+here. What had been seen of 4.0.0 before: the table of moves between levels (of the 5,331 Tdark
+targets in both releases, 759 are Tbio and 46 Tchem in 4.0.0), and the number of targets that gained a
+ligand, in all and by family (1,359 of 17,517; `findings/SNAPSHOTS.md`). No score had been computed
+against either.
+
+**What a gap is here.** Pharos grades each target by what is known about it. A target's gap is what
+it lacks for the next level, read from the release's own evidence, with the nearest way to close it.
+
+**The dark gap.** In the 3.19 database a target with no qualifying compound is Tdark if it meets at
+least two of three criteria (PubMed score under 5, at most 3 GeneRIFs, at most 50 antibodies) and has
+no experimental Gene Ontology function or process leaf annotation. Applied to the release's own
+tables, that rule gives the release's grade for 99.90% of its 17,793 Tdark and Tbio targets. For a
+Tdark target:
+
+- *flips needed*: the number of dark criteria it meets, less one (1 or 2);
+- *shortfall* on each dark criterion it meets: 5 minus the score, 4 minus the GeneRIFs, 51 minus the
+  antibodies, each divided by its threshold (5, 4, 51);
+- *route cost*: the sum of its smallest shortfalls, as many as the flips needed. The criteria in that
+  sum are the cheapest route, and they are what the gap proposes;
+- the other way out, an experimental GO annotation, has no distance.
+
+**The ligand gap.** A target with no activity row in the 3.19 ligand table lacks a compound at its
+family's potency cutoff (30 nM for kinases, 100 nM for GPCRs and nuclear receptors, 10 uM for ion
+channels, 1 uM for the rest). The release holds only activities that pass the cutoff, so how close a
+target has come is not in it, and this gap is typed without a distance.
+
+**Back-test.** Labels are from Pharos 4.0.0 (May 2026), targets matched by UniProt accession. A 3.19
+Tdark target is *promoted* if its 4.0.0 level is not Tdark. A ligand-gap target *gained* if its 4.0.0
+level is Tchem or Tclin. The 3.19 evidence does not all reach one date: PubMed scores are complete to
+2021 and GeneRIFs run to early 2024.
+
+**Scores**, all from the 3.19 database and none with a fitted parameter.
+
+- Dark gap: PubMed score; GeneRIF count; antibody count; recent attention (the PubMed score added in
+  2019, 2020 and 2021); flips needed (1 above 2); route cost (lower above higher).
+- Ligand gap: PubMed score; GeneRIF count; antibody count; recent attention; the number of
+  interaction partners, as in the context tables, that hold a ligand in 3.19.
+
+Measured by the area under the ROC curve and by average precision, ties broken at random under the
+five seeds, with 95% intervals from 2,000 resamples of targets, and paired differences the same way.
+
+**How it will be read.**
+
+- *The distance is worth showing* if route cost ranks promoted targets above the rest with an interval
+  that excludes a half. It is *better than how much a target is studied* only if its area exceeds the
+  best of the three single counts with the paired interval excluding zero. If it does not, a ranking
+  shown to a user is by that single count, and says so.
+- *The proposal.* For promoted targets that needed one flip and left through the counts, the
+  criterion the gap named is compared with the criteria 4.0.0 shows cleared, by its own evidence
+  columns. Naming one of two at random is right half the time. The proposal is right if the interval
+  for its share lies above a half.
+- *What a user is shown*: the share promoted in each band, by flips needed and by thirds of route cost
+  within each, with its interval and the releases it spans.
+- *A level can move because the pipeline moved.* 118 of 12,242 Tbio targets are Tdark in 4.0.0. How
+  the three counts compare between the releases is reported for targets that stayed Tdark, and
+  4.0.0's level is checked against its own evidence columns by the rule in its release notes.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
