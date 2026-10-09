@@ -513,7 +513,9 @@ def scored(release: str, cutoff: int, model: str) -> dict:
     full = baselines.evaluate(S["model"], M, years)
     out = {"model": model, "cutoff": cutoff, "setting": fin["setting"], "primary_by_seed": fin["primary_by_seed"], "results": res, "paired": paired,
            "secondary": {k: full[k] for k in ("trait_auc", "trait_recall_at_100", "target_ap", "target_auc", "overall_ap_by_seed")},
-           "by_year": {str(y): v for y, v in full["by_year"].items()}, "scores_sha256": fin["scores_sha256"]}
+           "by_year": {str(y): v for y, v in full["by_year"].items()}, "scores_sha256": fin["scores_sha256"],
+           # the one scoring this matrix came from: when it began, and the frozen setting it used
+           "scoring": {**json.loads((d / "final_started.json").read_text()), "primary_of_the_mean_matrix": fin["primary_of_the_mean_matrix"], "torch": fin["torch"], "device": fin["device"]}}
     (paths.DOCS_DATA / f"model_{model}_{cutoff}_scored.json").write_text(json.dumps(out, indent=1) + "\n")
     return out
 

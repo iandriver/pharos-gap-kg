@@ -69,12 +69,13 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   The cut is applied to the five sources: 7,248 of 324,882 rows are withheld, each a typed gap that
   carries the papers counted, the lift and the cut. 5,982 of them are CTD's, where the cut costs 46.5%
   of one-source pairs against a bar of 50%.
-- **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)) are defined and not yet scored on the
-  test links: four declared models, tuned inside the training years, each scored once
-  ([`docs/PROTOCOL.md`](docs/PROTOCOL.md), "Fitted models"). Two are tuned. On validation the best
-  LightGCN setting of 44 cannot be told from the neighbour baseline (+0.0054 [-0.0034, +0.0145]) and
-  matrix factorisation is worse than it. [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for the
-  two models that join the context on.
+- **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)). Four declared models, tuned inside
+  the training years and each scored on the test links once ([`docs/PROTOCOL.md`](docs/PROTOCOL.md),
+  "Fitted models"). The two on Pharos links alone are scored, and neither beats the neighbour baseline's
+  0.0969: matrix factorisation scores 0.0906 (-0.0063 [-0.0155, +0.0025]) and LightGCN 0.0825 (-0.0144
+  [-0.0232, -0.0064]). On links that lineage and position do not explain both are worse than it. Counted
+  by locus, matrix factorisation is ahead of it (0.0662 against 0.0512). The two models that join the
+  context on are not fitted yet; [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for them.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
