@@ -468,6 +468,46 @@ five seeds, with 95% intervals from 2,000 resamples of targets, and paired diffe
   the three counts compare between the releases is reported for targets that stayed Tdark, and
   4.0.0's level is checked against its own evidence columns by the rule in its release notes.
 
+## Usability of the gaps question
+
+Defined on 9 Oct 2026, before any model was put a question about gaps.
+
+**What is tested.** Whether a small model, given only what the server says, answers questions about
+what a target lacks (the eighth question, `gaps`), alone and together with the other questions, and
+whether it does so better than with SQL over the same tables.
+
+**Questions.** 35, written by code with a fixed seed, in ten kinds: how many criteria a Tdark target
+must clear (4); which criterion is nearest for a target one criterion short (4); how many more
+GeneRIFs or antibodies such a target needs (4); the share of its band that was promoted in the
+back-test, as a percentage (4); the potency cutoff a target with no compound lacks, across families
+(4); a Tclin target, which has no gap (3); a gene that is not in the graph (3); a symbol prefix that
+means several targets (3); the Tdark target of a family nearest to leaving (3); and, of the three
+nearest in a family, how many have any GWAS link, which needs two kinds of question (3). The expected
+answers are computed from the bundle's tables by code that does not call the question layer.
+
+**Conditions.** As in the first usability test: *typed* (the eight tools as the server serves them),
+*sql* (the same tables, with the gap table and the band rates added and described), and *none*. One
+rules text is given in every condition. It includes what a reader needs to answer at all: the levels,
+the three criteria and where each clears, what "criteria to clear" means, and the cutoffs by family.
+
+**Models, limits, grading.** The three hosted models of the first test, temperature 0, at most 8 tool
+calls a question, one run per cell, graded by code from the `FINAL` line. A percentage is right within
+one point. Spend on this test is capped at 0.75 dollars, which keeps all usability testing under the
+1.50 stated above.
+
+**Two sets.** A development set (seed 20261010) is run first, under *typed* and *sql*, to find faults
+in the test itself. Its results are reported and are not read against the verdicts. The evaluation set
+(seed 20261011, with other invented symbols and prefixes) is generated and frozen after the
+development round and before any model sees it. Whatever is changed between the rounds is recorded.
+
+**How it will be read.** On the evaluation set, by the two verdicts of the first test, unchanged. The
+question is usable by a small model if at least two of the three hosted models answer 28 or more of 35
+under *typed* and none answers a not-in-graph question as if the gene were known. Typed is better than
+SQL if the pooled paired interval excludes zero.
+
+**What it does not test.** A person. Nor whether these are the questions a user would ask: they were
+written by the author of the tool.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
