@@ -427,6 +427,16 @@ def freeze(release: str, cutoff: int, model: str) -> dict:
     return out
 
 
+def claim(d: Path, what: dict) -> None:
+    """Write down that this model's one scoring on the test links has begun, before a test link is read.
+    A second start is refused whether or not the first finished: a run that died may have read them."""
+    f = d / "final_started.json"
+    if f.is_file():
+        raise SystemExit(f"REFUSED: a scoring of this model on the test links was started ({f}) and the protocol scores a model once. "
+                         "If that run died, what it read is in its log; whether to score again is a decision to record, not a default.")
+    put(f, json.dumps(what, indent=1) + "\n")
+
+
 def final(release: str, cutoff: int, model: str) -> dict:
     import torch
     cp, d = chosen_path(cutoff, model), out_dir(cutoff, model)
@@ -443,6 +453,8 @@ def final(release: str, cutoff: int, model: str) -> dict:
         problems.append(f"{cp.name} is not the file that was frozen ({fz.name})")
     if problems:
         raise SystemExit(f"REFUSED: {model} is not ready to be scored on the test links: " + "; ".join(problems))
+    claim(d, {"model": model, "cutoff": cutoff, "started": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "chosen_sha256": graph.file_sha(cp),
+              "frozen_at": json.loads(fz.read_text())["commit"], "implementation": implementation()})
     M = baselines.matrices(split.load(cutoff))
     A, Y = M["train"], M["test"]
     dev = device()
@@ -534,6 +546,14 @@ def _selftest() -> int:
     rows_ = [{**x, "validation": 0.01 * (i == 30) + 0.001 * i, "passes": 10} for i, x in enumerate(g)]
     good = {"complete": True, "tried": rows_, "implementation": implementation(), "chosen": {**g[43], "passes": 10} if rows_[43]["validation"] > rows_[30]["validation"] else {**g[30], "passes": 10}}
     ck("a complete record of the declared settings, made by this code, is ready to be scored", preflight(good, "lightgcn") == [])
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp2:
+        claim(Path(tmp2), {"model": "m"})
+        try:
+            claim(Path(tmp2), {"model": "m"})
+            ck("a scoring on the test links is written down before it starts, and cannot be started twice", False)
+        except SystemExit:
+            ck("a scoring on the test links is written down before it starts, and cannot be started twice", json.loads((Path(tmp2) / "final_started.json").read_text()) == {"model": "m"})
     ck("a record of the first 24 settings cannot authorise a scoring after the settings were widened",
        any("declares 44" in x for x in preflight({**good, "tried": rows_[:24]}, "lightgcn")))
     ck("a record made by other code, an unfinished one, and one whose choice is not its best are each refused",
