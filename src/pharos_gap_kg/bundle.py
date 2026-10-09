@@ -55,10 +55,14 @@ def gap_files(release: str, out: Path) -> list[str]:
     t.insert(0, "id", "UniProtKB:" + t.uniprot)
     t = t.drop(columns="uniprot").rename(columns={"tdl": "level", "fam": "family"}).sort_values("id").reset_index(drop=True)
     t["flips"] = t.flips.astype("Int64")
+    exported = gap_edge_ids(release, t)
+    for kind in ("dark", "ligand"):
+        t[f"{kind}_gap_id"] = t.id.map(exported[kind]) if exported else None
     t.to_parquet(out / GAP_FILES[0], index=False)
     dg, lg = s["dark_gap"], s["ligand_gap"]
     m = re.fullmatch(r"pharos(\d)(\d+)", release)
     rates = {"earlier": f"Pharos {m.group(1)}.{m.group(2)}" if m else release, "later": "Pharos 4.0.0 (May 2026)", "summary_sha256": graph.file_sha(summary),
+             "graph": exported["graph"] if exported else None,
              "dark": {"targets": dg["with_a_gap"], "in_both_releases": dg["in_both_releases"], "promoted": dg["promoted"],
                       "bands": {b: {"promoted": v, "fell_in_the_mirror": dg["mirror"]["bands"][b]} for b, v in dg["bands"].items()},
                       "route_cost_auc": dg["scores"]["route cost"]["auc"], "best_single_count": dg["best_single_count"],
@@ -67,6 +71,29 @@ def gap_files(release: str, out: Path) -> list[str]:
              "ligand": {"candidates": lg["candidates"], "gained": lg["gained"]}}
     (out / GAP_FILES[1]).write_text(json.dumps(rates, indent=1) + "\n")
     return list(GAP_FILES)
+
+
+def gap_edge_ids(release: str, t: pd.DataFrame) -> dict | None:
+    """Where the gaps have been exported as graph edges (`python -m pharos_gap_kg.tgapgraph <release>`),
+    the id of each target's gap edge of each kind. The export and this table must hold the same gaps,
+    or an answer would cite an edge that says something else."""
+    from pharos_gap_kg import tgapgraph
+    d, record = paths.GRAPH / f"{release}_target_gaps", paths.DOCS_DATA / f"graph_{release}_target_gaps.json"
+    if not (d / "gaps.tsv").is_file() or not record.is_file():
+        return None
+    man = json.loads(record.read_text())
+    if graph.file_sha(d / "gaps.tsv") != man["files"]["gaps"]:
+        raise SystemExit(f"REFUSED: {d / 'gaps.tsv'} is not the file {record.name} describes; export the target-level gaps again")
+    g = pd.read_csv(d / "gaps.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=["id", "subject", f"{graph.PREFIX}:gap_type"])
+    out = {kind: dict(zip(x.subject, x.id)) for kind, name in (("dark", tgapgraph.DARK), ("ligand", tgapgraph.LIGAND))
+           for x in [g[g[f"{graph.PREFIX}:gap_type"] == name]]}
+    want = {"dark": set(t.id[t.flips.notna()]), "ligand": set(t.id[t.lacks_ligand == True])}        # noqa: E712
+    for kind in want:
+        if set(out[kind]) != want[kind]:
+            raise SystemExit(f"REFUSED: the exported graph holds {len(out[kind]):,} {kind} gaps and the table {len(want[kind]):,}, or they are for other targets; "
+                             f"run:  python -m pharos_gap_kg.tgapgraph {release}")
+    out["graph"] = {"directory": d.name, "gaps_sha256": man["files"]["gaps"], "gaps": man["gaps"], "conformance": man["conformance"]}
+    return out
 
 
 def add_gaps(release: str) -> dict:

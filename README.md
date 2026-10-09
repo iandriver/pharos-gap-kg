@@ -76,6 +76,7 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   target is studied (+0.066 [+0.055, +0.077]). Of targets one criterion short and close to it, 53.6%
   were promoted, against 5.9% that the pipeline alone moves at that distance. Where a target was
   promoted through the counts, the gap had named the criterion that cleared 85.3% of the time.
+  The gaps are in the graph as 23,236 gap edges, each with what would close it and what would retire it.
 - **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)). Four declared models, tuned inside
   the training years and each scored on the test links once ([`docs/PROTOCOL.md`](docs/PROTOCOL.md),
   "Fitted models"). The two on Pharos links alone are scored, and neither beats the neighbour baseline's
@@ -132,6 +133,8 @@ python -m pharos_gap_kg.applycut search pharos319            # the lift cut on t
 python -m pharos_gap_kg.applycut write pharos319
 python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
 python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
+python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
+python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
 python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc

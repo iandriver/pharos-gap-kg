@@ -42,9 +42,10 @@ def tiny(d: Path, gaps: bool = True) -> None:
         # DDD is Tdark, one criterion short; CCC is Tbio with no compound
         tg = pd.DataFrame([{"id": "UniProtKB:P4", "level": "Tdark", "family": "Kinase", "cutoff": "30 nM", "partners_with_ligand": 2, "lacks_ligand": True,
                             "pubmed_score": 4.2, "generifs": 3, "antibodies": 90.0, "flips": 1, "cost": 0.16, "route": "pubmed_score",
-                            "proposal": "PubMed score up by 0.8 (now 4.2, clears at 5)", "band": "1 flip, nearest third"},
+                            "proposal": "PubMed score up by 0.8 (now 4.2, clears at 5)", "band": "1 flip, nearest third", "dark_gap_id": "x:g1", "ligand_gap_id": "x:g2"},
                            {"id": "UniProtKB:P3", "level": "Tbio", "family": None, "cutoff": "1 uM", "partners_with_ligand": 0, "lacks_ligand": True,
-                            "pubmed_score": None, "generifs": None, "antibodies": None, "flips": None, "cost": None, "route": None, "proposal": None, "band": None}])
+                            "pubmed_score": None, "generifs": None, "antibodies": None, "flips": None, "cost": None, "route": None, "proposal": None, "band": None,
+                            "dark_gap_id": None, "ligand_gap_id": None}])
         tg["flips"] = tg.flips.astype("Int64")
         tg.to_parquet(d / "target_gaps.parquet", index=False)
         sh = lambda p, n: {"n": n, "share": p, "low": p - 0.05, "high": p + 0.05}
@@ -124,8 +125,10 @@ def run() -> int:
            and "PubMed score up by 0.8" in g["answer"] and "50% (45% to 55%)" in g["answer"] and "6% of 30 targets fell the other way" in g["answer"])
         ck("its ligand gap names the cutoff for its family and says the distance is not recorded", "30 nM" in g["gaps"][1]["lacks"] and "not recorded" in g["gaps"][1]["distance"]
            and "20 (10%)" in g["gaps"][1]["how_often_this_closed"])
+        ck("each gap cites the graph edge that states it, where one was exported", [x.get("graph_edge") for x in g["gaps"]] == ["x:g1", "x:g2"])
         g = G.gaps("CCC")
-        ck("a target with biology and no compound has only the ligand gap", [x["kind"] for x in g["gaps"]] == ["ligand"] and "1 uM" in g["answer"])
+        ck("a target with biology and no compound has only the ligand gap, and no edge is cited where none was exported",
+           [x["kind"] for x in g["gaps"]] == ["ligand"] and "1 uM" in g["answer"] and "graph_edge" not in g["gaps"][0])
         ck("every gap answer says what a gap is and is not", "not the same as learning its function" in g["reading"])
         ck("a target graded without a compound that the ligand table gives one is told the two disagree", G.gaps("BBB")["gaps"] == [] and "disagree" in G.gaps("BBB")["answer"])
         ck("an unknown name stops the question", G.gaps("QQQ")["found"] is False and G.gaps("QQQ")["problem"] == "not in the graph")

@@ -1,0 +1,27 @@
+{
+ "release": "pharos319",
+ "summary_sha256": "f327cb58088d99e2270a9448e5d0ffe7aa89d313f6baaa163119916f158e41d3",
+ "tables_sha256": {
+  "target_gaps_dark.parquet": "850013ec97fac8e95bff500669d32e03eea1ab89797c8043af5d6f6d31d2e9a2",
+  "target_gaps_ligand.parquet": "6150d89edfe83dec8e2226063cba4506f0f45bcdaebd0074b289f5eead9d6119"
+ },
+ "rows": 23236,
+ "edges": 0,
+ "gaps": 23236,
+ "merged": 0,
+ "nodes": 17739,
+ "targets": 17737,
+ "targets_with_both_gaps": 5499,
+ "gaps_by_type": {
+  "no_qualifying_compound": 17737,
+  "below_tbio_evidence": 5499
+ },
+ "gap_predicate": "pharosgapkg:evidence_missing_for",
+ "knowledge_source": "infores:pharos",
+ "conformance": "10 of 10 checks passed",
+ "files": {
+  "nodes": "41b02a85f75b0b2d0053f15af9d88364d4dd1c273d351b65c2194647175a17fc",
+  "edges": "d31e852292176bd7610d59f82d9a6aa2baedfc2c8b701b55cd6688da575d69b3",
+  "gaps": "97b6366cc3dba5d558f497145ea3682970d10316a9fc5f29ac9c361f1d3c9800"
+ }
+}

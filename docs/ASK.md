@@ -171,8 +171,9 @@ python -m pharos_gap_kg.ask gaps LSM14B
 > In the mirror band, 0% of 1,589 targets fell the other way, which is what the pipeline alone moves
 > at this distance.
 
-Every answer carries the same caution: a gap is what the grade lacks, and closing it is not the same
-as learning the protein's function. A target with biological evidence and no compound has a different
+Each gap in the answer names the graph edge that states it (`pharosgapkg:g46b1570d5751` for this one),
+in `data/graph/pharos319_target_gaps/gaps.tsv`. Every answer carries the same caution: a gap is what
+the grade lacks, and closing it is not the same as learning the protein's function. A target with biological evidence and no compound has a different
 gap, without a distance:
 
 ```bash

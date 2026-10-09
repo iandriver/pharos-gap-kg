@@ -34,6 +34,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.applycut --selftest
 	$(PY) -m pharos_gap_kg.fulltext --selftest
 	$(PY) -m pharos_gap_kg.tgaps --selftest
+	$(PY) -m pharos_gap_kg.tgapgraph --selftest
 
 test:
 	$(PY) -m pytest -q

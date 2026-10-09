@@ -110,3 +110,25 @@ first ligand about as well as anything read here.
 - A distance for the ligand gap needs compounds that fall short of the cutoff, which ChEMBL holds and
   Pharos does not.
 - The GO route, by which 334 targets left, has no distance here.
+
+## Added 9 Oct 2026: the gaps as graph edges
+
+`python -m pharos_gap_kg.tgapgraph pharos319` writes `data/graph/pharos319_target_gaps/` and
+`docs/data/graph_pharos319_target_gaps.json`. Each gap is an edge in the form `kgx-gaps` defines: from
+the target to the kind of gap, under the predicate `pharosgapkg:evidence_missing_for`, with Pharos as
+its knowledge source.
+
+| kind of gap | edges | what each carries |
+|---|---|---|
+| `below_tbio_evidence` | 5,499 | the criteria the target meets; what closes it (the nearest route, or a GO annotation); the criteria to clear, the route cost, the band, and the share of that band promoted in the back-test |
+| `no_qualifying_compound` | 17,737 | the potency cutoff the target lacks; what closes it (a compound at that cutoff); the share of such targets that gained one |
+
+- 23,236 gap edges over 17,737 targets, 5,499 of which have both kinds, and 17,739 nodes. No
+  association is asserted. The export passes all ten conformance checks.
+- Two fields of the format are left empty because they do not apply here: the detection floor and the
+  sample size required.
+- Every gap names the observation that would retire it unresolved: the target being withdrawn or
+  merged in a later release. That happened to 221 of the 20,412 targets of 3.19 by 4.0.0.
+- A gap's id is derived from the target and the kind of gap, so it does not move when the numbers on
+  the gap do. The `gaps` question cites the id of the edge that states each gap, and the bundle refuses
+  to be built if the graph and its table do not hold the same gaps.

@@ -63,3 +63,5 @@ def test_gaps(G):
     assert k["answer"] == "The 3 Tdark targets in the family Kinase nearest to leaving Tdark, of 5,499 with a gap. Nearest first."
     assert [(t["symbol"], t["nearest_route"].split(" (")[0]) for t in k["targets"]] == [("SBK2", "6 more antibodies"), ("NRK", "12 more antibodies"), ("RPS6KC1", "1 more GeneRIF")]
     assert "not the same as learning its function" in d["reading"]
+    if G.tg_rates.get("graph"):
+        assert d["gaps"][0]["graph_edge"] == "pharosgapkg:g46b1570d5751" and G.tg_rates["graph"]["gaps"] == 23236

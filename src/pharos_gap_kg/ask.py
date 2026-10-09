@@ -617,11 +617,16 @@ class Graph:
     def _gap_row(self, tid: str) -> dict | None:
         return self.tg.loc[tid].to_dict() if tid in self.tg.index else None
 
+    def _edge_of(self, g: dict, kind: str) -> dict:
+        """The graph edge that states this gap, where the gaps were exported before the bundle was built."""
+        i = g.get(f"{kind}_gap_id")
+        return {"graph_edge": i} if isinstance(i, str) and i else {}
+
     def _dark_gap(self, g: dict) -> dict:
         R = self.tg_rates
         b = R["dark"]["bands"][g["band"]]
         pr, fl = b["promoted"], b["fell_in_the_mirror"]
-        return {"lacks": "enough recorded evidence to leave Tdark", "criteria_to_clear": int(g["flips"]),
+        return {**self._edge_of(g, "dark"), "lacks": "enough recorded evidence to leave Tdark", "criteria_to_clear": int(g["flips"]),
                 "evidence_now": {"pubmed_score": round(float(g["pubmed_score"]), 3), "generifs": int(g["generifs"]), "antibodies": int(g["antibodies"])},
                 "nearest_route": g["proposal"], "other_route": "an experimental Gene Ontology function or process annotation, which has no distance",
                 "band": g["band"],
@@ -632,7 +637,7 @@ class Graph:
 
     def _ligand_gap(self, g: dict) -> dict:
         R = self.tg_rates["ligand"]
-        return {"lacks": f"a compound at {g['cutoff']} or better, the potency cutoff for its family",
+        return {**self._edge_of(g, "ligand"), "lacks": f"a compound at {g['cutoff']} or better, the potency cutoff for its family",
                 "distance": "not recorded: the release keeps only compounds that pass the cutoff",
                 "interaction_partners_with_a_ligand": int(g["partners_with_ligand"]),
                 "how_often_this_closed": (f"Of {R['candidates']:,} targets with no qualifying compound in the {self.tg_rates['earlier']} database, "
