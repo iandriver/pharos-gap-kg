@@ -121,6 +121,13 @@ def test_tgapgraph_selftest():
     assert tgapgraph._selftest() == 0
 
 
+def test_combine_selftest():
+    import pytest
+    pytest.importorskip("scipy")
+    from pharos_gap_kg import combine
+    assert combine._selftest() == 0
+
+
 def test_model_selftest():
     import pytest
     pytest.importorskip("torch")
