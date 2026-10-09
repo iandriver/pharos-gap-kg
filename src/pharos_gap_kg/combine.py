@@ -7,9 +7,14 @@
 
 A candidate's score is a weighted sum of terms, one or two for each score. The weights are fitted inside
 the training years: the scores are computed from the links of 2016 and earlier, and the weights
-maximise the probability of the links of 2017 and 2018 under a softmax over each trait's candidates,
-every trait counting once. Nothing is sampled and there is no seed. The form in which a score enters
-(F1, F2 or F3) is chosen by cross-validation over traits.
+maximise the primary measure on the links of 2017 and 2018. The weight on B3 is fixed at 1 and the
+rest start at 0, so the search starts at the neighbours baseline and is a search one weight at a time
+over a fixed grid, with nothing random. The form in which a score enters (F1, F2 or F3) is chosen by
+cross-validation over traits.
+
+The weights were first fitted by a likelihood (commit 86b57d5, `docs/data/combine_gene_trait_2018_first.json`).
+That fit put the combiner of B1 and B3 below B3 alone, and the protocol was amended before any of these
+was scored on the test links.
 
 All four were added after `mf` and `lightgcn` had been scored on the test links. C0 uses neither
 lineage nor position: it shows what fitting two weights does without them.
@@ -41,7 +46,10 @@ COMBINERS = {"combine": ("B1", "B3"), "combine_pos": ("B1", "B3", "B5"), "combin
 FULL, BASE = "combine_lin_pos", "combine"
 FORMS = ("F1", "F2", "F3")
 FOLDS = 5
-FITTING = ("raw_scores", "terms", "design", "combined", "loss", "fit_weights", "cross_validated")
+# the values a weight may take: 0, and plus or minus 2 to the power -6 up to 4
+GRID = (0.0,) + tuple(s * 2.0 ** k for k in range(-6, 5) for s in (1.0, -1.0))
+MAX_SWEEPS = 10
+FITTING = ("raw_scores", "terms", "design", "combined", "tie_lists", "mean_ap", "fit_weights", "cross_validated")
 VIEWS = ("full", "low", "neutral", "locus")
 # the comparisons between two scored models that the protocol declares: (model, the one it is read against)
 VERSUS = (("lightgcn_pos", "lightgcn"), ("lightgcn_lin_pos", "lightgcn_pos"), ("lightgcn_pos", "combine_pos"), ("lightgcn_lin_pos", "combine_lin_pos"))
@@ -102,40 +110,63 @@ def combined(S: dict[str, np.ndarray], A: np.ndarray, names: tuple[str, ...], fo
     return out.astype(np.float32)
 
 
-def loss(w: np.ndarray, X: np.ndarray, cand: np.ndarray, pos_mean: np.ndarray) -> tuple[float, np.ndarray]:
-    """Minus the mean log probability of a trait's positives under a softmax over its candidates, averaged
-    over traits, and its gradient. `pos_mean` is each trait's mean term vector over its positives."""
-    z = np.where(cand, X @ w, -np.inf)
-    m = z.max(axis=0)
-    e = np.exp(z - m)
-    s = e.sum(axis=0)
-    value = float((m + np.log(s) - pos_mean @ w).mean())
-    grad = (np.einsum("tu,tuk->uk", e / s, X) - pos_mean).mean(axis=0)
-    return value, grad
+def tie_lists(cand: np.ndarray, pos: np.ndarray) -> list[tuple[np.ndarray, np.ndarray, np.ndarray]]:
+    """For each trait: its candidates, which of them are positives, and the random numbers that break
+    ties, drawn as `score.by_axis` draws them under seed 0."""
+    rng = np.random.default_rng(0)
+    out = []
+    for j in range(cand.shape[1]):
+        idx = np.flatnonzero(cand[:, j])
+        out.append((idx, pos[idx, j], rng.random(len(idx))))
+    return out
 
 
-def fit_weights(X: np.ndarray, cand: np.ndarray, pos: np.ndarray) -> tuple[np.ndarray, float]:
-    """The weights that minimise `loss`, from zero. The loss is convex, so there is one answer."""
-    from scipy.optimize import minimize
-    n = pos.sum(axis=0)
-    if (n == 0).any() or (pos & ~cand).any():
+def mean_ap(Z: np.ndarray, lists: list[tuple[np.ndarray, np.ndarray, np.ndarray]]) -> float:
+    """The primary measure: the mean over traits of average precision among the trait's candidates."""
+    total = 0.0
+    for j, (idx, y, r) in enumerate(lists):
+        ranked = y[np.lexsort((r, -Z[idx, j]))]
+        at = np.flatnonzero(ranked)
+        total += float((np.cumsum(ranked)[at] / (at + 1)).mean())
+    return total / len(lists)
+
+
+def fit_weights(X: np.ndarray, cand: np.ndarray, pos: np.ndarray, fixed: int) -> tuple[np.ndarray, float]:
+    """The weights that maximise `mean_ap`, found one weight at a time over GRID. The term `fixed` keeps
+    weight 1 and the others start at 0, so the search starts at that term alone and never ends below it.
+    A weight keeps its value unless another value scores strictly higher."""
+    if (pos.sum(axis=0) == 0).any() or (pos & ~cand).any():
         raise SystemExit("REFUSED: a trait has no positive, or a positive is not a candidate")
-    pos_mean = np.einsum("tu,tuk->uk", pos.astype(np.float64), X) / n[:, None]
-    r = minimize(loss, np.zeros(X.shape[2]), args=(X, cand, pos_mean), jac=True, method="L-BFGS-B", options={"maxiter": 5000, "ftol": 1e-14, "gtol": 1e-9})
-    slope = float(np.abs(loss(r.x, X, cand, pos_mean)[1]).max())
-    if slope > 1e-5:
-        raise SystemExit(f"REFUSED: the weights did not settle (largest slope {slope:.2e}): {r.message}")
-    return r.x, float(r.fun)
+    lists = tie_lists(cand, pos)
+    w = np.zeros(X.shape[2])
+    w[fixed] = 1.0
+    best = mean_ap(X @ w, lists)
+    for _ in range(MAX_SWEEPS):
+        changed = False
+        for i in range(len(w)):
+            if i == fixed:
+                continue
+            rest = X @ np.where(np.arange(len(w)) == i, 0.0, w)
+            for g in GRID:
+                if g == w[i]:
+                    continue
+                v = mean_ap(rest + g * X[..., i], lists)
+                if v > best:
+                    best, changed = v, True
+                    w[i] = g
+        if not changed:
+            break
+    return w, best
 
 
-def cross_validated(X: np.ndarray, cand: np.ndarray, pos: np.ndarray, folds: int = FOLDS) -> tuple[np.ndarray, list[list[int]]]:
+def cross_validated(X: np.ndarray, cand: np.ndarray, pos: np.ndarray, fixed: int, folds: int = FOLDS) -> tuple[np.ndarray, list[list[int]]]:
     """Each trait scored by weights fitted on the other folds: the out-of-fold score matrix, and the folds."""
     order = np.random.default_rng(0).permutation(X.shape[1])
     parts = [np.sort(p) for p in np.array_split(order, folds)]
     Z = np.zeros(X.shape[:2])
     for held in parts:
         rest = np.setdiff1d(np.arange(X.shape[1]), held)
-        w, _ = fit_weights(X[:, rest], cand[:, rest], pos[:, rest])
+        w, _ = fit_weights(X[:, rest], cand[:, rest], pos[:, rest], fixed)
         Z[:, held] = X[:, held] @ w
     return Z, [p.tolist() for p in parts]
 
@@ -187,17 +218,19 @@ def fit_stage(release: str, cutoff: int) -> dict:
     by_form, folds = {}, None
     for f in FORMS:
         t0 = time.time()
-        Z, folds = cross_validated(design(S, A, COMBINERS[FULL], f, cols), cand, pos)
+        Z, folds = cross_validated(design(S, A, COMBINERS[FULL], f, cols), cand, pos, COMBINERS[FULL].index("B3"))
         by_form[f] = ap(Z)
         print(f"  {FULL} under {f}: cross-validated {by_form[f].mean():.4f}  ({time.time() - t0:.0f} s)", flush=True)
     form = max(FORMS, key=lambda f: float(by_form[f].mean()))          # the first of equals, so the earlier form on a tie
     cv, out = {}, {}
     for name, names in COMBINERS.items():
         X = design(S, A, names, form, cols)
-        cv[name] = by_form[form] if name == FULL else ap(cross_validated(X, cand, pos)[0])
-        w, value = fit_weights(X, cand, pos)
-        out[name] = {"scores": list(names), "terms": terms(names, form), "weights": [float(x) for x in w], "loss": value,
-                     "cross_validated": float(cv[name].mean()), "fitted_on_all_traits": float(ap(X @ w).mean())}
+        cv[name] = by_form[form] if name == FULL else ap(cross_validated(X, cand, pos, names.index("B3"))[0])
+        w, value = fit_weights(X, cand, pos, names.index("B3"))
+        if abs(value - float(ap(X @ w).mean())) > 1e-12:
+            raise SystemExit("REFUSED: the measure the weights were fitted to is not the primary measure as `score` computes it")
+        out[name] = {"scores": list(names), "terms": terms(names, form), "weights": [float(x) for x in w],
+                     "cross_validated": float(cv[name].mean()), "fitted_on_all_traits": value}
     for name in COMBINERS:
         out[name]["cross_validated_minus_B3"] = against(cv[name], base["B3"])
         if name != BASE:
@@ -208,6 +241,7 @@ def fit_stage(release: str, cutoff: int) -> dict:
     rec = {"release": release, "cutoff": cutoff, "inner_cutoff": model.INNER, "inner_split": parts, "reference_files": used, "coverage_on_validation": cover,
            "baselines_on_validation": {k: float(v.mean()) for k, v in base.items()}, "folds": FOLDS, "fold_traits": folds,
            "forms": {f: {"cross_validated": float(by_form[f].mean()), "terms": terms(COMBINERS[FULL], f)} for f in FORMS}, "form": form,
+           "search": {"fixed": "the weight on B3's own term is 1", "grid": list(GRID), "max_sweeps": MAX_SWEEPS, "start": "every other weight 0"},
            "combiners": out, "implementation": implementation(), "numpy": np.__version__, "scipy": scipy.__version__,
            "read_as": "cross-validated: each trait is scored by weights fitted without it. The form was chosen on these same scores, so the chosen form's figure flatters it a little."}
     model.put(record_path(cutoff), json.dumps(rec, indent=1) + "\n")
@@ -221,6 +255,9 @@ def preflight(rec: dict) -> list[str]:
         out.append("the record was made by other fitting code than this")
     if set(rec.get("combiners", {})) != set(COMBINERS) or any(tuple(c["scores"]) != COMBINERS[k] for k, c in rec.get("combiners", {}).items() if k in COMBINERS):
         out.append("the record does not hold the four declared combiners")
+    if any(c.get("weights", [None] * 9)[COMBINERS[k].index("B3")] != 1.0 or not set(c.get("weights", [9])) <= set(GRID)
+           for k, c in rec.get("combiners", {}).items() if k in COMBINERS):
+        out.append("a weight is not a value of the grid, or the weight on B3 is not 1")
     if rec.get("form") not in FORMS or set(rec.get("forms", {})) != set(FORMS):
         out.append("the record does not say how each declared form scored")
     elif rec["form"] != max(FORMS, key=lambda f: rec["forms"][f]["cross_validated"]):
@@ -382,40 +419,39 @@ def _selftest() -> int:
 
     here = Path(__file__).read_text()
     ck("the fitting code has one identity, and it changes when a fitting function changes and not when another does",
-       implementation() == implementation(here) and implementation(here.replace("np.exp(z - m)", "np.exp(m - z)")) != implementation()
+       implementation() == implementation(here) and implementation(here.replace("if v > best:", "if v >= best:")) != implementation()
        and implementation(here.replace("def record_path(", "def record_path_(")) == implementation())
     ck("C0 uses neither input, and each other combiner adds lineage, position or both to it",
        COMBINERS[BASE] == ("B1", "B3") and all(set(COMBINERS[BASE]) < set(v) for k, v in COMBINERS.items() if k != BASE) and set(COMBINERS[FULL]) == {"B1", "B3", "B4", "B5"})
     ck("the third form has two terms for each score and the others one", [len(terms(COMBINERS[FULL], f)) for f in FORMS] == [4, 4, 8])
 
-    # 40 traits, 300 targets: positives drawn from a softmax with known weights on two terms; a third term is noise
+    ck("the grid holds zero and both signs of every power of two from -6 to 4", len(GRID) == 23 and GRID[0] == 0.0 and min(GRID) == -16.0 and 2.0 ** -6 in GRID and 1.0 in GRID)
+
+    # 40 traits, 300 targets: positives are the top of a sum of two terms; a third term is noise
     rng = np.random.default_rng(1)
     T, U = 300, 40
     X = rng.normal(size=(T, U, 3))
-    true = np.array([1.5, -0.8, 0.0])
     cand = rng.random((T, U)) > 0.1
-    z = np.where(cand, X @ true, -np.inf)
-    p = np.exp(z - z.max(axis=0))
-    p /= p.sum(axis=0)
-    pos = np.zeros((T, U), bool)
-    for u in range(U):
-        pos[rng.choice(T, size=60, replace=True, p=p[:, u]), u] = True
-    w, value = fit_weights(X, cand, pos)
-    pm = np.einsum("tu,tuk->uk", pos.astype(float), X) / pos.sum(axis=0)[:, None]
-    num = np.array([(loss(w + h, X, cand, pm)[0] - loss(w - h, X, cand, pm)[0]) / 2e-6 for h in np.eye(3) * 1e-6])
-    g0 = loss(np.array([0.3, 0.1, -0.2]), X, cand, pm)[1]
-    n0 = np.array([(loss(np.array([0.3, 0.1, -0.2]) + h, X, cand, pm)[0] - loss(np.array([0.3, 0.1, -0.2]) - h, X, cand, pm)[0]) / 2e-6 for h in np.eye(3) * 1e-6])
-    ck("the gradient is the slope of the loss", np.allclose(g0, n0, atol=1e-6) and np.abs(num).max() < 1e-5)
-    ck(f"the weights that generated the positives are recovered in sign and order, and noise gets little ({np.round(w, 2).tolist()})",
-       w[0] > 0.8 and w[1] < -0.4 and abs(w[2]) < 0.25 and value < loss(np.zeros(3), X, cand, pm)[0])
-    w2, _ = fit_weights(X * 1.0, cand.copy(), pos.copy())
+    z = np.where(cand, X[..., 0] + 2.0 * X[..., 1] + rng.normal(scale=0.5, size=(T, U)), -np.inf)
+    pos = z >= np.sort(z, axis=0)[-30]
+    lists = tie_lists(cand, pos)
+    flat = np.round(X[..., 0])          # many ties, so the tie-breaking is exercised
+    ck("the measure the weights are fitted to is the primary measure as `score` computes it, ties and all",
+       abs(mean_ap(flat, lists) - float(score.by_axis(flat, ~cand, pos, axis=1, seeds=(0,))["ap"].mean())) < 1e-12)
+    w, value = fit_weights(X, cand, pos, 0)
+    alone = mean_ap(X[..., 0], lists)
+    ck(f"the search starts at the fixed term alone and ends above it ({alone:.3f} -> {value:.3f}, weights {w.tolist()})", w[0] == 1.0 and value > alone + 0.1 and abs(value - mean_ap(X @ w, lists)) < 1e-12)
+    ck("the term that helps gets its weight, the noise term gets little, and every weight is a value of the grid", w[1] in (1.0, 2.0, 4.0) and abs(w[2]) <= 0.25 and set(w.tolist()) <= set(GRID))
+    w2, _ = fit_weights(X.copy(), cand.copy(), pos.copy(), 0)
     ck("fitting twice gives the same weights", np.array_equal(w, w2))
-    Z, folds = cross_validated(X, cand, pos)
+    wn, vn = fit_weights(X[..., [0, 2]], cand, pos, 0)
+    ck("a term that does not help cannot pull the fit below the fixed term alone", vn >= alone)
+    Z, folds = cross_validated(X, cand, pos, 0)
     ck("every trait is held out once, and is scored by weights fitted without it",
        sorted(i for f in folds for i in f) == list(range(U)) and len(folds) == FOLDS
-       and np.allclose(Z[:, folds[0]], X[:, folds[0]] @ fit_weights(*(a[:, np.setdiff1d(np.arange(U), folds[0])] for a in (X, cand, pos)))[0]))
+       and np.allclose(Z[:, folds[0]], X[:, folds[0]] @ fit_weights(*(a[:, np.setdiff1d(np.arange(U), folds[0])] for a in (X, cand, pos)), 0)[0]))
     try:
-        fit_weights(X, cand, pos & False)
+        fit_weights(X, cand, pos & False, 0)
         ck("a trait with no positive is refused", False)
     except SystemExit:
         ck("a trait with no positive is refused", True)
@@ -445,7 +481,7 @@ def _selftest() -> int:
     ck("with one score the combiner ranks as that score does", all((np.argsort(-one[:, j], kind="stable") == np.argsort(-S["B3"][:, j], kind="stable")).all() for j in range(3)))
 
     good = {"implementation": implementation(), "form": "F3", "forms": {"F1": {"cross_validated": 0.1}, "F2": {"cross_validated": 0.05}, "F3": {"cross_validated": 0.2}},
-            "combiners": {k: {"scores": list(v)} for k, v in COMBINERS.items()}}
+            "combiners": {k: {"scores": list(v), "weights": [0.25, 1.0] + [0.0] * (2 * len(v) - 2)} for k, v in COMBINERS.items()}}
     ref = reference_files
     try:
         globals()["reference_files"] = lambda: {"x": 1}
@@ -455,6 +491,8 @@ def _selftest() -> int:
            len(preflight({**good, "implementation": "0" * 16})) == 1 and preflight({**good, "form": "F1"}) == ["the form is not the best of the three by cross-validation"]
            and len(preflight({**good, "reference_files": {"x": 2}})) == 1)
         ck("a record that lacks a combiner is refused", len(preflight({**good, "combiners": {k: v for k, v in good["combiners"].items() if k != BASE}})) == 1)
+        off = {**good, "combiners": {**good["combiners"], BASE: {"scores": ["B1", "B3"], "weights": [0.3, 1.0, 0.0, 0.0]}}}
+        ck("a weight that is not a value of the grid is refused", preflight(off) == ["a weight is not a value of the grid, or the weight on B3 is not 1"])
     finally:
         globals()["reference_files"] = ref
     ck("every declared comparison is between a graph model and the model it is read against", all(a in model.MODELS and (b in model.MODELS or b in COMBINERS) for a, b in VERSUS))
