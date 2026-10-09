@@ -4,6 +4,11 @@
     M2 lightgcn             the training links as a graph, vectors smoothed over one to three steps
     M3 lightgcn_ctx         M2 with the undated context joined on
     M4 lightgcn_ctx_pruned  M3 without the disease pairs the pruning rules withheld
+    M5 lightgcn_pos         M2 with an edge between two targets that are neighbours on a chromosome
+    M6 lightgcn_lin_pos     M5 with an edge between two traits in one lineage
+
+M5 and M6 were added after M1 and M2 had been scored on the test links (docs/PROTOCOL.md, "Lineage and
+position as inputs").
 
 Each scores a (target, trait) pair by the dot product of two learned vectors and is trained to rank a
 linked target above one drawn at random for the same trait. Tuning never sees a test link: the
@@ -49,7 +54,9 @@ GRID = {"dim": (64, 128), "layers": (1, 2, 3), "lr": (0.001, 0.005), "l2": (1e-6
 ADDED = ((256, 3), (256, 4), (256, 5), (128, 4), (128, 5))
 BATCH, MAX_PASSES, EVERY, PATIENCE = 4096, 300, 10, 50
 MODELS = {"mf": {"graph": False, "context": None}, "lightgcn": {"graph": True, "context": None},
-          "lightgcn_ctx": {"graph": True, "context": "disease_links"}, "lightgcn_ctx_pruned": {"graph": True, "context": "disease_links_pruned"}}
+          "lightgcn_ctx": {"graph": True, "context": "disease_links"}, "lightgcn_ctx_pruned": {"graph": True, "context": "disease_links_pruned"},
+          "lightgcn_pos": {"graph": True, "context": None, "structure": ("position",)},
+          "lightgcn_lin_pos": {"graph": True, "context": None, "structure": ("position", "lineage")}}
 MEMBERSHIPS = ("pathways", "go_terms", "compounds")
 FITTING = ("link_edges", "context_edges", "adjacency", "build", "draw_negatives", "fit", "primary")
 
@@ -127,6 +134,38 @@ def context_edges(tables: dict[str, pd.DataFrame], targets: list[str], traits: l
             counts["disease_edges_onto_a_trait_node"] = int(same.sum())
         n += len(ids)
     return np.concatenate(edges).astype(np.int64), n, counts
+
+
+def structure_edges(pairs: np.ndarray | None, R: np.ndarray | None, T: int) -> tuple[np.ndarray, dict]:
+    """Edges between two target nodes that are neighbours (`pairs`, target indices) and between two trait
+    nodes in one lineage (`R`, a symmetric trait by trait matrix). Each is listed once. No node is added."""
+    edges, counts = [np.zeros((0, 2), np.int64)], {}
+    if pairs is not None:
+        e = pairs[pairs[:, 0] < pairs[:, 1]]
+        edges.append(e)
+        counts["neighbour_edges"] = int(len(e))
+    if R is not None:
+        a, b = np.nonzero(np.triu(R, 1))
+        edges.append(np.stack([a + T, b + T], axis=1))
+        counts["lineage_edges"] = int(len(a))
+    return np.concatenate(edges).astype(np.int64), counts
+
+
+def load_structure(release: str, targets: list[str], traits: list[str], which: tuple[str, ...]) -> tuple[np.ndarray | None, np.ndarray | None, dict]:
+    """The neighbour pairs and the lineage matrix of the Controls, for these targets and traits, and the
+    digests of the two reference files they are read from."""
+    from pharos_gap_kg import controls, ontology, position, registry
+    side = lambda k: json.loads(registry.SOURCES[k].path.with_name(registry.SOURCES[k].filename + ".lineage.json").read_text())["sha256"]
+    pairs = R = None
+    used = {}
+    if "position" in which:
+        tg = position.target_genes(release, position.genes(registry.require("ensembl_gtf_113")))
+        pairs = position.neighbour_pairs(tg, {t: i for i, t in enumerate(targets)})
+        used.update(gtf_sha256=side("ensembl_gtf_113"), window=position.WINDOW)
+    if "lineage" in which:
+        R = controls.lineage_matrix(traits, ontology.read(registry.require("efo_obo")))
+        used.update(efo_sha256=side("efo_obo"))
+    return pairs, R, used
 
 
 def load_context(release: str, which: str) -> dict[str, pd.DataFrame]:
@@ -244,6 +283,11 @@ def graph_for(release: str, model: str, M: dict) -> tuple[np.ndarray | None, int
     if not MODELS[model]["graph"]:
         return None, None, {}
     e = link_edges(A)
+    if MODELS[model].get("structure"):
+        pairs, R, used = load_structure(release, M["targets"], M["traits"], MODELS[model]["structure"])
+        se, counts = structure_edges(pairs, R, A.shape[0])
+        edges, n = np.concatenate([e, se]), A.shape[0] + A.shape[1]
+        return edges, n, {"link_edges": int(len(e)), **counts, **used, "nodes": n, "edges_sha256": edges_digest(edges, n)}
     if MODELS[model]["context"] is None:
         return e, A.shape[0] + A.shape[1], {"link_edges": int(len(e))}
     ce, n, counts = context_edges(load_context(release, MODELS[model]["context"]), M["targets"], M["traits"])
@@ -538,6 +582,14 @@ def _selftest() -> int:
     ck("the added settings follow the first, are new, and are the same for the three graph models",
        len(g) == 44 and g[:24] == [x for x in g if x["dim"] <= 128 and x["layers"] <= 3] and {(x["dim"], x["layers"]) for x in g[24:]} == set(ADDED)
        and len({json.dumps(x, sort_keys=True) for x in g}) == 44 and g == settings("lightgcn_ctx") == settings("lightgcn_ctx_pruned"))
+    ck("the two models with neighbour and lineage edges are tried on the same settings", g == settings("lightgcn_pos") == settings("lightgcn_lin_pos"))
+    Rl = np.zeros((3, 3), bool)
+    Rl[0, 2] = Rl[2, 0] = True
+    se, sc = structure_edges(np.array([[0, 1], [1, 0], [1, 3], [3, 1]]), Rl, 4)
+    ck("a neighbour pair is one edge between two target nodes, and a lineage is one edge between two trait nodes",
+       sorted(map(tuple, se.tolist())) == [(0, 1), (1, 3), (4, 6)] and sc == {"neighbour_edges": 2, "lineage_edges": 1})
+    se2, sc2 = structure_edges(np.array([[0, 1], [1, 0]]), None, 4)
+    ck("position alone adds no edge between traits", sorted(map(tuple, se2.tolist())) == [(0, 1)] and sc2 == {"neighbour_edges": 1})
     here = Path(__file__).read_text()
     ck("the fitting code has one identity, and it changes when a fitting function changes and not when another does",
        implementation() == implementation(here) and implementation(here.replace("softplus(-gap)", "softplus(gap)")) != implementation()
