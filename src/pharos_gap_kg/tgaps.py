@@ -89,7 +89,9 @@ def rule_check(x: pd.DataFrame) -> dict:
 def need(criterion: str, value: float) -> str:
     """What clearing one criterion takes, in the units a person would act on."""
     if criterion == "pubmed_score":
-        return f"PubMed score up by {CLEARS[criterion] - value:.1f} (now {value:.1f}, clears at 5)"
+        gap = CLEARS[criterion] - value
+        places = 1 if gap >= 0.1 else 3           # a score just under the line is not shown as being on it
+        return f"PubMed score up by {gap:.{places}f} (now {value:.{places}f}, clears at 5)"
     n = int(round(CLEARS[criterion] - value))
     if criterion == "generifs":
         return f"{n} more GeneRIF{'s' if n != 1 else ''} (now {int(value)}, clears at 4)"
@@ -124,6 +126,20 @@ def bands(g: pd.DataFrame) -> pd.Series:
         third = np.minimum((sub.cost.rank(method="first") - 1) * 3 // len(sub), 2).astype(int)
         out.loc[sub.index] = [f"{k} flip{'s' if k != 1 else ''}, {name[t]}" for t in third]
     return out
+
+
+def mirror_gaps(x: pd.DataFrame) -> pd.DataFrame:
+    """The same distance read the other way, for Tbio targets that are bio by their counts alone (no GO
+    annotation): how many criteria would have to turn dark for the target to fall (1 or 2), and how far
+    above its threshold each nearest one is. If a level moved only as knowledge grew, none would fall;
+    the share that does is what the pipeline alone moves at that distance."""
+    t = x[(x.tdl == "Tbio") & ~x.go]
+    met = dark(t)
+    t, met = t[met.sum(axis=1) <= 1], met[met.sum(axis=1) <= 1]
+    over = pd.DataFrame({c: (t[c] - CLEARS[c]) / CLEARS[c] for c in CRITERIA}, index=t.index).where(~met)
+    flips = (2 - met.sum(axis=1)).astype(int)
+    vals = np.sort(over.fillna(np.inf).to_numpy(), axis=1)
+    return t.assign(flips=flips, cost=[float(v[:k].sum()) for v, k in zip(vals, flips)])
 
 
 # ---- what Pharos 4.0.0 shows -------------------------------------------------------------------------------
@@ -236,6 +252,14 @@ def run(release: str) -> dict:
     d["promoted_how"] = {"gained_a_go_term": int((j.promoted & (j.go_terms.fillna(0) > 0)).sum()), "gained_a_ligand_or_drug": int((j.promoted & ((j.ligands.fillna(0) > 0) | (j.drugs.fillna(0) > 0))).sum()),
                          **{f"cleared_{c}": int((j.promoted & j[f"was_{c}"] & (j[f"{c}_new"] >= CLEARS[c])).sum()) for c in CRITERIA}}
 
+    # Added after the first run, as description: the mirror image. Tbio targets that are bio by their
+    # counts alone, banded by how far above the thresholds they sit, and the share of each band that
+    # is Tdark in the later release.
+    mg = mirror_gaps(x)
+    mj = mg.assign(band=bands(mg)).merge(n[["uniprot", "tdl_new"]], on="uniprot")
+    d["mirror"] = {"bio_by_counts_alone": int(len(mg)), "in_both_releases": int(len(mj)), "fell_to_dark": int((mj.tdl_new == "Tdark").sum()),
+                   "bands": {b: prune2.share((v.tdl_new == "Tdark").to_numpy()) for b, v in sorted(mj.groupby("band"))}}
+
     cand = x[~x.tdl.isin(levels.HAS_LIGAND) & ~x.has_rows].merge(n[["uniprot", "tdl_new"]], on="uniprot")
     gained = cand.tdl_new.isin(levels.HAS_LIGAND).to_numpy()
     stored = json.loads((paths.DOCS_DATA / f"levels_{release}_pharos400.json").read_text())["ligand_label"]
@@ -289,7 +313,13 @@ def _selftest() -> int:
     ck("two flips take the two nearest criteria and add their shortfalls", g.route["B"] == "pubmed_score|antibodies" and abs(g.cost["B"] - (4 / 5 + 41 / 51)) < 1e-12)
     ck("a criterion already clear has no shortfall", np.isnan(g.short_antibodies["A"]) and abs(g.short_generifs["A"] - 0.25) < 1e-12)
     ck("the proposal says what clearing the route takes", g.proposal["A"] == "PubMed score up by 1.0 (now 4.0, clears at 5)" and g.proposal["C"] == "1 more antibody (now 50, clears at 51)"
-       and need("generifs", 0) == "4 more GeneRIFs (now 0, clears at 4)")
+       and need("generifs", 0) == "4 more GeneRIFs (now 0, clears at 4)" and need("pubmed_score", 4.9958) == "PubMed score up by 0.004 (now 4.996, clears at 5)")
+    xm = pd.DataFrame({"tdl": ["Tbio", "Tbio", "Tbio", "Tdark", "Tbio"], "go": [False, False, True, False, False],
+                       "pubmed_score": [10.0, 4.0, 1.0, 1.0, 6.0], "generifs": [8, 5, 0, 0, 0], "antibodies": [102, 51, 0, 0, 0]})
+    mg = mirror_gaps(xm)
+    # the first is clear on all three and falls on its two nearest (score 5 over 5, GeneRIFs 4 over 4); the second is dark on
+    # the score and falls when its nearest clear criterion (antibodies, 0 over) turns; the last is dark on two already, so the rule calls it dark
+    ck("the mirror gives bio-by-counts targets the flips and distance it would take to fall", mg.index.tolist() == [0, 1] and mg.flips.tolist() == [2, 1] and abs(mg.cost[0] - 2.0) < 1e-12 and mg.cost[1] == 0.0)
     big = pd.DataFrame({"flips": [1] * 6 + [2] * 3, "cost": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1.0, 1.5, 2.0]})
     ck("bands are thirds of cost within each number of flips", bands(big).tolist() == ["1 flip, nearest third"] * 2 + ["1 flip, middle third"] * 2 + ["1 flip, farthest third"] * 2
        + ["2 flips, nearest third", "2 flips, middle third", "2 flips, farthest third"])
@@ -329,6 +359,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"    route cost minus {d['best_single_count']}: {p['difference']:+.3f} [{p['low']:+.3f}, {p['high']:+.3f}]")
     for b, s in d["bands"].items():
         print(f"    {b:26s} promoted {s['share']:.1%} [{s['low']:.1%}, {s['high']:.1%}] of {s['n']:,}")
+    mr = d["mirror"]
+    print(f"    mirror: {mr['bio_by_counts_alone']:,} Tbio targets are bio by counts alone; {mr['fell_to_dark']:,} of {mr['in_both_releases']:,} are Tdark later")
+    for b_, s_ in mr["bands"].items():
+        print(f"      {b_:26s} fell {s_['share']:.1%} [{s_['low']:.1%}, {s_['high']:.1%}] of {s_['n']:,}")
     q = d["proposal"]
     print(f"    proposal: {q['named_criterion_cleared']['share']:.1%} of {q['left_through_the_counts']:,} named the criterion that cleared; at random {q['by_naming_at_random']:.1%}; "
           f"above random {q['above_random']['difference']:+.3f} [{q['above_random']['low']:+.3f}, {q['above_random']['high']:+.3f}]; left another way {q['left_another_way']:,}")

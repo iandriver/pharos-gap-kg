@@ -1,0 +1,354 @@
+{
+ "release": "pharos319",
+ "later": "pharos400_canonicals",
+ "rule_on_this_release": {
+  "targets": 17793,
+  "agree": 0.9989883662114315,
+  "differ": 18,
+  "rule_dark_release_bio": 1,
+  "rule_bio_release_dark": 17
+ },
+ "rule_on_the_later_release": {
+  "targets": 16689,
+  "agree": 1.0,
+  "rule_dark_release_bio": 0,
+  "rule_bio_release_dark": 0,
+  "without_all_three_counts": 0
+ },
+ "dark_gap": {
+  "tdark_targets": 5516,
+  "with_a_gap": 5499,
+  "grade_and_evidence_disagree": 17,
+  "flips": {
+   "1": 2425,
+   "2": 3074
+  },
+  "route": {
+   "pubmed_score|generifs": 1359,
+   "pubmed_score": 1336,
+   "antibodies|pubmed_score": 818,
+   "generifs": 713,
+   "antibodies": 376,
+   "generifs|pubmed_score": 339,
+   "pubmed_score|antibodies": 273,
+   "antibodies|generifs": 202,
+   "generifs|antibodies": 83
+  },
+  "in_both_releases": 5314,
+  "promoted": 788,
+  "to": {
+   "Tbio": 742,
+   "Tchem": 46
+  },
+  "scores": {
+   "pubmed score": {
+    "auc": 0.7928333138931072,
+    "auc_low": 0.7770370287266637,
+    "auc_high": 0.808732269854383,
+    "ap": 0.3176030487630061,
+    "ap_low": 0.29279131094142175,
+    "ap_high": 0.34248093450035216,
+    "base_rate": 0.14828754234098607
+   },
+   "GeneRIF count": {
+    "auc": 0.751065193546144,
+    "auc_low": 0.7327848886027675,
+    "auc_high": 0.7694010400054693,
+    "ap": 0.3274792499164712,
+    "ap_low": 0.2976310185461964,
+    "ap_high": 0.35574000161129954,
+    "base_rate": 0.14828754234098607
+   },
+   "antibody count": {
+    "auc": 0.7288001529796259,
+    "auc_low": 0.7114416383129576,
+    "auc_high": 0.7452477575799853,
+    "ap": 0.29914270869915704,
+    "ap_low": 0.2704461876105545,
+    "ap_high": 0.3293544431213126,
+    "base_rate": 0.14828754234098607
+   },
+   "recent attention": {
+    "auc": 0.7737265623773303,
+    "auc_low": 0.7575174434458013,
+    "auc_high": 0.7896913505916099,
+    "ap": 0.30265279800424477,
+    "ap_low": 0.279012688609697,
+    "ap_high": 0.3284731744038099,
+    "base_rate": 0.14828754234098607
+   },
+   "flips needed": {
+    "auc": 0.7175142605274433,
+    "auc_low": 0.7024597563508987,
+    "auc_high": 0.7328922965538504,
+    "ap": 0.2667553769959205,
+    "ap_low": 0.23761819612258178,
+    "ap_high": 0.2830800440020356,
+    "base_rate": 0.14828754234098607
+   },
+   "route cost": {
+    "auc": 0.8587520832819289,
+    "auc_low": 0.8446245206494843,
+    "auc_high": 0.8721589649657655,
+    "ap": 0.5674397997736029,
+    "ap_low": 0.528943255124325,
+    "ap_high": 0.6045667985454243,
+    "base_rate": 0.14828754234098607
+   }
+  },
+  "best_single_count": "pubmed score",
+  "route_cost_against_best_single_count": {
+   "difference": 0.06591876938882169,
+   "low": 0.05487494772479405,
+   "high": 0.07687146575299987
+  },
+  "route_cost_against_each": {
+   "pubmed score": {
+    "difference": 0.06591876938882169,
+    "low": 0.05487494772479405,
+    "high": 0.07687146575299987
+   },
+   "GeneRIF count": {
+    "difference": 0.10768688973578489,
+    "low": 0.08986638276514732,
+    "high": 0.1249441255626208
+   },
+   "antibody count": {
+    "difference": 0.129951930302303,
+    "low": 0.11479017352698512,
+    "high": 0.14612119536362086
+   },
+   "recent attention": {
+    "difference": 0.08502552090459858,
+    "low": 0.07184442365304625,
+    "high": 0.09837310494494009
+   },
+   "flips needed": {
+    "difference": 0.1412378227544856,
+    "low": 0.12865864736109306,
+    "high": 0.1531370307784152
+   }
+  },
+  "bands": {
+   "1 flip, farthest third": {
+    "n": 737,
+    "share": 0.06648575305291723,
+    "low": 0.05065385776600912,
+    "high": 0.08681342036807532
+   },
+   "1 flip, middle third": {
+    "n": 804,
+    "share": 0.19776119402985073,
+    "low": 0.1716940708586447,
+    "high": 0.22670273750395664
+   },
+   "1 flip, nearest third": {
+    "n": 806,
+    "share": 0.5359801488833746,
+    "low": 0.5014619027191375,
+    "high": 0.5701570535147411
+   },
+   "2 flips, farthest third": {
+    "n": 952,
+    "share": 0.0063025210084033615,
+    "low": 0.002891608635831193,
+    "high": 0.01368170353231501
+   },
+   "2 flips, middle third": {
+    "n": 994,
+    "share": 0.026156941649899398,
+    "low": 0.017911774552786575,
+    "high": 0.03805048115855779
+   },
+   "2 flips, nearest third": {
+    "n": 1021,
+    "share": 0.11361410381978453,
+    "low": 0.0955796457843256,
+    "high": 0.13454517677968109
+   }
+  },
+  "by_flips": {
+   "1": {
+    "n": 2347,
+    "share": 0.27268853855986364,
+    "low": 0.2550537651446935,
+    "high": 0.2910662014021967
+   },
+   "2": {
+    "n": 2967,
+    "share": 0.04988203572632288,
+    "low": 0.0426141244929077,
+    "high": 0.05831400076430636
+   }
+  },
+  "proposal": {
+   "promoted_needing_one_flip": 640,
+   "left_through_the_counts": 498,
+   "left_another_way": 142,
+   "both_criteria_cleared": 21,
+   "named_criterion_cleared": {
+    "n": 498,
+    "share": 0.8534136546184738,
+    "low": 0.8196452805563896,
+    "high": 0.8817714592735114
+   },
+   "by_naming_at_random": 0.5210843373493976,
+   "above_random": {
+    "difference": 0.3323293172690762,
+    "low": 0.30020080321285136,
+    "high": 0.3644578313253012
+   },
+   "named": {
+    "pubmed_score": 333,
+    "generifs": 85,
+    "antibodies": 80
+   },
+   "cleared": {
+    "pubmed_score": 394,
+    "generifs": 43,
+    "antibodies": 82
+   }
+  },
+  "counts_between_releases_for_targets_still_dark": {
+   "pubmed_score": {
+    "targets": 4526,
+    "fell": 0.15178965974370304,
+    "rose": 0.6252761820592134,
+    "rank_correlation": 0.8197246494492116
+   },
+   "generifs": {
+    "targets": 4526,
+    "fell": 0.08020326999558108,
+    "rose": 0.02761820592134335,
+    "rank_correlation": 0.8499583520721485
+   },
+   "antibodies": {
+    "targets": 4526,
+    "fell": 0.11268228015908087,
+    "rose": 0.5170128148475475,
+    "rank_correlation": 0.9494261638951652
+   }
+  },
+  "promoted_how": {
+   "gained_a_go_term": 334,
+   "gained_a_ligand_or_drug": 46,
+   "cleared_pubmed_score": 457,
+   "cleared_generifs": 48,
+   "cleared_antibodies": 130
+  },
+  "mirror": {
+   "bio_by_counts_alone": 6867,
+   "in_both_releases": 6850,
+   "fell_to_dark": 100,
+   "bands": {
+    "1 flip, farthest third": {
+     "n": 688,
+     "share": 0.05232558139534884,
+     "low": 0.03803290019859624,
+     "high": 0.07158969889214233
+    },
+    "1 flip, middle third": {
+     "n": 700,
+     "share": 0.03,
+     "low": 0.019704257544189436,
+     "high": 0.04542611848418152
+    },
+    "1 flip, nearest third": {
+     "n": 698,
+     "share": 0.05873925501432665,
+     "low": 0.043591657640193814,
+     "high": 0.07871724531079952
+    },
+    "2 flips, farthest third": {
+     "n": 1587,
+     "share": 0.0,
+     "low": 2.1631682253798792e-19,
+     "high": 0.0024147339509226597
+    },
+    "2 flips, middle third": {
+     "n": 1588,
+     "share": 0.0,
+     "low": 0.0,
+     "high": 0.0024132170071733622
+    },
+    "2 flips, nearest third": {
+     "n": 1589,
+     "share": 0.0012586532410320957,
+     "low": 0.0003452360007983949,
+     "high": 0.00457770145639418
+    }
+   }
+  }
+ },
+ "ligand_gap": {
+  "candidates": 17517,
+  "gained": 1359,
+  "scores": {
+   "pubmed score": {
+    "auc": 0.7178297990201797,
+    "auc_low": 0.7066899208945514,
+    "auc_high": 0.7291608888714175,
+    "ap": 0.13839913722778724,
+    "ap_low": 0.12899538765061902,
+    "ap_high": 0.14896902757464303,
+    "base_rate": 0.07758177770166125
+   },
+   "GeneRIF count": {
+    "auc": 0.722131073930441,
+    "auc_low": 0.710170341678104,
+    "auc_high": 0.7342440601265331,
+    "ap": 0.14901872804091826,
+    "ap_low": 0.13812136617845192,
+    "ap_high": 0.1617953255950452,
+    "base_rate": 0.07758177770166125
+   },
+   "antibody count": {
+    "auc": 0.7289410558592617,
+    "auc_low": 0.7165464479589385,
+    "auc_high": 0.7407923679050509,
+    "ap": 0.15673857115079173,
+    "ap_low": 0.14559311944503045,
+    "ap_high": 0.1693384034980434,
+    "base_rate": 0.07758177770166125
+   },
+   "recent attention": {
+    "auc": 0.7138882672680131,
+    "auc_low": 0.7025565875785479,
+    "auc_high": 0.725499272251084,
+    "ap": 0.13853800231345423,
+    "ap_low": 0.12882729026694212,
+    "ap_high": 0.1496003207157771,
+    "base_rate": 0.07758177770166125
+   },
+   "partners with a ligand": {
+    "auc": 0.7460338994227442,
+    "auc_low": 0.7341470490001439,
+    "auc_high": 0.7585019348001552,
+    "ap": 0.16819619926763485,
+    "ap_low": 0.1559606355335151,
+    "ap_high": 0.1815305046840863,
+    "base_rate": 0.07758177770166125
+   }
+  },
+  "cutoff_by_family": {
+   "1 uM": 16653,
+   "100 nM": 560,
+   "30 nM": 179,
+   "10 uM": 125
+  },
+  "best_single_count": "antibody count",
+  "partners_against_best_single_count": {
+   "difference": 0.017092843563482507,
+   "low": 0.0035461566811945096,
+   "high": 0.03004523534508617
+  }
+ },
+ "files": {
+  "target_gaps_dark.parquet": "850013ec97fac8e95bff500669d32e03eea1ab89797c8043af5d6f6d31d2e9a2",
+  "target_gaps_ligand.parquet": "6150d89edfe83dec8e2226063cba4506f0f45bcdaebd0074b289f5eead9d6119"
+ },
+ "inputs": {
+  "tables_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+  "later_sha256": "ee8fdc79893235a451ab7a8a4b6099da390ae9ccd341179297d8f8730f801459"
+ }
+}
