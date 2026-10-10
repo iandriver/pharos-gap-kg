@@ -88,10 +88,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   context on are not fitted yet; [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for them.
 - **Trait lineage and gene position as inputs** ([`findings/INPUTS.md`](findings/INPUTS.md)). Added
   after the two models above were scored, and marked so. Four combiners of parameter-free scores with
-  fitted weights and two graph models with neighbour and lineage edges, all fitted inside the training
-  years and frozen. On validation the combiner that adds gene position is 0.0101 above the neighbours
-  baseline [+0.0036, +0.0173]. Lineage is not shown to add, and neither graph model can be told from
-  the baseline. None of the six has been scored on the test links.
+  fitted weights and two graph models with neighbour and lineage edges, fitted inside the training
+  years and each scored on the test links once. None is shown to beat the neighbours baseline: the
+  highest, the combiner that adds gene position, scores 0.1037 (+0.0067 [-0.0009, +0.0151]). Each
+  input does add to the model it is put into (position +0.0106 [+0.0031, +0.0189] and lineage +0.0080
+  [+0.0042, +0.0129] in the combiner), on links that follow from an earlier link at the same locus or
+  under a related trait name. Nothing here is a result about new links.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 

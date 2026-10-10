@@ -169,3 +169,6 @@ By year of the later link (2019, 2020, 2021, 2022): neighbours 0.0696, 0.0916, 0
 Six further models, added after the two above were scored, use trait lineage and gene position as
 inputs. They are fitted and frozen on validation and none is scored on the test links yet. They are
 in `findings/INPUTS.md`.
+
+Added 10 Oct 2026: the six have been scored on the test links, once each, and none is shown to beat
+the neighbours baseline. The results are the last section of `findings/INPUTS.md`.

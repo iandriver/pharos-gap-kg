@@ -9,6 +9,9 @@ taken after seeing the controls, which are computed on the test links.
 the training links: fitted on the 57,411 links first reported in or before 2016, validated on the
 22,610 links of 2017 and 2018 over 284 traits.
 
+(Added 10 Oct 2026: the six models have since been scored on the test links, once each. That is the
+last section. The sections before it are as written on 9 Oct, when the statement above held.)
+
 ## The two inputs on the validation links
 
 Two traits are in one lineage if one is an ancestor of the other in the Experimental Factor Ontology
@@ -150,3 +153,140 @@ What the test can and cannot show is fixed in the protocol:
 - A graph model is kept over a combiner only if it beats the combiner with the same inputs.
 - Validation has not predicted the test comparison before: `lightgcn` was +0.0054 against neighbours
   on validation and -0.0144 on the test links (`findings/MODELS.md`).
+
+## Added 10 Oct 2026: all six scored on the test links, once
+
+Scored on Ian's word. `python -m pharos_gap_kg.combine final pharos319 --cutoff 2018` scored the four
+combiners together from the weights frozen at `4e5859a`, and `python -m pharos_gap_kg.model final`
+scored each graph model from the setting frozen at `2f48edb`, fitted on all 99,435 training links
+under seeds 0 to 4, its score for a pair being the mean of the five. Each scoring wrote a marker before
+it read a test link, and a second start is refused. The `score` and `versus` stages write
+`docs/data/combine_gene_trait_2018_scored.json`, `docs/data/model_<name>_2018_scored.json` and
+`docs/data/versus_gene_trait_2018.json`. Each recomputes the two baselines and refuses unless they
+equal the committed controls.
+
+The primary measure, mean average precision over the 540 scored traits, on the four views of the
+protocol:
+
+| | all links | new links, lower bound | new links, neutral | by locus |
+|---|---|---|---|---|
+| target degree | 0.0733 | 0.0496 | 0.0556 | 0.0255 |
+| neighbours | 0.0969 | 0.0539 | 0.0662 | 0.0512 |
+| `mf`, scored 8 Oct | 0.0906 | 0.0465 | 0.0564 | 0.0662 |
+| `lightgcn`, scored 8 Oct | 0.0825 | 0.0433 | 0.0530 | 0.0527 |
+| `combine` | 0.0931 | 0.0504 | 0.0621 | 0.0524 |
+| `combine_pos` | 0.1037 | 0.0440 | 0.0687 | 0.0553 |
+| `combine_lin` | 0.1010 | 0.0494 | 0.0665 | 0.0554 |
+| `combine_lin_pos` | 0.0995 | 0.0390 | 0.0665 | 0.0547 |
+| `lightgcn_pos` | 0.0884 | 0.0373 | 0.0549 | 0.0557 |
+| `lightgcn_lin_pos` | 0.0962 | 0.0379 | 0.0537 | 0.0661 |
+
+Each model against the neighbours baseline, paired over traits, with 95% intervals:
+
+| | all links | new links, lower bound | new links, neutral | by locus |
+|---|---|---|---|---|
+| `combine` | -0.0039 [-0.0070, -0.0010] | -0.0036 [-0.0057, -0.0014] | -0.0041 [-0.0068, -0.0015] | +0.0012 [-0.0016, +0.0035] |
+| `combine_pos` | +0.0067 [-0.0009, +0.0151] | -0.0100 [-0.0138, -0.0066] | +0.0025 [+0.0009, +0.0046] | +0.0041 [-0.0030, +0.0118] |
+| `combine_lin` | +0.0041 [-0.0000, +0.0093] | -0.0045 [-0.0071, -0.0019] | +0.0002 [-0.0022, +0.0027] | +0.0042 [+0.0006, +0.0092] |
+| `combine_lin_pos` | +0.0026 [-0.0056, +0.0114] | -0.0149 [-0.0196, -0.0108] | +0.0002 [-0.0022, +0.0027] | +0.0035 [-0.0034, +0.0114] |
+| `lightgcn_pos` | -0.0085 [-0.0174, -0.0002] | -0.0166 [-0.0231, -0.0110] | -0.0114 [-0.0190, -0.0047] | +0.0045 [-0.0022, +0.0111] |
+| `lightgcn_lin_pos` | -0.0008 [-0.0108, +0.0092] | -0.0160 [-0.0231, -0.0098] | -0.0126 [-0.0212, -0.0048] | +0.0149 [+0.0069, +0.0238] |
+
+- **None of the six is shown to beat the neighbours baseline.** The protocol's rule is a paired
+  interval that excludes zero on the primary measure. The highest model, `combine_pos`, scores 0.1037
+  against 0.0969, and its interval reaches below zero. The interval's half-width, 0.0080, is the
+  smallest gain this test would have resolved for it. `combine_lin`'s interval ends just below zero.
+- **Two are worse than neighbours on all links**: the reference combiner `combine`, which uses
+  neither input, and `lightgcn_pos`. `lightgcn_lin_pos` cannot be told from neighbours.
+
+What each input adds to the model it is put into:
+
+| what is added | comparison | all links | by locus |
+|---|---|---|---|
+| position, in the combiner | `combine_pos` against `combine` | +0.0106 [+0.0031, +0.0189] | +0.0030 [-0.0034, +0.0105] |
+| lineage, in the combiner | `combine_lin` against `combine` | +0.0080 [+0.0042, +0.0129] | +0.0030 [-0.0006, +0.0081] |
+| both, in the combiner | `combine_lin_pos` against `combine` | +0.0065 [-0.0009, +0.0151] | +0.0023 [-0.0037, +0.0096] |
+| position, in the graph model | `lightgcn_pos` against `lightgcn` | +0.0059 [+0.0006, +0.0116] | +0.0031 [-0.0020, +0.0088] |
+| lineage, in the graph model with position | `lightgcn_lin_pos` against `lightgcn_pos` | +0.0078 [+0.0021, +0.0144] | +0.0104 [+0.0051, +0.0160] |
+
+- **Each input adds on all links, in both kinds of model.** Position adds 0.0106 in the combiner and
+  0.0059 in the graph model. Lineage adds 0.0080 in the combiner and 0.0078 in the graph model that
+  already has position. All four intervals exclude zero.
+- **The combiner with both inputs is not above the reference**, and it is below each combiner with
+  one. It has seven free weights, and on validation it read 0.0092 higher on the traits it was fitted
+  on than in cross-validation.
+- **Lineage was not shown to add on validation and does add on the test links.** Two things differ.
+  The test split has 1,630 lineage pairs among 1,404 traits where the inner split had 855 among 850.
+  And the ontology is the 2026 release, so a relation between two traits may have been recorded after
+  2018. The protocol's caveat for any result that uses lineage applies to these two rows.
+- **The gain stops short of the baseline because fitting costs about what the inputs give.** The
+  reference combiner is 0.0039 below neighbours, and `lightgcn` is 0.0144 below.
+- **By locus, the graph model with both inputs is ahead of neighbours**, 0.0661 against 0.0512, and
+  the lineage edges are worth 0.0104 of that over `lightgcn_pos`. `combine_lin` is ahead by locus too.
+  Matrix factorisation scored 0.0662 on that view on 8 Oct. The protocol asks for the primary measure,
+  new links and loci together before a claim, so this is reported and not claimed.
+- **Nothing here is a result about new links.** With the linked positives removed, all five models
+  that use an input are below neighbours, which is what the protocol said of the combiners. With every
+  linked candidate removed, both graph models are below neighbours. `combine_lin` and
+  `combine_lin_pos` score the same, 0.0665, because their weights on degree and neighbours are the
+  same and both inputs are zero there. `combine_pos` is 0.0025 above neighbours on that view. Position
+  is zero for every candidate in it, so that comes from its weights on degree and neighbours, and its
+  lower-bound view is 0.0100 below, so the two-way requirement is not met.
+- **Neither graph model is kept over a combiner.** `lightgcn_pos` against `combine_pos` is
+  -0.0153 [-0.0229, -0.0087]. `lightgcn_lin_pos` against `combine_lin_pos` is
+  -0.0033 [-0.0128, +0.0061], a tie, which the protocol gives to the combiner. By locus
+  `lightgcn_lin_pos` is ahead of `combine_lin_pos`, +0.0115 [+0.0033, +0.0192].
+
+**Validation against the test links.** Each model against neighbours on the primary measure:
+
+| | validation | test links |
+|---|---|---|
+| `combine` | +0.0020 [-0.0030, +0.0069] | -0.0039 [-0.0070, -0.0010] |
+| `combine_pos` | +0.0101 [+0.0036, +0.0173] | +0.0067 [-0.0009, +0.0151] |
+| `combine_lin` | +0.0045 [-0.0023, +0.0116] | +0.0041 [-0.0000, +0.0093] |
+| `combine_lin_pos` | +0.0098 [+0.0019, +0.0177] | +0.0026 [-0.0056, +0.0114] |
+| `lightgcn_pos` | +0.0065 [-0.0049, +0.0183] | -0.0085 [-0.0174, -0.0002] |
+| `lightgcn_lin_pos` | +0.0080 [-0.0050, +0.0199] | -0.0008 [-0.0108, +0.0092] |
+
+- **Every model stands lower against neighbours on the test links than on validation**: the combiners
+  by 0.0004 to 0.0072, the graph models by 0.0150 and 0.0088.
+- **Validation ordered the models that share inputs correctly.** It put `combine_pos` above both
+  graph models and `lightgcn_lin_pos` above `lightgcn_pos`, and both held. Among the combiners it
+  did not: on validation the combiner with both inputs was level with `combine_pos` (0.0810 and
+  0.0813) and above `combine_lin` (0.0757), and on the test links it is below both.
+- **Averaging seeds mattered for one graph model.** `lightgcn_pos` scores 0.0867 to 0.0884 one seed
+  at a time and 0.0884 for the mean of five. `lightgcn_lin_pos` scores 0.0893 to 0.0911 one seed at a
+  time and 0.0962 for the mean.
+
+Secondary measures of the protocol, as values. No paired interval was computed for these.
+
+| | trait ROC area | recall in the top 100 | average precision by target | ROC area by target | all candidates at once |
+|---|---|---|---|---|---|
+| neighbours | 0.6944 | 0.1007 | 0.0875 | 0.7930 | 0.0391 |
+| `combine` | 0.6446 | 0.1062 | 0.0116 | 0.3568 | 0.0082 |
+| `combine_pos` | 0.7215 | 0.1172 | 0.1002 | 0.8034 | 0.0529 |
+| `combine_lin` | 0.6972 | 0.1078 | 0.0212 | 0.3764 | 0.0103 |
+| `combine_lin_pos` | 0.6856 | 0.1141 | 0.0463 | 0.4430 | 0.0188 |
+| `lightgcn_pos` | 0.6775 | 0.1164 | 0.0990 | 0.6784 | 0.0675 |
+| `lightgcn_lin_pos` | 0.6914 | 0.1153 | 0.0855 | 0.6405 | 0.0512 |
+
+The three combiners with a negative weight on neighbours times trait size order the traits of one
+target worse than chance (ROC area by target 0.3568, 0.3764 and 0.4430): their scores are fitted to
+order targets within a trait and are not comparable across traits. `combine_pos`, whose weight on that
+term is positive, is the highest of all seven rows on trait ROC area, recall in the top 100 and ROC
+area by target.
+
+By year of the later link (2019, 2020, 2021, 2022): neighbours 0.0696, 0.0916, 0.0712, 0.0703; `combine` 0.0683, 0.0843, 0.0699, 0.0630; `combine_pos` 0.0712, 0.0967, 0.0666, 0.0949; `combine_lin` 0.0739, 0.0892, 0.0804, 0.0689; `combine_lin_pos` 0.0690, 0.0905, 0.0731, 0.0834; `lightgcn_pos` 0.0680, 0.0808, 0.0605, 0.0693; `lightgcn_lin_pos` 0.0767, 0.0792, 0.0641, 0.0888.
+
+### What follows
+
+- The neighbours baseline stays the scorer behind the typed questions. No fitted model has been shown
+  to beat it on this split.
+- Gene position and trait lineage each carry signal a link-prediction score counts: four paired
+  comparisons exclude zero. All of it is on links that follow from an earlier link at the same locus
+  or under a related trait name.
+- The combiners are closed. The amendment of 9 Oct said they would be fitted once more and nothing
+  further tried. A simpler way of adding position to neighbours, such as one fixed weight with no
+  trait-size terms, would now be chosen knowing these test results and would have to be reported so.
+- The two models that join the context tables on (`lightgcn_ctx`, `lightgcn_ctx_pruned`) are still
+  not tuned.
