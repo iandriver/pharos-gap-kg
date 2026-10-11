@@ -602,6 +602,207 @@ linked pairs aside, and loci.
 average of B3 with B4 or B5 is a fair simple baseline: it is not computed, because the same average
 lost to B3 at every weight for each of the five context scorers (`findings/ENRICH.md`).
 
+## Cold start: new traits and new targets
+
+Defined on 10 Oct 2026, before any scorer was run on the links scored here.
+
+**The links.** 65,523 links first reported after 2018 were left out of the test because their trait
+or their target has no training link. The neighbours baseline has no score for a trait it has never
+seen and none for a target it has never seen. Trait lineage and gene position, as defined under
+Controls, reach both.
+
+**What was known when this was written.** Every result on the test links. And these counts, which say
+which traits and targets the 65,523 links involve and nothing about how any scorer ranks them: 52,601
+join a new trait to a training target (843 new traits; 550 have a lineage relative among the training
+traits, and those hold 37,644 of the links); 10,008 join a training trait to a new target (3,521 new
+targets in all, 3,088 with a neighbour among the training targets, holding 9,039 of the links); 2,914
+join a new trait to a new target.
+
+**Two tasks.**
+
+- *New traits.* The unit is a trait with no training link. Its candidates are the 14,484 training
+  targets, and its positives are its later links to those targets.
+- *New targets.* The unit is a training trait. Its candidates are every target of the release with no
+  training link, and its positives are its later links to those targets. Read the other way, as a
+  secondary measure: the unit is a new target, its candidates are the 1,404 training traits.
+
+Links whose trait and target are both new are scored by neither.
+
+**Scorers.** None has a fitted parameter.
+
+| | for a new trait, the score of a training target |
+|---|---|
+| N0 chance | none |
+| N1 target degree | the number of training traits linked to the target |
+| N2 lineage transfer | the number of the new trait's lineage relatives, among the training traits, that the target is linked to |
+| N3 lineage neighbours | over those relatives, the sum of 1 where the target is linked to the relative and of its neighbours score B3 for the relative |
+| N4 | N2, ties broken by N1 |
+| N5 | N3, ties broken by N1 |
+
+| | for a training trait, the score of a new target |
+|---|---|
+| P0 chance | none |
+| P1 locus degree | the number of training links held by the target's neighbours |
+| P2 position transfer | the number of the target's neighbours with a training link to the trait |
+| P3 | P2, ties broken by P1 |
+
+For the secondary reading by new target, the scorers are the trait's degree (the number of training
+targets linked to it), P2, and P2 with ties broken by the trait's degree.
+
+**Measures.** The primary measure of this protocol: average precision per unit over all its
+candidates, ties broken at random under five seeds, the mean over units, with a bootstrap interval
+over units. For new traits also the locus-collapsed measure. Each is reported over all units, over
+the units the input reaches (a new trait with a lineage relative in training; a new target with a
+neighbour in training), and over the rest, where a transfer scorer ties every candidate.
+
+**How it will be read.** Lineage transfer works for new traits if N4 beats N1 on the primary measure
+over all scored new traits, with the paired interval excluding zero. Position transfer works for new
+targets if P3 beats P1 the same way. N5 against N4 says whether passing the relatives' neighbours
+scores on adds to counting their links.
+
+**A second period, inside the training years.** The same scorers with a cutoff of 2016, on the links
+of 2017 and 2018 whose trait or target was new in 2016. It is computed first and reported beside the
+other. It decides nothing.
+
+**What a pass would mean.** A ranked list for a trait or a target that has no link, with a measured
+precision. It is not a claim about biology. A new trait with a lineage relative is often a narrower or
+broader form of a trait already studied, and a new target beside a linked gene is often the same GWAS
+signal assigned to one more gene. The ontology is the 2026 release: a new trait's term and its place
+in the ontology were fixed after the cutoff, in some cases because the trait had been studied, though
+the placement does not use gene links.
+
+**Not done here.** A fitted model for either task, and relations wider than lineage (two traits under
+one parent).
+
+## Rehearsal inside the training years
+
+Defined on 10 Oct 2026, before any of it was run.
+
+**Why.** Every fitted model stood lower against the neighbours baseline on the test links than on the
+validation that chose it, the graph models by 0.009 to 0.020. The procedure is therefore run one step
+back in time, where its outcome can be read without reading a test link: tune with a cutoff of 2014,
+refit on the links to 2016, and score on the links of 2017 and 2018.
+
+**The splits.** Tuning fits on the 26,503 links first reported in or before 2014 (7,047 targets, 562
+traits) and validates on the 10,025 links of 2015 and 2016 between a target and a trait already seen
+(156 traits). The refit is on the 57,411 links to 2016, and the rehearsal's target is the 22,610 links
+of 2017 and 2018 over 284 traits. Those are the fitting links and the validation positives of "Fitted
+models". The refit has 2.17 times the links tuning had; in the scored procedure the ratio was 1.73.
+
+**What was known when this was written.** The links of 2017 and 2018 are not untouched. Six models
+were tuned on them and the combiners' weights fitted on them. On 10 Oct they were also looked at by
+trait size, outside the committed code: the largest third of the 284 traits holds 87% of the fitting
+links and the smallest third 2%, and `lightgcn` at its chosen setting is 0.0025 below neighbours on
+the smallest third and about 0.010 above on the other two. The tuning curves show that the number of
+passes chosen on 57,411 links was applied to 99,435, which is the number of steps of 1.73 times as
+many passes; for `lightgcn` that is past the peak of its validation curve. The arms below were chosen
+knowing all of this and every result on the test links. So a rehearsal result is evidence about a
+procedure, and a claim that a model beats the baseline needs links no model has been scored on.
+
+**Arms.** Each is a whole procedure: tune at 2014, refit at 2016 under seeds 0 to 4, score the mean
+of the five matrices on 2017 and 2018.
+
+- *Models:* `mf`, `lightgcn`, `lightgcn_lin_pos`.
+- *How a link is drawn in fitting:* each link once a pass, as before (L0); or as many draws a pass as
+  there are links, each link drawn with probability in proportion to one over the square root of its
+  trait's number of links (L½), or to one over that number, so that every trait is drawn equally
+  often (L1). The primary measure counts each trait once, and L1 is the weighting that matches it.
+- *How the length of fitting is carried to the refit:* the number of passes that was best in tuning
+  (by passes, as before); or that number multiplied by the tuning links over the refit links and
+  rounded, at least one, which keeps the number of steps (by steps).
+- *Settings:* for the graph models, vectors of 64 or 128, 2 or 4 steps, learning rate 0.001 or 0.005,
+  weight 1e-4: eight settings. For `mf`, the four without steps. Batches, the cap of 300 passes,
+  validation every 10 and the stopping rule are those of "Fitted models". Tuning uses seed 0.
+
+That is 3 models, 3 ways of drawing and 2 ways of carrying: 18 arms.
+
+- *Combiners:* the weights fitted to the primary measure as amended on 9 Oct, on scores computed from
+  the links to 2014 and the positives of 2015 and 2016, all 156 traits, then applied to scores
+  computed from the links to 2016. Score sets: B3 with B5; B1 with B3; B1, B3 and B5; B1, B3 and B4;
+  all four. Forms: F1, and F3 as scored. Ten arms. Nothing is cross-validated, because the target is
+  later in time than the fit.
+
+**Measures.** For each arm, on the rehearsal target: the primary measure, and its paired difference
+from the neighbours baseline computed from the links to 2016, with a 95% interval. For description:
+the same difference on each third of the traits by size, each seed alone, and the difference from
+neighbours the arm showed in tuning at 2014 beside the one it shows on the target.
+
+**How it will be read.**
+
+- A procedure carries if its difference from neighbours on the rehearsal target has an interval above
+  zero.
+- One way of drawing, or of carrying, is better than another if the paired difference between the two
+  arms that differ only in that has an interval that excludes zero, for both graph models. Otherwise
+  the earlier way stays.
+- With 28 arms read against one baseline, one interval above zero is expected by chance alone even if
+  nothing carries. The rehearsal names candidates. It does not confirm them.
+
+**Not rehearsed.** Choosing a setting by the mean of several seeds, which multiplies the cost of
+tuning by the number of seeds. An earlier origin still (2012), which has 18,010 fitting links.
+
+## A prospective test: links first reported from 2023
+
+Defined on 10 Oct 2026, before the file it rests on was fetched.
+
+**Why.** The test links of the 2018 split have now been used to score eight fitted models, and a
+further model chosen with those results in view could not be tested on them. Pharos 3.19 holds GWAS
+links to 2022. The GWAS Catalog, which Pharos's GWAS source aggregates, has gone on being curated.
+
+**The file.** The GWAS Catalog's release of 5 Oct 2026, associations with ontology annotations
+(`gwas-catalog-associations_ontology-annotated-full.zip`, 72,826,184 bytes, from
+`ftp.ebi.ac.uk/pub/databases/gwas/releases/2026/10/05/`), registered and pinned by digest.
+
+**From an association to a link.** An association gives a variant, the Ensembl genes the Catalog maps
+it to (the genes it lies in, and the nearest gene on each side when it lies in none), a p-value, the
+ontology terms of the trait, and the study with its publication date. A gene becomes a target through
+the release's own cross-references, as for position. A trait is the ontology term, written as Pharos
+writes it. Pharos's source applied filters this protocol does not know in full, so the rule is
+chosen where it can be checked, on the studies Pharos already holds, and before any later study is
+turned into links:
+
+- Four rules are declared: genes the variant lies in only, or those and the nearest gene on each side;
+  with a p-value of 5e-8 or smaller, or any p-value the Catalog lists.
+- For each rule, the (target, trait, study) triples it produces for the studies that Pharos 3.19 also
+  cites are compared with Pharos's own triples for those studies. The rule with the highest F1 is
+  used, the earlier in the order above on a tie.
+- If the chosen rule recovers less than 90% of Pharos's triples or less than 90% of its triples are
+  Pharos's, the test goes ahead and is reported with that mismatch stated. No further rule is tried.
+
+**Dating and the split.** A pair's first year is the earliest publication year among the Catalog's
+studies that give it under the rule. Training is every pair of Pharos 3.19, 295,327 in all. A
+prospective positive is a pair that Pharos 3.19 does not hold and whose first year is 2023 or later.
+A pair that Pharos does not hold and whose first year is 2022 or earlier is set aside: it is neither
+a positive nor a candidate, since it was reported before the cutoff and is missing from Pharos for a
+reason this protocol cannot see. Positives between a target and a trait that both have a training link
+are the test. The others are the cold-start links of this split.
+
+The split is built and frozen by code that reports counts and reads no score. Its digests are
+committed before any scorer is run on it.
+
+**What is scored on it.** Fixed in a dated addition below, written after the rehearsal has been read
+and before any scorer reads a prospective link. Decided now:
+
+- the parameter-free scorers B1, B3, B4 and B5, and the cold-start scorers of the section above on the
+  cold-start links;
+- the four combiners with the weights frozen on 9 Oct, and `mf` and `lightgcn_lin_pos` with their
+  frozen settings and passes, refitted on all training links under five seeds. These ask whether the
+  results on the 2018 split repeat on a second period;
+- the best graph arm and the best combiner arm of the rehearsal, each tuned with a cutoff of 2020 on
+  the links of 2021 and 2022, refitted on all training links and marked with whether it carried in
+  rehearsal. Scoring both whether or not they carried also tests the rehearsal.
+
+Each is scored once, with a marker written before a prospective link is read.
+
+**What counts.** As throughout: a model helps if it beats the neighbours baseline on the primary
+measure with the paired interval excluding zero; a claim about new links needs both ways of setting
+lineage- and position-linked pairs aside, and loci, with lineage and position taken against all
+training links.
+
+**Limits known in advance.** The Catalog's studies of 2023 on differ from those of 2019 to 2022 in
+kind, with more protein-level and biobank-wide studies, so the mix of traits differs. Curation lags
+publication, so the last year or two are incomplete. And the link rule is fitted to Pharos's, not
+taken from it.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
