@@ -1126,7 +1126,7 @@ Pharos's (trait, study) pairs are recovered, where it says 98.8%; and the share 
 study) pairs recovered is 51% at 50,000 bases and 82% at 250,000, where it says 50% and 81%. None of
 these bears on the rule.
 
-One statement in that amendment was wrong in the rule's favour. It expected the rule to recover about
+One statement in that amendment was wrong, and it understated the rule. It expected the rule to recover about
 77% of Pharos's triples and so to miss the 90% asked for. That figure was taken gene by gene, and it
 left out the targets that Pharos ties only to gene ids on alternate assemblies of a chromosome, which
 `position` places by their symbol. At the level a link is made, (target, live trait, study), the
