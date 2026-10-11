@@ -1068,3 +1068,49 @@ scorer alike.
 
 Not read: no study published after 2022 has been turned into a link, and nothing about those studies
 has been counted beyond the totals of the file.
+
+**10 Oct 2026, what is scored on the prospective split. Written after the rehearsal was read
+(`findings/REHEARSAL.md`) and the split was frozen (`docs/data/split_gene_trait_2022.json`), and before
+any scorer read a prospective link.**
+
+The split: 294,954 training pairs (Pharos 3.19 by live trait term, 18,005 targets, 2,225 traits);
+194,017 prospective links between a training target and a training trait, over 1,110 traits, first
+reported in 2023 to 2026; 394,383 cold-start links; 228,538 pairs set aside, which are neither
+positives nor candidates anywhere below.
+
+On the 194,017 test links, each scored once:
+
+1. *The parameter-free scorers* B1 target degree, B3 neighbours, B4 lineage and B5 position, from all
+   training links.
+2. *The 2018 split's models, as frozen.* The four combiners with the weights frozen on 9 Oct, applied
+   to scores computed from all training links. `mf` and `lightgcn_lin_pos` with their frozen settings
+   and passes, fitted on all training links under seeds 0 to 4, the mean of the five matrices scored.
+   These ask whether the results of the 2018 split repeat on a second period.
+3. *The rehearsal's candidates.* The protocol said the best graph arm and the best combiner arm. The
+   combiner arm with the highest value in rehearsal and the one arm that carried are different arms,
+   so three are scored, each marked with what the rehearsal said of it:
+   - `lightgcn_lin_pos:L05:steps`, the best graph arm, which did not carry. Its eight settings are
+     tuned with a cutoff of 2020 (197,553 fitting links, validated on the 72,234 links of 2021 and
+     2022 over 430 traits, seed 0), and the chosen setting is refitted on all training links under
+     five seeds with the length of fitting carried by steps.
+   - `combine[B1+B3+B5]:F1`, the arm that carried, and `combine[B1+B3+B4+B5]:F1`, the highest in
+     value, which did not. Their weights are fitted on scores computed from the links to 2020 against
+     the links of 2021 and 2022, and applied to scores computed from all training links.
+
+On the cold-start links, the scorers of "Cold start" as defined there: for a new trait the training
+targets are ranked, and for a training trait the targets of the release with no training link.
+
+**Measures and what counts** are those of the protocol throughout: the primary measure with its
+paired difference from B3 and a 95% interval; the two ways of setting lineage- and position-linked
+pairs aside, with lineage and position taken against all training links; and the locus-collapsed
+measure. A model helps if it beats B3 on the primary measure with the interval excluding zero. For
+cold start, lineage transfer works if N4 beats N1 and position transfer if P3 beats P1, as before.
+
+**What the rehearsal leads one to expect**, stated so that the outcome can be read against it: that
+no fitted graph model beats B3; that `combine[B1+B3+B5]` is a little above B3; and, from the 2018
+split, that lineage transfer with ties by degree is well above degree for new traits.
+
+**Known about this split before scoring.** Its new traits are of another kind than the 2018 split's:
+8,425 of them, against 829, from four years in which the Catalog took in many studies of protein and
+metabolite levels. A trait of that kind is often linked to the gene that encodes the measured
+protein, which neither lineage nor degree knows.
