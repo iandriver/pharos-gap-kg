@@ -1,0 +1,56 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1",
+ "rule": {
+  "window": 100000,
+  "p_value_at_most": 5e-08,
+  "traits": "the ontology's live term"
+ },
+ "from": 2023,
+ "cutoff": 2022,
+ "train": {
+  "links": 294954,
+  "targets": 18005,
+  "traits": 2225,
+  "sha256": "5dbc0710d79efbcff0675bbbe67e335852ecd0d868c25b22bbd4f7096170b998"
+ },
+ "test": {
+  "links": 194017,
+  "targets": 17456,
+  "traits": 1110,
+  "sha256": "a4d8c932a486db9b0a8fcc14984dc40720eb750dbf4903d1bd6caa777bc2cb6a"
+ },
+ "unscored": {
+  "links": 394383,
+  "targets": 18453,
+  "traits": 9139,
+  "sha256": "7a92f64c2c9cb072b2ec431ec20138bfd5d2911c98badae7b8d8dda10f91304f"
+ },
+ "candidates": 39766171,
+ "test_by_year": {
+  "2023": 34067,
+  "2024": 58594,
+  "2025": 85222,
+  "2026": 16134
+ },
+ "pharos_pairs_as_written": {
+  "links": 295327,
+  "traits": 2247
+ },
+ "aside": {
+  "links": 228538,
+  "sha256": "cdb28e19b98de4e91075e5f04b57ae445f8fc8455ba2569a5b8a630a3b37e209",
+  "between_a_training_target_and_trait": 139482
+ },
+ "catalog_pairs": 1092141,
+ "catalog_pairs_pharos_holds": 275203,
+ "pharos_pairs_the_catalog_gives": 0.9330370159414688,
+ "unscored_by_kind": {
+  "new_trait": 377156,
+  "new_target": 6729,
+  "both_new": 10498
+ },
+ "unscored_new_traits": 8425,
+ "unscored_new_targets": 1529
+}

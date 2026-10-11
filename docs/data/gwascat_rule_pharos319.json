@@ -1,0 +1,30 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1",
+ "rule": {
+  "window": 100000,
+  "p_value_at_most": 5e-08,
+  "traits": "the ontology's live term"
+ },
+ "pharos_studies": 12335,
+ "studies_in_both": 12260,
+ "triples": {
+  "produced": 636104,
+  "pharos": 651671,
+  "shared": 604985,
+  "precision": 0.9510787544175167,
+  "recall": 0.9283595556653588
+ },
+ "pairs": {
+  "produced": 284707,
+  "pharos": 294956,
+  "shared": 271215,
+  "precision": 0.9526109298331267,
+  "recall": 0.9195100286144374
+ },
+ "studies_with_a_triple_not_reproduced": 4709,
+ "bar": 0.9,
+ "compared_as": "(target, live trait, study accession)",
+ "passes": true
+}
