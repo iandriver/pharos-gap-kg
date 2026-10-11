@@ -58,7 +58,10 @@ MODELS = {"mf": {"graph": False, "context": None}, "lightgcn": {"graph": True, "
           "lightgcn_pos": {"graph": True, "context": None, "structure": ("position",)},
           "lightgcn_lin_pos": {"graph": True, "context": None, "structure": ("position", "lineage")}}
 MEMBERSHIPS = ("pathways", "go_terms", "compounds")
-FITTING = ("link_edges", "context_edges", "adjacency", "build", "draw_negatives", "fit", "primary")
+FITTING = ("link_edges", "context_edges", "adjacency", "build", "draw_negatives", "draw_weights", "fit", "primary")
+# The fitting code before 10 Oct 2026, when `fit` could only take each link once a pass. Every model
+# scored on the test links of the 2018 split was fitted by it. With `balance` 0, `fit` is that computation.
+FITTED_BEFORE = "37067d61bf481404"
 
 
 def implementation(text: str | None = None) -> str:
@@ -232,11 +235,20 @@ def draw_negatives(A, d, rng, T: int):
     return neg
 
 
+def draw_weights(deg, balance: float):
+    """How likely a link is to be drawn, given its trait's number of links: in proportion to that number
+    to the power minus `balance`. At 1 every trait is drawn equally often, at 0 every link."""
+    return deg.double().pow(-balance)
+
+
 def fit(A: np.ndarray, setting: dict, seed: int, dev: str, passes: int, edges: np.ndarray | None = None, n_nodes: int | None = None,
-        validate=None, log=None) -> tuple[np.ndarray, list[dict]]:
+        validate=None, log=None, balance: float = 0.0) -> tuple[np.ndarray, list[dict]]:
     """Fit on the links in `A` for `passes` passes. With `validate`, a function of the score matrix, it is
     called every EVERY passes, fitting stops PATIENCE passes after its best value, and the matrix
-    returned is the best one's. Returns (score matrix, history)."""
+    returned is the best one's. Returns (score matrix, history).
+
+    With `balance` 0 a pass takes each link once. Above 0 a pass is as many draws as there are links,
+    with replacement, a link's chance set by `draw_weights`."""
     import torch
     T, D = A.shape
     torch.manual_seed(seed)
@@ -246,9 +258,13 @@ def fit(A: np.ndarray, setting: dict, seed: int, dev: str, passes: int, edges: n
     At = torch.as_tensor(A, device=dev)
     pos_t, pos_d = (torch.as_tensor(x, device=dev) for x in np.nonzero(A))
     rng = torch.Generator(device=dev).manual_seed(seed)
+    chance = draw_weights(At.sum(dim=0)[pos_d], balance) if balance else None
     history, best, best_S = [], (-1.0, 0), None
     for p in range(1, passes + 1):
-        order = torch.randperm(len(pos_t), generator=rng, device=dev)
+        if chance is None:
+            order = torch.randperm(len(pos_t), generator=rng, device=dev)
+        else:
+            order = torch.multinomial(chance, len(pos_t), replacement=True, generator=rng)
         total = 0.0
         for k in range(0, len(order), BATCH):
             b = order[k:k + BATCH]
@@ -644,6 +660,11 @@ def _selftest() -> int:
     At = torch.as_tensor(np.array([[True, False], [True, False], [False, False]]))
     neg = draw_negatives(At, torch.zeros(500, dtype=torch.long), torch.Generator().manual_seed(0), 3)
     ck("a negative is never a target linked to the trait", set(neg.tolist()) == {2})
+    deg = torch.tensor([4, 4, 4, 4, 1])            # four links of a trait with four, one link of a trait with one
+    w1, wh, w0 = draw_weights(deg, 1.0), draw_weights(deg, 0.5), draw_weights(deg, 0.0)
+    ck("drawn by trait, a trait with one link is drawn as often as a trait with four; by link, four times less",
+       abs(float(w1[:4].sum()) - float(w1[4])) < 1e-12 and abs(float(w0[:4].sum()) - 4 * float(w0[4])) < 1e-12 and abs(float(wh[:4].sum()) - 2 * float(wh[4])) < 1e-12)
+    ck("the code that fitted the scored models is named, and this code is not it", FITTED_BEFORE != implementation() and len(FITTED_BEFORE) == 16)
 
     # three groups of 20 targets and 4 traits each; a target links to nearly all of its own group's traits,
     # so a held-out link is far likelier inside a group than a random pair is
@@ -663,6 +684,9 @@ def _selftest() -> int:
     ck("the same seed gives the same matrix", np.allclose(S_g, S_again, atol=1e-5))
     S_fixed, h2 = fit(A, s, 1, "cpu", 20, link_edges(A), 72)
     ck("without validation the model is fitted for exactly the passes asked and nothing is recorded", h2 == [] and S_fixed.shape == A.shape)
+    S_b, _ = fit(A, s, 0, "cpu", 60, link_edges(A), 72, validate=val, balance=1.0)
+    S_b2, _ = fit(A, s, 0, "cpu", 60, link_edges(A), 72, validate=val, balance=1.0)
+    ck(f"drawing links by trait still fits the planted structure, the same way under the same seed ({val(S_b):.2f})", val(S_b) > 3 * chance and np.allclose(S_b, S_b2, atol=1e-5) and not np.allclose(S_b, S_g, atol=1e-3))
     return 0 if ok else 1
 
 

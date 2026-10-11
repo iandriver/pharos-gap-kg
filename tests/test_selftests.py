@@ -128,6 +128,11 @@ def test_combine_selftest():
     assert combine._selftest() == 0
 
 
+def test_rehearse_selftest():
+    from pharos_gap_kg import rehearse
+    assert rehearse._selftest() == 0
+
+
 def test_model_selftest():
     import pytest
     pytest.importorskip("torch")
