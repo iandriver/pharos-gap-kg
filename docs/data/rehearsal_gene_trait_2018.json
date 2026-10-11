@@ -1,0 +1,1555 @@
+{
+ "cutoff": 2018,
+ "refit_to": 2016,
+ "tuned_to": 2014,
+ "release": "pharos319",
+ "parts": {
+  "tune_fit": {
+   "links": 26503,
+   "sha256": "d90cec08ee7343e0ecadc92ffcce888a2132e15bf4a3e25492fffcaee9b35a15"
+  },
+  "tune_validate": {
+   "links": 10025,
+   "sha256": "303d0cf36b8c0683211b3e5e7597c4231d81fb2ace910b55b86b7180b1b4e9a8"
+  },
+  "refit": {
+   "links": 57411,
+   "sha256": "43e68c23b2325fce7b05f896b0df43679543b7c8cbe2ee17730a758a10622d74"
+  },
+  "target": {
+   "links": 22610,
+   "sha256": "9055d26c109d71fae2b61136a786cbefd9887725556caec51b7dd62b4d43ec89"
+  }
+ },
+ "traits_on_target": 284,
+ "thirds": [
+  {
+   "traits": 95,
+   "fitting_links_from": 1,
+   "fitting_links_to": 16,
+   "share_of_fitting_links": 0.022521915037086986
+  },
+  {
+   "traits": 94,
+   "fitting_links_from": 17,
+   "fitting_links_to": 71,
+   "share_of_fitting_links": 0.11099123398516521
+  },
+  {
+   "traits": 95,
+   "fitting_links_from": 72,
+   "fitting_links_to": 1017,
+   "share_of_fitting_links": 0.8664868509777478
+  }
+ ],
+ "baselines_on_target": {
+  "B1": 0.03929704406165823,
+  "B3": 0.07122544690772106
+ },
+ "neighbours_in_tuning": 0.08909240369161593,
+ "neighbours_by_third": [
+  0.075299280602106,
+  0.06576465289114193,
+  0.07255492518763548
+ ],
+ "arms": {
+  "mf:L0:passes": {
+   "model": "mf",
+   "draw": "L0",
+   "carry": "passes",
+   "setting": {
+    "dim": 64,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 150
+   },
+   "passes_in_tuning": 150,
+   "passes": 150,
+   "by_seed": {
+    "0": 0.04732177545187036,
+    "1": 0.046584426337679646,
+    "2": 0.04598059717666809,
+    "3": 0.04984774873990579,
+    "4": 0.049475959421159454
+   },
+   "in_tuning": {
+    "validation": 0.07922996210520772,
+    "against_neighbours": {
+     "difference": -0.009862441586408211,
+     "low": -0.028108694144051868,
+     "high": 0.008056215729626596,
+     "half_width": 0.018082454936839232,
+     "units_higher": 71,
+     "units": 156
+    }
+   },
+   "primary": 0.06168398873550054,
+   "against_neighbours": {
+    "difference": -0.009541458172220534,
+    "low": -0.02097651979130951,
+    "high": -0.0006193001683384013,
+    "half_width": 0.010178609811485554,
+    "units_higher": 149,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.021521990711739044,
+    -0.005450132895305167,
+    -0.0016091843277551312
+   ]
+  },
+  "mf:L0:steps": {
+   "model": "mf",
+   "draw": "L0",
+   "carry": "steps",
+   "setting": {
+    "dim": 64,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 150
+   },
+   "passes_in_tuning": 150,
+   "passes": 69,
+   "by_seed": {
+    "0": 0.05350512879958528,
+    "1": 0.044424264706319244,
+    "2": 0.04414124086338573,
+    "3": 0.05325135747549721,
+    "4": 0.048866720524006466
+   },
+   "in_tuning": {
+    "validation": 0.07922996210520772,
+    "against_neighbours": {
+     "difference": -0.009862441586408211,
+     "low": -0.028108694144051868,
+     "high": 0.008056215729626596,
+     "half_width": 0.018082454936839232,
+     "units_higher": 71,
+     "units": 156
+    }
+   },
+   "primary": 0.0644831928874643,
+   "against_neighbours": {
+    "difference": -0.006742254020256757,
+    "low": -0.01665017167684737,
+    "high": 0.0012157526253825971,
+    "half_width": 0.008932962151114984,
+    "units_higher": 144,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.020781696098962143,
+    -0.0060888726827297976,
+    0.006650684419211428
+   ]
+  },
+  "mf:L05:passes": {
+   "model": "mf",
+   "draw": "L05",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 220
+   },
+   "passes_in_tuning": 220,
+   "passes": 220,
+   "by_seed": {
+    "0": 0.05137714794647495,
+    "1": 0.05659101880085963,
+    "2": 0.057205711522981685,
+    "3": 0.058877263215836154,
+    "4": 0.054808326660918
+   },
+   "in_tuning": {
+    "validation": 0.07132660391774052,
+    "against_neighbours": {
+     "difference": -0.01776579977387539,
+     "low": -0.03440389010615623,
+     "high": -0.0022363374407986026,
+     "half_width": 0.016083776332678813,
+     "units_higher": 68,
+     "units": 156
+    }
+   },
+   "primary": 0.06984908381569323,
+   "against_neighbours": {
+    "difference": -0.0013763630920278294,
+    "low": -0.013417146390144201,
+    "high": 0.009111650934494037,
+    "half_width": 0.011264398662319118,
+    "units_higher": 148,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.01735066893005643,
+    0.004699613214344214,
+    0.008585924084958962
+   ]
+  },
+  "mf:L05:steps": {
+   "model": "mf",
+   "draw": "L05",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 220
+   },
+   "passes_in_tuning": 220,
+   "passes": 102,
+   "by_seed": {
+    "0": 0.04847062780210796,
+    "1": 0.053289858955324405,
+    "2": 0.0544993159143561,
+    "3": 0.05252621093090905,
+    "4": 0.05248278742277515
+   },
+   "in_tuning": {
+    "validation": 0.07132660391774052,
+    "against_neighbours": {
+     "difference": -0.01776579977387539,
+     "low": -0.03440389010615623,
+     "high": -0.0022363374407986026,
+     "half_width": 0.016083776332678813,
+     "units_higher": 68,
+     "units": 156
+    }
+   },
+   "primary": 0.06805979181025257,
+   "against_neighbours": {
+    "difference": -0.0031656550974684897,
+    "low": -0.014318872402677785,
+    "high": 0.006548327440198919,
+    "half_width": 0.010433599921438351,
+    "units_higher": 147,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.013689810993796698,
+    0.004088778141541484,
+    0.0001804300149972144
+   ]
+  },
+  "mf:L1:passes": {
+   "model": "mf",
+   "draw": "L1",
+   "carry": "passes",
+   "setting": {
+    "dim": 64,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 220
+   },
+   "passes_in_tuning": 220,
+   "passes": 220,
+   "by_seed": {
+    "0": 0.04940673521457206,
+    "1": 0.04624113325280921,
+    "2": 0.04698795076652489,
+    "3": 0.048782415076759574,
+    "4": 0.04904433149443583
+   },
+   "in_tuning": {
+    "validation": 0.06498641412645058,
+    "against_neighbours": {
+     "difference": -0.02410598956516534,
+     "low": -0.04358537225765729,
+     "high": -0.005869988122160419,
+     "half_width": 0.018857692067748434,
+     "units_higher": 65,
+     "units": 156
+    }
+   },
+   "primary": 0.068157975740772,
+   "against_neighbours": {
+    "difference": -0.0030674711669490757,
+    "low": -0.014699647147252413,
+    "high": 0.007027664254107828,
+    "half_width": 0.010863655700680121,
+    "units_higher": 142,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.011483149277283092,
+    0.0011209026685633425,
+    0.001203921253509495
+   ]
+  },
+  "mf:L1:steps": {
+   "model": "mf",
+   "draw": "L1",
+   "carry": "steps",
+   "setting": {
+    "dim": 64,
+    "layers": 0,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 220
+   },
+   "passes_in_tuning": 220,
+   "passes": 102,
+   "by_seed": {
+    "0": 0.04975748753763845,
+    "1": 0.047696790397348046,
+    "2": 0.045000139488040575,
+    "3": 0.04784279198667888,
+    "4": 0.04950096878878644
+   },
+   "in_tuning": {
+    "validation": 0.06498641412645058,
+    "against_neighbours": {
+     "difference": -0.02410598956516534,
+     "low": -0.04358537225765729,
+     "high": -0.005869988122160419,
+     "half_width": 0.018857692067748434,
+     "units_higher": 65,
+     "units": 156
+    }
+   },
+   "primary": 0.06935473958124386,
+   "against_neighbours": {
+    "difference": -0.0018707073264772134,
+    "low": -0.015002120221529898,
+    "high": 0.010882644762714624,
+    "half_width": 0.012942382492122262,
+    "units_higher": 140,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.004749507392789816,
+    -0.002613323676314649,
+    0.001742892075464012
+   ]
+  },
+  "lightgcn:L0:passes": {
+   "model": "lightgcn",
+   "draw": "L0",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 30
+   },
+   "passes_in_tuning": 30,
+   "passes": 30,
+   "by_seed": {
+    "0": 0.0551654858580063,
+    "1": 0.05438721691791401,
+    "2": 0.05356490459004345,
+    "3": 0.05258335172000278,
+    "4": 0.05348278261269665
+   },
+   "in_tuning": {
+    "validation": 0.08408719411580977,
+    "against_neighbours": {
+     "difference": -0.005005209575806159,
+     "low": -0.020954675392644652,
+     "high": 0.008711281585662815,
+     "half_width": 0.014832978489153733,
+     "units_higher": 68,
+     "units": 156
+    }
+   },
+   "primary": 0.05582017662618248,
+   "against_neighbours": {
+    "difference": -0.015405270281538581,
+    "low": -0.029682720129795566,
+    "high": -0.0033479225683416204,
+    "half_width": 0.013167398780726973,
+    "units_higher": 112,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.02315895468071479,
+    -0.010194883436091732,
+    -0.01280712655048874
+   ]
+  },
+  "lightgcn:L0:steps": {
+   "model": "lightgcn",
+   "draw": "L0",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 30
+   },
+   "passes_in_tuning": 30,
+   "passes": 14,
+   "by_seed": {
+    "0": 0.04674477010417654,
+    "1": 0.04861546052325894,
+    "2": 0.04646207246717853,
+    "3": 0.046833354102154244,
+    "4": 0.04673071261360991
+   },
+   "in_tuning": {
+    "validation": 0.08408719411580977,
+    "against_neighbours": {
+     "difference": -0.005005209575806159,
+     "low": -0.020954675392644652,
+     "high": 0.008711281585662815,
+     "half_width": 0.014832978489153733,
+     "units_higher": 68,
+     "units": 156
+    }
+   },
+   "primary": 0.04962230718313695,
+   "against_neighbours": {
+    "difference": -0.02160313972458412,
+    "low": -0.038195912406807225,
+    "high": -0.008208806253611561,
+    "half_width": 0.014993553076597832,
+    "units_higher": 91,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.02759141117109312,
+    -0.019819437490186605,
+    -0.01737979469947896
+   ]
+  },
+  "lightgcn:L05:passes": {
+   "model": "lightgcn",
+   "draw": "L05",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 20
+   },
+   "passes_in_tuning": 20,
+   "passes": 20,
+   "by_seed": {
+    "0": 0.060491570206845674,
+    "1": 0.061034373519249875,
+    "2": 0.058282716820468414,
+    "3": 0.05908789287650064,
+    "4": 0.05687279858244845
+   },
+   "in_tuning": {
+    "validation": 0.08323252487085765,
+    "against_neighbours": {
+     "difference": -0.005859878820758277,
+     "low": -0.022146363807895846,
+     "high": 0.008117516090941728,
+     "half_width": 0.015131939949418787,
+     "units_higher": 64,
+     "units": 156
+    }
+   },
+   "primary": 0.06018878406898852,
+   "against_neighbours": {
+    "difference": -0.01103666283873254,
+    "low": -0.0247723200827488,
+    "high": 0.0009556895535441764,
+    "half_width": 0.012864004818146488,
+    "units_higher": 104,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.023352735816919074,
+    -0.0023162603201867496,
+    -0.007349198668370266
+   ]
+  },
+  "lightgcn:L05:steps": {
+   "model": "lightgcn",
+   "draw": "L05",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 20
+   },
+   "passes_in_tuning": 20,
+   "passes": 9,
+   "by_seed": {
+    "0": 0.0522986993441425,
+    "1": 0.05371190936213991,
+    "2": 0.049519127917843096,
+    "3": 0.051658766752555124,
+    "4": 0.053770772724455664
+   },
+   "in_tuning": {
+    "validation": 0.08323252487085765,
+    "against_neighbours": {
+     "difference": -0.005859878820758277,
+     "low": -0.022146363807895846,
+     "high": 0.008117516090941728,
+     "half_width": 0.015131939949418787,
+     "units_higher": 64,
+     "units": 156
+    }
+   },
+   "primary": 0.05406669534809092,
+   "against_neighbours": {
+    "difference": -0.017158751559630144,
+    "low": -0.03255988720114049,
+    "high": -0.0036691682459866135,
+    "half_width": 0.014445359477576938,
+    "units_higher": 92,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.02535159469307918,
+    -0.00982005303012744,
+    -0.016227357497478532
+   ]
+  },
+  "lightgcn:L1:passes": {
+   "model": "lightgcn",
+   "draw": "L1",
+   "carry": "passes",
+   "setting": {
+    "dim": 64,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 20
+   },
+   "passes_in_tuning": 20,
+   "passes": 20,
+   "by_seed": {
+    "0": 0.056358396542676534,
+    "1": 0.055803685012179596,
+    "2": 0.05621681459691616,
+    "3": 0.054250677875077646,
+    "4": 0.05350750753305187
+   },
+   "in_tuning": {
+    "validation": 0.08136033158966054,
+    "against_neighbours": {
+     "difference": -0.007732072101955387,
+     "low": -0.024754222577535345,
+     "high": 0.00717142730570645,
+     "half_width": 0.015962824941620896,
+     "units_higher": 58,
+     "units": 156
+    }
+   },
+   "primary": 0.059156669696862514,
+   "against_neighbours": {
+    "difference": -0.012068777210858559,
+    "low": -0.025338137047401614,
+    "high": -0.00022615620411805604,
+    "half_width": 0.012555990421641778,
+    "units_higher": 101,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.02352413423055797,
+    -0.0029804514774613646,
+    -0.009606079337889005
+   ]
+  },
+  "lightgcn:L1:steps": {
+   "model": "lightgcn",
+   "draw": "L1",
+   "carry": "steps",
+   "setting": {
+    "dim": 64,
+    "layers": 4,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 20
+   },
+   "passes_in_tuning": 20,
+   "passes": 9,
+   "by_seed": {
+    "0": 0.05220266923829418,
+    "1": 0.050587696608243166,
+    "2": 0.05162048373698144,
+    "3": 0.05135278460455403,
+    "4": 0.04859063865330937
+   },
+   "in_tuning": {
+    "validation": 0.08136033158966054,
+    "against_neighbours": {
+     "difference": -0.007732072101955387,
+     "low": -0.024754222577535345,
+     "high": 0.00717142730570645,
+     "half_width": 0.015962824941620896,
+     "units_higher": 58,
+     "units": 156
+    }
+   },
+   "primary": 0.05625349732152524,
+   "against_neighbours": {
+    "difference": -0.014971949586195821,
+    "low": -0.028213809950823353,
+    "high": -0.00318804025736578,
+    "half_width": 0.012512884846728786,
+    "units_higher": 96,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.027010489934332645,
+    -0.008183151760852608,
+    -0.009650746033661745
+   ]
+  },
+  "lightgcn_lin_pos:L0:passes": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L0",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 170
+   },
+   "passes_in_tuning": 170,
+   "passes": 170,
+   "by_seed": {
+    "0": 0.07581878440998988,
+    "1": 0.07630743896734372,
+    "2": 0.07639807943722961,
+    "3": 0.07391284300553395,
+    "4": 0.07739852157693128
+   },
+   "in_tuning": {
+    "validation": 0.09494242771310694,
+    "against_neighbours": {
+     "difference": 0.005850024021491023,
+     "low": -0.015158988509128111,
+     "high": 0.030816194047628222,
+     "half_width": 0.022987591278378166,
+     "units_higher": 80,
+     "units": 156
+    }
+   },
+   "primary": 0.07836604583379467,
+   "against_neighbours": {
+    "difference": 0.007140598926073602,
+    "low": -0.005132044953364751,
+    "high": 0.018610769314501507,
+    "half_width": 0.011871407133933129,
+    "units_higher": 155,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.0018793577729440817,
+    0.009241121909618757,
+    0.01408214340979397
+   ]
+  },
+  "lightgcn_lin_pos:L0:steps": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L0",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.001,
+    "l2": 0.0001,
+    "passes": 170
+   },
+   "passes_in_tuning": 170,
+   "passes": 78,
+   "by_seed": {
+    "0": 0.06944469689504669,
+    "1": 0.0684459604258758,
+    "2": 0.06729395561292971,
+    "3": 0.06654823723542286,
+    "4": 0.07008887107547201
+   },
+   "in_tuning": {
+    "validation": 0.09494242771310694,
+    "against_neighbours": {
+     "difference": 0.005850024021491023,
+     "low": -0.015158988509128111,
+     "high": 0.030816194047628222,
+     "half_width": 0.022987591278378166,
+     "units_higher": 80,
+     "units": 156
+    }
+   },
+   "primary": 0.07227449343231476,
+   "against_neighbours": {
+    "difference": 0.0010490465245937047,
+    "low": -0.010083711172159835,
+    "high": 0.01160348530201449,
+    "half_width": 0.010843598237087162,
+    "units_higher": 154,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.012053686711442446,
+    0.007948754216281696,
+    0.007324700570959631
+   ]
+  },
+  "lightgcn_lin_pos:L05:passes": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L05",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 200
+   },
+   "passes_in_tuning": 200,
+   "passes": 200,
+   "by_seed": {
+    "0": 0.06947103177898752,
+    "1": 0.07308997817912359,
+    "2": 0.07221903517193888,
+    "3": 0.07448990898553422,
+    "4": 0.0746143599088673
+   },
+   "in_tuning": {
+    "validation": 0.0914471350679936,
+    "against_neighbours": {
+     "difference": 0.0023547313763776687,
+     "low": -0.020547699373461313,
+     "high": 0.028855721190917717,
+     "half_width": 0.024701710282189517,
+     "units_higher": 81,
+     "units": 156
+    }
+   },
+   "primary": 0.07770857257942203,
+   "against_neighbours": {
+    "difference": 0.006483125671700964,
+    "low": -0.006244951733586157,
+    "high": 0.01815132580970202,
+    "half_width": 0.01219813877164409,
+    "units_higher": 154,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.0017785234923300714,
+    0.010382150656434518,
+    0.007329745234598657
+   ]
+  },
+  "lightgcn_lin_pos:L05:steps": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L05",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 200
+   },
+   "passes_in_tuning": 200,
+   "passes": 92,
+   "by_seed": {
+    "0": 0.07135365008216575,
+    "1": 0.07561021795858844,
+    "2": 0.07323164826373388,
+    "3": 0.07303360255806325,
+    "4": 0.07169843453007957
+   },
+   "in_tuning": {
+    "validation": 0.0914471350679936,
+    "against_neighbours": {
+     "difference": 0.0023547313763776687,
+     "low": -0.020547699373461313,
+     "high": 0.028855721190917717,
+     "half_width": 0.024701710282189517,
+     "units_higher": 81,
+     "units": 156
+    }
+   },
+   "primary": 0.07911808856782705,
+   "against_neighbours": {
+    "difference": 0.007892641660105996,
+    "low": -0.004438320685131331,
+    "high": 0.019501159571361174,
+    "half_width": 0.011969740128246253,
+    "units_higher": 160,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.003560824730186919,
+    0.010865254664478689,
+    0.009283136248856301
+   ]
+  },
+  "lightgcn_lin_pos:L1:passes": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L1",
+   "carry": "passes",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 160
+   },
+   "passes_in_tuning": 160,
+   "passes": 160,
+   "by_seed": {
+    "0": 0.07044768465832353,
+    "1": 0.06580508784218747,
+    "2": 0.07277941342927938,
+    "3": 0.07226004595684048,
+    "4": 0.06964917263155743
+   },
+   "in_tuning": {
+    "validation": 0.08670955863398887,
+    "against_neighbours": {
+     "difference": -0.0023828450576270552,
+     "low": -0.026419651855460972,
+     "high": 0.024789799681599025,
+     "half_width": 0.02560472576853,
+     "units_higher": 78,
+     "units": 156
+    }
+   },
+   "primary": 0.07363052807272495,
+   "against_neighbours": {
+    "difference": 0.0024050811650038937,
+    "low": -0.011049846621549411,
+    "high": 0.015128422609515637,
+    "half_width": 0.013089134615532523,
+    "units_higher": 157,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.010651976131793086,
+    0.01317781469692547,
+    0.0048028021249521494
+   ]
+  },
+  "lightgcn_lin_pos:L1:steps": {
+   "model": "lightgcn_lin_pos",
+   "draw": "L1",
+   "carry": "steps",
+   "setting": {
+    "dim": 128,
+    "layers": 2,
+    "lr": 0.005,
+    "l2": 0.0001,
+    "passes": 160
+   },
+   "passes_in_tuning": 160,
+   "passes": 74,
+   "by_seed": {
+    "0": 0.072518676050652,
+    "1": 0.06784217128663632,
+    "2": 0.07496955195804729,
+    "3": 0.07338967914729934,
+    "4": 0.07070410629227018
+   },
+   "in_tuning": {
+    "validation": 0.08670955863398887,
+    "against_neighbours": {
+     "difference": -0.0023828450576270552,
+     "low": -0.026419651855460972,
+     "high": 0.024789799681599025,
+     "half_width": 0.02560472576853,
+     "units_higher": 78,
+     "units": 156
+    }
+   },
+   "primary": 0.07525609980271668,
+   "against_neighbours": {
+    "difference": 0.00403065289499562,
+    "low": -0.009626495510209065,
+    "high": 0.016804007360360272,
+    "half_width": 0.013215251435284668,
+    "units_higher": 162,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.010046752243183375,
+    0.01488024272434235,
+    0.007372674412557858
+   ]
+  },
+  "combine[B3+B5]:F1": {
+   "scores": [
+    "B3",
+    "B5"
+   ],
+   "form": "F1",
+   "weights": {
+    "log(1 + B3)": 1.0,
+    "log(1 + B5)": 0.015625
+   },
+   "in_tuning": {
+    "validation": 0.09060229552915054,
+    "against_neighbours": {
+     "difference": 0.001509891837534625,
+     "low": -0.00017908929866673168,
+     "high": 0.004059934282091882,
+     "half_width": 0.002119511790379307,
+     "units_higher": 52,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.07177994345926497,
+   "against_neighbours": {
+    "difference": 0.0005544965515439105,
+    "low": -0.00014008653019116808,
+    "high": 0.0012694429285916374,
+    "half_width": 0.0007047647293914027,
+    "units_higher": 118,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.0013453924031925617,
+    0.00023900871934472165,
+    7.576760754498213e-05
+   ]
+  },
+  "combine[B3+B5]:F3": {
+   "scores": [
+    "B3",
+    "B5"
+   ],
+   "form": "F3",
+   "weights": {
+    "log(1 + B3)": 1.0,
+    "log(1 + B5)": 0.015625,
+    "log(1 + B3) x log(1 + trait links)": 0.03125,
+    "log(1 + B5) x log(1 + trait links)": 0.0
+   },
+   "in_tuning": {
+    "validation": 0.09067246530887434,
+    "against_neighbours": {
+     "difference": 0.001580061617258367,
+     "low": -3.667940166410264e-05,
+     "high": 0.004083745231578829,
+     "half_width": 0.0020602123166214657,
+     "units_higher": 50,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.07167750267930938,
+   "against_neighbours": {
+    "difference": 0.0004520557715883139,
+    "low": -0.00025586930172030514,
+    "high": 0.0011471910300856374,
+    "half_width": 0.0007015301659029713,
+    "units_higher": 118,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.0011228743457949825,
+    0.00020897265339982074,
+    2.1761545904996426e-05
+   ]
+  },
+  "combine[B1+B3]:F1": {
+   "scores": [
+    "B1",
+    "B3"
+   ],
+   "form": "F1",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0
+   },
+   "in_tuning": {
+    "validation": 0.0926367668258451,
+    "against_neighbours": {
+     "difference": 0.003544363134229181,
+     "low": 0.001148013093385792,
+     "high": 0.00650253140935585,
+     "half_width": 0.002677259157985029,
+     "units_higher": 81,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.0731795816386009,
+   "against_neighbours": {
+    "difference": 0.0019541347308798442,
+    "low": -0.0009246867317707029,
+    "high": 0.005737759106734019,
+    "half_width": 0.003331222919252361,
+    "units_higher": 120,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.008323452105665837,
+    -0.0017751031839829785,
+    -0.0007251998649892527
+   ]
+  },
+  "combine[B1+B3]:F3": {
+   "scores": [
+    "B1",
+    "B3"
+   ],
+   "form": "F3",
+   "weights": {
+    "log(1 + B1)": 0.015625,
+    "log(1 + B3)": 1.0,
+    "log(1 + B1) x log(1 + trait links)": 0.015625,
+    "log(1 + B3) x log(1 + trait links)": 0.125
+   },
+   "in_tuning": {
+    "validation": 0.09321946090308932,
+    "against_neighbours": {
+     "difference": 0.004127057211473327,
+     "low": 0.0014306533251760587,
+     "high": 0.007473974572737363,
+     "half_width": 0.0030216606237806524,
+     "units_higher": 82,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.07265870989345138,
+   "against_neighbours": {
+    "difference": 0.0014332629857303205,
+    "low": -0.0015648331202239906,
+    "high": 0.005332689704439407,
+    "half_width": 0.0034487614123316986,
+    "units_higher": 118,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    0.008143359447122083,
+    -0.002520411215603309,
+    -0.0013647768974997456
+   ]
+  },
+  "combine[B1+B3+B5]:F1": {
+   "scores": [
+    "B1",
+    "B3",
+    "B5"
+   ],
+   "form": "F1",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0,
+    "log(1 + B5)": 0.0625
+   },
+   "in_tuning": {
+    "validation": 0.09324386429774047,
+    "against_neighbours": {
+     "difference": 0.004151460606124542,
+     "low": 0.0004960419483968897,
+     "high": 0.008128360556846856,
+     "half_width": 0.0038161593042249833,
+     "units_higher": 87,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.07499099770052535,
+   "against_neighbours": {
+    "difference": 0.0037655507928042935,
+    "low": 0.0007860255582857692,
+    "high": 0.007707397537563448,
+    "half_width": 0.0034606859896388394,
+    "units_higher": 165,
+    "units": 284
+   },
+   "carries": true,
+   "against_neighbours_by_third": [
+    0.009761009348365568,
+    -0.0006162951252514718,
+    0.002105813461424514
+   ]
+  },
+  "combine[B1+B3+B5]:F3": {
+   "scores": [
+    "B1",
+    "B3",
+    "B5"
+   ],
+   "form": "F3",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0,
+    "log(1 + B5)": 0.0625,
+    "log(1 + B1) x log(1 + trait links)": 0.0,
+    "log(1 + B3) x log(1 + trait links)": 0.015625,
+    "log(1 + B5) x log(1 + trait links)": 0.0
+   },
+   "in_tuning": {
+    "validation": 0.09351481939148147,
+    "against_neighbours": {
+     "difference": 0.004422415699865543,
+     "low": 0.0009236400864877891,
+     "high": 0.008277358068515005,
+     "half_width": 0.003676858991013608,
+     "units_higher": 87,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.07500594775303175,
+   "against_neighbours": {
+    "difference": 0.003780500845310688,
+    "low": 0.0008066434729124538,
+    "high": 0.0077071593415050385,
+    "half_width": 0.0034502579342962922,
+    "units_higher": 164,
+    "units": 284
+   },
+   "carries": true,
+   "against_neighbours_by_third": [
+    0.009838726789371264,
+    -0.0005725830916390982,
+    0.002029536902021478
+   ]
+  },
+  "combine[B1+B3+B4]:F1": {
+   "scores": [
+    "B1",
+    "B3",
+    "B4"
+   ],
+   "form": "F1",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0,
+    "log(1 + B4)": 8.0
+   },
+   "in_tuning": {
+    "validation": 0.10925806097738786,
+    "against_neighbours": {
+     "difference": 0.020165657285771934,
+     "low": 0.006553939383807226,
+     "high": 0.03587241842270344,
+     "half_width": 0.014659239519448105,
+     "units_higher": 85,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.06726016261453736,
+   "against_neighbours": {
+    "difference": -0.003965284293183714,
+    "low": -0.01729899357500564,
+    "high": 0.007711573721757839,
+    "half_width": 0.01250528364838174,
+    "units_higher": 122,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.0062367021201088745,
+    -0.002065242547792924,
+    -0.0035739077722241755
+   ]
+  },
+  "combine[B1+B3+B4]:F3": {
+   "scores": [
+    "B1",
+    "B3",
+    "B4"
+   ],
+   "form": "F3",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0,
+    "log(1 + B4)": 8.0,
+    "log(1 + B1) x log(1 + trait links)": 0.0,
+    "log(1 + B3) x log(1 + trait links)": -0.03125,
+    "log(1 + B4) x log(1 + trait links)": 0.0
+   },
+   "in_tuning": {
+    "validation": 0.10936632629762408,
+    "against_neighbours": {
+     "difference": 0.02027392260600815,
+     "low": 0.006618949601203418,
+     "high": 0.03602769384649722,
+     "half_width": 0.0147043721226469,
+     "units_higher": 84,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.0671765953537813,
+   "against_neighbours": {
+    "difference": -0.004048851553939762,
+    "low": -0.017396270494301314,
+    "high": 0.00762073665697214,
+    "half_width": 0.012508503575636726,
+    "units_higher": 121,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.006200749203283261,
+    -0.0021406079000466363,
+    -0.0037851107831852466
+   ]
+  },
+  "combine[B1+B3+B4+B5]:F1": {
+   "scores": [
+    "B1",
+    "B3",
+    "B4",
+    "B5"
+   ],
+   "form": "F1",
+   "weights": {
+    "log(1 + B1)": 0.0625,
+    "log(1 + B3)": 1.0,
+    "log(1 + B4)": 8.0,
+    "log(1 + B5)": 2.0
+   },
+   "in_tuning": {
+    "validation": 0.1149728580253069,
+    "against_neighbours": {
+     "difference": 0.025880454333691016,
+     "low": 0.0029200198285458173,
+     "high": 0.052259599932153795,
+     "half_width": 0.02466979005180399,
+     "units_higher": 85,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.08068201180629989,
+   "against_neighbours": {
+    "difference": 0.009456564898578834,
+    "low": -0.004853605331725578,
+    "high": 0.023262720880441026,
+    "half_width": 0.014058163106083302,
+    "units_higher": 146,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.0027720486373784318,
+    0.013488035855054897,
+    0.01769614401444399
+   ]
+  },
+  "combine[B1+B3+B4+B5]:F3": {
+   "scores": [
+    "B1",
+    "B3",
+    "B4",
+    "B5"
+   ],
+   "form": "F3",
+   "weights": {
+    "log(1 + B1)": 0.03125,
+    "log(1 + B3)": 1.0,
+    "log(1 + B4)": 8.0,
+    "log(1 + B5)": 2.0,
+    "log(1 + B1) x log(1 + trait links)": 0.015625,
+    "log(1 + B3) x log(1 + trait links)": 0.03125,
+    "log(1 + B4) x log(1 + trait links)": 0.25,
+    "log(1 + B5) x log(1 + trait links)": -0.03125
+   },
+   "in_tuning": {
+    "validation": 0.11762856651739743,
+    "against_neighbours": {
+     "difference": 0.0285361628257815,
+     "low": 0.005059421604611703,
+     "high": 0.05511931975236474,
+     "half_width": 0.02502994907387652,
+     "units_higher": 87,
+     "units": 156
+    },
+    "read_as": "the weights were fitted on these links, so this figure flatters the arm"
+   },
+   "primary": 0.080444670085,
+   "against_neighbours": {
+    "difference": 0.009219223177278944,
+    "low": -0.0050496326209928735,
+    "high": 0.023349739982268223,
+    "half_width": 0.014199686301630548,
+    "units_higher": 145,
+    "units": 284
+   },
+   "carries": false,
+   "against_neighbours_by_third": [
+    -0.0026170740568849083,
+    0.012855369502575546,
+    0.017457649310623
+   ]
+  }
+ },
+ "paired": {
+  "mf:L05:passes minus mf:L0:passes": {
+   "what": "draw",
+   "difference": 0.008165095080192706,
+   "low": 0.0031155867477378188,
+   "high": 0.014556902225964874,
+   "half_width": 0.005720657739113528,
+   "units_higher": 148,
+   "units": 284
+  },
+  "mf:L1:passes minus mf:L0:passes": {
+   "what": "draw",
+   "difference": 0.006473987005271458,
+   "low": 0.0006966554849250361,
+   "high": 0.013238366642079238,
+   "half_width": 0.006270855578577101,
+   "units_higher": 141,
+   "units": 284
+  },
+  "mf:L05:steps minus mf:L0:steps": {
+   "what": "draw",
+   "difference": 0.0035765989227882658,
+   "low": -0.0034389680319977184,
+   "high": 0.01121522734537056,
+   "half_width": 0.007327097688684139,
+   "units_higher": 141,
+   "units": 284
+  },
+  "mf:L1:steps minus mf:L0:steps": {
+   "what": "draw",
+   "difference": 0.0048715466937795425,
+   "low": -0.0037567385364109655,
+   "high": 0.015464816477660117,
+   "half_width": 0.009610777507035541,
+   "units_higher": 134,
+   "units": 284
+  },
+  "mf:L0:steps minus mf:L0:passes": {
+   "what": "carry",
+   "difference": 0.002799204151963778,
+   "low": -0.0003478023827427091,
+   "high": 0.0070571723171354685,
+   "half_width": 0.003702487349939089,
+   "units_higher": 138,
+   "units": 284
+  },
+  "mf:L05:steps minus mf:L05:passes": {
+   "what": "carry",
+   "difference": -0.0017892920054406614,
+   "low": -0.00704885213898806,
+   "high": 0.0036083792563838227,
+   "half_width": 0.005328615697685941,
+   "units_higher": 131,
+   "units": 284
+  },
+  "mf:L1:steps minus mf:L1:passes": {
+   "what": "carry",
+   "difference": 0.0011967638404718633,
+   "low": -0.004295427245267163,
+   "high": 0.009103422333886647,
+   "half_width": 0.0066994247895769046,
+   "units_higher": 124,
+   "units": 284
+  },
+  "lightgcn:L05:passes minus lightgcn:L0:passes": {
+   "what": "draw",
+   "difference": 0.004368607442806044,
+   "low": -0.001656080467540123,
+   "high": 0.011101927222031589,
+   "half_width": 0.006379003844785856,
+   "units_higher": 130,
+   "units": 284
+  },
+  "lightgcn:L1:passes minus lightgcn:L0:passes": {
+   "what": "draw",
+   "difference": 0.0033364930706800268,
+   "low": -0.0037064566197572745,
+   "high": 0.010973010428833498,
+   "half_width": 0.007339733524295386,
+   "units_higher": 128,
+   "units": 284
+  },
+  "lightgcn:L05:steps minus lightgcn:L0:steps": {
+   "what": "draw",
+   "difference": 0.0044443881649539685,
+   "low": -0.0016062655700106309,
+   "high": 0.011465449111465685,
+   "half_width": 0.006535857340738158,
+   "units_higher": 149,
+   "units": 284
+  },
+  "lightgcn:L1:steps minus lightgcn:L0:steps": {
+   "what": "draw",
+   "difference": 0.006631190138388297,
+   "low": -0.0007154736636611752,
+   "high": 0.015231300347938402,
+   "half_width": 0.007973387005799788,
+   "units_higher": 146,
+   "units": 284
+  },
+  "lightgcn:L0:steps minus lightgcn:L0:passes": {
+   "what": "carry",
+   "difference": -0.0061978694430455325,
+   "low": -0.012042522272747793,
+   "high": -0.001216385897382329,
+   "half_width": 0.005413068187682732,
+   "units_higher": 94,
+   "units": 284
+  },
+  "lightgcn:L05:steps minus lightgcn:L05:passes": {
+   "what": "carry",
+   "difference": -0.006122088720897607,
+   "low": -0.012661362081339247,
+   "high": -0.0005378873852839713,
+   "half_width": 0.006061737348027637,
+   "units_higher": 108,
+   "units": 284
+  },
+  "lightgcn:L1:steps minus lightgcn:L1:passes": {
+   "what": "carry",
+   "difference": -0.002903172375337262,
+   "low": -0.0052420011332183405,
+   "high": -0.0008782043560729266,
+   "half_width": 0.002181898388572707,
+   "units_higher": 111,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L05:passes minus lightgcn_lin_pos:L0:passes": {
+   "what": "draw",
+   "difference": -0.0006574732543726342,
+   "low": -0.009403705995374883,
+   "high": 0.008204465559516755,
+   "half_width": 0.00880408577744582,
+   "units_higher": 157,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L1:passes minus lightgcn_lin_pos:L0:passes": {
+   "what": "draw",
+   "difference": -0.004735517761069706,
+   "low": -0.014487698458557175,
+   "high": 0.0046181855727865815,
+   "half_width": 0.009552942015671879,
+   "units_higher": 144,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L05:steps minus lightgcn_lin_pos:L0:steps": {
+   "what": "draw",
+   "difference": 0.0068435951355122916,
+   "low": -0.0024498045162498145,
+   "high": 0.01706569525646628,
+   "half_width": 0.009757749886358047,
+   "units_higher": 169,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L1:steps minus lightgcn_lin_pos:L0:steps": {
+   "what": "draw",
+   "difference": 0.0029816063704019165,
+   "low": -0.007337399500189226,
+   "high": 0.012862730792720318,
+   "half_width": 0.010100065146454772,
+   "units_higher": 168,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L0:steps minus lightgcn_lin_pos:L0:passes": {
+   "what": "carry",
+   "difference": -0.006091552401479894,
+   "low": -0.012555565247420502,
+   "high": -0.0006083268779632224,
+   "half_width": 0.00597361918472864,
+   "units_higher": 108,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L05:steps minus lightgcn_lin_pos:L05:passes": {
+   "what": "carry",
+   "difference": 0.0014095159884050313,
+   "low": -0.0008116004652080846,
+   "high": 0.003699278131637031,
+   "half_width": 0.0022554392984225576,
+   "units_higher": 144,
+   "units": 284
+  },
+  "lightgcn_lin_pos:L1:steps minus lightgcn_lin_pos:L1:passes": {
+   "what": "carry",
+   "difference": 0.0016255717299917289,
+   "low": -0.0019402138272171607,
+   "high": 0.005907503119670471,
+   "half_width": 0.003923858473443816,
+   "units_higher": 141,
+   "units": 284
+  },
+  "combine[B3+B5]:F1 minus combine[B3+B5]:F3": {
+   "what": "form",
+   "difference": 0.0001024407799555965,
+   "low": 1.8086661181194677e-05,
+   "high": 0.00025901942168555733,
+   "half_width": 0.00012046638025218133,
+   "units_higher": 98,
+   "units": 284
+  },
+  "combine[B1+B3]:F1 minus combine[B1+B3]:F3": {
+   "what": "form",
+   "difference": 0.0005208717451495237,
+   "low": 0.00021544195157776144,
+   "high": 0.0008470834331726747,
+   "half_width": 0.00031582074079745666,
+   "units_higher": 148,
+   "units": 284
+  },
+  "combine[B1+B3+B5]:F1 minus combine[B1+B3+B5]:F3": {
+   "what": "form",
+   "difference": -1.4950052506394217e-05,
+   "low": -0.0001042743570287596,
+   "high": 6.455091201412656e-05,
+   "half_width": 8.441263452144308e-05,
+   "units_higher": 150,
+   "units": 284
+  },
+  "combine[B1+B3+B4]:F1 minus combine[B1+B3+B4]:F3": {
+   "what": "form",
+   "difference": 8.356726075604739e-05,
+   "low": 1.7019525898097413e-05,
+   "high": 0.0001744206080395902,
+   "half_width": 7.87005410707464e-05,
+   "units_higher": 132,
+   "units": 284
+  },
+  "combine[B1+B3+B4+B5]:F1 minus combine[B1+B3+B4+B5]:F3": {
+   "what": "form",
+   "difference": 0.00023734172129989076,
+   "low": -0.0009402710397058276,
+   "high": 0.0016780547296814847,
+   "half_width": 0.0013091628846936562,
+   "units_higher": 115,
+   "units": 284
+  }
+ },
+ "missing": [],
+ "complete": true,
+ "implementation": {
+  "model": "c3ab3c573c1bf107",
+  "combine": "952ebffc97073680"
+ }
+}
