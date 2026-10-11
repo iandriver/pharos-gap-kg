@@ -2,15 +2,22 @@
 (docs/PROTOCOL.md, "A prospective test: links first reported from 2023").
 
 Pharos's GWAS links come from a source that aggregated the Catalog up to 2022. The Catalog has gone on
-being curated. This turns its associations into (target, trait) links by a rule chosen where it can be
-checked, on the studies Pharos already holds, and then splits them: every pair of Pharos 3.19 is
-training, a pair Pharos does not hold whose first study was published in 2023 or later is a
-prospective positive, and a pair Pharos does not hold whose first study is earlier is set aside.
+being curated. This turns its associations into (target, trait) links and then splits them: every
+pair of Pharos 3.19 is training, a pair Pharos does not hold whose first study was published in 2023
+or later is a prospective positive, and a pair Pharos does not hold whose first study is earlier is
+set aside.
+
+THE RULE, as amended on 10 Oct 2026: a link joins a trait to every target with a gene within 100,000
+bases of a variant associated with it at 5e-8 or smaller, and a trait is the live term of its ontology
+id, in Pharos's pairs and the Catalog's alike. The four rules declared first, built on the Catalog's
+own gene columns and on trait ids as written, recovered a sixth of Pharos's triples; `first-rule`
+reproduces that record.
 
 Nothing here runs a scorer. `build` reports counts.
 
     python -I -m pharos_gap_kg.gwascat extract            # the columns the rule reads, from the registered zip
-    python -m pharos_gap_kg.gwascat rule pharos319        # choose the rule on the studies Pharos holds
+    python -m pharos_gap_kg.gwascat first-rule pharos319  # the four rules declared first, on the studies Pharos holds
+    python -m pharos_gap_kg.gwascat rule pharos319        # how well the amended rule reproduces Pharos on those studies
     python -m pharos_gap_kg.gwascat build pharos319 --freeze
     python -m pharos_gap_kg.gwascat --selftest
 
@@ -32,7 +39,9 @@ KEY = "gwas_catalog_20261005"
 PROSPECTIVE = 2022                 # the split's cutoff: Pharos 3.19 holds links to 2022
 FROM = 2023                        # a prospective positive was first reported in this year or later
 COLUMNS = {"PUBMEDID": "pubmedid", "DATE": "date", "STUDY ACCESSION": "study_acc", "PVALUE_MLOG": "p_mlog", "SNP_GENE_IDS": "genes_in",
-           "UPSTREAM_GENE_ID": "gene_up", "DOWNSTREAM_GENE_ID": "gene_down", "MAPPED_TRAIT_URI": "trait_uris", "OR or BETA": "or_beta"}
+           "UPSTREAM_GENE_ID": "gene_up", "DOWNSTREAM_GENE_ID": "gene_down", "MAPPED_TRAIT_URI": "trait_uris", "OR or BETA": "or_beta",
+           "CHR_ID": "chr", "CHR_POS": "pos"}
+WINDOW = 100_000                   # bases either side of the variant
 # the four declared rules, in the order that breaks a tie: which genes, and which p-values
 RULES = (("in", "5e-8"), ("in", "any"), ("near", "5e-8"), ("near", "any"))
 MLOG_5E8 = -np.log10(5e-8)
@@ -45,6 +54,10 @@ def table_dir() -> Path:
 
 def rule_path(release: str) -> Path:
     return paths.DOCS_DATA / f"gwascat_rule_{release}.json"
+
+
+def first_rule_path(release: str) -> Path:
+    return paths.DOCS_DATA / f"gwascat_rule_first_{release}.json"
 
 
 def extract() -> dict:
@@ -137,6 +150,87 @@ def choose_rule(release: str) -> dict:
            "pharos_studies": int(theirs.study_acc.nunique()), "studies_in_both": len(shared), "pharos_triples_in_those": int(len(theirs_in)),
            "rules": rows, "chosen": best, "passes": bool(rows[best]["precision"] >= PASS and rows[best]["recall"] >= PASS), "bar": PASS,
            "compared_as": "(Ensembl gene, trait term, study accession), for genes the release maps to a target"}
+    first_rule_path(release).write_text(json.dumps(out, indent=1) + "\n")
+    return out
+
+
+def live(ids: pd.Series, terms: dict) -> pd.Series:
+    """Each trait id (a CURIE) as the live term it stands for; an id the ontology lacks is kept."""
+    from pharos_gap_kg import ontology
+    m = {i: (ontology.canonical(i, terms) or i) for i in ids.dropna().unique()}
+    return ids.map(m)
+
+
+def within(chrom: np.ndarray, pos: np.ndarray, genes: pd.DataFrame, window: int) -> tuple[np.ndarray, np.ndarray]:
+    """(row of an association, row of `genes`) for every gene with a base within `window` of the variant.
+    `genes` has chr, start, end."""
+    rows, hits = [np.zeros(0, np.int64)], [np.zeros(0, np.int64)]
+    for c, g in genes.groupby("chr", sort=False):
+        idx = np.flatnonzero(chrom == str(c))
+        if not len(idx):
+            continue
+        g = g.sort_values("start")
+        st, en, gi = g.start.to_numpy(np.int64), g.end.to_numpy(np.int64), g.index.to_numpy()
+        p = pos[idx]
+        lo = np.searchsorted(st, p - window - int((en - st).max()), side="left")
+        hi = np.searchsorted(st, p + window, side="right")
+        n = hi - lo
+        r = np.repeat(np.arange(len(idx)), n)
+        k = np.arange(int(n.sum())) - np.repeat(np.cumsum(n) - n, n) + np.repeat(lo, n)
+        keep = en[k] >= p[r] - window
+        rows.append(idx[r[keep]])
+        hits.append(gi[k[keep]])
+    return np.concatenate(rows), np.concatenate(hits)
+
+
+def links(df: pd.DataFrame, placed: pd.DataFrame, terms: dict) -> pd.DataFrame:
+    """target, trait, study_acc, year: one row for each target, live trait and study the amended rule
+    links. `placed` has target, chr, start, end, one row for each gene a target is tied to."""
+    d = df[(df.p_mlog >= MLOG_5E8 - 1e-9) & df.pos.str.fullmatch(r"\d+")].reset_index(drop=True)
+    placed = placed.reset_index(drop=True)
+    r, k = within(d.chr.to_numpy(str), d.pos.astype(np.int64).to_numpy(), placed, WINDOW)
+    tcode, tname = pd.factorize(placed.target)
+    at = pd.DataFrame({"row": r, "target": tcode[k]}).drop_duplicates()
+    ids = trait_ids(d.trait_uris).explode().dropna()
+    ids = ids[ids.str.contains("_")]
+    tr = pd.DataFrame({"row": ids.index.to_numpy(), "trait": live(ids.map(split.curie), terms).to_numpy()}).drop_duplicates()
+    m = at.merge(tr, on="row")
+    m["study_acc"], m["year"] = d.study_acc.to_numpy()[m.row.to_numpy()], d.year.to_numpy()[m.row.to_numpy()]
+    m["target"] = tname.to_numpy()[m.target.to_numpy()]
+    return m[["target", "trait", "study_acc", "year"]].drop_duplicates(["target", "trait", "study_acc"]).reset_index(drop=True)
+
+
+def placed_targets(release: str) -> pd.DataFrame:
+    from pharos_gap_kg import position
+    tg = position.target_genes(release, position.genes(registry.require("ensembl_gtf_113")))
+    return tg.assign(chr=tg.chr.astype(str))[["target", "chr", "start", "end"]]
+
+
+def check_rule(release: str) -> dict:
+    """How well the amended rule reproduces Pharos's own (target, live trait, study) triples, on the
+    studies both hold."""
+    import pyarrow.parquet as pq
+    from pharos_gap_kg import ontology
+    terms = ontology.read(registry.require("efo_obo"))
+    df = pd.read_parquet(table_dir() / "associations.parquet")
+    theirs = pq.read_table(paths.tables(release) / "tiga_provenance.parquet", columns=["ensg", "efoid", "study_acc"]).to_pandas().drop_duplicates()
+    shared = set(theirs.study_acc) & set(df.study_acc)
+    sub = df[df.study_acc.isin(shared)]
+    if int(sub.year.max()) >= FROM:
+        raise SystemExit("REFUSED: a study Pharos holds is dated after its snapshot; the check would read a later study")
+    mine = links(sub, placed_targets(release), terms)
+    th = theirs[theirs.study_acc.isin(shared)].merge(gene_to_targets(release), on="ensg")
+    th["trait"] = live(th.efoid.map(split.curie), terms)
+    key = lambda t: set(zip(t.target, t.trait, t.study_acc))
+    a, b = key(mine), key(th)
+    pairs = lambda s: {(x, y) for x, y, _ in s}
+    pa, pb = pairs(a), pairs(b)
+    out = {"release": release, "catalog": KEY, "catalog_sha256": json.loads((table_dir() / "_manifest.json").read_text())["sha256"],
+           "rule": {"window": WINDOW, "p_value_at_most": 5e-8, "traits": "the ontology's live term"}, "pharos_studies": int(theirs.study_acc.nunique()), "studies_in_both": len(shared),
+           "triples": {"produced": len(a), "pharos": len(b), "shared": len(a & b), "precision": len(a & b) / len(a), "recall": len(a & b) / len(b)},
+           "pairs": {"produced": len(pa), "pharos": len(pb), "shared": len(pa & pb), "precision": len(pa & pb) / len(pa), "recall": len(pa & pb) / len(pb)},
+           "studies_with_a_triple_not_reproduced": len({s for _, _, s in b - a}), "bar": PASS, "compared_as": "(target, live trait, study accession)"}
+    out["passes"] = bool(out["triples"]["precision"] >= PASS and out["triples"]["recall"] >= PASS)
     rule_path(release).write_text(json.dumps(out, indent=1) + "\n")
     return out
 
@@ -148,39 +242,46 @@ def classify(catalog_pairs: pd.DataFrame, pharos_pairs: set[tuple[str, str]]) ->
     return pd.Series(np.where(held, "training", np.where(catalog_pairs.year >= FROM, "prospective", "aside")), index=catalog_pairs.index)
 
 
+def rekey(train: pd.DataFrame, terms: dict) -> pd.DataFrame:
+    """Pharos's pairs with each trait as its live term. Two traits with one live term become one."""
+    t = train.assign(trait=live(train.trait, terms))
+    g = t.groupby(["target", "trait"], sort=True)
+    out = pd.DataFrame({"year": g.year.min(), "last_year": g.last_year.max(), "n_studies": g.n_studies.sum(), "n_papers": g.n_papers.sum(), "trait_name": g.trait_name.first()}).reset_index()
+    return out
+
+
 def build(release: str, freeze: bool) -> dict:
-    """The prospective split, from the chosen rule. Counts only."""
+    """The prospective split, from the amended rule. Counts only."""
     from pharos_gap_kg import ontology
     rp = rule_path(release)
     if not rp.is_file():
-        raise SystemExit(f"no rule chosen; run:  python -m pharos_gap_kg.gwascat rule {release}")
-    rule = tuple(json.loads(rp.read_text())["chosen"].split("/"))
+        raise SystemExit(f"the rule has not been checked against Pharos; run:  python -m pharos_gap_kg.gwascat rule {release}")
+    terms = ontology.read(registry.require("efo_obo"))
     df = pd.read_parquet(table_dir() / "associations.parquet")
-    df = df[df.year.notna()]
-    t = triples(df, rule).merge(gene_to_targets(release), on="ensg")
-    t["trait"] = [split.curie(e) if "_" in e else None for e in t.efoid]
-    t = t.dropna(subset=["trait"])
+    t = links(df[df.year.notna()], placed_targets(release), terms)
     g = t.groupby(["target", "trait"], sort=True)
     cat = pd.DataFrame({"year": g.year.min().astype(int), "last_year": g.year.max().astype(int), "n_studies": g.study_acc.nunique()}).reset_index()
     old = split.load(2018)
-    train = pd.concat([old[k] for k in split.PARTS], ignore_index=True).sort_values(["target", "trait"]).reset_index(drop=True)
+    as_written = pd.concat([old[k] for k in split.PARTS], ignore_index=True)
+    train = rekey(as_written, terms)
     held = set(zip(train.target, train.trait))
     cat["kind"] = classify(cat, held)
-    terms = ontology.read(registry.require("efo_obo"))
     label = lambda c: (terms.get(c) or {}).get("name")
     pros = cat[cat.kind == "prospective"].drop(columns="kind").assign(n_papers=0)
     pros["trait_name"] = pros.trait.map(label)
-    seen = pros.target.isin(set(train.target)) & pros.trait.isin(set(train.trait))
+    T, D = set(train.target), set(train.trait)
+    seen = pros.target.isin(T) & pros.trait.isin(D)
     parts = {"train": train, "test": pros[seen].reset_index(drop=True), "unscored": pros[~seen].reset_index(drop=True)}
     aside = cat[cat.kind == "aside"].drop(columns="kind").reset_index(drop=True)
-    d = {"release": release, "catalog": KEY, "catalog_sha256": json.loads((table_dir() / "_manifest.json").read_text())["sha256"], "rule": "/".join(rule), "from": FROM,
+    d = {"release": release, "catalog": KEY, "catalog_sha256": json.loads((table_dir() / "_manifest.json").read_text())["sha256"],
+         "rule": {"window": WINDOW, "p_value_at_most": 5e-8, "traits": "the ontology's live term"}, "from": FROM,
          **split.describe(parts, PROSPECTIVE),
-         "aside": {"links": int(len(aside)), "sha256": split.digest(aside), "between_a_training_target_and_trait": int((aside.target.isin(set(train.target)) & aside.trait.isin(set(train.trait))).sum())},
+         "pharos_pairs_as_written": {"links": int(len(as_written)), "traits": int(as_written.trait.nunique())},
+         "aside": {"links": int(len(aside)), "sha256": split.digest(aside), "between_a_training_target_and_trait": int((aside.target.isin(T) & aside.trait.isin(D)).sum())},
          "catalog_pairs": int(len(cat)), "catalog_pairs_pharos_holds": int((cat.kind == "training").sum()), "pharos_pairs_the_catalog_gives": float((cat.kind == "training").sum() / len(train)),
-         "unscored_by_kind": {"new_trait": int((~pros.trait.isin(set(train.trait)) & pros.target.isin(set(train.target))).sum()),
-                              "new_target": int((pros.trait.isin(set(train.trait)) & ~pros.target.isin(set(train.target))).sum()),
-                              "both_new": int((~pros.trait.isin(set(train.trait)) & ~pros.target.isin(set(train.target))).sum())},
-         "test_traits_with_a_positive": int(parts["test"].trait.nunique())}
+         "unscored_by_kind": {"new_trait": int((~pros.trait.isin(D) & pros.target.isin(T)).sum()), "new_target": int((pros.trait.isin(D) & ~pros.target.isin(T)).sum()),
+                              "both_new": int((~pros.trait.isin(D) & ~pros.target.isin(T)).sum())},
+         "unscored_new_traits": int(pros.trait[~pros.trait.isin(D)].nunique()), "unscored_new_targets": int(pros.target[~pros.target.isin(T)].nunique())}
     fz = split.frozen_path(PROSPECTIVE)
     if fz.is_file():
         want = json.loads(fz.read_text())
@@ -226,7 +327,24 @@ def _selftest() -> int:
     cat = pd.DataFrame({"target": ["g1", "g2", "g3", "g4"], "trait": ["a", "a", "b", "b"], "year": [2019, 2024, 2021, 2023]})
     ck("a pair Pharos holds is training whatever its year; one it lacks is prospective from 2023 and set aside before",
        classify(cat, {("g1", "a"), ("g2", "a")}).tolist() == ["training", "training", "aside", "prospective"])
-    ck("four rules are declared, the stricter first", len(RULES) == 4 and RULES[0] == ("in", "5e-8") and len(set(RULES)) == 4)
+    ck("four rules were declared first, the stricter first", len(RULES) == 4 and RULES[0] == ("in", "5e-8") and len(set(RULES)) == 4)
+    genes = pd.DataFrame({"target": ["A", "B", "C", "D"], "chr": ["1", "1", "1", "2"], "start": [1000, 5000, 400000, 1000], "end": [2000, 300000, 401000, 2000]})
+    r, k = within(np.array(["1", "1", "2", "1", "9"]), np.array([2500, 350000, 1500, 600000, 5]), genes, 1000)
+    got = sorted(zip(r.tolist(), genes.target.to_numpy()[k].tolist()))
+    ck("a gene is within the window if any base of it is, on the same chromosome, however long the gene",
+       got == [(0, "A"), (2, "D")] and sorted(zip(*[x.tolist() for x in within(np.array(["1"]), np.array([200000]), genes, 1000)])) == [(0, 1)])
+    r2, k2 = within(np.array(["1"]), np.array([3000]), genes, 2000)
+    ck("the window reaches both ways from the variant", sorted(genes.target.to_numpy()[k2].tolist()) == ["A", "B"])
+    terms = {"EFO:1": {"obsolete": True, "replaced_by": "OBA:9", "parents": [], "name": "old"}, "OBA:9": {"obsolete": False, "replaced_by": None, "parents": [], "name": "new"}}
+    ck("a replaced trait term stands for its replacement, and a term the ontology lacks is kept", live(pd.Series(["EFO:1", "OBA:9", "XX:5"]), terms).tolist() == ["OBA:9", "OBA:9", "XX:5"])
+    assoc = pd.DataFrame({"chr": ["1", "1", "1"], "pos": ["1500", "1500", "9 x 10"], "p_mlog": [9.0, 5.0, 12.0], "trait_uris": ["u/EFO_1", "u/OBA_9", "u/OBA_9"],
+                          "study_acc": ["S1", "S2", "S3"], "year": [2020, 2021, 2024]})
+    L = links(assoc, genes, terms)
+    ck("the amended rule links the live trait to every target within the window of a variant at 5e-8, and skips a variant with no single position",
+       sorted(L.values.tolist()) == [["A", "OBA:9", "S1", 2020], ["B", "OBA:9", "S1", 2020]])
+    old = pd.DataFrame({"target": ["A", "A", "B"], "trait": ["EFO:1", "OBA:9", "EFO:1"], "year": [2015, 2012, 2019], "last_year": [2016, 2012, 2019], "n_studies": [1, 2, 1], "n_papers": [1, 1, 1], "trait_name": ["old", "new", "old"]})
+    rk = rekey(old, terms)
+    ck("two Pharos pairs that differ only in a replaced trait term become one, dated by the earlier", rk[["target", "trait", "year", "last_year"]].values.tolist() == [["A", "OBA:9", 2012, 2016], ["B", "OBA:9", 2019, 2019]])
     return 0 if ok else 1
 
 
@@ -235,7 +353,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("stage", choices=("extract", "rule", "build"))
+    ap.add_argument("stage", choices=("extract", "first-rule", "rule", "build"))
     ap.add_argument("release", nargs="?")
     ap.add_argument("--freeze", action="store_true")
     a = ap.parse_args(argv)
@@ -246,6 +364,12 @@ def main(argv: list[str] | None = None) -> int:
     if not a.release:
         raise SystemExit("rule and build need the release")
     if a.stage == "rule":
+        out = check_rule(a.release)
+        for k in ("triples", "pairs"):
+            r = out[k]
+            print(f"  {k:8s} produced {r['produced']:>9,}  Pharos {r['pharos']:>9,}  shared {r['shared']:>9,}  of the rule's, Pharos's: {r['precision']:.3f}  of Pharos's, recovered: {r['recall']:.3f}")
+        print(f"  on {out['studies_in_both']:,} shared studies; both at {PASS:.0%} or more: {out['passes']}")
+    elif a.stage == "first-rule":
         out = choose_rule(a.release)
         print(f"  {out['studies_in_both']:,} of Pharos's {out['pharos_studies']:,} studies are in the Catalog; Pharos holds {out['pharos_triples_in_those']:,} triples for them")
         for k, r in out["rules"].items():
@@ -253,9 +377,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  both at {PASS:.0%} or more: {out['passes']}")
     else:
         d = build(a.release, a.freeze)
-        print(f"  rule {d['rule']}: {d['catalog_pairs']:,} Catalog pairs; Pharos holds {d['catalog_pairs_pharos_holds']:,} ({d['pharos_pairs_the_catalog_gives']:.1%} of Pharos's {d['train']['links']:,})")
+        print(f"  Pharos pairs {d['pharos_pairs_as_written']['links']:,} over {d['pharos_pairs_as_written']['traits']:,} traits as written; {d['train']['links']:,} over {d['train']['traits']:,} by live term")
+        print(f"  {d['catalog_pairs']:,} Catalog pairs; Pharos holds {d['catalog_pairs_pharos_holds']:,} ({d['pharos_pairs_the_catalog_gives']:.1%} of Pharos's)")
         print(f"  prospective test: {d['test']['links']:,} links over {d['test']['traits']:,} traits and {d['test']['targets']:,} targets, by year {d['test_by_year']}")
-        print(f"  cold start: {d['unscored']['links']:,} ({d['unscored_by_kind']}); set aside: {d['aside']['links']:,}, of which {d['aside']['between_a_training_target_and_trait']:,} between a training target and trait")
+        print(f"  cold start: {d['unscored']['links']:,} ({d['unscored_by_kind']}; {d['unscored_new_traits']:,} new traits, {d['unscored_new_targets']:,} new targets); set aside: {d['aside']['links']:,}, of which {d['aside']['between_a_training_target_and_trait']:,} between a training target and trait")
     return 0
 
 
