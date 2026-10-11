@@ -105,6 +105,16 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   degree, position) carries, +0.0038 [+0.0008, +0.0077]; no graph or factorisation arm does, and
   neither carrying the length of fitting by steps nor drawing links by trait helps. Rehearsed, each
   scored model stands about where it stood on the test links.
+- **The prospective test** ([`findings/PROSPECTIVE.md`](findings/PROSPECTIVE.md)). 194,017 links first
+  reported from 2023 on, over 1,110 traits, built from the GWAS Catalog's release of 5 Oct 2026 by a
+  rule checked against Pharos's own links (on shared studies 95.1% of the rule's triples are Pharos's
+  and 92.8% of Pharos's are recovered), with all of Pharos 3.19 as training. What is scored was fixed
+  before any scorer read a link. A combiner of neighbours, degree and position, with two fitted
+  weights, beats the neighbours baseline: 0.1012 against 0.0947, +0.0066 [+0.0031, +0.0102]. It is the
+  arm that carried in rehearsal. The gain is on links at loci that training already holds and not on
+  new links. No graph model beats neighbours. For cold start, position transfer for new targets
+  repeats (+0.0250 [+0.0087, +0.0418]) and lineage transfer for new traits does not (-0.0026 [-0.0040,
+  -0.0011]).
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -158,6 +168,7 @@ python -m pharos_gap_kg.coldstart pharos319 --cutoff 2018     # a trait or a tar
 python -m pharos_gap_kg.rehearse report pharos319             # the procedure one step back in time; stages in its docstring
 python -m pharos_gap_kg.fetch gwas_catalog_20261005           # the GWAS Catalog as curated since, for the prospective test
 python -I -m pharos_gap_kg.gwascat extract                    # then `rule` and `build`: links first reported from 2023
+python -m pharos_gap_kg.prospect score pharos319              # the prospective test; stages in its docstring
 python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
 python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
 python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read

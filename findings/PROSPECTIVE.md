@@ -70,3 +70,189 @@ training pairs back under the rule.
   hold: the Catalog curated the study after Pharos's snapshot, or Pharos's source left the study out.
   Which, this protocol cannot see, and that is why they are counted neither way.
 - **The last year is partial.** 2026 holds what had been curated by 5 Oct.
+
+## What was scored
+
+Fixed in a dated addition to the protocol before any scorer read a prospective link: the
+parameter-free scorers; the 2018 split's four combiners and two of its models exactly as frozen; and
+three candidates from the rehearsal, tuned or fitted with a cutoff of 2020 on training links only
+(`prospect tune`, `prospect weights`, `prospect fit`; `docs/data/prospect_candidate_2022.json`,
+`docs/data/prospect_weights_2022.json`). The fitted models are the mean of five seeds on all 294,954
+training links. The addition also wrote down what the rehearsal led one to expect: no graph model
+above neighbours, `combine[B1+B3+B5]` a little above it, and lineage transfer well above degree for
+new traits.
+
+`python -m pharos_gap_kg.prospect score pharos319` writes `docs/data/prospect_gene_trait_2022.json`. The
+candidates of a trait are the 18,005 training targets less its training links and less the pairs
+set aside. 68,846 of the 194,017 test links (35.5%) are lineage- or position-linked to a training
+link; on the 2018 split's test it was 20.2%.
+
+## The test links
+
+Mean average precision over the 1,110 scored traits:
+
+| | | all links | new links, lower bound | new links, neutral | by locus |
+|---|---|---|---|---|---|
+| `B1` | target degree | 0.0851 | 0.0412 | 0.0548 | 0.0261 |
+| `B3` | neighbours | 0.0947 | 0.0447 | 0.0582 | 0.0475 |
+| `B4` | lineage | 0.0316 | 0.0071 | 0.0087 | 0.0238 |
+| `B5` | position | 0.0439 | 0.0066 | 0.0087 | 0.0315 |
+| `combine` | 2018 combiner, frozen | 0.0870 | 0.0406 | 0.0524 | 0.0475 |
+| `combine_pos` | 2018 combiner, frozen | 0.0997 | 0.0344 | 0.0587 | 0.0506 |
+| `combine_lin` | 2018 combiner, frozen | 0.0930 | 0.0381 | 0.0547 | 0.0480 |
+| `combine_lin_pos` | 2018 combiner, frozen | 0.0919 | 0.0321 | 0.0547 | 0.0508 |
+| `mf` | 2018 recipe, frozen | 0.0620 | 0.0271 | 0.0368 | 0.0486 |
+| `lightgcn_lin_pos` | 2018 recipe, frozen | 0.0676 | 0.0241 | 0.0364 | 0.0519 |
+| `combine[B1+B3+B5]:F1` | rehearsal candidate, carried | 0.1012 | 0.0387 | 0.0587 | 0.0517 |
+| `combine[B1+B3+B4+B5]:F1` | rehearsal candidate, did not carry | 0.1031 | 0.0309 | 0.0590 | 0.0523 |
+| `lightgcn_lin_pos:L05:steps` | rehearsal candidate, did not carry | 0.0913 | 0.0356 | 0.0523 | 0.0569 |
+
+Each against the neighbours baseline, paired over traits, with 95% intervals:
+
+| | all links | new links, lower bound | new links, neutral | by locus |
+|---|---|---|---|---|
+| `combine` | -0.0077 [-0.0102, -0.0049] | -0.0041 [-0.0058, -0.0026] | -0.0058 [-0.0080, -0.0039] | -0.0000 [-0.0018, +0.0024] |
+| `combine_pos` | +0.0051 [+0.0001, +0.0098] | -0.0104 [-0.0132, -0.0081] | +0.0005 [+0.0002, +0.0007] | +0.0031 [-0.0014, +0.0079] |
+| `combine_lin` | -0.0016 [-0.0042, +0.0010] | -0.0066 [-0.0084, -0.0050] | -0.0035 [-0.0054, -0.0018] | +0.0005 [-0.0010, +0.0020] |
+| `combine_lin_pos` | -0.0028 [-0.0063, +0.0011] | -0.0126 [-0.0158, -0.0099] | -0.0035 [-0.0054, -0.0018] | +0.0033 [-0.0001, +0.0067] |
+| `mf` | -0.0327 [-0.0390, -0.0266] | -0.0176 [-0.0225, -0.0130] | -0.0214 [-0.0272, -0.0159] | +0.0011 [-0.0040, +0.0059] |
+| `lightgcn_lin_pos` | -0.0271 [-0.0339, -0.0205] | -0.0206 [-0.0257, -0.0160] | -0.0218 [-0.0277, -0.0161] | +0.0044 [-0.0012, +0.0096] |
+| `combine[B1+B3+B5]:F1` | +0.0066 [+0.0031, +0.0102] | -0.0060 [-0.0081, -0.0043] | +0.0005 [-0.0006, +0.0012] | +0.0042 [+0.0008, +0.0078] |
+| `combine[B1+B3+B4+B5]:F1` | +0.0084 [+0.0034, +0.0135] | -0.0138 [-0.0170, -0.0111] | +0.0008 [-0.0007, +0.0020] | +0.0047 [-0.0000, +0.0097] |
+| `lightgcn_lin_pos:L05:steps` | -0.0033 [-0.0092, +0.0024] | -0.0091 [-0.0130, -0.0053] | -0.0059 [-0.0112, -0.0006] | +0.0094 [+0.0050, +0.0139] |
+
+- **Three combiners that use position beat the neighbours baseline.** `combine[B1+B3+B5]:F1`, the arm
+  that carried in rehearsal, is +0.0066 [+0.0031, +0.0102], higher on 628 of the 1,110 traits.
+  `combine[B1+B3+B4+B5]:F1` is +0.0084 [+0.0034, +0.0135]. The 2018 split's `combine_pos`, with weights
+  untouched since 9 Oct, is +0.0051 [+0.0001, +0.0098]. By the protocol's rule each helps. These are the
+  first models here to beat the baseline, on links no model had been scored on, and the first of
+  them was named in advance.
+- **The gain is 0.0066 to 0.0084 on a baseline of 0.0947**, seven to nine parts in a hundred. The weights are
+  few: B1 1/32; B3 1; B5 1/4 for the first, and B1 1/16; B3 1; B4 1/4; B5 1/2 for the second.
+- **It is not a gain on new links.** With the linked positives removed, every model that uses an input
+  is below neighbours. With every linked candidate removed the two candidates are level with it
+  (+0.0005 [-0.0006, +0.0012] and +0.0008 [-0.0007, +0.0020]). The gain is on links at a locus, or under
+  a trait name, that training already holds, which is what the protocol said such a combiner can show.
+- **Counted by locus `combine[B1+B3+B5]:F1` is still ahead**, +0.0042 [+0.0008, +0.0078].
+- **No graph model beats neighbours.** The candidate tuned at 2020, `lightgcn_lin_pos:L05:steps`, is
+  -0.0033 [-0.0092, +0.0024]: not told apart. It is below on new links and above by locus
+  (+0.0094 [+0.0050, +0.0139]), as `lightgcn_lin_pos` was on the 2018 split.
+- **The two recipes frozen on the 2018 split fail at three times the links.** `mf` is -0.0327 [-0.0390, -0.0266]
+  and `lightgcn_lin_pos` -0.0271 [-0.0339, -0.0205]. Their settings and passes were chosen on 57,411 links,
+  scored on the 2018 split after a fit on 99,435, and are applied here to 294,954. The same graph model retuned at 2020 is +0.0237 [+0.0190, +0.0286] above the
+  frozen recipe.
+
+**Do the 2018 split's results repeat?**
+
+| | the 2018 split's test | this split |
+|---|---|---|
+| `combine` against neighbours | -0.0039 [-0.0070, -0.0010] | -0.0077 [-0.0102, -0.0049] |
+| `combine_pos` against neighbours | +0.0067 [-0.0009, +0.0151] | +0.0051 [+0.0001, +0.0098] |
+| `combine_lin` against neighbours | +0.0041 [-0.0000, +0.0093] | -0.0016 [-0.0042, +0.0010] |
+| `combine_lin_pos` against neighbours | +0.0026 [-0.0056, +0.0114] | -0.0028 [-0.0063, +0.0011] |
+| `combine_pos` against `combine` | +0.0106 [+0.0031, +0.0189] | +0.0128 [+0.0080, +0.0175] |
+| `combine_lin` against `combine` | +0.0080 [+0.0042, +0.0129] | +0.0061 [+0.0032, +0.0086] |
+| `combine_lin_pos` against `combine` | +0.0065 [-0.0009, +0.0151] | +0.0049 [+0.0015, +0.0081] |
+| `mf` against neighbours | -0.0063 [-0.0155, +0.0025] | -0.0327 [-0.0390, -0.0266] |
+| `lightgcn_lin_pos` against neighbours | -0.0008 [-0.0108, +0.0092] | -0.0271 [-0.0339, -0.0205] |
+
+- **For the combiners, yes.** The reference combiner is below neighbours on both. Position adds to it
+  on both, and so does lineage. The one with position is above neighbours on both, with the interval
+  reaching zero on the first and clearing it here. The two with lineage are not told apart from
+  neighbours on either.
+- **For the two fitted models, no**: both were near neighbours on the 2018 split and are far below
+  here, for the reason above.
+
+**Did the rehearsal say what would happen?**
+
+| | in rehearsal | on the prospective links |
+|---|---|---|
+| `combine[B1+B3+B5]:F1` | +0.0038 [+0.0008, +0.0077] | +0.0066 [+0.0031, +0.0102] |
+| `combine[B1+B3+B4+B5]:F1` | +0.0095 [-0.0049, +0.0233] | +0.0084 [+0.0034, +0.0135] |
+| `lightgcn_lin_pos:L05:steps` | +0.0079 [-0.0044, +0.0195] | -0.0033 [-0.0092, +0.0024] |
+
+- The arm that carried in rehearsal beats neighbours here. The combiner that did not carry had the
+  same sign and size in rehearsal with an interval nearly three times as wide, over 284 traits against 1,110
+  here. The graph arm cannot be told from neighbours in either.
+
+Each fitted model one seed at a time and as the mean of five: `mf` 0.0504 to 0.0519 and 0.0620;
+`lightgcn_lin_pos` 0.0616 to 0.0622 and 0.0676; `lightgcn_lin_pos:L05:steps` 0.0844 to 0.0892 and
+0.0913.
+
+Two secondary measures, as values with no interval:
+
+| | trait ROC area | recall in the top 100 |
+|---|---|---|
+| `B1` | 0.7331 | 0.1054 |
+| `B3` | 0.7502 | 0.1156 |
+| `B4` | 0.5859 | 0.0495 |
+| `B5` | 0.5473 | 0.0664 |
+| `combine` | 0.7127 | 0.1106 |
+| `combine_pos` | 0.7669 | 0.1310 |
+| `combine_lin` | 0.7366 | 0.1180 |
+| `combine_lin_pos` | 0.7368 | 0.1222 |
+| `mf` | 0.6949 | 0.0831 |
+| `lightgcn_lin_pos` | 0.7147 | 0.0927 |
+| `combine[B1+B3+B5]:F1` | 0.7666 | 0.1275 |
+| `combine[B1+B3+B4+B5]:F1` | 0.7723 | 0.1334 |
+| `lightgcn_lin_pos:L05:steps` | 0.7336 | 0.1235 |
+
+By first year of the link, as values under one seed with no interval:
+
+| first year | links | traits | `B3` | `combine_pos` | `combine[B1+B3+B5]:F1` | `combine[B1+B3+B4+B5]:F1` | `lightgcn_lin_pos:L05:steps` |
+|---|---|---|---|---|---|---|---|
+| 2023 | 34,067 | 436 | 0.0581 | 0.0655 | 0.0661 | 0.0668 | 0.0595 |
+| 2024 | 58,594 | 504 | 0.0729 | 0.0656 | 0.0704 | 0.0676 | 0.0711 |
+| 2025 | 85,222 | 674 | 0.0878 | 0.1000 | 0.0983 | 0.1025 | 0.0820 |
+| 2026 | 16,134 | 226 | 0.0408 | 0.0385 | 0.0395 | 0.0387 | 0.0366 |
+
+The combiners are ahead of neighbours in 2023 and 2025 and behind in 2024 and in the partial 2026.
+The result over all years does not hold in each year.
+
+## Cold start on this split
+
+`python -m pharos_gap_kg.prospect coldstart pharos319` writes `docs/data/prospect_coldstart_2022.json`:
+the scorers of `findings/COLDSTART.md`, with the pairs set aside left out of the candidates.
+
+| | cutoff 2016 | cutoff 2018 | this split |
+|---|---|---|---|
+| new traits scored, and those with a relative | 497, 346 | 829, 543 | 8,404, 7,879 |
+| N1 target degree | 0.0497 | 0.0610 | 0.0639 |
+| N4 lineage transfer, ties by degree | 0.0663 | 0.1019 | 0.0613 |
+| N5 lineage neighbours, ties by degree | 0.0672 | 0.0853 | 0.0729 |
+| N4 against N1, the declared test | +0.0166 [+0.0078, +0.0268] | +0.0408 [+0.0300, +0.0519] | -0.0026 [-0.0040, -0.0011] |
+| N5 against N1 | +0.0176 [+0.0094, +0.0277] | +0.0242 [+0.0163, +0.0329] | +0.0090 [+0.0068, +0.0114] |
+| N5 against N4 | +0.0009 [-0.0037, +0.0053] | -0.0166 [-0.0233, -0.0104] | +0.0116 [+0.0095, +0.0137] |
+| traits with a link to a new target, and candidate targets | 210, 9,764 | 322, 5,928 | 714, 2,407 |
+| P1 locus degree | 0.0049 | 0.0102 | 0.1177 |
+| P3 position transfer, ties by locus degree | 0.0236 | 0.0250 | 0.1427 |
+| P3 against P1, the declared test | +0.0187 [+0.0072, +0.0336] | +0.0148 [+0.0074, +0.0243] | +0.0250 [+0.0087, +0.0418] |
+| by new target, Q3 against Q1 | +0.0261 [+0.0219, +0.0305] | +0.0162 [+0.0130, +0.0197] | +0.0249 [+0.0182, +0.0318] |
+
+- **Position transfer for new targets repeats.** P3 against P1 is +0.0250 [+0.0087, +0.0418] over 714 traits,
+  the third period of three in which it is above zero. Read by new target it repeats too.
+- **Lineage transfer for new traits does not repeat.** The declared test, N4 against N1, is
+  -0.0026 [-0.0040, -0.0011] over 8,404 new traits: a little below degree, where the 2018 split gave
+  +0.0408 [+0.0300, +0.0519]. The expectation written down before scoring was wrong.
+- **The new traits here are of another kind.** 7,879 of the 8,404 have a relative in training, 94% against
+  66% on the 2018 split, and 167,952 of their 353,045 links (48%) are to a target linked to a relative,
+  against 24%. A relative that nearly every new trait has, and that is linked to half of what the new
+  trait will be linked to, is a broad trait with very many links, and counting links to it sorts
+  targets less well than degree does.
+- **The scorer that passes on the relatives' neighbours scores is above degree in all three periods.**
+  N5 against N1 is +0.0176 [+0.0094, +0.0277], +0.0242 [+0.0163, +0.0329] and +0.0090 [+0.0068, +0.0114]. N5 was a
+  declared scorer and not the declared test, and on the 2018 split it was the weaker of the two, so
+  this is a pattern across periods and not a passed test.
+
+## What follows
+
+- A combiner of neighbours, degree and position, with two fitted weights, is the first model here
+  shown to beat the neighbours baseline on untouched links. Its gain is small and is on links at loci
+  that training already holds.
+- Fitted graph models remain unshown: level with neighbours when retuned, far below when a recipe is
+  carried to a training set three times the size.
+- For a target with no link, position transfer has held in three periods. For a trait with no link,
+  lineage transfer depends on the kind of trait: it held where a new trait had a specific relative
+  and failed where nearly every new trait hangs under one broad term.
+- The question layer still ranks by neighbours alone. Whether to serve the combiner, and the
+  cold-start rankings, is a decision not taken here.
