@@ -94,6 +94,17 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   input does add to the model it is put into (position +0.0106 [+0.0031, +0.0189] and lineage +0.0080
   [+0.0042, +0.0129] in the combiner), on links that follow from an earlier link at the same locus or
   under a related trait name. Nothing here is a result about new links.
+- **Cold start** ([`findings/COLDSTART.md`](findings/COLDSTART.md)). A third of the later links were
+  never scored because their trait or target has no earlier link, and the neighbours baseline has no
+  score for them. With no fitted parameter, ranking targets for a new trait by its ontology relatives'
+  links, ties broken by degree, scores 0.1019 against 0.0610 for degree alone (+0.0408 [+0.0300,
+  +0.0519] over 829 new traits). Ranking new targets for a trait by their chromosome neighbours scores
+  0.0250 against 0.0102 (+0.0148 [+0.0074, +0.0243]). An earlier period agrees on both.
+- **Rehearsal** ([`findings/REHEARSAL.md`](findings/REHEARSAL.md)). The tune, refit, score procedure
+  run one step back in time, inside the training years, over 28 arms. One small combiner (neighbours,
+  degree, position) carries, +0.0038 [+0.0008, +0.0077]; no graph or factorisation arm does, and
+  neither carrying the length of fitting by steps nor drawing links by trait helps. Rehearsed, each
+  scored model stands about where it stood on the test links.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -143,6 +154,10 @@ python -m pharos_gap_kg.applycut search pharos319            # the lift cut on t
 python -m pharos_gap_kg.applycut write pharos319
 python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
 python -m pharos_gap_kg.combine fit pharos319 --cutoff 2018   # fitted weights over the baselines, lineage and position; [eval] extra
+python -m pharos_gap_kg.coldstart pharos319 --cutoff 2018     # a trait or a target with no link: lineage and position transfer
+python -m pharos_gap_kg.rehearse report pharos319             # the procedure one step back in time; stages in its docstring
+python -m pharos_gap_kg.fetch gwas_catalog_20261005           # the GWAS Catalog as curated since, for the prospective test
+python -I -m pharos_gap_kg.gwascat extract                    # then `rule` and `build`: links first reported from 2023
 python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
 python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
 python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
