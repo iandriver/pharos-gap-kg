@@ -118,8 +118,10 @@ def against(a: np.ndarray, b: np.ndarray, groups: dict[str, np.ndarray]) -> dict
     return out
 
 
-def evaluate(release: str, train: pd.DataFrame, later: pd.DataFrame, terms: dict, tg: pd.DataFrame, all_targets: list[str], log=print) -> dict:
-    """Both tasks for one period: `train` the links a scorer may see, `later` the later links it could not be scored on."""
+def evaluate(release: str, train: pd.DataFrame, later: pd.DataFrame, terms: dict, tg: pd.DataFrame, all_targets: list[str], log=print,
+             aside: pd.DataFrame | None = None) -> dict:
+    """Both tasks for one period: `train` the links a scorer may see, `later` the later links it could not be scored on.
+    `aside`, when given, holds pairs that are neither positives nor candidates."""
     P = parts_of(train, later)
     targets, traits = sorted(train.target.unique()), sorted(train.trait.unique())
     ti, di = {t: i for i, t in enumerate(targets)}, {d: i for i, d in enumerate(traits)}
@@ -136,6 +138,11 @@ def evaluate(release: str, train: pd.DataFrame, later: pd.DataFrame, terms: dict
     R = relation(new_traits, traits, terms)
     S = trait_scores(A, R)
     none = np.zeros_like(Y)
+    if aside is not None:
+        a1 = aside[aside.target.isin(ti) & aside.trait.isin(ni)]
+        none[a1.target.map(ti).to_numpy(), a1.trait.map(ni).to_numpy()] = True
+        if (none & Y).any():
+            raise SystemExit("REFUSED: a later link is among the pairs set aside")
     pairs = position.neighbour_pairs(tg, ti)
     reach = R.any(axis=1)
     groups = {"all": np.ones(len(new_traits), bool), "with_a_relative": reach, "without": ~reach}
@@ -172,6 +179,11 @@ def evaluate(release: str, train: pd.DataFrame, later: pd.DataFrame, terms: dict
     N = beside(position.neighbour_pairs(tg, index), len(targets), len(index))
     S2 = target_scores(A, N)
     none2 = np.zeros_like(Y2)
+    if aside is not None:
+        a2 = aside[aside.target.isin(ci) & aside.trait.isin(di)]
+        none2[a2.target.map(ci).to_numpy(), a2.trait.map(di).to_numpy()] = True
+        if (none2 & Y2).any():
+            raise SystemExit("REFUSED: a later link is among the pairs set aside")
     units = Y2.any(axis=0)
     g2 = {"all": np.ones(int(units.sum()), bool)}
     placed = set(tg.target)
@@ -192,7 +204,7 @@ def evaluate(release: str, train: pd.DataFrame, later: pd.DataFrame, terms: dict
     # the same links read by new target: which training traits will it be linked to
     S3 = by_target_scores(A, N)
     Y3 = Y2.T
-    none3 = np.zeros_like(Y3)
+    none3 = none2.T.copy()
     tu = np.flatnonzero(Y3.any(axis=0))
     has = N.any(axis=1)[tu]
     g3 = {"all": np.ones(len(tu), bool), "with_a_neighbour": has, "without": ~has}

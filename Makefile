@@ -39,6 +39,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.rehearse --selftest
 	$(PY) -m pharos_gap_kg.coldstart --selftest
 	$(PY) -m pharos_gap_kg.gwascat --selftest
+	$(PY) -m pharos_gap_kg.prospect --selftest
 
 test:
 	$(PY) -m pytest -q
