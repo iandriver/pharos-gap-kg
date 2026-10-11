@@ -1,0 +1,131 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "studies_in_both": 12260,
+ "last_year_of_those": 2022,
+ "traits": {
+  "as_written": {
+   "produced": 13749,
+   "pharos": 13535,
+   "shared": 6869,
+   "precision": 0.49959997090697505,
+   "recall": 0.5074990764684152
+  },
+  "by_live_term": {
+   "produced": 13749,
+   "pharos": 13534,
+   "shared": 13357,
+   "precision": 0.9714888355516765,
+   "recall": 0.9869218265110093
+  },
+  "studies": 12260,
+  "studies_whose_terms_differ": 6433,
+  "prefixes_in_pharos": {
+   "EFO": 12754,
+   "MONDO": 465,
+   "HP": 139,
+   "GO": 115
+  },
+  "prefixes_in_the_catalog_now": {
+   "EFO": 6454,
+   "OBA": 4837,
+   "MONDO": 2184,
+   "HP": 153
+  }
+ },
+ "genes_per_study_pharos_over_the_catalogs_own_columns": {
+  "median": 3.0,
+  "quartiles": [
+   2.0,
+   4.5
+  ],
+  "studies": 11699
+ },
+ "gene_study_pairs_by_distance": {
+  "0/any": {
+   "produced": 119409,
+   "pharos": 623457,
+   "shared": 104253,
+   "precision": 0.8730748938522221,
+   "recall": 0.16721762687723452
+  },
+  "10000/any": {
+   "produced": 176576,
+   "pharos": 623457,
+   "shared": 155394,
+   "precision": 0.8800403225806451,
+   "recall": 0.2492457378776724
+  },
+  "25000/any": {
+   "produced": 249647,
+   "pharos": 623457,
+   "shared": 220236,
+   "precision": 0.8821896517883251,
+   "recall": 0.35324970286643664
+  },
+  "50000/any": {
+   "produced": 359729,
+   "pharos": 623457,
+   "shared": 316934,
+   "precision": 0.8810354461275015,
+   "recall": 0.5083494130308907
+  },
+  "100000/any": {
+   "produced": 564013,
+   "pharos": 623457,
+   "shared": 494847,
+   "precision": 0.8773680748493385,
+   "recall": 0.7937147229079151
+  },
+  "250000/any": {
+   "produced": 1119972,
+   "pharos": 623457,
+   "shared": 509238,
+   "precision": 0.45468815291810866,
+   "recall": 0.8167973091969454
+  },
+  "0/5e-8": {
+   "produced": 105359,
+   "pharos": 623457,
+   "shared": 103752,
+   "precision": 0.9847473875036779,
+   "recall": 0.16641404298933207
+  },
+  "10000/5e-8": {
+   "produced": 157252,
+   "pharos": 623457,
+   "shared": 154753,
+   "precision": 0.9841083102281688,
+   "recall": 0.24821759960991696
+  },
+  "25000/5e-8": {
+   "produced": 223044,
+   "pharos": 623457,
+   "shared": 219469,
+   "precision": 0.9839717723857176,
+   "recall": 0.3520194656568135
+  },
+  "50000/5e-8": {
+   "produced": 321609,
+   "pharos": 623457,
+   "shared": 316157,
+   "precision": 0.9830477380919066,
+   "recall": 0.5071031362227066
+  },
+  "100000/5e-8": {
+   "produced": 504219,
+   "pharos": 623457,
+   "shared": 494619,
+   "precision": 0.9809606540015351,
+   "recall": 0.7933490200607259
+  },
+  "250000/5e-8": {
+   "produced": 1000388,
+   "pharos": 623457,
+   "shared": 509071,
+   "precision": 0.5088735570598608,
+   "recall": 0.8165294479009779
+  }
+ },
+ "compared_as": "(Ensembl gene, study) for genes the release maps to a target and Ensembl 113 places on a primary chromosome"
+}

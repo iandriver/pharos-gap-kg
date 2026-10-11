@@ -17,6 +17,7 @@ Nothing here runs a scorer. `build` reports counts.
 
     python -I -m pharos_gap_kg.gwascat extract            # the columns the rule reads, from the registered zip
     python -m pharos_gap_kg.gwascat first-rule pharos319  # the four rules declared first, on the studies Pharos holds
+    python -m pharos_gap_kg.gwascat look pharos319        # why they failed: trait terms and gene distance, on those studies
     python -m pharos_gap_kg.gwascat rule pharos319        # how well the amended rule reproduces Pharos on those studies
     python -m pharos_gap_kg.gwascat build pharos319 --freeze
     python -m pharos_gap_kg.gwascat --selftest
@@ -200,6 +201,56 @@ def links(df: pd.DataFrame, placed: pd.DataFrame, terms: dict) -> pd.DataFrame:
     return m[["target", "trait", "study_acc", "year"]].drop_duplicates(["target", "trait", "study_acc"]).reset_index(drop=True)
 
 
+def look(release: str) -> dict:
+    """Why the four first rules miss Pharos's triples, on the studies both hold (all published by 2022):
+    how the trait terms compare as written and by live term, and which distance from the variant gives
+    Pharos's genes. The amendment of 10 Oct 2026 cites these figures."""
+    import pyarrow.parquet as pq
+    from pharos_gap_kg import ontology, position
+    terms = ontology.read(registry.require("efo_obo"))
+    df = pd.read_parquet(table_dir() / "associations.parquet")
+    theirs = pq.read_table(paths.tables(release) / "tiga_provenance.parquet", columns=["ensg", "efoid", "study_acc"]).to_pandas().drop_duplicates()
+    shared = set(theirs.study_acc) & set(df.study_acc)
+    sub, th = df[df.study_acc.isin(shared)].reset_index(drop=True), theirs[theirs.study_acc.isin(shared)]
+    if int(sub.year.max()) >= FROM:
+        raise SystemExit("REFUSED: a study Pharos holds is dated after its snapshot")
+    share = lambda a, b: {"produced": len(a), "pharos": len(b), "shared": len(a & b), "precision": len(a & b) / len(a), "recall": len(a & b) / len(b)}
+    # traits
+    ids = trait_ids(sub.trait_uris).explode().dropna()
+    ids = ids[ids.str.contains("_")]
+    mine = pd.DataFrame({"efoid": ids.to_numpy(), "study_acc": sub.study_acc.to_numpy()[ids.index.to_numpy()]}).drop_duplicates()
+    mine["live"], pt = live(mine.efoid.map(split.curie), terms), th[["efoid", "study_acc"]].drop_duplicates()
+    pt = pt.assign(live=live(pt.efoid.map(split.curie), terms))
+    sets = lambda d, k: set(zip(d[k], d.study_acc))
+    per_study = lambda d: d.groupby("study_acc").efoid.agg(frozenset)
+    a, b = per_study(mine), per_study(pt)
+    differ = int(sum(a.get(s) != b[s] for s in b.index))
+    traits = {"as_written": share(sets(mine, "efoid"), sets(pt, "efoid")), "by_live_term": share(sets(mine, "live"), sets(pt, "live")), "studies": int(len(b)), "studies_whose_terms_differ": differ,
+              "prefixes_in_pharos": pt.efoid.str.split("_").str[0].value_counts().head(4).to_dict(), "prefixes_in_the_catalog_now": mine.efoid.str.split("_").str[0].value_counts().head(4).to_dict()}
+    # genes: the Catalog's own columns against Pharos, per study
+    known = set(gene_to_targets(release).ensg)
+    own = triples(sub, ("near", "any"))
+    own = own[own.ensg.isin(known)]
+    pg, og = th.groupby("study_acc").ensg.nunique(), own.groupby("study_acc").ensg.nunique()
+    ratio = (pg / og.reindex(pg.index)).dropna()
+    # genes: every gene within a distance of the variant
+    g = position.genes(registry.require("ensembl_gtf_113"))
+    g = g[g.ensg.isin(known)].assign(chr=lambda d: d.chr.astype(str)).reset_index(drop=True)
+    one = sub[sub.pos.str.fullmatch(r"\d+") & sub.chr.isin(set(g.chr))].reset_index(drop=True)
+    placed_studies = set(one.study_acc)
+    P = {(e, s) for e, s in zip(th.ensg, th.study_acc) if s in placed_studies}
+    by = {}
+    for label, frame in (("any", one), ("5e-8", one[one.p_mlog >= MLOG_5E8 - 1e-9].reset_index(drop=True))):
+        for W in (0, 10_000, 25_000, 50_000, 100_000, 250_000):
+            r, k = within(frame.chr.to_numpy(str), frame.pos.astype(np.int64).to_numpy(), g, W)
+            by[f"{W}/{label}"] = share(set(zip(g.ensg.to_numpy()[k], frame.study_acc.to_numpy()[r])), P)
+    out = {"release": release, "catalog": KEY, "studies_in_both": len(shared), "last_year_of_those": int(sub.year.max()), "traits": traits,
+           "genes_per_study_pharos_over_the_catalogs_own_columns": {"median": float(ratio.median()), "quartiles": [float(ratio.quantile(0.25)), float(ratio.quantile(0.75))], "studies": int(len(ratio))},
+           "gene_study_pairs_by_distance": by, "compared_as": "(Ensembl gene, study) for genes the release maps to a target and Ensembl 113 places on a primary chromosome"}
+    (paths.DOCS_DATA / f"gwascat_look_{release}.json").write_text(json.dumps(out, indent=1) + "\n")
+    return out
+
+
 def placed_targets(release: str) -> pd.DataFrame:
     from pharos_gap_kg import position
     tg = position.target_genes(release, position.genes(registry.require("ensembl_gtf_113")))
@@ -353,7 +404,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("stage", choices=("extract", "first-rule", "rule", "build"))
+    ap.add_argument("stage", choices=("extract", "first-rule", "look", "rule", "build"))
     ap.add_argument("release", nargs="?")
     ap.add_argument("--freeze", action="store_true")
     a = ap.parse_args(argv)
@@ -369,6 +420,13 @@ def main(argv: list[str] | None = None) -> int:
             r = out[k]
             print(f"  {k:8s} produced {r['produced']:>9,}  Pharos {r['pharos']:>9,}  shared {r['shared']:>9,}  of the rule's, Pharos's: {r['precision']:.3f}  of Pharos's, recovered: {r['recall']:.3f}")
         print(f"  on {out['studies_in_both']:,} shared studies; both at {PASS:.0%} or more: {out['passes']}")
+    elif a.stage == "look":
+        out = look(a.release)
+        tw, tl = out["traits"]["as_written"], out["traits"]["by_live_term"]
+        print(f"  trait terms differ for {out['traits']['studies_whose_terms_differ']:,} of {out['traits']['studies']:,} studies; (trait, study) as written {tw['precision']:.3f} / {tw['recall']:.3f}, by live term {tl['precision']:.3f} / {tl['recall']:.3f}")
+        print(f"  Pharos lists {out['genes_per_study_pharos_over_the_catalogs_own_columns']['median']:.1f} times the genes of the Catalog's own columns, at the median study")
+        for k, r in out["gene_study_pairs_by_distance"].items():
+            print(f"  within {k:>12s}: of the rule's, Pharos's {r['precision']:.3f}; of Pharos's, recovered {r['recall']:.3f}")
     elif a.stage == "first-rule":
         out = choose_rule(a.release)
         print(f"  {out['studies_in_both']:,} of Pharos's {out['pharos_studies']:,} studies are in the Catalog; Pharos holds {out['pharos_triples_in_those']:,} triples for them")

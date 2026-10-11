@@ -1,0 +1,69 @@
+{
+ "cutoff": 2022,
+ "inner_cutoff": 2020,
+ "parts": {
+  "fit": {
+   "links": 197553,
+   "sha256": "d1d8716516ce2a6366017138647cfd092af93bb0045cd11bb36ab67a116dfbe5"
+  },
+  "validate": {
+   "links": 72234,
+   "sha256": "68813124291287718650530fbe9b8088c7b7b930a29db32d71ee557eae246fcd"
+  }
+ },
+ "traits": 430,
+ "neighbours_on_validation": 0.08263308148808775,
+ "reference_files": {
+  "gtf_sha256": "62f1709b40e083ce9d4cdc64a86b5ffec2c5d5371434bb7095c74dc89079c466",
+  "window": 500000,
+  "efo_sha256": "1f7bdc48b91c17cd98742d8c0fca77d576d4d74998efd643e51b1b49602ca49c"
+ },
+ "implementation": "952ebffc97073680",
+ "combiners": {
+  "combine[B1+B3+B5]:F1": {
+   "scores": [
+    "B1",
+    "B3",
+    "B5"
+   ],
+   "form": "F1",
+   "rehearsal": "carried",
+   "terms": [
+    "log(1 + B1)",
+    "log(1 + B3)",
+    "log(1 + B5)"
+   ],
+   "weights": [
+    0.03125,
+    1.0,
+    0.25
+   ],
+   "fitted": 0.09133899315394077,
+   "read_as": "the weights were fitted on these links, so this figure flatters the combiner"
+  },
+  "combine[B1+B3+B4+B5]:F1": {
+   "scores": [
+    "B1",
+    "B3",
+    "B4",
+    "B5"
+   ],
+   "form": "F1",
+   "rehearsal": "did not carry",
+   "terms": [
+    "log(1 + B1)",
+    "log(1 + B3)",
+    "log(1 + B4)",
+    "log(1 + B5)"
+   ],
+   "weights": [
+    0.0625,
+    1.0,
+    0.25,
+    0.5
+   ],
+   "fitted": 0.0911248520728686,
+   "read_as": "the weights were fitted on these links, so this figure flatters the combiner"
+  }
+ }
+}

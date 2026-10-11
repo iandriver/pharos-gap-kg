@@ -1114,3 +1114,22 @@ split, that lineage transfer with ties by degree is well above degree for new tr
 8,425 of them, against 829, from four years in which the Catalog took in many studies of protein and
 metabolite levels. A trait of that kind is often linked to the gene that encodes the measured
 protein, which neither lineage nor degree knows.
+
+**10 Oct 2026, the figures behind the link rule, regenerated. Written after the split was frozen and
+before any scorer read a prospective link.**
+
+The figures in the amendment on the link rule came from a look outside the committed code.
+`python -m pharos_gap_kg.gwascat look pharos319` now regenerates them
+(`docs/data/gwascat_look_pharos319.json`), and four differ by a little: the trait terms differ for
+6,433 of the 12,260 studies, counting a difference either way, where the text says 6,407; by live term 98.7% of
+Pharos's (trait, study) pairs are recovered, where it says 98.8%; and the share of Pharos's (gene,
+study) pairs recovered is 51% at 50,000 bases and 82% at 250,000, where it says 50% and 81%. None of
+these bears on the rule.
+
+One statement in that amendment was wrong in the rule's favour. It expected the rule to recover about
+77% of Pharos's triples and so to miss the 90% asked for. That figure was taken gene by gene, and it
+left out the targets that Pharos ties only to gene ids on alternate assemblies of a chromosome, which
+`position` places by their symbol. At the level a link is made, (target, live trait, study), the
+committed check (`docs/data/gwascat_rule_pharos319.json`) gives 92.8% of Pharos's triples recovered and
+95.1% of the rule's being Pharos's, and for pairs 92.0% and 95.3%. The rule passes the bar. The triples
+it does not reproduce are 7.2% of Pharos's, in 4,709 studies, and not the quarter stated there.
