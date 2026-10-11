@@ -72,6 +72,13 @@ _S += [
            64_141_785, "2024-08-18", "Ensembl release 113 gene annotation, GRCh38: where each gene sits on its chromosome",
            sha256="62f1709b40e083ce9d4cdc64a86b5ffec2c5d5371434bb7095c74dc89079c466"),
 ]
+# The GWAS Catalog, which Pharos's GWAS source aggregates, as curated after Pharos 3.19 was built: the
+# links of the prospective test (docs/PROTOCOL.md). A dated release directory, so the file does not move.
+_S += [
+    Source("gwas_catalog_20261005", "https://ftp.ebi.ac.uk/pub/databases/gwas/releases/2026/10/05/gwas-catalog-associations_ontology-annotated-full.zip",
+           72_826_184, "2026-10-05", "GWAS Catalog release of 5 Oct 2026: every curated association with its mapped genes, ontology terms, study and date",
+           sha256="c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1"),
+]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
 
