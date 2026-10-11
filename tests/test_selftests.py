@@ -128,6 +128,11 @@ def test_combine_selftest():
     assert combine._selftest() == 0
 
 
+def test_gwascat_selftest():
+    from pharos_gap_kg import gwascat
+    assert gwascat._selftest() == 0
+
+
 def test_coldstart_selftest():
     from pharos_gap_kg import coldstart
     assert coldstart._selftest() == 0
