@@ -1020,3 +1020,51 @@ scoring of the four on the test links, and what counts.
 The combiners are fitted this once more. If C3 again cannot be told from B3 in cross-validation, that
 is what is reported, and nothing further is tried on the combiners. The first fit stays on record as
 a validation result. It is not scored on the test links.
+
+**10 Oct 2026, the link rule of the prospective test. Written after the four declared rules were scored
+on the studies Pharos holds, and before any study published after 2022 was turned into a link.**
+
+The four rules, on the 12,260 studies that Pharos 3.19 and the Catalog both hold (all published by
+2022, 720,702 triples in Pharos; `docs/data/gwascat_rule_first_pharos319.json`): the best recovers 16.3%
+of Pharos's triples, and 67.1% of what it produces is Pharos's. The protocol said that below 90% the
+test would go ahead and no further rule would be tried. That sentence is set aside. The four rules
+rested on two wrong assumptions about how Pharos's source makes a link, and a test built on them
+would not test links of Pharos's kind. Looking further at those same studies, outside the committed
+code, showed both:
+
+- *Traits.* The Catalog has re-curated its trait terms since Pharos's snapshot. For 6,407 of the 12,260
+  studies the terms now differ, mostly an EFO term replaced by an OBA or MONDO term. Compared as
+  written, 50% of the Catalog's (trait, study) pairs are Pharos's and 51% of Pharos's are recovered.
+  Compared through the ontology's live term, an obsolete term standing for the term that replaced it
+  as under Controls, it is 97.1% and 98.8%.
+- *Genes.* Pharos lists three times as many genes for a study, at the median, as the Catalog's own
+  gene columns give. Taking instead every gene within a fixed distance of the variant, with a p-value
+  of 5e-8 or smaller: 98% of the (gene, study) pairs produced are Pharos's at every distance up to
+  100,000 bases, and 51% at 250,000; the share of Pharos's pairs recovered is 50% at 50,000 bases, 79%
+  at 100,000 and 81% at 250,000. Without the p-value filter, 88% of what is produced is Pharos's.
+  Pharos's source took the genes within 100,000 bases of a variant significant at 5e-8.
+
+Changed:
+
+1. *A trait is the live term of its ontology id*, in Pharos's pairs and in the Catalog's alike. Pharos's
+   pairs are re-keyed before the split is made, so two Pharos traits with one live term become one
+   trait. A term the ontology does not hold is kept as written.
+2. *The rule.* A link joins a trait to every target with a gene within 100,000 bases of a variant
+   associated with it at a p-value of 5e-8 or smaller. A target is placed on the chromosome as for
+   position. The Catalog's own gene columns are not used. This is the rule that scored best in the
+   look above. It is fixed here and is not chosen again.
+3. *Its agreement with Pharos* is computed by the committed code at the level a link is made, (target,
+   live trait, study), on the shared studies, and reported. From the look it will recover about 77% of
+   Pharos's triples, which is under the 90% asked for, with about 97% of its own being Pharos's. The
+   test goes ahead with that stated, and nothing further is tried on the rule.
+
+Unchanged: the dating of a pair, what is training, what is a prospective positive, what is set aside,
+that the split is frozen by code that reports counts and runs no scorer, and what is scored on it.
+
+Known limit after the change: about a quarter of Pharos's triples for the shared studies are not
+reproduced, spread over some 5,300 studies. The cause is not established. The rule is narrower than
+Pharos's by that much, so some true links of Pharos's kind will be counted as negatives for every
+scorer alike.
+
+Not read: no study published after 2022 has been turned into a link, and nothing about those studies
+has been counted beyond the totals of the file.

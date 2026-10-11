@@ -1,0 +1,46 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1",
+ "pharos_studies": 12335,
+ "studies_in_both": 12260,
+ "pharos_triples_in_those": 720702,
+ "rules": {
+  "in/5e-8": {
+   "produced": 119752,
+   "pharos": 720702,
+   "shared": 81536,
+   "precision": 0.6808738058654553,
+   "recall": 0.11313413865925168,
+   "f1": 0.1940284655674195
+  },
+  "in/any": {
+   "produced": 135726,
+   "pharos": 720702,
+   "shared": 81897,
+   "precision": 0.6033994960434994,
+   "recall": 0.11363503917014245,
+   "f1": 0.19125250458882712
+  },
+  "near/5e-8": {
+   "produced": 175035,
+   "pharos": 720702,
+   "shared": 117510,
+   "precision": 0.6713514439969149,
+   "recall": 0.16304936020713137,
+   "f1": 0.2623761215624676
+  },
+  "near/any": {
+   "produced": 199731,
+   "pharos": 720702,
+   "shared": 117919,
+   "precision": 0.5903890733035934,
+   "recall": 0.16361686244800208,
+   "f1": 0.2562250592927459
+  }
+ },
+ "chosen": "near/5e-8",
+ "passes": false,
+ "bar": 0.9,
+ "compared_as": "(Ensembl gene, trait term, study accession), for genes the release maps to a target"
+}
