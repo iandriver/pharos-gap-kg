@@ -20,6 +20,7 @@ Stages. The first three read training links only. `score` and `coldstart` read t
     python -m pharos_gap_kg.prospect fit pharos319 --model lightgcn_lin_pos    # all training links, five seeds; once
     python -m pharos_gap_kg.prospect score pharos319
     python -m pharos_gap_kg.prospect coldstart pharos319
+    python -m pharos_gap_kg.prospect calibrate pharos319                  # how often a rank held, for the scorer the question layer serves
     python -m pharos_gap_kg.prospect --selftest
 """
 from __future__ import annotations
@@ -41,6 +42,7 @@ CANDIDATE = {"name": "lightgcn_lin_pos:L05:steps", "model": "lightgcn_lin_pos", 
 COMBINERS = {"combine[B1+B3+B5]:F1": {"scores": ("B1", "B3", "B5"), "form": "F1", "rehearsal": "carried"},
              "combine[B1+B3+B4+B5]:F1": {"scores": ("B1", "B3", "B4", "B5"), "form": "F1", "rehearsal": "did not carry"}}
 FITTED = (*FROZEN, CANDIDATE["name"])
+SERVED = "combine[B1+B3+B5]:F1"                                   # the scorer the question layer ranks by since 11 Oct 2026
 VIEWS = ("full", "low", "neutral", "locus")
 
 
@@ -58,6 +60,10 @@ def chosen_path() -> Path:
 
 def weights_path() -> Path:
     return paths.DOCS_DATA / f"prospect_weights_{CUTOFF}.json"
+
+
+def calibration_path() -> Path:
+    return paths.DOCS_DATA / f"calibration_prospect_{CUTOFF}.json"
 
 
 def training() -> pd.DataFrame:
@@ -315,6 +321,59 @@ def cold(release: str) -> dict:
     return rec
 
 
+def served_by_target(d: dict) -> str:
+    """The protocol's rule for the direction the combiner was not tested in: it is served by target
+    unless the interval of its difference from neighbours, over targets, lies below zero."""
+    return "neighbours" if d["high"] < 0 else "combiner"
+
+
+def calibration(release: str) -> dict:
+    """Calibration by rank of the served scorer on the prospective split (docs/PROTOCOL.md, "Calibration
+    by rank" and the addition of 11 Oct 2026), and whether it is served for ranking a target's traits."""
+    from pharos_gap_kg import calibrate, context, ontology, registry
+    P = load_all()
+    M = train_matrix(P["train"])
+    A = M["train"]
+    Y = pair_matrix(P["test"], M["targets"], M["traits"])
+    taken = A | pair_matrix(P["aside"], M["targets"], M["traits"])
+    pairs, R, used = model.load_structure(release, M["targets"], M["traits"], ("position", "lineage"))
+    raw = combine.raw_scores(A, pairs, R)
+    rec = json.loads(weights_path().read_text())
+    if rec["implementation"] != combine.implementation():
+        raise SystemExit("REFUSED: the served combiner's weights were fitted by other code")
+    w = rec["combiners"][SERVED]
+    S = combine.combined(raw, A, tuple(w["scores"]), w["form"], w["weights"])
+    was = json.loads((paths.DOCS_DATA / f"prospect_gene_trait_{CUTOFF}.json").read_text())["results"][SERVED]["full"][0]
+    now = float(np.nanmean(score.by_axis(S, taken, Y, axis=1)["ap"]))
+    if abs(was - now) > 1e-9:
+        raise SystemExit(f"REFUSED: the scorer recomputed here scores {now}, and the prospective test recorded {was}; this is not the scorer that was tested")
+    linked = (((A.astype(np.float32) @ R.astype(np.float32).T) > 0) | (position.neighbour_count(pairs, A) > 0)) & ~taken
+    terms = ontology.read(registry.require("efo_obo"))
+    _, dis = context.kinds(M["traits"], terms)
+    disease = np.repeat(dis[None, :], A.shape[0], axis=0)
+    groups = {"all": np.ones(A.shape, bool), "linked": linked, "not_linked": ~linked, "disease_like": disease, "measurement_or_other": ~disease,
+              "disease_like_not_linked": disease & ~linked}
+    T = lambda g: {k: v.T for k, v in g.items()}
+    only = {"all": groups["all"]}
+    res = {"by_trait": calibrate.tally(S, taken, Y, groups, calibrate.BINS["by_trait"]),
+           "by_target": calibrate.tally(S.T, taken.T, Y.T, T(groups), calibrate.BINS["by_target"]),
+           "neighbours_by_trait": calibrate.tally(raw["B3"], taken, Y, only, calibrate.BINS["by_trait"]),
+           "neighbours_by_target": calibrate.tally(raw["B3"].T, taken.T, Y.T, T(only), calibrate.BINS["by_target"]),
+           "degree_by_trait": calibrate.tally(raw["B1"], taken, Y, only, calibrate.BINS["by_trait"])}
+    a, b = score.by_axis(S, taken, Y, axis=0)["ap"], score.by_axis(raw["B3"], taken, Y, axis=0)["ap"]
+    m, lo, hi = score.interval(a - b)
+    by_target = {"combiner": float(a.mean()), "neighbours": float(b.mean()), "difference": m, "low": lo, "high": hi, "targets": int(len(a)), "targets_higher": int((a > b).sum())}
+    fz = json.loads(split.frozen_path(CUTOFF).read_text())
+    out = {"cutoff": CUTOFF, "release": release, "scorer": SERVED, "terms": w["terms"], "weights": w["weights"], "weights_fitted_at": INNER,
+           "first_year": int(P["test"].year.min()), "data_ends": int(P["test"].year.max()), "base_rate": float(Y.sum() / (~taken).sum()),
+           "traits_scored": int(Y.any(axis=0).sum()), "targets_scored": int(Y.any(axis=1).sum()), "test_links": int(Y.sum()),
+           "primary": now, "neighbours_primary": json.loads((paths.DOCS_DATA / f"prospect_gene_trait_{CUTOFF}.json").read_text())["results"]["B3"]["full"][0],
+           "split": {k: fz[k]["sha256"] for k in (*split.PARTS, "aside")}, "reference_files": used, "seeds": list(score.SEEDS), **res,
+           "by_target_against_neighbours": by_target, "served_by_target": served_by_target(by_target)}
+    calibration_path().write_text(json.dumps(out, indent=1) + "\n")
+    return out
+
+
 def _selftest() -> int:
     ok = True
 
@@ -348,6 +407,9 @@ def _selftest() -> int:
     per = {"a": {k: np.array([0.5, 0.2]) for k in VIEWS}, "b": {k: np.array([0.1, 0.2]) for k in VIEWS}}
     ck("a paired difference is taken trait by trait", abs(paired(per, "a", "b")["full"]["difference"] - 0.2) < 1e-12 and paired(per, "a", "b")["full"]["traits_higher"] == 1)
     ck("carried by steps, the passes shrink with the links", rehearse.carried(100, 197553, 294954, "steps") == 67)
+    ck("the served scorer is the candidate that carried in rehearsal", COMBINERS[SERVED]["rehearsal"] == "carried")
+    ck("by target the combiner is served unless it is shown worse than neighbours",
+       served_by_target({"low": -0.01, "high": -0.001}) == "neighbours" and served_by_target({"low": -0.01, "high": 0.002}) == "combiner" and served_by_target({"low": 0.001, "high": 0.01}) == "combiner")
     return 0 if ok else 1
 
 
@@ -356,7 +418,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("stage", choices=("tune", "weights", "fit", "score", "coldstart"))
+    ap.add_argument("stage", choices=("tune", "weights", "fit", "score", "coldstart", "calibrate"))
     ap.add_argument("release")
     ap.add_argument("--model", choices=FITTED)
     a = ap.parse_args(argv)
@@ -375,6 +437,14 @@ def main(argv: list[str] | None = None) -> int:
         for k, v in out["paired"].items():
             if k.endswith("-B3"):
                 print(f"  {k:36s} " + "  ".join(f"{x} {y['difference']:+.4f} [{y['low']:+.4f}, {y['high']:+.4f}]" for x, y in v.items()))
+    elif a.stage == "calibrate":
+        out = calibration(a.release)
+        for axis in ("by_trait", "by_target"):
+            print(f"  {axis}: share of candidates at each rank reported in {out['first_year']} to {out['data_ends']} (base rate {out['base_rate']:.4f})")
+            for b_, v in out[axis].items():
+                print(f"    {b_:>8s} " + "  ".join(f"{g} {(v[g]['share'] if v[g]['share'] is not None else float('nan')):.3f}" for g in ("all", "linked", "not_linked", "disease_like_not_linked")))
+        d = out["by_target_against_neighbours"]
+        print(f"  by target: combiner {d['combiner']:.4f}, neighbours {d['neighbours']:.4f}, {d['difference']:+.4f} [{d['low']:+.4f}, {d['high']:+.4f}] over {d['targets']:,} targets -> served by target: {out['served_by_target']}")
     else:
         cold(a.release)
     return 0
