@@ -55,6 +55,10 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   one in the tools; both rounds are recorded. No person has tested it yet.
   The eighth question, `gaps`, was tested the same way on a fresh set: 35, 35 and 34 of 35 through the
   typed questions and 33, 34 and 33 with SQL, a difference that does not clear zero.
+  The rankings were tested the same way on 12 Oct: 35, 35 and 34 of 35 through the typed questions,
+  34, 32 and 35 with SQL (+0.029 [-0.019, +0.086] of a question, not shown better) and 0 with no tool.
+  Its development round found that the server did not say which question gives one named target's
+  rank; that was fixed before the evaluation questions were written.
 
 - **Context** ([`findings/ENRICH.md`](findings/ENRICH.md)). Interactions, pathways, GO terms, compounds
   and eleven disease sources, each scored alone and blended with the neighbour score. Each carries
