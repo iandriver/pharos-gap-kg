@@ -1133,3 +1133,35 @@ left out the targets that Pharos ties only to gene ids on alternate assemblies o
 committed check (`docs/data/gwascat_rule_pharos319.json`) gives 92.8% of Pharos's triples recovered and
 95.1% of the rule's being Pharos's, and for pairs 92.0% and 95.3%. The rule passes the bar. The triples
 it does not reproduce are 7.2% of Pharos's, in 4,709 studies, and not the quarter stated there.
+
+**11 Oct 2026, the scorer behind the question layer. Written on Ian's decision to switch it, after the
+prospective test was scored and before anything below was computed.**
+
+- *What changes.* The front end ranked candidates by neighbours (B3). It now ranks the targets for a
+  trait by `combine[B1+B3+B5]:F1` with the weights that were scored on the prospective test: log(1 + B3),
+  plus 1/32 of log(1 + B1), plus 1/4 of log(1 + B5), each computed from the links as of the year asked.
+  This is the model named in advance and shown to beat B3 on links no model had been scored on.
+- *Calibration.* "Calibration by rank" is computed again for this scorer, on the prospective split, as
+  defined in that section: the same rank bins and groups and the five seeds. A candidate is a pair with
+  no training link that is not set aside, and a positive is a link first reported in 2023 to 2026. The
+  front end quotes these shares and says which test they come from. This reads the prospective links
+  again, for a scorer already scored on them.
+- *Ranking the traits for one target.* The combiner was fitted and tested for ranking targets within a
+  trait. Read the other way, the degree term is the same for every trait of one target, so the order
+  is by log(1 + B3) plus 1/4 of log(1 + B5). Before it is served that way, its mean average precision
+  over targets is compared with B3's on the prospective split, paired over the targets with a
+  prospective link. It is served by target unless the interval of that difference lies below zero, in
+  which case B3 stays for that direction. This choice is made on the prospective links, so for that
+  direction what the front end quotes is not from a clean test, and its documentation says so.
+- *As of an earlier year.* The two weights were fitted on links to 2022. A ranking as of an earlier
+  year uses weights fitted on later links, so what it shows as reported later is an illustration and
+  not a backtest. The clean test is the prospective one.
+- *Trait ids.* The prospective test keyed traits by live ontology term, 2,225 of them. The bundle
+  keeps Pharos's ids, 2,247. Where two ids were merged the served score differs from the tested one. A
+  check compares the served scores with the tested matrix for the traits that were not merged.
+- *What does not change.* Every other question, the grouping of candidates into leads, the cautions,
+  and the two statements every answer carries: a candidate is a lead, and one not reported is not
+  known to be absent.
+- *Usability.* The tests of 7 and 9 Oct were run on the layer as it was. None of their 105 frozen
+  questions asks for a rank or a candidate, so their expected answers are unchanged. No usability test
+  has been run on the ranking itself, before or after this change.
