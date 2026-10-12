@@ -1,0 +1,326 @@
+{
+ "release": "pharos319",
+ "seed": 20261012,
+ "sha256": "b701354dd03535f8669980b03a5b378792edf9a3c17e873e28e74448d36c64df",
+ "questions": [
+  {
+   "id": "top-1",
+   "family": "top",
+   "text": "Which target is the highest-ranked candidate for palmitoleic acid measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "RAB3IL1"
+   }
+  },
+  {
+   "id": "top-2",
+   "family": "top",
+   "text": "Which target is the highest-ranked candidate for Barrett's esophagus? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "LIPC"
+   }
+  },
+  {
+   "id": "top-3",
+   "family": "top",
+   "text": "Which target is the highest-ranked candidate for mitochondrial heteroplasmy measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "HLA-DRB5"
+   }
+  },
+  {
+   "id": "top-4",
+   "family": "top",
+   "text": "Which target is the highest-ranked candidate for diabetic retinopathy? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "GRM5"
+   }
+  },
+  {
+   "id": "rank-1",
+   "family": "rank",
+   "text": "PRRT1 has no link to chemerin measurement. By this graph's ranking, at what rank is PRRT1 among the candidates for chemerin measurement? End with a last line  FINAL: {\"problem\": P, \"rank\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "rank": 9
+   }
+  },
+  {
+   "id": "rank-2",
+   "family": "rank",
+   "text": "C11orf52 has no link to interleukin 18 measurement. By this graph's ranking, at what rank is C11orf52 among the candidates for interleukin 18 measurement? End with a last line  FINAL: {\"problem\": P, \"rank\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "rank": 50
+   }
+  },
+  {
+   "id": "rank-3",
+   "family": "rank",
+   "text": "ZKSCAN4 has no link to liver iron measurement. By this graph's ranking, at what rank is ZKSCAN4 among the candidates for liver iron measurement? End with a last line  FINAL: {\"problem\": P, \"rank\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "rank": 66
+   }
+  },
+  {
+   "id": "rank-4",
+   "family": "rank",
+   "text": "CREB5 has no link to cardiovascular measurement. By this graph's ranking, at what rank is CREB5 among the candidates for cardiovascular measurement? End with a last line  FINAL: {\"problem\": P, \"rank\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "rank": 164
+   }
+  },
+  {
+   "id": "held-1",
+   "family": "held",
+   "text": "STKLD1 has no link to citrulline measurement. Of candidates in its group at the ranks where it stands, what percentage were reported in the test on later links? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 11.1
+   }
+  },
+  {
+   "id": "held-2",
+   "family": "held",
+   "text": "MCCD1 has no link to risk-taking behaviour. Of candidates in its group at the ranks where it stands, what percentage were reported in the test on later links? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 10.1
+   }
+  },
+  {
+   "id": "held-3",
+   "family": "held",
+   "text": "TRAIP has no link to number of pregnancies measurement. Of candidates in its group at the ranks where it stands, what percentage were reported in the test on later links? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 3.4
+   }
+  },
+  {
+   "id": "held-4",
+   "family": "held",
+   "text": "GATAD2A has no link to AL amyloidosis. Of candidates in its group at the ranks where it stands, what percentage were reported in the test on later links? End with a last line  FINAL: {\"problem\": P, \"percent\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "percent": 1.7
+   }
+  },
+  {
+   "id": "explained-1",
+   "family": "explained",
+   "text": "Is the highest-ranked candidate target for central nervous system non-hodgkin lymphoma explained by an earlier link? End with a last line  FINAL: {\"problem\": P, \"explained\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "explained": true
+   }
+  },
+  {
+   "id": "explained-2",
+   "family": "explained",
+   "text": "Is the highest-ranked candidate target for caspase-8 measurement explained by an earlier link? End with a last line  FINAL: {\"problem\": P, \"explained\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "explained": true
+   }
+  },
+  {
+   "id": "explained-3",
+   "family": "explained",
+   "text": "Is the highest-ranked candidate target for response to paliperidone explained by an earlier link? End with a last line  FINAL: {\"problem\": P, \"explained\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "explained": false
+   }
+  },
+  {
+   "id": "explained-4",
+   "family": "explained",
+   "text": "Is the highest-ranked candidate target for dysentery explained by an earlier link? End with a last line  FINAL: {\"problem\": P, \"explained\": true or false}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "explained": false
+   }
+  },
+  {
+   "id": "nearby-1",
+   "family": "nearby",
+   "text": "For the highest-ranked candidate target for mucocutaneous lymph node syndrome, how many genes within 500,000 bases of it already have the link? End with a last line  FINAL: {\"problem\": P, \"genes_nearby\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes_nearby": 7
+   }
+  },
+  {
+   "id": "nearby-2",
+   "family": "nearby",
+   "text": "For the highest-ranked candidate target for persulfide dioxygenase ETHE1, mitochondrial measurement, how many genes within 500,000 bases of it already have the link? End with a last line  FINAL: {\"problem\": P, \"genes_nearby\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes_nearby": 11
+   }
+  },
+  {
+   "id": "nearby-3",
+   "family": "nearby",
+   "text": "For the highest-ranked candidate target for pigmentary glaucoma, how many genes within 500,000 bases of it already have the link? End with a last line  FINAL: {\"problem\": P, \"genes_nearby\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes_nearby": 2
+   }
+  },
+  {
+   "id": "unexplained_top-1",
+   "family": "unexplained_top",
+   "text": "Leaving out the candidates that an earlier link already explains, which target is the highest-ranked candidate for disease progression measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "HLA-DQA2"
+   }
+  },
+  {
+   "id": "unexplained_top-2",
+   "family": "unexplained_top",
+   "text": "Leaving out the candidates that an earlier link already explains, which target is the highest-ranked candidate for cups of coffee per day measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "SH2B3"
+   }
+  },
+  {
+   "id": "unexplained_top-3",
+   "family": "unexplained_top",
+   "text": "Leaving out the candidates that an earlier link already explains, which target is the highest-ranked candidate for lysophosphatidylcholine 20:5 measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "SYCP2L"
+   }
+  },
+  {
+   "id": "no_link_top-1",
+   "family": "no_link_top",
+   "text": "Among the targets that have no link at all, which is ranked highest for blood protein measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "HCP5"
+   }
+  },
+  {
+   "id": "no_link_top-2",
+   "family": "no_link_top",
+   "text": "Among the targets that have no link at all, which is ranked highest for corneal resistance factor? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "MUC2"
+   }
+  },
+  {
+   "id": "no_link_top-3",
+   "family": "no_link_top",
+   "text": "Among the targets that have no link at all, which is ranked highest for serum hepcidin measurement? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "symbol": "BTN2A3P"
+   }
+  },
+  {
+   "id": "no_link_trait-1",
+   "family": "no_link_trait",
+   "text": "ZNF415 has no link in this graph. Which trait is ranked highest for it? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null if there is nothing to rank}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "trait_any_of": [
+     "EFO:0004627",
+     "IGF-1 measurement"
+    ]
+   }
+  },
+  {
+   "id": "no_link_trait-2",
+   "family": "no_link_trait",
+   "text": "PRR20E has no link in this graph. Which trait is ranked highest for it? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null if there is nothing to rank}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "trait_any_of": [
+     "EFO:0011015",
+     "educational attainment"
+    ]
+   }
+  },
+  {
+   "id": "no_link_trait-3",
+   "family": "no_link_trait",
+   "text": "USP32 has no link in this graph. Which trait is ranked highest for it? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null if there is nothing to rank}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "trait_any_of": [
+     "EFO:0007937",
+     "blood protein measurement"
+    ]
+   }
+  },
+  {
+   "id": "nothing-1",
+   "family": "nothing",
+   "text": "C6orf50 has no link in this graph. Which trait is ranked highest for it? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null if there is nothing to rank}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "trait": null
+   }
+  },
+  {
+   "id": "nothing-2",
+   "family": "nothing",
+   "text": "C20orf78 has no link in this graph. Which trait is ranked highest for it? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null if there is nothing to rank}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "trait": null
+   }
+  },
+  {
+   "id": "not_in_graph-1",
+   "family": "not_in_graph",
+   "text": "Which trait is ranked highest for QXJV5? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-2",
+   "family": "not_in_graph",
+   "text": "Which trait is ranked highest for ZKWP2? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-3",
+   "family": "not_in_graph",
+   "text": "Which trait is ranked highest for VJQT8? End with a last line  FINAL: {\"problem\": P, \"trait\": TRAIT NAME OR ID, or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "ambiguous-1",
+   "family": "ambiguous",
+   "text": "Which target is the highest-ranked candidate for migraine? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-2",
+   "family": "ambiguous",
+   "text": "Which target is the highest-ranked candidate for cirrhosis? End with a last line  FINAL: {\"problem\": P, \"symbol\": GENE SYMBOL or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  }
+ ]
+}
