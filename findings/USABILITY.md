@@ -151,3 +151,83 @@ The typed condition used 1.62 tool calls a question (`gaps` 89 times, `find` 57,
 
 **Cost.** 525 conversations over the two rounds cost 0.26 dollars against this test's cap of 0.75.
 All usability testing to date has cost 0.72 dollars of the 1.50 stated.
+
+## Added 12 Oct 2026: the rankings
+
+`python -m pharos_gap_kg.usability run pharos319 --set rank ...` and `report --set rank` write
+`docs/data/usability_results_rank.json`; the development set is `rank_dev`. The test was written into
+`docs/PROTOCOL.md` ("Usability of the rankings") before any model was asked about a ranking: 35
+questions in eleven kinds, three conditions, the same three hosted models, and the two verdicts of the
+first test. The questions ask for the highest candidate for a trait, one named target's rank and the
+rate for that rank, whether and by how many genes the highest candidate is explained, the highest
+candidate no earlier link explains, the two position lists for targets with no link, a target with
+nothing to rank, an invented gene and an ambiguous trait word.
+
+The expected answers come from `ranktables`, which computes every served ranking from the bundle's
+tables by matrix code that does not call the question layer. Asked separately, the question layer
+gives the same answer to all 35 questions of each set. The SQL condition is given those same tables.
+
+**Development round** (typed and SQL only; reported, not read against the verdicts):
+
+| model | typed | SQL |
+|---|---|---|
+| deepseek-v4-flash | 32 | 34 |
+| glm-5.3-flash | 30 | 35 |
+| mercury-2.5 | 30 | 34 |
+
+Pooled, typed minus SQL was -0.105 [-0.210, -0.010] of a question: typed was worse.
+
+- **All 13 typed misses were of two kinds**: the rank of one named target, and the rate for that rank.
+  The models answered 11 of those 24 questions.
+- **The tool that answers both was not called.** `why` gives a target with no link its own rank among
+  the trait's candidates and the rate that goes with it. It was called in none of the 13 misses, and in
+  8 of the 11 right answers. The models went to `predict` and looked for the target in its list, which shows
+  the top of the ranking only, folds neighbouring genes into one row under the rank of its first gene,
+  and was cut short by the harness's limit of 8,000 characters on a tool result.
+- **The fault was in what the server says about its own tools**, not in the questions, the expected
+  answers or the grading. Between the rounds the server's instructions and the descriptions of `why`
+  and `predict` were changed to say where one target's rank is found, and a list of candidates now says
+  that a row is a lead. Nothing in the test was changed. This is recorded in the protocol.
+
+**Evaluation round**, on a set generated and frozen after those changes:
+
+| model | typed | SQL | no tool |
+|---|---|---|---|
+| deepseek-v4-flash | 35 | 34 | 0 |
+| glm-5.3-flash | 34 | 35 | 0 |
+| mercury-2.5 | 35 | 32 | 0 |
+
+- **Usable by a small model: met.** All three answer 28 or more of 35 through the typed questions, and
+  no model in any condition answered a not-in-graph question as if the gene were known.
+- **Better than SQL: not met.** Pooled over the three models, typed minus SQL is +0.029
+  [-0.019, +0.086] of a question. Typed was right where SQL was wrong on 4 answers, and SQL where
+  typed was wrong on 1.
+- **The rank questions are now answered.** All 24 answers about one target's rank or its rate are right
+  under typed, and `why` was called for every one of them.
+- **Where typed went wrong.** One answer of 105: asked for the highest candidate that no earlier link
+  explains, one model called `predict` eight times, said each result was cut short, and reported that
+  it could not tell.
+- **Where SQL went wrong.** 3 of its 4 misses are the ambiguous trait word: given "cardiomyopathy" or "colitis",
+  two models found no trait of exactly that name and said the trait is not in the graph, where the
+  graph holds several. The typed questions say a name is ambiguous and list what it could mean.
+- **Without a tool the models score 0.** They answered "unknown" to 102 of the 105 questions. Nothing about a
+  ranking can be answered from the rules text or from general knowledge.
+
+The typed condition used 1.96 tool calls a question (`find` 106 times, `predict` 76 times, `why` 24 times) and SQL 2.99.
+A typed conversation read 9,561 tokens on average against 5,268 for SQL; in the development round,
+before the change, it was 15,691 against 4,816. A list of candidates repeats a sentence on
+how often the rank held beside every row.
+
+**What this shows and what it does not.**
+
+- Three small models can use the rankings through the typed questions, once the server says which
+  question places a single target. Before it said so they missed 13 of 24 questions about one target's
+  rank or its rate. The evaluation result follows a change to the tool made on the development round,
+  which is what that round is for.
+- SQL over tables that already hold every rank does about as well. The typed questions' margin is in
+  resolving names: every SQL miss but one is an ambiguous name.
+- It does not show that a ranking is right. That is the prospective test.
+- The questions were written by the author of the tool, and no person has used it.
+
+**Cost.** 525 conversations over the two rounds cost 0.40 dollars against this test's cap of 0.60.
+All usability testing to date has cost 1.12 dollars of the 1.50 stated.
