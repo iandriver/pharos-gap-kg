@@ -508,6 +508,64 @@ SQL if the pooled paired interval excludes zero.
 **What it does not test.** A person. Nor whether these are the questions a user would ask: they were
 written by the author of the tool.
 
+## Usability of the rankings
+
+Defined on 12 Oct 2026, before any model was put a question about a ranking.
+
+**What is tested.** Whether a small model, given only what the server says, answers questions about
+the rankings the front end serves: the candidates for a trait, where a target ranks, what explains a
+candidate, how often a rank has held, and the position lists for targets with no link. And whether it
+does so better than with SQL over tables that hold the same rankings. The two earlier usability tests
+asked no question of this kind.
+
+**Questions.** 35, written by code with a fixed seed, in eleven kinds:
+
+- the highest-ranked candidate target for a trait (4);
+- the rank of a named target that has no link to a named trait (4);
+- how often candidates ranked where that target ranks were reported in the test on later links, as a
+  percentage, for the candidate's own group (4);
+- whether the highest-ranked candidate for a trait is explained by an earlier link, two where it is and
+  two where it is not (4);
+- for the highest-ranked candidate, how many genes within 500,000 bases already have the link (3);
+- the highest-ranked candidate once those an earlier link explains are left out (3);
+- among targets with no link at all, the one ranked highest for a trait (3);
+- for a target with no link, the trait ranked highest for it (3);
+- a target with no link and no linked gene nearby, for which there is nothing to rank (2);
+- a gene that is not in the graph (3);
+- a trait word that means several traits (2).
+
+The expected answers are computed from the bundle's tables by matrix code that does not call the
+question layer. Before a set is frozen, the question layer is asked each question directly and must
+give the expected answer; a disagreement means one of the two is wrong and nothing is written.
+
+**Conditions.** As before. *typed*: the eight tools as the server serves them. *sql*: the tables of the
+first test, and four more that hold the rankings themselves, described to the model: the 200 highest
+candidates for every trait with the three parts of each score and what explains each; the rate at
+which each rank held, by group; and the two position lists for targets with no link. *none*: no tool.
+One rules text is given in every condition. It says what a reader needs to answer at all: what the
+score is made of, what "explained by an earlier link" means, that a target with no link is ranked
+apart by position, and what the rate beside a candidate is.
+
+**Models, limits, grading.** The three hosted models of the earlier tests, temperature 0, at most 8
+tool calls a question, one run per cell, graded by code from the `FINAL` line. A percentage is right
+within one point. A trait may be given by its name or its id. A question is put up to three times,
+and one the provider fails each time counts as wrong. Spend on this test is capped at 0.60 dollars,
+which keeps all usability testing under the 1.50 stated above: 0.72 has been spent.
+
+**Two sets.** A development set (seed 20261012) is run first, under *typed* and *sql*, to find faults
+in the test itself. Its results are reported and are not read against the verdicts. The evaluation set
+(seed 20261013, with other invented symbols and words) is generated and frozen after the development
+round and before any model sees it, and is run under all three conditions. Whatever is changed between
+the rounds is recorded.
+
+**How it will be read.** On the evaluation set, by the two verdicts of the earlier tests, unchanged.
+The rankings are usable by a small model if at least two of the three hosted models answer 28 or more
+of 35 under *typed* and none answers a not-in-graph question as if the gene were known. Typed is
+better than SQL if the pooled paired interval excludes zero.
+
+**What it does not test.** A person. Whether a ranking is right: that is the prospective test. Nor
+whether these are the questions a user would ask: they were written by the author of the tool.
+
 ## Lineage and position as inputs
 
 Defined on 9 Oct 2026, before any model here was fitted. Every model in this section is **added after
