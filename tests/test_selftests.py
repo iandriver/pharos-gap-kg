@@ -128,6 +128,13 @@ def test_combine_selftest():
     assert combine._selftest() == 0
 
 
+def test_ranktables_selftest():
+    import pytest
+    pytest.importorskip("scipy")
+    from pharos_gap_kg import ranktables
+    assert ranktables._selftest() == 0
+
+
 def test_prospect_selftest():
     from pharos_gap_kg import prospect
     assert prospect._selftest() == 0

@@ -23,6 +23,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.bundle --selftest
 	$(PY) -m pharos_gap_kg.calibrate --selftest
 	$(PY) -m pharos_gap_kg.ask --selftest
+	$(PY) -m pharos_gap_kg.ranktables --selftest
 	$(PY) -m pharos_gap_kg.usability --selftest
 	$(PY) -m pharos_gap_kg.ctxtables --selftest
 	$(PY) -m pharos_gap_kg.enrich --selftest

@@ -38,7 +38,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import ask, paths
+from pharos_gap_kg import ask, paths, ranktables
 
 SEED = 20261007
 # The first set is the development set: its results shaped the second round (docs/PROTOCOL.md).
@@ -53,12 +53,19 @@ SETS = {
                  "file": "usability_questions_gaps_dev.json", "results": "usability_results_gaps_dev.json"},
     "gaps": {"seed": 20261011, "schema": 3, "fakes": ("ZWQK6", "JXVP3", "QKZT9"), "words": ("KRTAP", "CYP2", "HLA"),
              "file": "usability_questions_gaps.json", "results": "usability_results_gaps.json"},
+    # the rankings (docs/PROTOCOL.md, "Usability of the rankings"): a development set, then the set the verdicts are read on
+    "rank_dev": {"seed": 20261012, "schema": 4, "fakes": ("QXJV5", "ZKWP2", "VJQT8"), "words": ("migraine", "cirrhosis"),
+                 "file": "usability_questions_rank_dev.json", "results": "usability_results_rank_dev.json"},
+    "rank": {"seed": 20261013, "schema": 4, "fakes": ("XZQJ4", "KVWP6", "JQZT3"), "words": ("cardiomyopathy", "colitis"),
+             "file": "usability_questions_rank.json", "results": "usability_results_rank.json"},
 }
 STATUSES = ["answered", "no_link_reported", "not_in_graph", "ambiguous", "unknown"]
 CONDITIONS = ["typed", "sql", "none"]
 MAX_TOOL_CALLS = 8
 PROMPT_VERSION = 1
 GAPS_CAP = 0.75          # dollars, over both sets of the gaps test (docs/PROTOCOL.md)
+RANK_CAP = 0.60          # dollars, over both sets of the rankings test
+CAPS = {3: GAPS_CAP, 4: RANK_CAP}
 PRICES = {"inception/mercury-2.5": (0.04, 0.15), "deepseek/deepseek-v4-flash": (0.09, 0.18), "z-ai/glm-5.3-flash": (0.15, 0.50)}
 
 RULES = """You answer questions about a graph of dated GWAS links between human protein targets and traits, built from NIH Pharos.
@@ -100,7 +107,34 @@ SQL_SCHEMA_GAPS = """
       -- nearest criteria, joined by '|'; proposal says in words what clearing them takes; a lower route_cost is nearer to leaving Tdark
   gap_band_rates(band, promoted_share, promoted_low, promoted_high, targets)   -- of the Tdark targets in each band, the share no longer Tdark in Pharos 4.0.0"""
 
-RULES_BY_SCHEMA = {1: RULES, 2: RULES_V2, 3: RULES_GAPS}
+RULES_RANK = """You answer questions about a graph of dated GWAS links between human protein targets (from NIH Pharos) and traits, and about the ranked candidates it offers for links not yet reported.
+- A candidate for a trait is a target that has links to other traits and none to this one. Candidates are ranked by a score with three parts: shared-trait neighbours, the number of traits the target is already linked to, and the number of genes within 500,000 bases of it that already have the link. Rank 1 is the highest.
+- A candidate is "explained by an earlier link" when a gene within 500,000 bases of it already has the link, or when the target is already linked to a broader, narrower or second wording of the trait.
+- Beside each candidate the graph gives the rate at which candidates at its ranks, in its own group (explained or not), were reported in a test on later links. That rate is the answer when a question asks how often a rank has held.
+- A target with no link at all is not among those candidates. Such targets are ranked apart, by position alone: for a trait, by how many genes within 500,000 bases of the target already have the link; and for such a target, the traits are ranked by the same count.
+- A target with no link and no linked gene nearby has nothing to rank. That is an answer: "problem" is null and the field asked for is null.
+Explain briefly, then end with one last line of the form  FINAL: {...}  holding the JSON object the question asks for.
+Every FINAL object has a "problem" field:
+  null             you found what was asked.
+  "not_in_graph"   the target or the trait is not in the graph. Do not answer from your own knowledge.
+  "ambiguous"      a name in the question matches nothing in the graph exactly and could mean more than one thing. Do not choose one.
+  "unknown"        you could not determine the answer.
+When "problem" is not null, set the other fields to null."""
+
+SQL_SCHEMA_RANK = """
+  candidates(trait_id, rank, target_id, symbol, score, shared_trait_neighbours, traits_already_linked, genes_nearby_with_this_link, explained)
+      -- the 200 highest-ranked candidate targets for each trait, rank 1 first. explained is 1 when an earlier link explains the candidate, else 0
+  rank_rates(ranks, candidate_group, percent)
+      -- of the candidates at those ranks for a trait, the percentage reported in the test on later links. ranks is '1-10', '11-50', '51-100'
+      -- or '101-500'. candidate_group is 'explained', 'not explained, trait is a disease or phenotype' or 'not explained, other trait'
+  no_link_targets(trait_id, rank, target_id, symbol, genes_nearby_with_this_link)
+      -- for each trait, the targets that have no link at all and lie beside a gene that has this link, rank 1 first
+  no_link_traits(target_id, symbol, rank, trait_id, trait_name, genes_nearby_with_this_link)
+      -- for each target that has no link at all, the traits its neighbouring genes are linked to, rank 1 first. A target with no link and
+      -- no row here has nothing to rank"""
+
+RULES_BY_SCHEMA = {1: RULES, 2: RULES_V2, 3: RULES_GAPS, 4: RULES_RANK}
+SQL_EXTRA = {3: SQL_SCHEMA_GAPS, 4: SQL_SCHEMA_RANK}
 
 SQL_SCHEMA = """You have one tool, sql(query), which runs one read-only SQLite SELECT and returns up to 50 rows.
 Tables:
@@ -371,6 +405,143 @@ def via_ask(q: dict, G) -> dict | None:
     return {"problem": None, "percent": re.search(r", (\d+)% \(", d["how_often_this_closed"]).group(1)}
 
 
+TIE = 1e-9          # two scores closer than this are a tie, and a question is never put on one
+
+
+def make_rank_questions(bundle: Path, seed: int, fakes: tuple, words: tuple) -> list[dict]:
+    """35 questions about the rankings, in eleven kinds. Expected answers are read from `ranktables`,
+    which computes every ranking from the bundle's tables without the question layer; `ask` is used
+    only to choose names it resolves without a note, and names it finds ambiguous."""
+    G = ask.Graph(bundle)
+    rng = random.Random(seed)
+    R = ranktables.build(bundle)
+    C, NT, ND = R["candidates"], R["no_link_targets"], R["no_link_traits"]
+    nodes = pd.read_parquet(bundle / "nodes.parquet")
+    t, d = nodes[nodes.kind == "target"], nodes[nodes.kind == "trait"]
+    n_sym = t.groupby("name").id.transform("size")
+    clean_t = {r.id for r in t[n_sym == 1].itertuples() if (lambda x: x["ok"] and not x["note"] and G.t.id[x["i"]] == r.id)(G.resolve(r.name))}
+    clean_d = {r.id for r in d.itertuples() if (lambda x: x["ok"] and not x["note"] and G.d.id[x["i"]] == r.id)(G.resolve(r.name))}
+    dname, disease = dict(zip(d.id, d.name)), dict(zip(d.id, d.disease_like))
+    rates = {(r.ranks, r.candidate_group): r.percent for r in R["rank_rates"].itertuples()}
+    bin_of = lambda rank: next(f"{lo}-{hi}" for lo, hi in ask.TRAIT_BINS if lo <= rank <= hi)
+    group_of = lambda row: ("explained" if row.explained else ranktables.GROUPS["disease_like_not_linked"] if disease[row.trait_id] else ranktables.GROUPS["not_linked"])
+    by = {k: g.reset_index(drop=True) for k, g in C[C.trait_id.isin(clean_d)].groupby("trait_id", sort=True)}
+    by = {k: g for k, g in by.items() if len(g) >= 150}
+    alone = lambda g, i: (i == 0 or g.score[i - 1] - g.score[i] > TIE) and (i + 1 == len(g) or g.score[i] - g.score[i + 1] > TIE)       # not tied with a neighbour
+    lead = lambda g: g.target_id[0] in clean_t and alone(g, 0)
+    used_d, used_t = set(), set()
+    qs: list[dict] = []
+
+    def add(fam: str, text: str, gold: dict) -> None:
+        qs.append({"id": f"{fam}-{sum(1 for q in qs if q['family'] == fam) + 1}", "family": fam, "text": text, "gold": gold})
+
+    def traits(keep, n: int) -> list[str]:
+        pool = sorted(k for k, g in by.items() if k not in used_d and keep(g))
+        got = rng.sample(pool, n)
+        used_d.update(got)
+        return got
+
+    for k in traits(lead, 4):
+        add("top", f"Which target is the highest-ranked candidate for {dname[k]}?" + _final2('"symbol": GENE SYMBOL'), {"problem": None, "symbol": by[k].symbol[0]})
+
+    def a_candidate(g, lo: int, hi: int):
+        ok = [i for i in range(lo - 1, min(hi, len(g))) if g.target_id[i] in clean_t and g.target_id[i] not in used_t and alone(g, i)
+              and g["rank"][i] == g.targets_scoring_higher_plus_one[i]]
+        return g.iloc[rng.choice(ok)] if ok else None
+
+    for lo, hi in ((2, 10), (11, 50), (51, 100), (101, 180)):
+        k = traits(lambda g: a_candidate(g, lo, hi) is not None, 1)[0]
+        r = a_candidate(by[k], lo, hi)
+        used_t.add(r.target_id)
+        add("rank", f"{r.symbol} has no link to {dname[k]}. By this graph's ranking, at what rank is {r.symbol} among the candidates for {dname[k]}?" + _final2('"rank": N'),
+            {"problem": None, "rank": int(r["rank"])})
+    for lo, hi in ((2, 10), (11, 50), (51, 100), (101, 180)):
+        k = traits(lambda g: a_candidate(g, lo, hi) is not None, 1)[0]
+        r = a_candidate(by[k], lo, hi)
+        used_t.add(r.target_id)
+        add("held", f"{r.symbol} has no link to {dname[k]}. Of candidates in its group at the ranks where it stands, what percentage were reported in the test on later links?"
+            + _final2('"percent": NUMBER'), {"problem": None, "percent": float(rates[(bin_of(int(r["rank"])), group_of(r))])})
+
+    for want in (1, 1, 0, 0):
+        k = traits(lambda g: lead(g) and g.explained[0] == want, 1)[0]
+        add("explained", f"Is the highest-ranked candidate target for {dname[k]} explained by an earlier link?" + _final2('"explained": true or false'),
+            {"problem": None, "explained": bool(want)})
+    for k in traits(lambda g: lead(g) and g.genes_nearby_with_this_link[0] >= 1, 2) + traits(lead, 1):
+        add("nearby", f"For the highest-ranked candidate target for {dname[k]}, how many genes within 500,000 bases of it already have the link?" + _final2('"genes_nearby": N'),
+            {"problem": None, "genes_nearby": int(by[k].genes_nearby_with_this_link[0])})
+
+    def first_unexplained(g):
+        i = next((i for i in range(len(g)) if not g.explained[i]), None)
+        return i if i is not None and i >= 3 and g.target_id[i] in clean_t and alone(g, i) else None
+
+    for k in traits(lambda g: first_unexplained(g) is not None, 3):
+        add("unexplained_top", f"Leaving out the candidates that an earlier link already explains, which target is the highest-ranked candidate for {dname[k]}?"
+            + _final2('"symbol": GENE SYMBOL'), {"problem": None, "symbol": by[k].symbol[first_unexplained(by[k])]})
+
+    nt = {k: g.reset_index(drop=True) for k, g in NT[NT.trait_id.isin(clean_d)].groupby("trait_id", sort=True)}
+    strict = lambda g: len(g) >= 3 and g.target_id[0] in clean_t and (g.genes_nearby_with_this_link[0], g.links_held_by_genes_nearby[0]) != (g.genes_nearby_with_this_link[1], g.links_held_by_genes_nearby[1])
+    pool = sorted(k for k, g in nt.items() if k not in used_d and strict(g))
+    for k in rng.sample(pool, 3):
+        used_d.add(k)
+        add("no_link_top", f"Among the targets that have no link at all, which is ranked highest for {dname[k]}?" + _final2('"symbol": GENE SYMBOL'),
+            {"problem": None, "symbol": nt[k].symbol[0]})
+
+    nd = {k: g.reset_index(drop=True) for k, g in ND[ND.target_id.isin(clean_t)].groupby("target_id", sort=True)}
+    first = lambda g: len(g) >= 3 and (g.genes_nearby_with_this_link[0], g.targets_linked_to_this_trait[0]) != (g.genes_nearby_with_this_link[1], g.targets_linked_to_this_trait[1])
+    pool = sorted(k for k, g in nd.items() if first(g))
+    for k in rng.sample(pool, 3):
+        used_t.add(k)
+        g = nd[k]
+        add("no_link_trait", f"{g.symbol[0]} has no link in this graph. Which trait is ranked highest for it?" + _final2('"trait": TRAIT NAME OR ID, or null if there is nothing to rank'),
+            {"problem": None, "trait_any_of": [g.trait_id[0], g.trait_name[0]]})
+
+    bare = R["targets_with_no_link"]
+    bare = bare[bare.id.isin(clean_t) & ~bare.id.isin(set(ND.target_id))].sort_values("id")
+    for i in rng.sample(range(len(bare)), 2):
+        add("nothing", f"{bare.name.iloc[i]} has no link in this graph. Which trait is ranked highest for it?" + _final2('"trait": TRAIT NAME OR ID, or null if there is nothing to rank'),
+            {"problem": None, "trait": None})
+
+    for fake in fakes:
+        if G.resolve(fake).get("problem") != "not in the graph":
+            raise SystemExit(f"REFUSED: the invented symbol {fake} matches something in the graph")
+        add("not_in_graph", f"Which trait is ranked highest for {fake}?" + _final2('"trait": TRAIT NAME OR ID, or null'), {"problem": "not_in_graph"})
+    for word in words:
+        if G.resolve(word).get("problem") != "ambiguous":
+            raise SystemExit(f"REFUSED: {word!r} is not ambiguous in this graph")
+        add("ambiguous", f"Which target is the highest-ranked candidate for {word}?" + _final2('"symbol": GENE SYMBOL or null'), {"problem": "ambiguous"})
+    if len(qs) != 35:
+        raise SystemExit(f"REFUSED: {len(qs)} questions were made, not 35")
+    return qs
+
+
+def via_ask_rank(q: dict, G) -> dict:
+    """What the question layer itself would put in FINAL for a rankings question. Used only to cross-check
+    the expected answers, which are computed without it: where the two disagree, one of them is wrong."""
+    text, fam = q["text"].split(" End with")[0], q["family"]
+    prob = lambda a: {"problem": {"not in the graph": "not_in_graph", "ambiguous": "ambiguous"}.get(a.get("problem"), a.get("problem"))}
+    if fam in ("rank", "held"):
+        sym, trait = re.match(r"^(\S+) has no link to (.+?)\. ", text).groups()
+        w = G.why(sym, trait)
+        if fam == "rank":
+            return {"problem": None, "rank": w["rank_among_candidates"]}
+        return {"problem": None, "percent": re.search(r", (\d+)% of candidates", w["calibration"]).group(1)}
+    if fam in ("no_link_trait", "nothing", "not_in_graph"):
+        a = G.predict(re.search(r"^(\S+) has no link|ranked highest for (\S+)\?", text).group(1) or re.search(r"ranked highest for (\S+)\?", text).group(1), top=1)
+        if not a["found"]:
+            return prob(a)
+        return {"problem": None, "trait": a["candidates"][0]["id"] if a["candidates"] else None}
+    trait = re.search(r"(?:candidate target for|candidate for|ranked highest for) (.+?)(?: explained by an earlier link\?|, how many genes|\?)", text).group(1)
+    a = G.predict(trait, top=1, unexplained_only=fam == "unexplained_top", unlinked=fam == "no_link_top")
+    if not a["found"]:
+        return prob(a)
+    c = a["candidates"][0]
+    if fam == "explained":
+        return {"problem": None, "explained": bool(c["explained_by"])}
+    if fam == "nearby":
+        return {"problem": None, "genes_nearby": c["score_parts"]["genes_nearby_with_this_link"]}
+    return {"problem": None, "symbol": c["symbol"]}
+
+
 def digest(qs: list[dict]) -> str:
     return hashlib.sha256(json.dumps(qs, sort_keys=True).encode()).hexdigest()
 
@@ -454,8 +625,12 @@ def grade(q: dict, final: dict | None) -> bool:
                     return False
             except (TypeError, ValueError):
                 return False
-        elif k == "has_gap":
-            if final.get("has_gap") not in (want, str(want).lower()):
+        elif k in ("has_gap", "explained"):
+            if final.get(k) not in (want, str(want).lower()):
+                return False
+        elif k == "trait_any_of":
+            got = str(final.get("trait") or "").strip().casefold()
+            if got not in {str(x).casefold() for x in want}:
                 return False
         elif k == "level":
             if str(final.get("level") or "").strip().casefold() != want.casefold():
@@ -488,7 +663,7 @@ def fabricated(q: dict, final: dict | None) -> bool:
 
 
 # ----------------------------------------------------------------------------- the two tool sets
-def sql_db(bundle: Path) -> sqlite3.Connection:
+def sql_db(bundle: Path, rankings: bool = False) -> sqlite3.Connection:
     T = _tables(bundle)
     nb = pd.read_parquet(bundle / "neighbours.parquet")
     n = T["nodes"]
@@ -511,6 +686,15 @@ def sql_db(bundle: Path) -> sqlite3.Connection:
         pd.DataFrame([{"band": k, "promoted_share": v["promoted"]["share"], "promoted_low": v["promoted"]["low"], "promoted_high": v["promoted"]["high"],
                        "targets": v["promoted"]["n"]} for k, v in sorted(b.items())]).to_sql("gap_band_rates", con, index=False)
         con.execute("CREATE INDEX i6 ON target_gaps(target_id)")
+    if rankings:
+        R = ranktables.build(bundle)
+        R["candidates"].drop(columns="targets_scoring_higher_plus_one").to_sql("candidates", con, index=False)
+        R["rank_rates"].to_sql("rank_rates", con, index=False)
+        R["no_link_targets"].drop(columns="links_held_by_genes_nearby").to_sql("no_link_targets", con, index=False)
+        R["no_link_traits"].drop(columns="targets_linked_to_this_trait").to_sql("no_link_traits", con, index=False)
+        for stmt in ("CREATE INDEX r1 ON candidates(trait_id, rank)", "CREATE INDEX r2 ON candidates(symbol)", "CREATE INDEX r3 ON no_link_targets(trait_id, rank)",
+                     "CREATE INDEX r4 ON no_link_traits(symbol)"):
+            con.execute(stmt)
     for stmt in ("CREATE INDEX i1 ON links(target_id)", "CREATE INDEX i2 ON links(trait_id)", "CREATE INDEX i3 ON studies(target_id, trait_id)",
                  "CREATE INDEX i4 ON targets(symbol)", "CREATE INDEX i5 ON traits(name)", "PRAGMA query_only = ON"):
         con.execute(stmt)
@@ -618,11 +802,11 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
     rules = RULES_BY_SCHEMA[schema]
     out_dir = calls_dir()
     out_dir.mkdir(parents=True, exist_ok=True)
-    if schema == 3:      # the gaps test has one cap over its two sets, whatever a single run is allowed
-        gone = sum(r.get("cost") or 0.0 for r in (json.loads(p.read_text()) for p in out_dir.glob("*.json")) if SETS.get(r.get("set", "dev"), {}).get("schema") == 3)
-        max_cost = min(max_cost, GAPS_CAP - gone)
+    if schema in CAPS:      # a later test has one cap over its two sets, whatever a single run is allowed
+        gone = sum(r.get("cost") or 0.0 for r in (json.loads(p.read_text()) for p in out_dir.glob("*.json")) if SETS.get(r.get("set", "dev"), {}).get("schema") == schema)
+        max_cost = min(max_cost, CAPS[schema] - gone)
         if max_cost <= 0:
-            raise SystemExit(f"REFUSED: the gaps test has spent {gone:.2f} of its {GAPS_CAP:.2f} dollars")
+            raise SystemExit(f"REFUSED: this test has spent {gone:.2f} of its {CAPS[schema]:.2f} dollars")
     spent = 0.0
     sem = asyncio.Semaphore(workers)
 
@@ -673,12 +857,12 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                 fp = hashlib.sha256(json.dumps([system, specs], sort_keys=True).encode()).hexdigest()[:12]
                 rows = await body(s, system, specs, call_tool, fp)
     elif condition == "sql":
-        con = sql_db(bundle)
+        con = sql_db(bundle, rankings=schema == 4)
 
         async def call_tool(name: str, args: dict) -> str:
             return run_sql(con, args.get("query", "")) if name == "sql" else f"unknown tool {name}; the only tool is sql"
 
-        system = rules + "\n\n" + SQL_SCHEMA + (SQL_SCHEMA_GAPS if schema == 3 else "")
+        system = rules + "\n\n" + SQL_SCHEMA + SQL_EXTRA.get(schema, "")
         fp = hashlib.sha256(json.dumps([system, SQL_TOOL], sort_keys=True).encode()).hexdigest()[:12]
         rows = await body(None, system, SQL_TOOL, call_tool, fp)
     else:
@@ -837,6 +1021,25 @@ def _selftest() -> int:
            and json.loads(run_sql(con, "select promoted_share, targets from gap_band_rates"))["rows"] == [[0.5, 40]])
         ck("the SQL tool refuses anything that is not one SELECT", run_sql(con, "delete from links").startswith("error") and run_sql(con, "select 1; select 2").startswith("error"))
         ck("a bad query returns its error as text", run_sql(con, "select nope from links").startswith("error"))
+        conr = sql_db(Path(tmp), rankings=True)
+        got = json.loads(run_sql(conr, "select symbol, rank, explained from candidates where trait_id = 'MONDO:2' order by rank"))["rows"]
+        ck("for the rankings test the SQL tool also holds the candidates, the rates and the two lists for targets with no link",
+           [r[0] for r in got] == ["BBB", "AAA"] and json.loads(run_sql(conr, "select symbol, trait_id from no_link_targets order by trait_id"))["rows"] == [["DDD", "EFO:7"], ["DDD", "EFO:9"], ["DDD", "MONDO:2"]]
+           and json.loads(run_sql(conr, "select count(*) from rank_rates"))["rows"] == [[12]]
+           and json.loads(run_sql(conr, "select trait_name from no_link_traits where symbol = 'DDD' and rank = 1"))["rows"] == [["body height"]])
+        G = ask.Graph(Path(tmp))
+        p = G.predict("arrhythmia")
+        ck("those tables, computed without the question layer, give the candidates the question layer gives",
+           [r[0] for r in got] == [c["symbol"] for c in p["candidates"]] and [bool(r[2]) for r in got] == [bool(c["explained_by"]) for c in p["candidates"]])
+    q = {"family": "explained", "gold": {"problem": None, "explained": True}}
+    ck("a yes or no is right as a boolean or as text", grade(q, {"problem": None, "explained": True}) and grade(q, {"problem": None, "explained": "true"}) and not grade(q, {"problem": None, "explained": False}))
+    q = {"family": "no_link_trait", "gold": {"problem": None, "trait_any_of": ["EFO:7", "body height"]}}
+    ck("a trait is right by its id or its name, in any letter case", grade(q, {"problem": None, "trait": "efo:7"}) and grade(q, {"problem": None, "trait": "Body Height"}) and not grade(q, {"problem": None, "trait": "height"}))
+    q = {"family": "nothing", "gold": {"problem": None, "trait": None}}
+    ck("nothing to rank is right as a null with no problem, and wrong as a problem or a guess",
+       grade(q, {"problem": None, "trait": None}) and not grade(q, {"problem": "unknown", "trait": None}) and not grade(q, {"problem": None, "trait": "body height"}))
+    ck("each later test has its own cap, and the rankings test its own rules and tables", CAPS == {3: 0.75, 4: 0.60} and "ranked apart" in RULES_BY_SCHEMA[4] and "no_link_traits" in SQL_EXTRA[4]
+       and SETS["rank"]["seed"] != SETS["rank_dev"]["seed"] and not set(SETS["rank"]["fakes"]) & set(SETS["rank_dev"]["fakes"]))
     return 0 if ok else 1
 
 
@@ -866,12 +1069,13 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "questions":
         S = SETS[a.set_]
-        qs = (make_gap_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 3
+        qs = (make_rank_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 4
+              else make_gap_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 3
               else make_questions(paths.bundle(a.release), S["seed"], S["schema"], S["fakes"], S["words"]))
         d = {"release": a.release, "seed": S["seed"], "sha256": digest(qs), "questions": qs}
-        if S["schema"] == 3:
+        if S["schema"] >= 3:
             G = ask.Graph(paths.bundle(a.release))
-            differ = [q["id"] for q in qs if not grade(q, via_ask(q, G))]
+            differ = [q["id"] for q in qs if not grade(q, (via_ask_rank if S["schema"] == 4 else via_ask)(q, G))]
             if differ:
                 raise SystemExit(f"REFUSED: the expected answer and the question layer disagree on {differ}; one of them is wrong. Nothing was written.")
             print(f"the question layer gives the expected answer to all {len(qs)}")
