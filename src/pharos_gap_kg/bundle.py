@@ -8,7 +8,8 @@ these files and their digests:
     evidence.parquet     one row per (link, study): the study, its paper and the paper's year
     lineage.parquet      pairs of traits that are one term, or broader and narrower
     neighbours.parquet   pairs of targets within 500,000 bases, and the bases between them
-    backtest.json        how the ranking the front end offers has held on the frozen split, when measured
+    backtest.json        the scorer the front end ranks by, how it held on the prospective test, how often a
+                         candidate at each rank was later reported, and the baselines on the 2018 split
     target_gaps.*        what each target lacks for the next development level, and how often targets in
                          each band were promoted in the back-test (where `tgaps` has been run)
     manifest.json        the inputs' digests, each file's digest, and the counts
@@ -18,6 +19,7 @@ applies; the bundle does not choose a date. Edge ids come from the same exporter
 and where a dated graph has been built its edges must be among these under the same ids.
 
 Run:  python -m pharos_gap_kg.bundle pharos319
+      python -m pharos_gap_kg.bundle pharos319 --backtest-only     # refresh backtest.json in a built bundle
       python -m pharos_gap_kg.bundle --selftest
 """
 from __future__ import annotations
@@ -190,7 +192,63 @@ def backtest() -> dict | None:
             "neighbours_minus_degree_unexplained_lower_bound": [pair["low"]["difference"], pair["low"]["low"], pair["low"]["high"]],
             "neighbours_minus_degree_unexplained_neutral": [pair["neutral"]["difference"], pair["neutral"]["low"], pair["neutral"]["high"]],
             "split": c["split"]}
-    return {"headline": head, "calibration": {k_: c[k_] for k_ in ("cutoff", "data_ends", "base_rate", "by_trait", "by_target")}}
+    out = {"headline": head, "calibration": {k_: c[k_] for k_ in ("cutoff", "data_ends", "base_rate", "by_trait", "by_target")}}
+    out.update(ranking() or {})
+    return out
+
+
+def ranking() -> dict | None:
+    """The scorer the front end ranks by since 11 Oct 2026, how it did on the prospective test, and its
+    calibration by rank there. Read from the committed summaries; None where they are absent, and the
+    front end then ranks by neighbours alone."""
+    cp, pp = paths.DOCS_DATA / "calibration_prospect_2022.json", paths.DOCS_DATA / "prospect_gene_trait_2022.json"
+    if not (cp.is_file() and pp.is_file()):
+        return None
+    c, p = json.loads(cp.read_text()), json.loads(pp.read_text())
+    if c["split"] != p["split"]:
+        raise SystemExit("REFUSED: the calibration and the scoring of the prospective test are not from one split")
+    name = c["scorer"]
+    part = lambda term: re.fullmatch(r"log\(1 \+ (B\d)\)", term).group(1)
+    d = p["paired"][f"{name}-B3"]
+    three = lambda v: [d[v]["difference"], d[v]["low"], d[v]["high"]]
+    scorer = {"name": name, "weights": {part(k): v for k, v in zip(c["terms"], c["weights"])}, "each_part_enters_as": "log(1 + part)",
+              "parts": {"B3": "shared-trait neighbours", "B1": "traits the target is already linked to", "B5": "genes within 500,000 bases already linked to the trait"},
+              "weights_fitted_on_links_to": c["cutoff"], "served_by_target": c["served_by_target"]}
+    head = {"cutoff": c["cutoff"], "first_year": c["first_year"], "data_ends": c["data_ends"], "measure": "mean average precision over traits",
+            "traits_scored": c["traits_scored"], "test_links": c["test_links"], "combiner": p["results"][name]["full"][0], "neighbours": p["results"]["B3"]["full"][0],
+            "degree": p["results"]["B1"]["full"][0], "combiner_minus_neighbours_all": three("full"), "combiner_minus_neighbours_unexplained_lower_bound": three("low"),
+            "combiner_minus_neighbours_unexplained_neutral": three("neutral"), "combiner_minus_neighbours_by_locus": three("locus"),
+            "share_of_later_links_explained_by_wording_or_position": p["counts"]["positives_lineage_or_position_linked"] / p["counts"]["test_links"],
+            "by_target": c["by_target_against_neighbours"], "split": c["split"]}
+    cal = {**{k_: c[k_] for k_ in ("cutoff", "first_year", "data_ends", "base_rate", "by_trait", "by_target")}, "prospective": True, "scorer": name}
+    return {"scorer": scorer, "prospective": head, "calibration": cal}
+
+
+def refresh_backtest(release: str) -> dict:
+    """Write backtest.json again in a bundle that is already built, and record it in the manifest."""
+    out = paths.bundle(release)
+    mf = out / "manifest.json"
+    if not mf.is_file():
+        raise SystemExit(f"no bundle at {out}; build one with:  python -m pharos_gap_kg.bundle {release}")
+    bt = backtest()
+    if bt is None:
+        raise SystemExit("no backtest summaries to write")
+    (out / "backtest.json").write_text(json.dumps(bt, indent=1) + "\n")
+    man = json.loads(mf.read_text())
+    man["files"]["backtest.json"] = graph.file_sha(out / "backtest.json")
+    man["backtest"] = backtest_label(bt)
+    mf.write_text(json.dumps(man, indent=1) + "\n")
+    (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
+    return man
+
+
+def backtest_label(bt: dict | None) -> str:
+    if not bt:
+        return "none"
+    s = f"split frozen at {bt['headline']['cutoff']}"
+    if "scorer" in bt:
+        s += f"; ranked by {bt['scorer']['name']}, tested on links first reported {bt['prospective']['first_year']} to {bt['prospective']['data_ends']}"
+    return s
 
 
 def build(release: str) -> dict:
@@ -246,7 +304,7 @@ def build(release: str) -> dict:
         "lineage_pairs": int(len(lin) // 2), "neighbour_pairs": int(len(nb) // 2),
         "conformance": "10 of 10 checks passed" if rep.passed else "failed",
         "dated_graphs": check_against_dated_graphs(release, links),
-        "backtest": (f"split frozen at {bt['headline']['cutoff']}" if bt else "none"),
+        "backtest": backtest_label(bt),
         "files": {f: graph.file_sha(out / f) for f in files},
     }
     if GAP_FILES[0] in files:
@@ -290,6 +348,9 @@ is_a: MONDO:1
     ck("a retired id and its replacement are the same term", rel[("EFO:0000009", "MONDO:2")] == "same term" and rel[("MONDO:2", "EFO:0000009")] == "same term")
     ck("a retired id inherits its replacement's parents", rel[("EFO:0000009", "MONDO:1")] == "broader")
     ck("siblings are not listed, and every pair appears from both sides", ("MONDO:2", "MONDO:4") not in rel and all((b, a) in rel for a, b in rel))
+    ck("a bundle says what it ranks by only when a scorer is recorded",
+       backtest_label(None) == "none" and backtest_label({"headline": {"cutoff": 2018}}) == "split frozen at 2018"
+       and "ranked by x, tested on links first reported 2023 to 2026" in backtest_label({"headline": {"cutoff": 2018}, "scorer": {"name": "x"}, "prospective": {"first_year": 2023, "data_ends": 2026}}))
     return 0 if ok else 1
 
 
@@ -300,6 +361,10 @@ def main(argv: list[str] | None = None) -> int:
     if len(argv) == 2 and argv[1] == "--gaps-only":
         man = add_gaps(argv[0])
         print(f"{man['release']}: {man['target_gaps']:,} target-level gaps added to {paths.bundle(man['release'])}")
+        return 0
+    if len(argv) == 2 and argv[1] == "--backtest-only":
+        man = refresh_backtest(argv[0])
+        print(f"{man['release']}: backtest.json written again; {man['backtest']}")
         return 0
     if len(argv) != 1:
         raise SystemExit(__doc__)

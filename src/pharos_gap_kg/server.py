@@ -74,9 +74,10 @@ def build(bundle_dir: Path):
         return G.connect(a, b, as_of)
 
     @app.tool(description="Ranked candidates for what may be linked next: targets for a trait, or traits for a target. Each candidate says "
-                          "why it ranks, whether an earlier link already explains it, how often candidates at that rank were later reported "
-                          "in the backtest, and (when as_of is in the past) whether it was in fact reported later. These are leads, not "
-                          "findings. unexplained_only=true drops candidates that trait wording or gene position already explains.")
+                          "the three parts of its score, whether an earlier link already explains it, how often candidates at that rank were "
+                          "reported in the test on later links, and (when as_of is in the past) whether it was in fact reported later. The "
+                          "ranking favours genes beside a gene that already has the link; unexplained_only=true drops candidates that trait "
+                          "wording or gene position already explains. These are leads, not findings.")
     def predict(node: str, as_of: int | None = None, top: int = 10, unexplained_only: bool = False) -> dict:
         return G.predict(node, as_of, top, bool(unexplained_only))
 
@@ -92,7 +93,7 @@ def build(bundle_dir: Path):
         return G.gaps(target, family, top)
 
     @app.tool(description="What this graph is: its size and years, the published file it was built from and that file's digest, the checks "
-                          "it passed, what it leaves out and why, and how its ranking performed in the backtest.")
+                          "it passed, what it leaves out and why, what its candidates are ranked by, and how that ranking held on later links.")
     def status() -> dict:
         return G.status()
 

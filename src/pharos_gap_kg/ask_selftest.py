@@ -10,7 +10,7 @@ import pandas as pd
 from pharos_gap_kg import ask, graph
 
 
-def tiny(d: Path, gaps: bool = True) -> None:
+def tiny(d: Path, gaps: bool = True, scorer: bool = True) -> None:
     T = lambda i, sym, lvl="Tbio": {"id": f"UniProtKB:P{i}", "kind": "target", "category": "biolink:Protein", "name": sym, "full_name": f"protein {sym}",
                                     "level": lvl, "family": "", "xref": "", "live_term": "", "disease_like": False,
                                     "chr": "6" if sym == "BBB" else "1", "start": 30_000_000 if sym == "BBB" else 1000 * i, "end": 30_000_500 if sym == "BBB" else 1000 * i + 500}
@@ -36,6 +36,11 @@ def tiny(d: Path, gaps: bool = True) -> None:
     bt = {"headline": {"cutoff": 2018, "data_ends": 2021, "chance": 0.02, "degree": 0.07, "neighbours": 0.1},
           "calibration": {"cutoff": 2018, "data_ends": 2021, "base_rate": 0.01,
                           "by_trait": {f"{a}-{b}": cal for a, b in ask.TRAIT_BINS}, "by_target": {f"{a}-{b}": cal for a, b in ask.TARGET_BINS}}}
+    if scorer:
+        bt["scorer"] = {"name": "combine[B1+B3+B5]:F1", "weights": {"B1": 0.03125, "B3": 1.0, "B5": 0.25}, "weights_fitted_on_links_to": 2021, "served_by_target": "combiner"}
+        bt["prospective"] = {"cutoff": 2021, "first_year": 2022, "data_ends": 2025, "traits_scored": 40, "test_links": 900, "combiner": 0.11, "neighbours": 0.10, "degree": 0.08,
+                             "combiner_minus_neighbours_all": [0.01, 0.002, 0.018], "by_target": {"combiner": 0.07, "neighbours": 0.06}}
+        bt["calibration"].update({"cutoff": 2021, "first_year": 2022, "data_ends": 2025, "prospective": True, "scorer": bt["scorer"]["name"]})
     (d / "backtest.json").write_text(json.dumps(bt))
     files = ["nodes.parquet", "links.parquet", "evidence.parquet", "lineage.parquet", "neighbours.parquet", "backtest.json"]
     if gaps:
@@ -160,13 +165,36 @@ def run() -> int:
         ck("why says when the gene is in the MHC region", "MHC" in G.why("BBB", "MONDO:1")["caveat"] and "MHC" not in G.why("CCC", "MONDO:2")["caveat"])
         ck("a candidate reported after the year says when", {x["symbol"]: x["reported_after_as_of"] for x in p["candidates"]}["AAA"] == 2020)
         ck("a candidate an earlier link explains says how", any("heart disease" in e for x in p["candidates"] if x["symbol"] == "AAA" for e in x["explained_by"]))
-        ck("each candidate quotes how often its rank has held, and that it is a lower bound", all("backtest" in x["how_often_this_held"] and "not known to be absent" in x["how_often_this_held"] for x in p["candidates"]))
+        ck("each candidate quotes how often its rank has held on later links, and that it is a lower bound",
+           all("links first reported from 2022 to 2025" in x["how_often_this_held"] and "not known to be absent" in x["how_often_this_held"] for x in p["candidates"]))
+        import math
+        w = G.weights
+        ck("a candidate's score is the weighted sum of its three parts, and the parts are shown",
+           all(abs(x["score"] - (w["B3"] * math.log1p(x["score_parts"]["shared_trait_neighbours"]) + w["B1"] * math.log1p(x["score_parts"]["traits_already_linked"])
+                                 + w["B5"] * math.log1p(x["score_parts"]["genes_nearby_with_this_link"]))) < 2e-3 for x in p["candidates"]))
+        ck("the method names the three parts, the test on later links, and that an earlier year is an illustration",
+           "three parts" in p["method"] and "first reported from 2022 to 2025" in p["method"] and "0.110" in p["method"] and "illustration and not a test" in p["method"]
+           and "illustration" not in G.predict("lung disease")["method"])
+        ck("a target with no link is not ranked, though a linked gene sits beside it", "DDD" not in [x["symbol"] for x in G.predict("arrhythmia")["candidates"]]
+           and G.why("DDD", "arrhythmia")["rank_among_candidates"] is None and G.why("DDD", "arrhythmia")["neighbouring_genes_with_this_link"][0]["symbol"] == "CCC")
+        ck("status names the scorer and the test it was put to", G.status()["ranking"]["scorer"]["name"] == "combine[B1+B3+B5]:F1" and G.status()["ranking"]["tested_on_later_links"]["first_year"] == 2022)
         q = G.predict("arrhythmia", as_of=2018, unexplained_only=True)
         ck("unexplained-only drops every candidate an earlier link explains", q["candidates"] == [])
         pt = G.predict("BBB", as_of=2018)["candidates"]
         ck("predict for a target ranks the traits it does not have, with wordings of one trait as one lead",
            [x["id"] for x in pt] == ["MONDO:2"] and pt[0]["other_wordings_of_this_trait"] == ["heart disease"])
         ck("with nothing linked there is nothing to rank from", G.predict("DDD")["candidates"] == [] and "nothing to rank" in G.predict("DDD")["answer"])
+        ck("ranked by target, the method says that reading was checked after the test", "not declared before it" in G.predict("BBB", as_of=2018)["method"] and "score_parts" in pt[0])
+
+        # a bundle that names no scorer is ranked by neighbours alone, as before 11 Oct 2026
+        with tempfile.TemporaryDirectory() as tmp0:
+            tiny(Path(tmp0), scorer=False)
+            G0 = ask.Graph(Path(tmp0))
+            p0 = G0.predict("arrhythmia", as_of=2018)
+            ck("with no scorer recorded the ranking is shared-trait neighbours, and says so",
+               G0.weights is None and "No model is fitted" in p0["method"] and "score_parts" not in p0["candidates"][0] and p0["candidates"][0]["score"] == 0.5
+               and "In the 2018 backtest" in p0["candidates"][0]["how_often_this_held"] and "ranking" not in G0.status()
+               and "by shared-trait neighbours BBB ranks" in G0.why("BBB", "arrhythmia", as_of=2018)["answer"])
 
         # leads
         near = {1: {2}, 2: {1, 3}, 3: {2}, 7: set(), 8: set(), 9: set()}

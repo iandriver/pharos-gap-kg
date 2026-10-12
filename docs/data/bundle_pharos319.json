@@ -26,14 +26,14 @@
  "dated_graphs": [
   "pharos319_asof2018: 99,435 edges found under the same ids"
  ],
- "backtest": "split frozen at 2018",
+ "backtest": "split frozen at 2018; ranked by combine[B1+B3+B5]:F1, tested on links first reported 2023 to 2026",
  "files": {
   "nodes.parquet": "565c576a01965cff1a8a080ac15afd44d01e738c174f26f1527a3c983dff0f39",
   "links.parquet": "9e54546a9b42ca00dbdb49a9fce8fc3898a4237cd7f5e1dbefd85cebc97d68fe",
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
   "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
-  "backtest.json": "32ec57d5c87710c34ccddec98000fd30f165b591cd9b30a33d27cd3b7dc37830",
+  "backtest.json": "a9a75c95f4104eaf113aa65ca379246a00a06a9cda0a7099eff551229ab278d2",
   "target_gaps.parquet": "eb600f84f5555e31f0ffe63adf861a43a96028c004d924913100d6764679a556",
   "target_gaps.json": "6db8a7f6ba5d227b0ebc6fab1ec8868b9357c3a67651308fc8f1b56a76325efb"
  },

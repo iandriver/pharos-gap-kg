@@ -18,6 +18,12 @@ answers from what had been reported by the end of 2018, and the default is every
 ABSENCE IS NOT A NEGATIVE. "No link" here means no study in this source reported one by that year.
 Each answer that reports an absence says so, and says what nearby evidence exists.
 
+CANDIDATES ARE RANKED BY THE SCORER THE BUNDLE NAMES. Since 11 Oct 2026 that is a combination of three
+things, each computed from the links as of the year asked: shared-trait neighbours, how many traits
+the target already has, and how many genes within 500,000 bases of it already have the link. Its two
+weights were fitted on links to 2022 and it was tested on links first reported from 2023. A bundle
+with no scorer recorded is ranked by shared-trait neighbours alone.
+
 Run:  python -m pharos_gap_kg.ask why APOE "Alzheimer disease"
       python -m pharos_gap_kg.ask predict "Parkinson disease" --as-of 2018
       python -m pharos_gap_kg.ask --selftest
@@ -43,6 +49,11 @@ MHC = ("6", 25_000_000, 34_000_000)
 MHC_NOTE = "in the MHC region of chromosome 6, where one association signal spans many genes; treat neighbouring MHC candidates as one lead"
 TRAIT_BINS = [(1, 10), (11, 50), (51, 100), (101, 500)]
 TARGET_BINS = [(1, 5), (6, 20), (21, 50)]
+
+
+def _frac(x: float) -> str:
+    from fractions import Fraction
+    return str(Fraction(x).limit_denominator(1024))
 
 
 def _norm(s: str) -> str:
@@ -108,6 +119,9 @@ class Graph:
             self.neigh.setdefault(int(a), []).append((int(b), int(gap)))
         bt = self.dir / "backtest.json"
         self.backtest = json.loads(bt.read_text()) if bt.is_file() else None
+        sc = (self.backtest or {}).get("scorer")
+        self.weights = sc["weights"] if sc else None                 # of log(1 + part), for parts B1, B3, B5; None: neighbours alone
+        self.by_target_combined = bool(sc) and sc.get("served_by_target") == "combiner"
         self.tg, self.tg_rates = None, None
         if "target_gaps.parquet" in self.manifest["files"]:
             self.tg = pd.read_parquet(self.dir / "target_gaps.parquet").set_index("id")
@@ -264,9 +278,30 @@ class Graph:
         sim[di] = 0.0
         return sim
 
-    def _score_trait(self, di: int, mask: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    def _combine(self, nb: np.ndarray, deg, pos: np.ndarray) -> np.ndarray:
+        """The served score from its three parts: shared-trait neighbours, traits already linked, and
+        neighbouring genes that already have the link. Each enters as log(1 + part)."""
+        w = self.weights
+        return w["B3"] * np.log1p(nb) + w["B1"] * np.log1p(deg) + w["B5"] * np.log1p(pos)
+
+    def _score_trait(self, di: int, mask: np.ndarray) -> tuple[np.ndarray, np.ndarray, dict]:
+        """Every target's score for trait di as of the mask, the similarity of every trait to di, and
+        the parts the score is made of."""
         sim = self._sim_to_trait(di, mask)
-        return np.bincount(self.lt[mask], weights=sim[self.ld[mask]], minlength=len(self.t)), sim
+        nb = np.bincount(self.lt[mask], weights=sim[self.ld[mask]], minlength=len(self.t))
+        if self.weights is None:
+            return nb, sim, {"neighbours": nb}
+        deg = np.bincount(self.lt[mask], minlength=len(self.t)).astype(float)
+        pos = np.zeros(len(self.t))
+        for h in self.lt[mask & (self.ld == di)]:
+            for o, _ in self.neigh.get(int(h), []):
+                pos[o] += 1
+        sc = self._combine(nb, deg, pos)
+        sc[deg == 0] = 0.0          # a target with no link as of the year is not ranked: the scorer was tested on targets that have one
+        return sc, sim, {"neighbours": nb, "degree": deg, "position": pos}
+
+    def _ranked_by(self) -> str:
+        return "shared-trait neighbours" if self.weights is None else "this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby)"
 
     def _flags(self, ti: int, di: int, mask: np.ndarray) -> dict:
         mine = set(self.ld[mask & (self.lt == ti)].tolist())
@@ -290,8 +325,40 @@ class Graph:
         what = {"linked": "that an earlier link explains by trait wording or by position",
                 "not_linked": "that no earlier link explains by wording or position",
                 "disease_like_not_linked": "for a disease, that no earlier link explains by wording or position"}[grp]
-        return (f"In the {c['cutoff']} backtest, {v['share']:.0%} of candidates at ranks {b} {what} were reported by {c['data_ends']} "
+        test = (f"In the test on links first reported from {c['first_year']} to {c['data_ends']}" if c.get("prospective") else f"In the {c['cutoff']} backtest")
+        return (f"{test}, {v['share']:.0%} of candidates at ranks {b} {what} were reported by {c['data_ends']} "
                 f"(base rate {c['base_rate']:.1%}). A candidate not reported is not known to be absent.")
+
+    def _method(self, by: str, y: int) -> str:
+        """What a list of candidates is ranked by, and how that ranking has held."""
+        bt, pr = (self.backtest or {}).get("headline"), (self.backtest or {}).get("prospective")
+        if self.weights is None or (by == "target" and not self.by_target_combined):
+            head = ("Candidates are ranked by shared-trait neighbours: a target scores high for a trait when the traits it already has "
+                    "share many targets with that trait. No model is fitted.")
+            if bt:
+                head += (f" In the {bt['cutoff']} backtest this ranking scored {bt['neighbours']:.3f} (mean average precision over traits) against "
+                         f"{bt['degree']:.3f} for how well-studied the target is alone and {bt['chance']:.3f} for chance. On links that trait "
+                         f"wording and gene position do not explain, it was not shown to beat the well-studied ranking.")
+            return head
+        w = self.weights
+        head = ("Candidates are ranked by a score with three parts: shared-trait neighbours (a target scores high for a trait when the traits it "
+                "already has share many targets with that trait), how many traits the target already has, and how many genes within 500,000 bases "
+                f"of it already have this link. Each part enters as log(1 + part), weighted {_frac(w['B3'])}, {_frac(w['B1'])} and {_frac(w['B5'])}; the two "
+                f"weights that are not 1 were fitted on links to {self.backtest['scorer']['weights_fitted_on_links_to']}.")
+        if pr:
+            d = pr["combiner_minus_neighbours_all"]
+            head += (f" On {pr['test_links']:,} links first reported from {pr['first_year']} to {pr['data_ends']}, with every link in this release as training, "
+                     f"this ranking scored {pr['combiner']:.3f} (mean average precision over {pr['traits_scored']:,} traits) against {pr['neighbours']:.3f} for "
+                     f"shared-trait neighbours alone ({d[0]:+.4f}, 95% interval {d[1]:+.4f} to {d[2]:+.4f}) and {pr['degree']:.3f} for how well-studied the "
+                     f"target is. The gain is on candidates an earlier link already explains by gene position or trait wording. On the others it was level "
+                     f"with neighbours alone.")
+            if by == "target":
+                x = pr["by_target"]
+                head += (f" Read the other way, ranking the traits for one target, it scored {x['combiner']:.3f} against {x['neighbours']:.3f} on the same "
+                         f"links. That reading was checked after the test and was not declared before it.")
+        if y < self.latest:
+            head += (f" The weights were fitted on links later than {y}, so what this ranking shows as reported after {y} is an illustration and not a test.")
+        return head
 
     # ------------------------------------------------------------------ the questions
     def find(self, text: str, kind: str = "any", limit: int = 8) -> dict:
@@ -381,7 +448,7 @@ class Graph:
                     "caveat": "GWAS assigns a signal to genes by position. A link says an associated variant lies at this gene, "
                               "not that this gene is the cause." + (f" This gene is {MHC_NOTE.split(';')[0]}." if self.mhc[ti] else "")}
         fl = self._flags(ti, di, mask)
-        sc, sim = self._score_trait(di, mask)
+        sc, sim, _ = self._score_trait(di, mask)
         cand = np.ones(len(self.t), bool)
         cand[self.lt[mask & (self.ld == di)]] = False
         rank = int((sc[cand] > sc[ti]).sum()) + 1
@@ -406,7 +473,7 @@ class Graph:
             o, gap = fl["position"][0]
             bits.append(f"{self.t['name'][o]}, {gap:,} bases away, was linked to this trait")
         if sc[ti] > 0:
-            bits.append(f"by shared-trait neighbours {tl['symbol']} ranks {rank:,} of {int(cand.sum()):,} candidates for this trait")
+            bits.append(f"by {self._ranked_by()} {tl['symbol']} ranks {rank:,} of {int(cand.sum()):,} candidates for this trait")
         out["answer"] = head + (" What nearby evidence exists: " + "; ".join(bits) + "." if bits else " Nothing nearby in the graph points either way.")
         if self.mhc[ti]:
             out["caution"] = f"{tl['symbol']} is {MHC_NOTE.split(';')[0]}, so a high rank here says little about this gene in particular."
@@ -431,7 +498,7 @@ class Graph:
             k = self._row(ti, di)
             direct = k is not None and self.first[k] <= y
             fl = self._flags(ti, di, mask)
-            sc, sim = self._score_trait(di, mask)
+            sim = self._sim_to_trait(di, mask)
             mine = self.ld[mask & (self.lt == ti)]
             via = sorted(((float(sim[o]), int(o)) for o in mine if sim[o] > 0), reverse=True)[:limit]
             return {**base, "found": True, "a": {"kind": "target", **tl}, "b": {"kind": "trait", **dl},
@@ -483,17 +550,11 @@ class Graph:
         y = self._year(as_of)
         mask = self._mask(y)
         top = max(1, min(int(top), 50))
-        head = ("Candidates are ranked by shared-trait neighbours: a target scores high for a trait when the traits it already has "
-                "share many targets with that trait. No model is fitted.")
-        bt = (self.backtest or {}).get("headline")
-        if bt:
-            head += (f" In the {bt['cutoff']} backtest this ranking scored {bt['neighbours']:.3f} (mean average precision over traits) against "
-                     f"{bt['degree']:.3f} for how well-studied the target is alone and {bt['chance']:.3f} for chance. On links that trait "
-                     f"wording and gene position do not explain, it was not shown to beat the well-studied ranking.")
+        head = self._method(r["kind"], y)
         rows = []
         if r["kind"] == "trait":
             di = r["i"]
-            sc, sim = self._score_trait(di, mask)
+            sc, sim, parts = self._score_trait(di, mask)
             have = np.zeros(len(self.t), bool)
             have[self.lt[mask & (self.ld == di)]] = True
             if not have.any():
@@ -523,6 +584,8 @@ class Graph:
                 later = [int(self.first[kk]) for kk in (self._row(m, di) for m in L["members"]) if kk is not None]
                 rows.append({"rank": rank, **{kk: v for kk, v in self._tlabel(ti).items() if kk in ("id", "symbol", "pharos_level", "pharos_entries_with_this_symbol")},
                              "score": round(float(sc[ti]), 3), "traits_already_linked": int(deg[ti]),
+                             **({"score_parts": {"shared_trait_neighbours": round(float(parts["neighbours"][ti]), 3), "traits_already_linked": int(deg[ti]),
+                                                 "genes_nearby_with_this_link": int(parts["position"][ti])}} if self.weights else {}),
                              "same_locus": L["also"][:8], "same_locus_more": max(0, len(L["also"]) - 8),
                              "caution": MHC_NOTE if self.mhc[ti] else "",
                              "explained_by": ([f"already linked to {self.d['name'][o]} ({rel})" for o, rel in fl["lineage"][:1]]
@@ -550,8 +613,16 @@ class Graph:
             have = np.zeros(len(self.d), bool)
             have[mine] = True
             degd = np.bincount(self.ld[mask], minlength=len(self.d))
+            near = np.zeros(len(self.d))
+            combined = self.weights is not None and self.by_target_combined
+            if combined:
+                for o, _ in self.neigh.get(ti, []):
+                    np.add.at(near, self.ld[mask & (self.lt == o)], 1)
+            neighbours_alone, evidence = total, (total > 0) | (near > 0)
+            if combined:
+                total = self._combine(neighbours_alone, len(mine), near)
             order = np.lexsort((np.arange(len(total)), -degd, -total))
-            order = order[~have[order] & (total[order] > 0)]
+            order = order[~have[order] & evidence[order]]
             n_cand = int((~have & (degd > 0)).sum())
             flags = {}
 
@@ -569,6 +640,8 @@ class Graph:
                 linked = bool(fl["lineage"] or fl["position"])
                 k = self._row(ti, dj)
                 rows.append({"rank": rank, **self._dlabel(dj), "score": round(float(total[dj]), 3),
+                             **({"score_parts": {"shared_trait_neighbours": round(float(neighbours_alone[dj]), 3), "traits_already_linked": int(len(mine)),
+                                                 "genes_nearby_with_this_link": int(near[dj])}} if combined else {}),
                              "other_wordings_of_this_trait": [self.d["name"][self.di[x]] for x in L["also"][:5]],
                              "explained_by": ([f"already linked to {self.d['name'][o]} ({rel})" for o, rel in fl["lineage"][:1]]
                                               + [f"{self.t['name'][o]} is {gap:,} bases away and has this link" for o, gap in fl["position"][:1]]),
@@ -717,6 +790,8 @@ class Graph:
                "questions": ["find", "known", "why", "connect", "predict", "whats_new", "gaps", "status"]}
         if self.backtest and "headline" in self.backtest:
             out["backtest"] = self.backtest["headline"]
+        if self.backtest and "scorer" in self.backtest:
+            out["ranking"] = {"scorer": self.backtest["scorer"], "tested_on_later_links": self.backtest["prospective"]}
         return out
 
 

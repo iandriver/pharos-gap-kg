@@ -108,9 +108,10 @@ python -m pharos_gap_kg.ask why HLA-B "Parkinson disease"
 
 > There is no link between HLA-B and Parkinson disease in this graph (data to 2023). No link here
 > means no study in this source had reported one by that year. It is not evidence that there is no
-> association. What nearby evidence exists: by shared-trait neighbours HLA-B ranks 1 of 20,152
-> candidates for this trait. HLA-B is in the MHC region of chromosome 6, where one association signal
-> spans many genes, so a high rank here says little about this gene in particular.
+> association. What nearby evidence exists: by this graph's ranking (shared-trait neighbours, traits
+> already linked, and linked genes nearby) HLA-B ranks 16 of 20,152 candidates for this trait. HLA-B is
+> in the MHC region of chromosome 6, where one association signal spans many genes, so a high rank here
+> says little about this gene in particular.
 
 ### How are two things related
 
@@ -123,6 +124,48 @@ python -m pharos_gap_kg.ask connect "Parkinson disease" "Crohn's disease"
 ### What might come next, and how often has that held
 
 ```bash
+python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --top 5
+```
+
+> The 5 highest-ranked candidate targets for type 2 diabetes mellitus as of 2023, out of 17,891. Genes
+> within 500,000 bases of each other are shown as one lead. In the MHC region of chromosome 6, where
+> neighbouring candidates are best read as one lead: 2 of them.
+
+| rank | lead | shared-trait neighbours | traits already linked | genes nearby with this link |
+|---|---|---|---|---|
+| 1 | GPANK1, with C6orf47, CSNK2B, LY6G5B and others (MHC) | 19.214 | 104 | 90 |
+| 16 | HIST1H1T, with HFE (MHC) | 19.598 | 103 | 11 |
+| 17 | MYBPC3, with SPI1, MADD | 19.181 | 97 | 12 |
+| 20 | MARK4 | 15.893 | 73 | 20 |
+| 23 | CTDNEP1, with ELP5, GABARAP, PHF23, CLDN7 | 14.547 | 74 | 23 |
+
+Beside each candidate the answer states how often its rank has held:
+
+> In the test on links first reported from 2023 to 2026, 21% of candidates at ranks 1-10 that an
+> earlier link explains by trait wording or by position were reported by 2026 (base rate 0.5%). A
+> candidate not reported is not known to be absent.
+
+**What the ranking is.** A candidate's score has three parts, each computed from the links as of the
+year asked and each entering as log(1 + part): shared-trait neighbours, weighted 1 (a target scores
+high for a trait when the traits it already has share many targets with that trait); the number of
+traits the target is already linked to, weighted 1/32; and the number of genes within 500,000 bases of
+it that already have the link, weighted 1/4. Every candidate shows its three parts. The two weights
+were fitted on links to 2022.
+
+**How it has held.** On 194,017 links first reported from 2023 to 2026, with every link in the release
+as training, this ranking scored 0.101 (mean average precision over 1,110 traits) against 0.095 for
+shared-trait neighbours alone, +0.0066 with a 95% interval of +0.0031 to +0.0102
+(`findings/PROSPECTIVE.md`). The gain is on candidates that an earlier link already explains by gene
+position or trait wording, which is why the five above are all genes beside a gene that has the link.
+On candidates no earlier link explains it was level with neighbours alone. The `method` field of every
+answer says this. Until 11 Oct 2026 the ranking was shared-trait neighbours alone.
+
+A target with no link as of the year is not ranked, because the ranking was tested on targets that
+have one. `why` still names a linked gene beside it. Ranking the traits for one target uses the same
+score; that reading was checked on the same later links after the test (0.063 against 0.062 for
+neighbours alone) and was not declared before it.
+
+```bash
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --top 8 --unexplained-only
 ```
 
@@ -133,27 +176,20 @@ python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --to
 
 | rank | lead | reported later |
 |---|---|---|
-| 2 | ZPR1, with APOA5, BUD13, SIK3, APOA1, APOC3 | |
-| 5 | AIM2, with CADM3, FCER1A, ACKR1 | |
-| 6 | HIST1H4A, with HIST1H3A, HIST1H2BC and others | 2020 |
-| 11 | TMEM258, with MYRF, FADS1, FADS2, FEN1, FADS3 | 2020 |
-| 13 | HLA-A | 2020 |
-| 50 | SLC22A5, with IRF1 | |
-| 60 | MYB, with HBS1L | |
-| 69 | CTCFL | |
+| 41 | ZPR1, with APOA5, BUD13, SIK3, APOA1, APOC3, APOA4 | |
+| 49 | AIM2, with CADM3, FCER1A, ACKR1 | |
+| 54 | HIST1H4A, with HIST1H3A, HIST1H2BC and others | 2020 |
+| 60 | TMEM258, with MYRF, FADS1, FADS2, FEN1, FADS3, DAGLA | 2020 |
+| 65 | HLA-A | 2020 |
+| 101 | SLC22A5, with IRF1 | |
+| 116 | MYB, with HBS1L | |
+| 132 | CTCFL | |
 
-Beside each candidate the answer states how often its rank has held:
-
-> In the 2018 backtest, 8% of candidates at ranks 1-10 for a disease, that no earlier link explains by
-> wording or position were reported by 2023 (base rate 0.6%). A candidate not reported is not known to
-> be absent.
-
-Asking as of a past year is a backtest anyone can run: the answer says which of its candidates were
-in fact reported afterwards. `--unexplained-only` drops candidates that an earlier link already
-explains by trait wording or by gene position. The ranking is the parameter-free neighbours score
-measured in `findings/BASELINES.md` and `findings/CONTROLS.md`; the `method` field of every answer
-quotes those results, including that on links wording and position do not explain it was not shown to
-beat ranking by how well-studied a target is.
+`--unexplained-only` drops candidates that an earlier link already explains by trait wording or by
+gene position. What remains starts at rank 41 here, because the ranking puts genes beside a linked gene
+first. Asking as of a past year shows which candidates were in fact reported afterwards. It is an
+illustration and not a test: the two weights were fitted on links later than that year, and the
+answer's `method` field says so. The test is the one on links first reported from 2023.
 
 ### What does a target lack
 
@@ -223,8 +259,8 @@ For a client configured by JSON:
 ## What the bundle is
 
 `python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 11 MB: nodes,
-links, the study behind each link, trait lineage, neighbouring genes, the backtest summary, the
-target-level gaps where they have been computed, and a manifest with the digest of every file and of
-every input. The links are every link in the release;
+links, the study behind each link, trait lineage, neighbouring genes, the scorer the questions rank by
+with its test on later links and its calibration by rank, the target-level gaps where they have been
+computed, and a manifest with the digest of every file and of every input. The links are every link in the release;
 "as of 2018" is a filter the questions apply. Where a dated KGX graph has been built, its edges must
 be in the bundle under the same ids or the build refuses.

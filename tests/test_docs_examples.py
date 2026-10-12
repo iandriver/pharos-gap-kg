@@ -30,7 +30,8 @@ def test_why_without_a_link(G):
     assert G.why("TREM2", "Alzheimer disease", as_of=2012)["answer"].startswith(
         "As of 2012 there was no link between TREM2 and Alzheimer disease. One was first reported in 2013.")
     h = G.why("HLA-B", "Parkinson disease")
-    assert "ranks 1 of 20,152 candidates" in h["answer"] and "MHC region" in h["answer"] and "not evidence" in h["answer"]
+    assert "ranks 16 of 20,152 candidates" in h["answer"] and "MHC region" in h["answer"] and "not evidence" in h["answer"]
+    assert "by this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby) HLA-B ranks" in h["answer"]
 
 
 def test_connect(G):
@@ -39,13 +40,36 @@ def test_connect(G):
 
 
 def test_predict(G):
+    q = G.predict("type 2 diabetes mellitus", top=5)
+    assert q["answer"] == ("The 5 highest-ranked candidate targets for type 2 diabetes mellitus as of 2023, out of 17,891. Genes within 500,000 bases of "
+                           "each other are shown as one lead. In the MHC region of chromosome 6, where neighbouring candidates are best read as one lead: 2 of them.")
+    got = [(c["rank"], c["symbol"], c["score_parts"]["shared_trait_neighbours"], c["score_parts"]["traits_already_linked"], c["score_parts"]["genes_nearby_with_this_link"])
+           for c in q["candidates"]]
+    assert got == [(1, "GPANK1", 19.214, 104, 90), (16, "HIST1H1T", 19.598, 103, 11), (17, "MYBPC3", 19.181, 97, 12), (20, "MARK4", 15.893, 73, 20), (23, "CTDNEP1", 14.547, 74, 23)]
+    assert q["candidates"][0]["same_locus"][:3] == ["C6orf47", "CSNK2B", "LY6G5B"] and q["candidates"][1]["same_locus"] == ["HFE"] and q["candidates"][4]["same_locus"] == ["ELP5", "GABARAP", "PHF23", "CLDN7"]
+    assert all(c["explained_by"] for c in q["candidates"]) and [bool(c["caution"]) for c in q["candidates"]] == [True, True, False, False, False]
+    assert q["candidates"][0]["how_often_this_held"] == ("In the test on links first reported from 2023 to 2026, 21% of candidates at ranks 1-10 that an earlier link "
+                                                         "explains by trait wording or by position were reported by 2026 (base rate 0.5%). A candidate not reported "
+                                                         "is not known to be absent.")
+    m = q["method"]
+    assert "weighted 1, 1/32 and 1/4" in m and "fitted on links to 2022" in m and "illustration" not in m
+    assert "On 194,017 links first reported from 2023 to 2026" in m and "scored 0.101 (mean average precision over 1,110 traits) against 0.095" in m
+    assert "(+0.0066, 95% interval +0.0031 to +0.0102)" in m and "level with neighbours alone" in m
+    t = G.predict("TREM2", top=4)
+    assert "it scored 0.063 against 0.062 on the same links" in t["method"] and "not declared before it" in t["method"]
     p = G.predict("type 2 diabetes mellitus", as_of=2018, top=8, unexplained_only=True)
     assert "out of 19,260" in p["answer"] and "Reported between 2019 and 2023: 3 of these 8." in p["answer"]
-    assert [(c["rank"], c["symbol"]) for c in p["candidates"]] == [(2, "ZPR1"), (5, "AIM2"), (6, "HIST1H4A"), (11, "TMEM258"),
-                                                                 (13, "HLA-A"), (50, "SLC22A5"), (60, "MYB"), (69, "CTCFL")]
+    assert [(c["rank"], c["symbol"]) for c in p["candidates"]] == [(41, "ZPR1"), (49, "AIM2"), (54, "HIST1H4A"), (60, "TMEM258"),
+                                                                 (65, "HLA-A"), (101, "SLC22A5"), (116, "MYB"), (132, "CTCFL")]
     later = {c["symbol"]: c["any_gene_at_this_locus_reported_after_as_of"] for c in p["candidates"]}
     assert {k for k, v in later.items() if v} == {"HIST1H4A", "TMEM258", "HLA-A"} and later["TMEM258"] == 2020
-    assert p["candidates"][0]["how_often_this_held"].startswith("In the 2018 backtest, 8% of candidates at ranks 1-10 for a disease")
+    assert "illustration and not a test" in p["method"] and all(c["score_parts"]["genes_nearby_with_this_link"] == 0 for c in p["candidates"])
+
+
+def test_status_names_the_ranking(G):
+    r = G.status()["ranking"]
+    assert r["scorer"]["name"] == "combine[B1+B3+B5]:F1" and r["scorer"]["weights"] == {"B1": 1 / 32, "B3": 1.0, "B5": 0.25}
+    assert r["tested_on_later_links"]["test_links"] == 194017 and r["tested_on_later_links"]["first_year"] == 2023
 
 
 def test_gaps(G):
