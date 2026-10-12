@@ -168,6 +168,7 @@ def run() -> int:
         syms = [x["symbol"] for x in p["candidates"]]
         ck("predict ranks the targets without the link and leaves out the one that has it", syms == ["AAA", "BBB"] and p["candidates"][0]["rank"] == 1)
         ck("predict says how many of its candidates were later reported", "Reported between 2019 and 2021: 1 of these 2" in p["answer"])
+        ck("a list for a trait says a row is a lead and where a gene's own rank is found", "why(gene, trait)" in p["reading"] and "reading" not in G.predict("BBB", as_of=2018))
         ck("a gene held as two Pharos entries is one candidate, and says it stands for two", p["candidates"][0]["pharos_entries_with_this_symbol"] == 2)
         ck("a candidate in the MHC region carries the caution, and the answer counts them", "MHC" in p["candidates"][1]["caution"] and p["candidates"][0]["caution"] == ""
            and "best read as one lead: 1 of them" in p["answer"])

@@ -1257,3 +1257,33 @@ pooled over every unit the front end ranks: every trait with a training link, an
 one. The shares over scored units are kept in the record under their own name. The front end quotes
 the others, and says what they are pooled over. The 17.8% quoted on 11 Oct for the ten highest
 candidates of a trait is a share over scored traits.
+
+**12 Oct 2026, usability of the rankings, between the two rounds. Written after the development round
+and before the evaluation questions were generated.**
+
+The development round, 35 questions (`docs/data/usability_results_rank_dev.json`): under *typed* the
+three models answered 32, 30 and 30; under *sql* 34, 34 and 35. No answer was invented. All 13 typed
+misses are of two kinds, the rank of one named target and the rate for that rank. Those questions are
+answered by `why`, which gives a target with no link its own rank among the trait's candidates and
+the rate that goes with it. In none of the 13 misses was `why` called: the models went to `predict`
+and looked for the target in the list. That list shows the top of the ranking only, folds neighbouring
+genes into one lead under the rank of its first gene, and was cut short by the harness's limit of
+8,000 characters on a tool result. Of the 11 answers of those two kinds that were right, `why` had
+been called in 8. Reading the misses found no fault in the questions, the expected answers or the
+grading. The fault is in what the server tells a model about its own tools.
+
+Changed, in the tools and not in the test:
+
+1. *The server's instructions* send "where does X rank for Y" and "how often has a rank like that
+   held" to `why`, and say that `predict` shows only the top of a list.
+2. *The descriptions of `why` and `predict`* say the same, each in its own words.
+3. *A list of candidates for a trait* carries one sentence on how to read it: a row is a lead under the
+   rank of its first gene, and a gene listed with it has its own rank, which `why` gives.
+
+Unchanged: the eleven kinds of question and how they are written, the expected answers and how they
+are computed, the rules text, the tables of the *sql* condition, the grading, the models, the limits
+and the two verdicts. The typed tools returned about three times as many tokens a question as the SQL
+tool in this round (15,691 against 4,816 on average); that is reported and not changed.
+
+The evaluation set is generated and frozen next, and no model has seen it. The development round cost
+0.23 of the 0.60 dollars.

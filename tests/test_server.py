@@ -44,7 +44,8 @@ def test_the_server_offers_the_eight_questions_and_answers_them(tmp_path):
     tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link = asyncio.run(_session(tmp_path, work))
     assert [c["symbol"] for c in unlinked["candidates"]] == ["DDD"] and "Nothing is fitted" in unlinked["method"]
     assert [c["name"] for c in no_link["candidates"]] == ["body height", "arrhythmia"] and "listed at ranks 1-5 for a target with no link" in no_link["candidates"][0]["how_often_this_held"]
-    assert "unlinked=true" in (init.instructions or "")
+    assert "unlinked=true" in (init.instructions or "") and "why, not predict" in (init.instructions or "")
+    assert "to place one named target" in next(t.description for t in tools if t.name == "why") and "for the rank of one named target use why" in next(t.description for t in tools if t.name == "predict")
     assert [g["kind"] for g in gaps["gaps"]] == ["dark", "ligand"] and "nearest route" in gaps["answer"] and "function" in gaps["reading"]
     assert [t["symbol"] for t in nearest["targets"]] == ["DDD"]
     assert sorted(t.name for t in tools) == NAMES

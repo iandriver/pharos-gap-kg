@@ -27,6 +27,7 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - Someone names a gene, protein or disease loosely -> find. If it reports an exact match, use that id. If it reports no exact match and several names, ask which is meant; do not pick one.
 - "What is known about X" -> known.
 - "Why is X linked to Y", "what is the evidence", "is X linked to Y" -> why. It also answers when there is NO link, and says what nearby evidence exists.
+- "Where does X rank for Y", "how strong a candidate is X for Y", "how often has a rank like X's held" -> why, not predict. With no link, why gives X's own rank among Y's candidates and the rate that goes with that rank. predict shows only the top of a list, with neighbouring genes folded into one row.
 - "How are X and Y related" (two genes, two diseases, or a gene and a disease with no direct link) -> connect.
 - "What might be linked to X next", "candidate targets for Y" -> predict. Quote its how_often_this_held text with any candidate you pass on.
 - "Which unstudied genes might be linked to Y", "targets with no associations yet for Y" -> predict with unlinked=true. For a gene that has no link at all, predict on the gene gives the traits its neighbouring genes are linked to. Both are by position alone, and the rates they quote are a few in a hundred; say so.
@@ -63,7 +64,9 @@ def build(bundle_dir: Path):
 
     @app.tool(description="The evidence behind one target-trait link: the GWAS studies, their papers and years, and the published file "
                           "they were read from with its digest. If there is no link as of the year, says so, says whether one was reported "
-                          "later, and lists nearby evidence (the same trait under another wording, a neighbouring gene with the link).")
+                          "later, and lists nearby evidence (the same trait under another wording, a neighbouring gene with the link). With no link "
+                          "it also gives the target's own rank among the trait's candidates and how often candidates at that rank were later "
+                          "reported: use this, not predict, to place one named target.")
     def why(target: str, trait: str, as_of: int | None = None) -> dict:
         return G.why(target, trait, as_of)
 
@@ -74,7 +77,8 @@ def build(bundle_dir: Path):
     def connect(a: str, b: str, as_of: int | None = None) -> dict:
         return G.connect(a, b, as_of)
 
-    @app.tool(description="Ranked candidates for what may be linked next: targets for a trait, or traits for a target. Each candidate says "
+    @app.tool(description="The top of the ranked candidates for what may be linked next: targets for a trait, or traits for a target. It lists "
+                          "only the highest, with neighbouring genes folded into one row; for the rank of one named target use why. Each candidate says "
                           "the three parts of its score, whether an earlier link already explains it, how often candidates at that rank were "
                           "reported in the test on later links, and (when as_of is in the past) whether it was in fact reported later. The "
                           "ranking favours genes beside a gene that already has the link; unexplained_only=true drops candidates that trait "

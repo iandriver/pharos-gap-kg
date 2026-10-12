@@ -805,6 +805,9 @@ class Graph:
         if y < self.latest and rows:
             ans += f" Reported between {y + 1} and {self.latest}: {came} of these {len(rows)}."
         extra = {}
+        if r["kind"] == "trait":
+            extra["reading"] = ("Each row is a lead under the rank of its first gene. A gene listed under same_locus has its own rank, "
+                                "which why(gene, trait) gives.")
         if r["kind"] == "trait" and n_no_link:
             extra["targets_with_no_link_beside_a_linked_gene"] = n_no_link
             ans += f" A target with no link is not in this list; {n_no_link:,} of them lie beside a gene with this link, and unlinked=true ranks those."
