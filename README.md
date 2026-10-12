@@ -101,7 +101,10 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   score for them. With no fitted parameter, ranking targets for a new trait by its ontology relatives'
   links, ties broken by degree, scores 0.1019 against 0.0610 for degree alone (+0.0408 [+0.0300,
   +0.0519] over 829 new traits). Ranking new targets for a trait by their chromosome neighbours scores
-  0.0250 against 0.0102 (+0.0148 [+0.0074, +0.0243]). An earlier period agrees on both.
+  0.0250 against 0.0102 (+0.0148 [+0.0074, +0.0243]). An earlier period agrees on both. The position
+  ranking held again on the prospective split and is served by the question layer since 12 Oct, for
+  the 2,407 targets with no link: a listed pair was linked within four years 2.8% of the time, 5.0% in
+  the first five for a trait.
 - **Rehearsal** ([`findings/REHEARSAL.md`](findings/REHEARSAL.md)). The tune, refit, score procedure
   run one step back in time, inside the training years, over 28 arms. One small combiner (neighbours,
   degree, position) carries, +0.0038 [+0.0008, +0.0077]; no graph or factorisation arm does, and
@@ -116,9 +119,10 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   arm that carried in rehearsal. The gain is on links at loci that training already holds and not on
   new links. No graph model beats neighbours. For cold start, position transfer for new targets
   repeats (+0.0250 [+0.0087, +0.0418]) and lineage transfer for new traits does not (-0.0026 [-0.0040,
-  -0.0011]). The question layer ranks by this combiner. Of its ten highest candidates for a trait,
-  17.8% were reported in 2023 to 2026, against a base rate of 0.49%; where no earlier link explains
-  the candidate, 9.7%.
+  -0.0011]). The question layer ranks by this combiner. Counted over every trait it ranks, 8.9% of
+  its ten highest candidates for a trait were reported in 2023 to 2026, against a base rate of 0.49%;
+  where no earlier link explains the candidate, 4.0%. (The 17.8% and 9.7% given here on 11 Oct were
+  counted only over traits that had a later link.)
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -184,6 +188,7 @@ python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
 python -m pharos_gap_kg.bundle pharos319                     # what the questions read
 python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --unexplained-only
+python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked          # targets with no link, by position
 python -m pharos_gap_kg.server                               # the same questions over MCP (needs the [server] extra)
 make check
 ```
