@@ -1,0 +1,589 @@
+{
+ "set": "rank_dev",
+ "questions": 35,
+ "sha256": "b701354dd03535f8669980b03a5b378792edf9a3c17e873e28e74448d36c64df",
+ "cells": {
+  "deepseek/deepseek-v4-flash|sql": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.029808267999999995,
+   "calls": 110,
+   "by_family": {
+    "no_link_top": [
+     3,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     1,
+     2
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "no_link_top-3": true,
+    "held-4": true,
+    "nearby-3": true,
+    "not_in_graph-2": true,
+    "not_in_graph-1": true,
+    "held-1": true,
+    "no_link_top-1": true,
+    "explained-2": true,
+    "unexplained_top-1": true,
+    "rank-2": true,
+    "explained-4": true,
+    "nearby-1": true,
+    "ambiguous-1": true,
+    "top-3": true,
+    "explained-1": true,
+    "no_link_trait-3": true,
+    "not_in_graph-3": true,
+    "unexplained_top-3": true,
+    "ambiguous-2": false,
+    "held-3": true,
+    "no_link_trait-2": true,
+    "nearby-2": true,
+    "explained-3": true,
+    "rank-4": true,
+    "held-2": true,
+    "rank-1": true,
+    "nothing-2": true,
+    "nothing-1": true,
+    "no_link_top-2": true,
+    "no_link_trait-1": true,
+    "unexplained_top-2": true,
+    "top-2": true,
+    "top-1": true,
+    "rank-3": true,
+    "top-4": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|typed": {
+   "n": 35,
+   "correct": 32,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.09521593149999999,
+   "calls": 92,
+   "by_family": {
+    "rank": [
+     1,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "nothing": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "rank-2": true,
+    "unexplained_top-2": true,
+    "no_link_top-2": true,
+    "ambiguous-1": true,
+    "no_link_trait-3": true,
+    "no_link_trait-2": true,
+    "top-1": true,
+    "held-3": true,
+    "no_link_trait-1": true,
+    "not_in_graph-3": true,
+    "nearby-2": true,
+    "explained-4": true,
+    "held-1": true,
+    "rank-3": false,
+    "nothing-2": true,
+    "no_link_top-3": true,
+    "unexplained_top-3": true,
+    "top-2": true,
+    "nothing-1": true,
+    "not_in_graph-2": true,
+    "unexplained_top-1": true,
+    "nearby-1": true,
+    "top-3": true,
+    "not_in_graph-1": true,
+    "ambiguous-2": true,
+    "explained-1": true,
+    "explained-3": true,
+    "top-4": true,
+    "nearby-3": true,
+    "held-2": true,
+    "no_link_top-1": true,
+    "rank-4": false,
+    "held-4": true,
+    "rank-1": false,
+    "explained-2": true
+   }
+  },
+  "inception/mercury-2.5|sql": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.014204435999999999,
+   "calls": 90,
+   "by_family": {
+    "nearby": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     2,
+     3
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "nearby-2": true,
+    "top-4": true,
+    "no_link_trait-3": true,
+    "unexplained_top-2": true,
+    "no_link_trait-1": true,
+    "held-1": true,
+    "explained-1": true,
+    "not_in_graph-2": false,
+    "no_link_top-1": true,
+    "nothing-1": true,
+    "rank-2": true,
+    "rank-3": true,
+    "not_in_graph-3": true,
+    "explained-4": true,
+    "ambiguous-1": true,
+    "no_link_top-2": true,
+    "held-3": true,
+    "nothing-2": true,
+    "rank-4": true,
+    "unexplained_top-3": true,
+    "not_in_graph-1": true,
+    "ambiguous-2": true,
+    "no_link_trait-2": true,
+    "explained-3": true,
+    "explained-2": true,
+    "no_link_top-3": true,
+    "held-2": true,
+    "top-1": true,
+    "unexplained_top-1": true,
+    "rank-1": true,
+    "nearby-3": true,
+    "nearby-1": true,
+    "top-3": true,
+    "top-2": true,
+    "held-4": true
+   }
+  },
+  "inception/mercury-2.5|typed": {
+   "n": 35,
+   "correct": 30,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.022951418,
+   "calls": 86,
+   "by_family": {
+    "explained": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "rank": [
+     2,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "held": [
+     1,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "nothing": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "explained-3": true,
+    "ambiguous-1": true,
+    "no_link_top-3": true,
+    "rank-3": true,
+    "no_link_top-2": true,
+    "explained-4": true,
+    "explained-1": true,
+    "unexplained_top-1": true,
+    "no_link_trait-2": true,
+    "held-2": false,
+    "explained-2": true,
+    "not_in_graph-2": true,
+    "nearby-2": true,
+    "top-1": true,
+    "no_link_top-1": true,
+    "no_link_trait-3": true,
+    "rank-1": true,
+    "not_in_graph-3": true,
+    "held-1": true,
+    "top-2": true,
+    "nearby-1": true,
+    "rank-2": false,
+    "unexplained_top-2": true,
+    "held-4": false,
+    "nothing-2": true,
+    "held-3": false,
+    "ambiguous-2": true,
+    "not_in_graph-1": true,
+    "unexplained_top-3": true,
+    "nearby-3": true,
+    "no_link_trait-1": true,
+    "rank-4": false,
+    "top-3": true,
+    "nothing-1": true,
+    "top-4": true
+   }
+  },
+  "z-ai/glm-5.3-flash|sql": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.012451653799999997,
+   "calls": 110,
+   "by_family": {
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "no_link_trait-2": true,
+    "held-2": true,
+    "not_in_graph-1": true,
+    "rank-1": true,
+    "nearby-3": true,
+    "unexplained_top-2": true,
+    "held-4": true,
+    "rank-2": true,
+    "top-1": true,
+    "explained-4": true,
+    "not_in_graph-2": true,
+    "rank-4": true,
+    "unexplained_top-3": true,
+    "top-2": true,
+    "held-1": true,
+    "nearby-2": true,
+    "explained-2": true,
+    "ambiguous-2": true,
+    "top-4": true,
+    "nearby-1": true,
+    "no_link_top-1": true,
+    "no_link_top-2": true,
+    "ambiguous-1": true,
+    "unexplained_top-1": true,
+    "no_link_trait-3": true,
+    "nothing-1": true,
+    "explained-1": true,
+    "not_in_graph-3": true,
+    "held-3": true,
+    "rank-3": true,
+    "nothing-2": true,
+    "explained-3": true,
+    "no_link_trait-1": true,
+    "top-3": true,
+    "no_link_top-3": true
+   }
+  },
+  "z-ai/glm-5.3-flash|typed": {
+   "n": 35,
+   "correct": 30,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.05445727059999998,
+   "calls": 94,
+   "by_family": {
+    "held": [
+     2,
+     4
+    ],
+    "rank": [
+     1,
+     4
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "held-3": false,
+    "held-1": true,
+    "rank-3": true,
+    "nothing-1": true,
+    "held-4": false,
+    "ambiguous-1": true,
+    "unexplained_top-1": true,
+    "unexplained_top-3": true,
+    "nothing-2": true,
+    "rank-2": false,
+    "nearby-3": true,
+    "rank-4": false,
+    "explained-1": true,
+    "no_link_top-2": true,
+    "ambiguous-2": true,
+    "held-2": true,
+    "no_link_trait-3": true,
+    "no_link_trait-2": true,
+    "no_link_top-3": true,
+    "no_link_trait-1": true,
+    "top-1": true,
+    "explained-4": true,
+    "nearby-1": true,
+    "rank-1": false,
+    "unexplained_top-2": true,
+    "not_in_graph-1": true,
+    "top-2": true,
+    "explained-3": true,
+    "top-3": true,
+    "not_in_graph-2": true,
+    "nearby-2": true,
+    "not_in_graph-3": true,
+    "explained-2": true,
+    "no_link_top-1": true,
+    "top-4": true
+   }
+  }
+ },
+ "typed_minus_sql": {
+  "deepseek/deepseek-v4-flash": {
+   "questions": 35,
+   "a_only": 1,
+   "b_only": 3,
+   "p_sign": 0.625
+  },
+  "inception/mercury-2.5": {
+   "questions": 35,
+   "a_only": 1,
+   "b_only": 5,
+   "p_sign": 0.21875
+  },
+  "z-ai/glm-5.3-flash": {
+   "questions": 35,
+   "a_only": 0,
+   "b_only": 5,
+   "p_sign": 0.0625
+  }
+ },
+ "pooled_typed_minus_sql": {
+  "models": [
+   "inception/mercury-2.5",
+   "deepseek/deepseek-v4-flash",
+   "z-ai/glm-5.3-flash"
+  ],
+  "questions": 35,
+  "difference": -0.10476190476190476,
+  "low": -0.20952380952380953,
+  "high": -0.009523809523809525
+ },
+ "verdicts": {
+  "all_hosted_cells_complete": true,
+  "usable_by_a_small_model": true,
+  "typed_better_than_sql": false
+ }
+}
