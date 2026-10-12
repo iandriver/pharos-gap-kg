@@ -256,3 +256,75 @@ the scorers of `findings/COLDSTART.md`, with the pairs set aside left out of the
   and failed where nearly every new trait hangs under one broad term.
 - The question layer still ranks by neighbours alone. Whether to serve the combiner, and the
   cold-start rankings, is a decision not taken here.
+
+## Added 11 Oct 2026: the question layer ranks by the combiner
+
+On Ian's decision the scorer behind `predict` and `why` changed from the neighbours score to
+`combine[B1+B3+B5]:F1`, the model that beat it above. The change, the calibration and a rule for the direction
+the combiner had not been tested in were written into `docs/PROTOCOL.md` first.
+
+**What is served.** For a trait, a target's score is log(1 + neighbours) plus 1/32 of log(1 + the
+traits it is already linked to) plus 1/4 of log(1 + the genes within 500,000 bases that already have
+the link), from the links as of the year asked. The weights are the ones scored above. They travel in
+the bundle's `backtest.json`, and a bundle that names no scorer is ranked by neighbours alone as
+before. Each candidate shows the three parts of its score.
+
+**How often a rank held** (`python -m pharos_gap_kg.prospect calibrate pharos319`,
+`docs/data/calibration_prospect_2022.json`). The share of candidates at each rank that were reported in
+2023 to 2026, pooled over the 1,110 scored traits, against a base rate of 0.49%. The stage
+refuses unless the scorer it recomputes scores what the test recorded.
+
+| ranks | all candidates | an earlier link explains | none does | a disease, and none does | neighbours alone, all candidates |
+|---|---|---|---|---|---|
+| 1-10 | 17.8% | 20.5% | 9.7% | 9.1% | 17.3% |
+| 11-50 | 13.8% | 17.5% | 9.0% | 7.0% | 13.2% |
+| 51-100 | 11.1% | 14.6% | 7.9% | 6.4% | 10.5% |
+| 101-500 | 5.5% | 9.2% | 3.6% | 2.9% | 5.1% |
+
+Ranking the traits for one target, pooled over 17,456 targets:
+
+| ranks | all candidates | an earlier link explains | none does | neighbours alone, all candidates |
+|---|---|---|---|---|
+| 1-5 | 7.8% | 8.0% | 6.0% | 8.1% |
+| 6-20 | 5.6% | 6.1% | 4.4% | 5.4% |
+| 21-50 | 3.7% | 5.2% | 2.9% | 3.4% |
+
+- **A top-ten candidate for a trait was reported within four years 18 times in a hundred**, 36 times the
+  base rate. Where no earlier link explains the candidate it is 10 in a hundred.
+- **Rank by rank the two rankings are close.** In the top ten for a trait the combiner's share is 17.8%
+  and that of neighbours alone 17.3%. Ranking the traits for one target, neighbours alone is a little
+  higher in the top five, 8.1% against 7.8%, and lower below. These are values with no interval. The
+  difference that was tested is the one in mean average precision above.
+- **Every share is a lower bound.** A candidate not reported by 2026 is not known to be absent, and
+  the answers say so wherever they quote one.
+- **The front end quotes the share for the candidate's own group**: explained by an earlier link, not
+  explained, or not explained and a disease.
+
+**The direction that had not been tested.** The combiner was fitted and scored for ranking targets
+within a trait. Ranking the traits for one target, it scores 0.0629 against 0.0615 for neighbours
+alone, +0.0014 [+0.0006, +0.0022] over 17,456 targets. By the rule written beforehand it is served
+that way too. That comparison was made on the prospective links after the test, so it is not a
+declared result, and the answers say so.
+
+**The served scores are the tested scores** (`tests/test_served_scorer.py`). The prospective split
+keys a trait by its live ontology term and the bundle keeps Pharos's ids, so 38 of the bundle's 2,247
+traits are one of two ids for the same trait there. For a trait that was not merged and a target that
+holds no merged trait, the score `ask` computes from the bundle equals the score in the tested matrix;
+the test checks 40 traits. For the 3,739 of 18,005 linked targets that hold a merged trait the served
+score can differ a little from the tested one.
+
+**What a reader will notice.**
+
+- The highest candidates for a trait are now mostly genes beside a gene that already has the link,
+  because that is where the gain over neighbours was. Every candidate says what explains it, and
+  `--unexplained-only` lists the others, which the combiner orders about as neighbours did.
+- A target with no link as of the year is not ranked, as the scorer was tested only on targets that
+  have one. `why` still names a linked gene beside it.
+- A ranking as of an earlier year is an illustration. The two weights were fitted on links to 2022.
+
+**Not done.**
+
+- No usability test has been run on the ranking, before or after this change. The usability tests of
+  7 and 9 Oct asked 105 questions and none asks for a rank or a candidate, so their results stand for
+  the questions they asked.
+- Rankings for a trait or a target with no link (`findings/COLDSTART.md`) are not served.
