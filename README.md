@@ -44,7 +44,9 @@ Started 6 Oct 2026. No model has been fitted. What exists:
 - **Eight questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`, `gaps`,
   `connect`, `predict`, `whats_new`, `status`, answered from an 11 MB bundle whose files are checked
   against a manifest of digests. A name that matches nothing is "not in the graph"; an absent link is
-  never reported as a negative; a prediction comes with how often its rank held in the backtest.
+  never reported as a negative; a prediction comes with the parts of its score and how often its rank
+  held on later links. Since 11 Oct 2026 candidates are ranked by the position combiner of the
+  prospective test below, and before that by the neighbour score alone.
 
 - **A usability test** ([`findings/USABILITY.md`](findings/USABILITY.md)). On a fresh set of 35
   code-graded questions, three cheap hosted models each answered 35 through the typed questions, and
@@ -114,7 +116,9 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   arm that carried in rehearsal. The gain is on links at loci that training already holds and not on
   new links. No graph model beats neighbours. For cold start, position transfer for new targets
   repeats (+0.0250 [+0.0087, +0.0418]) and lineage transfer for new traits does not (-0.0026 [-0.0040,
-  -0.0011]).
+  -0.0011]). The question layer ranks by this combiner. Of its ten highest candidates for a trait,
+  17.8% were reported in 2023 to 2026, against a base rate of 0.49%; where no earlier link explains
+  the candidate, 9.7%.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -169,6 +173,8 @@ python -m pharos_gap_kg.rehearse report pharos319             # the procedure on
 python -m pharos_gap_kg.fetch gwas_catalog_20261005           # the GWAS Catalog as curated since, for the prospective test
 python -I -m pharos_gap_kg.gwascat extract                    # then `rule` and `build`: links first reported from 2023
 python -m pharos_gap_kg.prospect score pharos319              # the prospective test; stages in its docstring
+python -m pharos_gap_kg.prospect calibrate pharos319          # how often a rank held, for the scorer the questions rank by
+python -m pharos_gap_kg.bundle pharos319 --backtest-only      # put that scorer and its calibration into a built bundle
 python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
 python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
 python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
