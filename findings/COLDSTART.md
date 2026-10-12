@@ -106,3 +106,57 @@ is two and it is 9,024 of 52,601.
 - No fitted model was tried on either task.
 - The question layer does not serve these rankings yet. A question about a trait with no link is still
   answered as having none.
+
+## Added 12 Oct 2026: the position rankings for targets with no link are served
+
+On Ian's decision the question layer now ranks a target that has no link, by position alone. What is
+served and how it is calibrated were written into `docs/PROTOCOL.md` first. The lineage rankings for
+new traits are not served: they held on the 2018 split and failed on the prospective one
+(`findings/PROSPECTIVE.md`).
+
+**What is served.** For a trait, `predict(trait, unlinked=True)` lists the targets with no link that
+have a gene within 500,000 bases linked to the trait, ordered by the number of such genes, ties broken
+by the number of links those genes hold in all (P3). For a target with no link, `predict(target)`
+lists the traits that a gene within 500,000 bases of it is linked to, ordered by the number of such
+genes, ties broken by the number of targets linked to the trait (Q3). `why` gives such a target its
+place in the trait's list. Nothing is fitted. The list for a trait is its own list; it is not merged
+into the ranking of targets that have links, because the two were never scored together.
+
+**Why these two.** Each beat its own tie-breaker with the interval above zero in three periods:
+
+| | cutoff 2016 | cutoff 2018 | prospective split |
+|---|---|---|---|
+| for a trait, P3 against P1 | +0.0187 [+0.0072, +0.0336] | +0.0148 [+0.0074, +0.0243] | +0.0250 [+0.0087, +0.0418] |
+| for a target, Q3 against Q1 | +0.0261 [+0.0219, +0.0305] | +0.0162 [+0.0130, +0.0197] | +0.0249 [+0.0182, +0.0318] |
+
+**How often a listed pair held** (`python -m pharos_gap_kg.prospect calibrate pharos319`,
+`docs/data/calibration_prospect_2022.json`, under `no_link`), on the prospective split's links first
+reported in 2023 to 2026, counted over every trait and every target that has a list:
+
+| ranks | for a trait: targets with no link | listed at those ranks | for a target with no link: traits | listed at those ranks |
+|---|---|---|---|---|
+| 1-5 | 5.0% | 5,440 | 3.3% | 8,102 |
+| 6-20 | 2.9% | 7,219 | 2.6% | 15,730 |
+| 21-50 | 3.0% | 7,520 | 2.4% | 12,930 |
+
+- **The rates are a few in a hundred.** In the first five for a trait, 5.0% of the listed targets were
+  linked to it within four years; in the first five for a target, 3.3% of the listed traits.
+- **Being listed is most of the signal.** 2.8% of all 42,982 listed pairs were linked, against 0.13%
+  of all pairs of a target with no link and a trait: 22 times. Within a list the order adds
+  little below the first five.
+- **Position reaches a minority of the later links.** 1,760 of the 2,407 targets with no link are listed for some
+  trait, and 1,199 of the 6,729 later links to such targets (17.8%) are to a listed pair. The rest
+  cannot be ranked this way at all.
+- **A listed target is often the same signal.** A target beside a linked gene is often one more gene
+  the same association is assigned to. Every answer says so, and one in the MHC region carries the
+  caution the other rankings carry.
+
+**The served lists are the scored lists** (`tests/test_served_no_link.py`). For 60 traits the
+prospective split did not merge with another, the number of linked genes beside each of the 2,407
+targets with no link is the same from the bundle as in the scored matrix. The tie-breaker is the same
+for the 1,190 of 1,763 targets with a linked gene nearby whose neighbouring genes hold no merged
+trait, and can only be higher for the others, because the bundle counts a merged trait under each of
+its ids. Where every listed target has the scored tie-breaker the order is the scored order.
+
+**Not done.** No usability test of these rankings. A target with no link and no linked gene within
+500,000 bases is not ranked. No ranking is offered for a trait that has no link.

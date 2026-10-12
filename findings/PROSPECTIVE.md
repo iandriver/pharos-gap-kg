@@ -328,3 +328,40 @@ score can differ a little from the tested one.
   7 and 9 Oct asked 105 questions and none asks for a rank or a candidate, so their results stand for
   the questions they asked.
 - Rankings for a trait or a target with no link (`findings/COLDSTART.md`) are not served.
+
+## Added 12 Oct 2026: calibration counted over every trait and target ranked
+
+The shares in the section above were pooled over scored units only: the 1,110 traits, of 2,225, that
+had at least one link first reported in 2023 to 2026. The sentence the front end quoted did not say
+so. Someone asking about a trait cannot know it will be one of those, so for a trait's list the quoted
+shares were about twice what holds. The protocol was amended, and the shares are now counted over
+every trait, and every target, that the front end ranks. The earlier shares are kept in
+`docs/data/calibration_prospect_2022.json` under `over_scored_units_only`.
+
+For a trait, counted over all 2,225 traits:
+
+| ranks | all candidates | an earlier link explains | none does | a disease, and none does | as quoted on 11 Oct, all candidates |
+|---|---|---|---|---|---|
+| 1-10 | 8.9% | 11.1% | 4.0% | 5.1% | 17.8% |
+| 11-50 | 6.9% | 10.1% | 3.8% | 4.0% | 13.8% |
+| 51-100 | 5.6% | 8.6% | 3.4% | 3.7% | 11.1% |
+| 101-500 | 2.7% | 5.6% | 1.6% | 1.7% | 5.5% |
+
+For a target, counted over all 18,005 targets with a link (17,456 of them were scored, so little changes):
+
+| ranks | all candidates | an earlier link explains | none does | as quoted on 11 Oct, all candidates |
+|---|---|---|---|---|
+| 1-5 | 7.6% | 7.8% | 5.5% | 7.8% |
+| 6-20 | 5.4% | 6.0% | 4.1% | 5.6% |
+| 21-50 | 3.6% | 5.1% | 2.8% | 3.7% |
+
+- **A top-ten candidate for a trait was reported within four years 9 times in a hundred**, not 18, which is
+  18 times the base rate of 0.49%. Where no earlier link explains the candidate it is 4 in a hundred, not 10.
+- **Rank by rank the combiner and neighbours alone remain close**: 8.9% against 8.6% in the top ten for a trait.
+- **Nothing scored changes.** The mean average precision of every model, the paired differences and
+  the verdicts above are computed over scored traits by definition and stand as reported. What changes
+  is the sentence the front end attaches to a candidate, which now reads "counted over every trait
+  ranked".
+- The 2018 calibration of the neighbours score (`docs/data/calibration_gene_trait_2018.json`) is of the
+  same conditional kind. It is used only by a bundle that names no scorer, and its sentence now says it
+  is counted over the traits that had a later link.
