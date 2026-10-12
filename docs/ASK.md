@@ -129,7 +129,8 @@ python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --top 5
 
 > The 5 highest-ranked candidate targets for type 2 diabetes mellitus as of 2023, out of 17,891. Genes
 > within 500,000 bases of each other are shown as one lead. In the MHC region of chromosome 6, where
-> neighbouring candidates are best read as one lead: 2 of them.
+> neighbouring candidates are best read as one lead: 2 of them. A target with no link is not in this
+> list; 431 of them lie beside a gene with this link, and unlinked=true ranks those.
 
 | rank | lead | shared-trait neighbours | traits already linked | genes nearby with this link |
 |---|---|---|---|---|
@@ -141,9 +142,13 @@ python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --top 5
 
 Beside each candidate the answer states how often its rank has held:
 
-> In the test on links first reported from 2023 to 2026, 21% of candidates at ranks 1-10 that an
-> earlier link explains by trait wording or by position were reported by 2026 (base rate 0.5%). A
-> candidate not reported is not known to be absent.
+> In the test on links first reported from 2023 to 2026, 11% of candidates at ranks 1-10 that an
+> earlier link explains by trait wording or by position were reported by 2026, counted over every
+> trait ranked (base rate 0.5%). A candidate not reported is not known to be absent.
+
+The share is counted over every trait the graph ranks, whether or not the trait had any later link.
+Until 12 Oct 2026 the answers quoted a share counted only over the traits that did, which was about
+twice as high (21% here) and did not say so.
 
 **What the ranking is.** A candidate's score has three parts, each computed from the links as of the
 year asked and each entering as log(1 + part): shared-trait neighbours, weighted 1 (a target scores
@@ -160,10 +165,11 @@ position or trait wording, which is why the five above are all genes beside a ge
 On candidates no earlier link explains it was level with neighbours alone. The `method` field of every
 answer says this. Until 11 Oct 2026 the ranking was shared-trait neighbours alone.
 
-A target with no link as of the year is not ranked, because the ranking was tested on targets that
-have one. `why` still names a linked gene beside it. Ranking the traits for one target uses the same
-score; that reading was checked on the same later links after the test (0.063 against 0.062 for
-neighbours alone) and was not declared before it.
+A target with no link as of the year is not in this list, because the ranking was tested on targets
+that have one. Such targets are ranked separately, by position alone, as shown under "Targets with no
+link" below. Ranking the traits for one target uses the same score; that reading was checked on the
+same later links after the test (0.063 against 0.062 for neighbours alone) and was not declared before
+it.
 
 ```bash
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --top 8 --unexplained-only
@@ -172,7 +178,8 @@ python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --to
 > The 8 highest-ranked candidate targets for type 2 diabetes mellitus as of 2018, out of 19,260.
 > Genes within 500,000 bases of each other are shown as one lead. In the MHC region of chromosome 6,
 > where neighbouring candidates are best read as one lead: 1 of them. Reported between 2019 and 2023:
-> 3 of these 8.
+> 3 of these 8. A target with no link is not in this list; 588 of them lie beside a gene with this
+> link, and unlinked=true ranks those.
 
 | rank | lead | reported later |
 |---|---|---|
@@ -190,6 +197,72 @@ gene position. What remains starts at rank 41 here, because the ranking puts gen
 first. Asking as of a past year shows which candidates were in fact reported afterwards. It is an
 illustration and not a test: the two weights were fitted on links later than that year, and the
 answer's `method` field says so. The test is the one on links first reported from 2023.
+
+### Targets with no link
+
+About one target in eight has no GWAS link in the release (2,407 of 20,412), and the ranking above
+does not cover them. They are ranked by position alone, with nothing fitted.
+
+```bash
+python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked --top 5
+```
+
+> The 5 highest-ranked targets with no link as of 2023 that lie beside a gene linked to Parkinson
+> disease, out of 38. Targets within 500,000 bases of each other are shown as one lead.
+
+| rank | target | level | genes nearby with this link | nearest of them |
+|---|---|---|---|---|
+| 1 | RUSC1-AS1 | Tdark | 27 | FDPS, RUSC1 (overlapping), ASH1L |
+| 2 | PPP1R2P1 (MHC) | Tdark | 20 | HLA-DQB2, HLA-DQA2, HLA-DQB1 |
+| 3 | FBXL19-AS1, with PYCARD-AS1 | Tdark | 16 | FBXL19 (overlapping), ORAI3, SETD1A |
+| 5 | FAM223B, with FAM223A | Tdark | 13 | SLC10A3, UBL4A, LAGE3 |
+| 7 | TMEM271 | Tdark | 9 | PCGF3, CPLX1, GAK |
+
+A target is listed when a gene within 500,000 bases of it has the link, and the order is by how many
+such genes there are, ties broken by how many links those genes hold in all. Asked about a target that
+has no link, `predict` gives the traits its neighbouring genes are linked to:
+
+```bash
+python -m pharos_gap_kg.ask predict TMEM271 --top 4
+```
+
+> TMEM271 has no link as of 2023. The 4 highest-ranked traits that a gene within 500,000 bases of it is
+> linked to, out of 65. Traits the ontology files under one another are shown as one lead.
+
+| rank | trait | genes nearby with this link | nearest of them |
+|---|---|---|---|
+| 1 | appendicular lean mass | 13 | PDE6B, ATP5ME, MYL5 |
+| 2 | heel bone mineral density | 13 | PDE6B, ATP5ME, MYL5 |
+| 3 | BMI-adjusted waist-hip ratio | 13 | PDE6B, ATP5ME, MYL5 |
+| 4 | high density lipoprotein cholesterol measurement | 9 | PCGF3, CPLX1, GAK |
+
+Beside each row the answer states how often that has held:
+
+> In the test on links first reported from 2023 to 2026, 3.3% of traits listed at ranks 1-5 for a
+> target with no link were linked to it by 2026. Of all listed pairs 2.8% were, and of all pairs of a
+> target with no link and a trait 0.13%. A pair not reported is not known to be absent.
+
+**How to read it.** The rates are low. Being listed at all is most of the signal: a listed pair was
+linked within four years 2.8% of the time, about twenty times the rate for any pair, and the top of a
+list is a little better than the rest (5.0% in the first five for a trait, 3.3% for a target). Position
+reaches only a pair where a gene nearby already has the link, which was 1,199 of the 6,729 later links
+to such targets. And a target beside a linked gene is often the same association signal assigned to one
+more gene, so a link reported later would say little about that gene in particular. Every answer says
+so. `why` gives such a target its place in the list too:
+
+```bash
+python -m pharos_gap_kg.ask why TMEM271 "Parkinson disease"
+```
+
+> There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here
+> means no study in this source had reported one by that year. It is not evidence that there is no
+> association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to this trait;
+> TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie
+> beside a gene with this one.
+
+The ranking beat its own tie-breaker in three periods (`findings/COLDSTART.md`,
+`findings/PROSPECTIVE.md`). Because nothing is fitted, asking as of an earlier year is a backtest in
+the plain sense. A target with no link and no linked gene within 500,000 bases is not ranked.
 
 ### What does a target lack
 

@@ -42,15 +42,18 @@ def test_connect(G):
 def test_predict(G):
     q = G.predict("type 2 diabetes mellitus", top=5)
     assert q["answer"] == ("The 5 highest-ranked candidate targets for type 2 diabetes mellitus as of 2023, out of 17,891. Genes within 500,000 bases of "
-                           "each other are shown as one lead. In the MHC region of chromosome 6, where neighbouring candidates are best read as one lead: 2 of them.")
+                           "each other are shown as one lead. In the MHC region of chromosome 6, where neighbouring candidates are best read as one lead: 2 of them. "
+                           "A target with no link is not in this list; 431 of them lie beside a gene with this link, and unlinked=true ranks those.")
     got = [(c["rank"], c["symbol"], c["score_parts"]["shared_trait_neighbours"], c["score_parts"]["traits_already_linked"], c["score_parts"]["genes_nearby_with_this_link"])
            for c in q["candidates"]]
     assert got == [(1, "GPANK1", 19.214, 104, 90), (16, "HIST1H1T", 19.598, 103, 11), (17, "MYBPC3", 19.181, 97, 12), (20, "MARK4", 15.893, 73, 20), (23, "CTDNEP1", 14.547, 74, 23)]
     assert q["candidates"][0]["same_locus"][:3] == ["C6orf47", "CSNK2B", "LY6G5B"] and q["candidates"][1]["same_locus"] == ["HFE"] and q["candidates"][4]["same_locus"] == ["ELP5", "GABARAP", "PHF23", "CLDN7"]
     assert all(c["explained_by"] for c in q["candidates"]) and [bool(c["caution"]) for c in q["candidates"]] == [True, True, False, False, False]
-    assert q["candidates"][0]["how_often_this_held"] == ("In the test on links first reported from 2023 to 2026, 21% of candidates at ranks 1-10 that an earlier link "
-                                                         "explains by trait wording or by position were reported by 2026 (base rate 0.5%). A candidate not reported "
-                                                         "is not known to be absent.")
+    assert q["candidates"][0]["how_often_this_held"] == ("In the test on links first reported from 2023 to 2026, 11% of candidates at ranks 1-10 that an earlier link "
+                                                         "explains by trait wording or by position were reported by 2026, counted over every trait ranked (base rate "
+                                                         "0.5%). A candidate not reported is not known to be absent.")
+    scored_only = G.backtest["calibration"]["pooled_over"]["traits"] == 2225
+    assert scored_only, "the bundle's calibration must be counted over every trait ranked"
     m = q["method"]
     assert "weighted 1, 1/32 and 1/4" in m and "fitted on links to 2022" in m and "illustration" not in m
     assert "On 194,017 links first reported from 2023 to 2026" in m and "scored 0.101 (mean average precision over 1,110 traits) against 0.095" in m
@@ -58,12 +61,42 @@ def test_predict(G):
     t = G.predict("TREM2", top=4)
     assert "it scored 0.063 against 0.062 on the same links" in t["method"] and "not declared before it" in t["method"]
     p = G.predict("type 2 diabetes mellitus", as_of=2018, top=8, unexplained_only=True)
-    assert "out of 19,260" in p["answer"] and "Reported between 2019 and 2023: 3 of these 8." in p["answer"]
+    assert "out of 19,260" in p["answer"] and "Reported between 2019 and 2023: 3 of these 8." in p["answer"] and "588 of them lie beside a gene with this link" in p["answer"]
     assert [(c["rank"], c["symbol"]) for c in p["candidates"]] == [(41, "ZPR1"), (49, "AIM2"), (54, "HIST1H4A"), (60, "TMEM258"),
                                                                  (65, "HLA-A"), (101, "SLC22A5"), (116, "MYB"), (132, "CTCFL")]
     later = {c["symbol"]: c["any_gene_at_this_locus_reported_after_as_of"] for c in p["candidates"]}
     assert {k for k, v in later.items() if v} == {"HIST1H4A", "TMEM258", "HLA-A"} and later["TMEM258"] == 2020
     assert "illustration and not a test" in p["method"] and all(c["score_parts"]["genes_nearby_with_this_link"] == 0 for c in p["candidates"])
+
+
+def test_targets_with_no_link(G):
+    assert int((G.t.shape[0])) == 20412
+    u = G.predict("Parkinson disease", top=5, unlinked=True)
+    assert u["answer"] == ("The 5 highest-ranked targets with no link as of 2023 that lie beside a gene linked to Parkinson disease, out of 38. "
+                           "Targets within 500,000 bases of each other are shown as one lead.")
+    got = [(c["rank"], c["symbol"], c["pharos_level"], c["genes_nearby_with_this_link"], [(n["symbol"], n["bases_apart"]) for n in c["nearest"]], c["same_locus"], bool(c["caution"]))
+           for c in u["candidates"]]
+    assert got == [(1, "RUSC1-AS1", "Tdark", 27, [("FDPS", 0), ("RUSC1", 0), ("ASH1L", 10883)], [], False),
+                   (2, "PPP1R2P1", "Tdark", 20, [("HLA-DQB2", 115684), ("HLA-DQA2", 132018), ("HLA-DQB1", 210833)], [], True),
+                   (3, "FBXL19-AS1", "Tdark", 16, [("FBXL19", 0), ("ORAI3", 25789), ("SETD1A", 34015)], ["PYCARD-AS1"], False),
+                   (5, "FAM223B", "Tdark", 13, [("SLC10A3", 141780), ("UBL4A", 145855), ("LAGE3", 153189)], ["FAM223A"], False),
+                   (7, "TMEM271", "Tdark", 9, [("PCGF3", 129453), ("CPLX1", 208662), ("GAK", 272981)], [], False)]
+    assert u["candidates"][0]["how_often_this_held"].startswith("In the test on links first reported from 2023 to 2026, 5.0% of targets with no link listed at ranks 1-5 for a trait")
+    assert "Nothing is fitted" in u["method"] and "0.143 (mean average precision over 714 traits) against 0.118" in u["method"] and "1,199 of those 6,729 links" in u["method"]
+    d = G.predict("TMEM271", top=4)
+    assert d["answer"] == ("TMEM271 has no link as of 2023. The 4 highest-ranked traits that a gene within 500,000 bases of it is linked to, out of 65. "
+                           "Traits the ontology files under one another are shown as one lead.")
+    assert [(c["rank"], c["name"], c["genes_nearby_with_this_link"], [n["symbol"] for n in c["nearest"]]) for c in d["candidates"]] == [
+        (1, "appendicular lean mass", 13, ["PDE6B", "ATP5ME", "MYL5"]), (2, "heel bone mineral density", 13, ["PDE6B", "ATP5ME", "MYL5"]),
+        (3, "BMI-adjusted waist-hip ratio", 13, ["PDE6B", "ATP5ME", "MYL5"]), (4, "high density lipoprotein cholesterol measurement", 9, ["PCGF3", "CPLX1", "GAK"])]
+    assert d["candidates"][0]["how_often_this_held"] == ("In the test on links first reported from 2023 to 2026, 3.3% of traits listed at ranks 1-5 for a target with no link "
+                                                         "were linked to it by 2026. Of all listed pairs 2.8% were, and of all pairs of a target with no link and a trait "
+                                                         "0.13%. A pair not reported is not known to be absent.")
+    w = G.why("TMEM271", "Parkinson disease")
+    assert w["answer"] == ("There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here means no study in this source had reported "
+                           "one by that year. It is not evidence that there is no association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to "
+                           "this trait; TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie beside a gene with this one.")
+    assert "same association signal" in u["caveat"] and "same association signal" in d["caveat"]
 
 
 def test_status_names_the_ranking(G):

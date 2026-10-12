@@ -24,8 +24,13 @@ the target already has, and how many genes within 500,000 bases of it already ha
 weights were fitted on links to 2022 and it was tested on links first reported from 2023. A bundle
 with no scorer recorded is ranked by shared-trait neighbours alone.
 
+A TARGET WITH NO LINK IS RANKED BY POSITION ALONE, where the bundle records how that has held: for a
+trait, the targets with no link that lie beside a gene that has it (`predict(trait, unlinked=True)`),
+and for a target with no link, the traits its neighbouring genes are linked to. Nothing is fitted.
+
 Run:  python -m pharos_gap_kg.ask why APOE "Alzheimer disease"
       python -m pharos_gap_kg.ask predict "Parkinson disease" --as-of 2018
+      python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked
       python -m pharos_gap_kg.ask --selftest
 """
 from __future__ import annotations
@@ -49,6 +54,9 @@ MHC = ("6", 25_000_000, 34_000_000)
 MHC_NOTE = "in the MHC region of chromosome 6, where one association signal spans many genes; treat neighbouring MHC candidates as one lead"
 TRAIT_BINS = [(1, 10), (11, 50), (51, 100), (101, 500)]
 TARGET_BINS = [(1, 5), (6, 20), (21, 50)]
+NO_LINK_BINS = [(1, 5), (6, 20), (21, 50)]
+SAME_SIGNAL = ("A target beside a linked gene is often the same association signal assigned to one more gene, "
+               "so a link reported later would say little about this gene in particular.")
 
 
 def _frac(x: float) -> str:
@@ -292,13 +300,72 @@ class Graph:
         if self.weights is None:
             return nb, sim, {"neighbours": nb}
         deg = np.bincount(self.lt[mask], minlength=len(self.t)).astype(float)
+        pos = self._nearby(di, mask)
+        sc = self._combine(nb, deg, pos)
+        sc[deg == 0] = 0.0          # a target with no link as of the year is not ranked: the scorer was tested on targets that have one
+        return sc, sim, {"neighbours": nb, "degree": deg, "position": pos}
+
+    def _nearby(self, di: int, mask: np.ndarray) -> np.ndarray:
+        """For every target, how many genes within 500,000 bases of it have a link to trait di as of the mask."""
         pos = np.zeros(len(self.t))
         for h in self.lt[mask & (self.ld == di)]:
             for o, _ in self.neigh.get(int(h), []):
                 pos[o] += 1
-        sc = self._combine(nb, deg, pos)
-        sc[deg == 0] = 0.0          # a target with no link as of the year is not ranked: the scorer was tested on targets that have one
-        return sc, sim, {"neighbours": nb, "degree": deg, "position": pos}
+        return pos
+
+    def _nearest(self, position: list[tuple[int, int]], n: int = 3) -> list[dict]:
+        """The nearest linked genes, each gene symbol once (Pharos holds some genes as several entries)."""
+        out, seen = [], set()
+        for o, gap in position:
+            s = self.t["name"][o]
+            if s not in seen:
+                seen.add(s)
+                out.append({"symbol": s, "bases_apart": gap})
+            if len(out) == n:
+                break
+        return out
+
+    def _no_link_for_trait(self, di: int, mask: np.ndarray) -> tuple[list[int], np.ndarray, dict[int, int]]:
+        """The targets with no link as of the mask that lie beside a gene linked to trait di, best first:
+        by how many such genes, ties broken by how many links the genes beside the target hold in all.
+        Returns (targets in order, the count for every target, the tie-breaker for each listed target)."""
+        deg = np.bincount(self.lt[mask], minlength=len(self.t))
+        pos = self._nearby(di, mask)
+        listed = np.flatnonzero((deg == 0) & (pos > 0))
+        locus = {int(i): int(sum(deg[o] for o, _ in self.neigh.get(int(i), []))) for i in listed}
+        return sorted((int(i) for i in listed), key=lambda i: (-pos[i], -locus[i], i)), pos, locus
+
+    def _no_link_calibration(self, axis: str, rank: int) -> str:
+        c = ((self.backtest or {}).get("no_link") or {}).get("calibration")
+        if not c:
+            return ""
+        b = next((f"{lo}-{hi}" for lo, hi in NO_LINK_BINS if lo <= rank <= hi), None)
+        if b is None:
+            return f"Below rank {NO_LINK_BINS[-1][1]} the test was not tallied."
+        v = c[axis][b]["all"]
+        if v["share"] is None:
+            return ""
+        what = "targets with no link listed at ranks {b} for a trait were linked to it" if axis == "by_trait" else "traits listed at ranks {b} for a target with no link were linked to it"
+        return (f"In the test on links first reported from {c['first_year']} to {c['data_ends']}, {v['share']:.1%} of " + what.format(b=b) + f" by {c['data_ends']}. "
+                f"Of all listed pairs {c['base_rate_among_listed']:.1%} were, and of all pairs of a target with no link and a trait {c['base_rate_among_all']:.2%}. "
+                "A pair not reported is not known to be absent.")
+
+    def _no_link_method(self, by: str) -> str:
+        head = ("A target with no link is ranked by position alone: " +
+                ("the number of genes within 500,000 bases of it that already have this link, ties broken by how many links those neighbouring genes hold in all."
+                 if by == "trait" else
+                 "for each trait, the number of genes within 500,000 bases of the target that are linked to it, ties broken by how many targets the trait is linked to.")
+                + " Nothing is fitted.")
+        h = ((self.backtest or {}).get("no_link") or {}).get("headline")
+        if h:
+            x = h["by_trait" if by == "trait" else "by_target"]
+            d = x["position_minus_tie_breaker"]
+            over = f"{x['traits']:,} traits" if by == "trait" else f"{x['targets']:,} targets"
+            head += (f" On {h['later_links']:,} links first reported from {h['first_year']} to {h['data_ends']} to targets that had no link, this ranking scored "
+                     f"{x['position']:.3f} (mean average precision over {over}) against {x['tie_breaker_alone']:.3f} for the tie-breaker alone "
+                     f"({d[0]:+.4f}, 95% interval {d[1]:+.4f} to {d[2]:+.4f}) and {x['chance']:.3f} for chance, and it was above the tie-breaker in two earlier "
+                     f"periods as well. Position reaches only a pair where a gene nearby has the link: {h['later_links_listed']:,} of those {h['later_links']:,} links.")
+        return head
 
     def _ranked_by(self) -> str:
         return "shared-trait neighbours" if self.weights is None else "this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby)"
@@ -326,7 +393,9 @@ class Graph:
                 "not_linked": "that no earlier link explains by wording or position",
                 "disease_like_not_linked": "for a disease, that no earlier link explains by wording or position"}[grp]
         test = (f"In the test on links first reported from {c['first_year']} to {c['data_ends']}" if c.get("prospective") else f"In the {c['cutoff']} backtest")
-        return (f"{test}, {v['share']:.0%} of candidates at ranks {b} {what} were reported by {c['data_ends']} "
+        unit = "trait" if axis == "by_trait" else "target"
+        over = f", counted over every {unit} ranked" if c.get("pooled_over") else f", counted over the {unit}s that had a later link, which makes it higher than for a {unit} taken without knowing that"
+        return (f"{test}, {v['share']:.0%} of candidates at ranks {b} {what} were reported by {c['data_ends']}{over} "
                 f"(base rate {c['base_rate']:.1%}). A candidate not reported is not known to be absent.")
 
     def _method(self, by: str, y: int) -> str:
@@ -474,6 +543,12 @@ class Graph:
             bits.append(f"{self.t['name'][o]}, {gap:,} bases away, was linked to this trait")
         if sc[ti] > 0:
             bits.append(f"by {self._ranked_by()} {tl['symbol']} ranks {rank:,} of {int(cand.sum()):,} candidates for this trait")
+        if fl["position"] and "no_link" in (self.backtest or {}) and not (mask & (self.lt == ti)).any():
+            order, _, _ = self._no_link_for_trait(di, mask)
+            r0 = order.index(ti) + 1
+            out.update({"rank_among_targets_with_no_link": r0, "targets_with_no_link_listed_for_this_trait": len(order),
+                        "calibration": self._no_link_calibration("by_trait", r0)})
+            bits.append(f"{tl['symbol']} has no link of its own, and by position it ranks {r0:,} of the {len(order):,} targets with no link that lie beside a gene with this one")
         out["answer"] = head + (" What nearby evidence exists: " + "; ".join(bits) + "." if bits else " Nothing nearby in the graph points either way.")
         if self.mhc[ti]:
             out["caution"] = f"{tl['symbol']} is {MHC_NOTE.split(';')[0]}, so a high rank here says little about this gene in particular."
@@ -543,13 +618,85 @@ class Graph:
                 "answer": (f"As of {y}, {la['name']} and {lb['name']} share {len(both):,} target(s) (of {len(ta):,} and {len(tb):,})."
                            + (" The ontology files one under the other, so shared targets are expected." if rel else ""))}
 
-    def predict(self, node: str, as_of: int | None = None, top: int = 10, unexplained_only: bool = False) -> dict:
+    def _predict_no_link_for_trait(self, r: dict, y: int, mask: np.ndarray, top: int) -> dict:
+        """For a trait: the targets with no link that lie beside a gene that has this one, by position."""
+        di = r["i"]
+        lab = {"kind": "trait", **self._dlabel(di)}
+        if "no_link" not in (self.backtest or {}):
+            return {"found": True, "node": lab, "as_of": y, "candidates": [],
+                    "answer": "This bundle does not record how position rankings for targets with no link have held, so none is given."}
+        order, pos, locus = self._no_link_for_trait(di, mask)
+        if not order:
+            return {"found": True, "node": lab, "as_of": y, "candidates": [], "method": self._no_link_method("trait"),
+                    "answer": f"No target without a link lies within 500,000 bases of a gene linked to {self.d['name'][di]} as of {y}. {NOT_ABSENCE}"}
+        leads = group_leads(enumerate(order, 1), lambda i: {o for o, _ in self.neigh.get(i, [])}, lambda i: self.t["name"][i], top)
+        rows = []
+        for L in leads:
+            ti, rank = L["first"], L["rank"]
+            fl = self._flags(ti, di, mask)
+            k = self._row(ti, di)
+            later = [int(self.first[kk]) for kk in (self._row(m, di) for m in L["members"]) if kk is not None]
+            rows.append({"rank": rank, **{kk: v for kk, v in self._tlabel(ti).items() if kk in ("id", "symbol", "pharos_level", "pharos_entries_with_this_symbol")},
+                         "genes_nearby_with_this_link": int(pos[ti]), "links_held_by_genes_nearby": locus[ti],
+                         "nearest": self._nearest(fl["position"]),
+                         "same_locus": L["also"][:8], "same_locus_more": max(0, len(L["also"]) - 8), "caution": MHC_NOTE if self.mhc[ti] else "",
+                         "reported_after_as_of": int(self.first[k]) if k is not None else None,
+                         "any_gene_at_this_locus_reported_after_as_of": min(later) if later else None,
+                         "how_often_this_held": self._no_link_calibration("by_trait", rank)})
+        came = sum(1 for x in rows if x["any_gene_at_this_locus_reported_after_as_of"])
+        ans = (f"The {len(rows)} highest-ranked targets with no link as of {y} that lie beside a gene linked to {self.d['name'][di]}, out of {len(order):,}. "
+               "Targets within 500,000 bases of each other are shown as one lead.")
+        if y < self.latest:
+            ans += f" Reported between {y + 1} and {self.latest}: {came} of these {len(rows)}."
+        return {"found": True, "node": lab, "as_of": y, "method": self._no_link_method("trait"), "answer": ans, "candidates": rows,
+                "caveat": "These are leads for a person to check, not findings. " + SAME_SIGNAL + " " + NOT_ABSENCE, "source": self._source(y), "note": r["note"]}
+
+    def _predict_for_target_with_no_link(self, r: dict, y: int, mask: np.ndarray, top: int) -> dict:
+        """For a target with no link: the traits that genes beside it are linked to, by position."""
+        ti = r["i"]
+        lab = {"kind": "target", **self._tlabel(ti)}
+        near = np.zeros(len(self.d))
+        for o, _ in self.neigh.get(ti, []):
+            np.add.at(near, self.ld[mask & (self.lt == o)], 1)
+        if "no_link" not in (self.backtest or {}) or not near.any():
+            why_not = ("and no gene within 500,000 bases of it has one, " if "no_link" in (self.backtest or {}) else "")
+            return {"found": True, "node": lab, "as_of": y, "candidates": [],
+                    "answer": f"{self.t['name'][ti]} has no link as of {y}, {why_not}so there is nothing to rank from. {NOT_ABSENCE}"}
+        degd = np.bincount(self.ld[mask], minlength=len(self.d))
+        order = np.lexsort((np.arange(len(near)), -degd, -near))
+        order = order[near[order] > 0]
+        leads = group_leads(((rank, int(dj)) for rank, dj in enumerate(order, 1)), lambda j: {o for o, _ in self.lineage.get(j, [])}, lambda j: self.d.id[j], top)
+        rows = []
+        for L in leads:
+            dj, rank = L["first"], L["rank"]
+            fl = self._flags(ti, dj, mask)
+            k = self._row(ti, dj)
+            rows.append({"rank": rank, **self._dlabel(dj), "genes_nearby_with_this_link": int(near[dj]), "targets_linked_to_this_trait": int(degd[dj]),
+                         "nearest": self._nearest(fl["position"]),
+                         "other_wordings_of_this_trait": [self.d["name"][self.di[x]] for x in L["also"][:5]],
+                         "reported_after_as_of": int(self.first[k]) if k is not None else None,
+                         "how_often_this_held": self._no_link_calibration("by_target", rank)})
+        came = sum(1 for x in rows if x["reported_after_as_of"])
+        ans = (f"{self.t['name'][ti]} has no link as of {y}. The {len(rows)} highest-ranked traits that a gene within 500,000 bases of it is linked to, out of "
+               f"{int((near > 0).sum()):,}. Traits the ontology files under one another are shown as one lead.")
+        if self.mhc[ti]:
+            ans += f" {self.t['name'][ti]} is {MHC_NOTE.split(';')[0]}."
+        if y < self.latest:
+            ans += f" Reported between {y + 1} and {self.latest}: {came} of these {len(rows)}."
+        return {"found": True, "node": lab, "as_of": y, "method": self._no_link_method("target"), "answer": ans, "candidates": rows,
+                "caveat": "These are leads for a person to check, not findings. " + SAME_SIGNAL + " " + NOT_ABSENCE, "source": self._source(y), "note": r["note"]}
+
+    def predict(self, node: str, as_of: int | None = None, top: int = 10, unexplained_only: bool = False, unlinked: bool = False) -> dict:
         r, err = self._need(node)
         if err:
             return err
         y = self._year(as_of)
         mask = self._mask(y)
         top = max(1, min(int(top), 50))
+        if unlinked and r["kind"] == "trait":
+            return self._predict_no_link_for_trait(r, y, mask, top)
+        if r["kind"] == "target" and not (mask & (self.lt == r["i"])).any():
+            return self._predict_for_target_with_no_link(r, y, mask, top)
         head = self._method(r["kind"], y)
         rows = []
         if r["kind"] == "trait":
@@ -596,12 +743,10 @@ class Graph:
                              "how_often_this_held": self._calibration("by_trait", rank, linked, bool(self.d.disease_like[di]))})
             lab = {"kind": "trait", **self._dlabel(di)}
             what = f"targets for {self.d['name'][di]}"
+            n_no_link = (int(((deg == 0) & (self._nearby(di, mask) > 0)).sum()) if "no_link" in (self.backtest or {}) else 0)
         else:
             ti = r["i"]
             mine = self.ld[mask & (self.lt == ti)]
-            if len(mine) == 0:
-                return {"found": True, "node": {"kind": "target", **self._tlabel(ti)}, "as_of": y, "candidates": [],
-                        "answer": f"{self.t['name'][ti]} has no link as of {y}, so there is nothing to rank from. {NOT_ABSENCE}"}
             total = np.zeros(len(self.d))
             best: dict[int, tuple[float, int]] = {}
             for o in mine:
@@ -659,7 +804,11 @@ class Graph:
             ans += f" In the MHC region of chromosome 6, where neighbouring candidates are best read as one lead: {n_mhc} of them."
         if y < self.latest and rows:
             ans += f" Reported between {y + 1} and {self.latest}: {came} of these {len(rows)}."
-        return {"found": True, "node": lab, "as_of": y, "method": head, "answer": ans, "candidates": rows,
+        extra = {}
+        if r["kind"] == "trait" and n_no_link:
+            extra["targets_with_no_link_beside_a_linked_gene"] = n_no_link
+            ans += f" A target with no link is not in this list; {n_no_link:,} of them lie beside a gene with this link, and unlinked=true ranks those."
+        return {"found": True, "node": lab, "as_of": y, "method": head, "answer": ans, "candidates": rows, **extra,
                 "caveat": "These are leads for a person to check, not findings. " + NOT_ABSENCE, "source": self._source(y), "note": r["note"]}
 
     def whats_new(self, node: str, since: int, limit: int = 10) -> dict:
@@ -792,6 +941,8 @@ class Graph:
             out["backtest"] = self.backtest["headline"]
         if self.backtest and "scorer" in self.backtest:
             out["ranking"] = {"scorer": self.backtest["scorer"], "tested_on_later_links": self.backtest["prospective"]}
+            if "no_link" in self.backtest:
+                out["ranking"]["targets_with_no_link"] = {"ranked_by": "position alone, nothing fitted", **self.backtest["no_link"]["headline"]}
         return out
 
 
@@ -816,6 +967,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--as-of", type=int)
     ap.add_argument("--top", type=int, default=10)
     ap.add_argument("--unexplained-only", action="store_true")
+    ap.add_argument("--unlinked", action="store_true", help="predict, for a trait: rank the targets that have no link and lie beside a gene that has this one")
     ap.add_argument("--bundle", type=Path)
     a = ap.parse_args(argv)
     G = Graph(a.bundle or default_bundle())
@@ -831,7 +983,7 @@ def main(argv: list[str] | None = None) -> int:
     elif q == "connect":
         out = G.connect(a.args[0], a.args[1], a.as_of)
     elif q == "predict":
-        out = G.predict(a.args[0], a.as_of, a.top, a.unexplained_only)
+        out = G.predict(a.args[0], a.as_of, a.top, a.unexplained_only, a.unlinked)
     elif q == "gaps":
         out = G.gaps(a.args[0] if a.args else None, a.family, a.top)
     else:

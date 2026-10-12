@@ -35,11 +35,16 @@ def test_the_server_offers_the_eight_questions_and_answers_them(tmp_path):
         unknown = _payload(await s.call_tool("why", {"target": "QQQ", "trait": "MONDO:1"}))
         ambiguous = _payload(await s.call_tool("known", {"node": "disease"}))
         predict = _payload(await s.call_tool("predict", {"node": "arrhythmia", "as_of": 2018, "top": 5}))
+        unlinked = _payload(await s.call_tool("predict", {"node": "arrhythmia", "unlinked": True}))
+        no_link = _payload(await s.call_tool("predict", {"node": "DDD"}))
         gaps = _payload(await s.call_tool("gaps", {"target": "DDD"}))
         nearest = _payload(await s.call_tool("gaps", {}))
-        return tools, init, status, why, unknown, ambiguous, predict, gaps, nearest
+        return tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link
 
-    tools, init, status, why, unknown, ambiguous, predict, gaps, nearest = asyncio.run(_session(tmp_path, work))
+    tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link = asyncio.run(_session(tmp_path, work))
+    assert [c["symbol"] for c in unlinked["candidates"]] == ["DDD"] and "Nothing is fitted" in unlinked["method"]
+    assert [c["name"] for c in no_link["candidates"]] == ["body height", "arrhythmia"] and "listed at ranks 1-5 for a target with no link" in no_link["candidates"][0]["how_often_this_held"]
+    assert "unlinked=true" in (init.instructions or "")
     assert [g["kind"] for g in gaps["gaps"]] == ["dark", "ligand"] and "nearest route" in gaps["answer"] and "function" in gaps["reading"]
     assert [t["symbol"] for t in nearest["targets"]] == ["DDD"]
     assert sorted(t.name for t in tools) == NAMES

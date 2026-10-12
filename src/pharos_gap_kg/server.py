@@ -29,6 +29,7 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - "Why is X linked to Y", "what is the evidence", "is X linked to Y" -> why. It also answers when there is NO link, and says what nearby evidence exists.
 - "How are X and Y related" (two genes, two diseases, or a gene and a disease with no direct link) -> connect.
 - "What might be linked to X next", "candidate targets for Y" -> predict. Quote its how_often_this_held text with any candidate you pass on.
+- "Which unstudied genes might be linked to Y", "targets with no associations yet for Y" -> predict with unlinked=true. For a gene that has no link at all, predict on the gene gives the traits its neighbouring genes are linked to. Both are by position alone, and the rates they quote are a few in a hundred; say so.
 - "What changed since YEAR" -> whats_new.
 - "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps. Quote its how_often_this_closed text with any gap you pass on, and its reading.
 - "What is this, where is it from, can I trust it" -> status.
@@ -77,9 +78,11 @@ def build(bundle_dir: Path):
                           "the three parts of its score, whether an earlier link already explains it, how often candidates at that rank were "
                           "reported in the test on later links, and (when as_of is in the past) whether it was in fact reported later. The "
                           "ranking favours genes beside a gene that already has the link; unexplained_only=true drops candidates that trait "
-                          "wording or gene position already explains. These are leads, not findings.")
-    def predict(node: str, as_of: int | None = None, top: int = 10, unexplained_only: bool = False) -> dict:
-        return G.predict(node, as_of, top, bool(unexplained_only))
+                          "wording or gene position already explains. A target with no link at all is not in that list: for a trait, "
+                          "unlinked=true ranks the targets with no link that lie beside a gene that has this one, and for a target with no link "
+                          "predict lists the traits its neighbouring genes are linked to, both by position alone. These are leads, not findings.")
+    def predict(node: str, as_of: int | None = None, top: int = 10, unexplained_only: bool = False, unlinked: bool = False) -> dict:
+        return G.predict(node, as_of, top, bool(unexplained_only), bool(unlinked))
 
     @app.tool(description="Links to one target or trait that were first reported after a year, counted by year, best-supported first.")
     def whats_new(node: str, since: int, limit: int = 10) -> dict:

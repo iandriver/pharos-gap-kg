@@ -221,7 +221,37 @@ def ranking() -> dict | None:
             "share_of_later_links_explained_by_wording_or_position": p["counts"]["positives_lineage_or_position_linked"] / p["counts"]["test_links"],
             "by_target": c["by_target_against_neighbours"], "split": c["split"]}
     cal = {**{k_: c[k_] for k_ in ("cutoff", "first_year", "data_ends", "base_rate", "by_trait", "by_target")}, "prospective": True, "scorer": name}
-    return {"scorer": scorer, "prospective": head, "calibration": cal}
+    out = {"scorer": scorer, "prospective": head, "calibration": cal}
+    if "pooled_over" in c:
+        cal["pooled_over"] = c["pooled_over"]          # every trait and target ranked, not only those that had a later link
+    nl = no_link(c)
+    if nl is not None:
+        out["no_link"] = nl
+    return out
+
+
+def no_link(c: dict) -> dict | None:
+    """How the position rankings for targets with no link have held: the cold-start scoring of the
+    prospective split and of the two earlier periods, and the calibration by rank. None where the
+    summaries are absent, and the front end then ranks no target that has no link."""
+    pp, ep = paths.DOCS_DATA / "prospect_coldstart_2022.json", paths.DOCS_DATA / "coldstart_gene_trait_2018.json"
+    if "no_link" not in c or not (pp.is_file() and ep.is_file()):
+        return None
+    p, e = json.loads(pp.read_text()), json.loads(ep.read_text())
+    if p["split"] != c["split"]:
+        raise SystemExit("REFUSED: the cold-start scoring and the calibration of the prospective test are not from one split")
+    three = lambda d: [d["difference"], d["low"], d["high"]]
+    g, b, k = p["new_targets"], p["by_new_target"], c["no_link"]
+    head = {"cutoff": p["cutoff"], "first_year": k["first_year"], "data_ends": k["data_ends"], "later_links": g["positives"], "later_links_listed": k["positives_listed"],
+            "targets_with_no_link": k["targets_with_no_link"], "of_them_listed_for_some_trait": k["of_them_listed_for_some_trait"],
+            "by_trait": {"traits": g["units"], "position": g["results"]["P3"]["all"]["value"][0], "tie_breaker_alone": g["results"]["P1"]["all"]["value"][0],
+                         "chance": g["results"]["P0"]["all"]["value"][0], "position_minus_tie_breaker": three(g["paired"]["P3-P1"]["all"])},
+            "by_target": {"targets": b["units"], "position": b["results"]["Q3"]["all"]["value"][0], "tie_breaker_alone": b["results"]["Q1"]["all"]["value"][0],
+                          "chance": b["results"]["Q0"]["all"]["value"][0], "position_minus_tie_breaker": three(b["paired"]["Q3-Q1"]["all"])},
+            "earlier_periods": {y: {"by_trait": three(e["periods"][y]["new_targets"]["paired"]["P3-P1"]["all"]), "by_target": three(e["periods"][y]["by_new_target"]["paired"]["Q3-Q1"]["all"])}
+                                for y in sorted(e["periods"])}}
+    cal = {k_: k[k_] for k_ in ("bins", "by_trait", "by_target", "first_year", "data_ends", "base_rate_among_listed", "base_rate_among_all", "listed_pairs")}
+    return {"headline": head, "calibration": cal}
 
 
 def refresh_backtest(release: str) -> dict:

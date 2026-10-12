@@ -33,7 +33,7 @@
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
   "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
-  "backtest.json": "a9a75c95f4104eaf113aa65ca379246a00a06a9cda0a7099eff551229ab278d2",
+  "backtest.json": "a01a4928d507de5b480700f93aa45d3c65a8f2b8366b50c4be21fe9de10e3dfb",
   "target_gaps.parquet": "eb600f84f5555e31f0ffe63adf861a43a96028c004d924913100d6764679a556",
   "target_gaps.json": "6db8a7f6ba5d227b0ebc6fab1ec8868b9357c3a67651308fc8f1b56a76325efb"
  },
