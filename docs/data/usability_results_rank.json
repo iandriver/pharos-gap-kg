@@ -1,0 +1,862 @@
+{
+ "set": "rank",
+ "questions": 35,
+ "sha256": "e6bcfc8851aa64c51c482aa6556d8ac8274d1b396cec691567def2b38b2e12ab",
+ "cells": {
+  "deepseek/deepseek-v4-flash|none": {
+   "n": 35,
+   "correct": 0,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.006644133199999999,
+   "calls": 0,
+   "by_family": {
+    "held": [
+     0,
+     4
+    ],
+    "rank": [
+     0,
+     4
+    ],
+    "ambiguous": [
+     0,
+     2
+    ],
+    "no_link_trait": [
+     0,
+     3
+    ],
+    "explained": [
+     0,
+     4
+    ],
+    "no_link_top": [
+     0,
+     3
+    ],
+    "top": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "nothing": [
+     0,
+     2
+    ],
+    "unexplained_top": [
+     0,
+     3
+    ],
+    "nearby": [
+     0,
+     3
+    ]
+   },
+   "right": {
+    "held-4": false,
+    "rank-4": false,
+    "rank-2": false,
+    "ambiguous-1": false,
+    "no_link_trait-2": false,
+    "explained-3": false,
+    "no_link_top-3": false,
+    "held-3": false,
+    "top-1": false,
+    "no_link_trait-1": false,
+    "top-3": false,
+    "not_in_graph-3": false,
+    "explained-4": false,
+    "nothing-2": false,
+    "unexplained_top-2": false,
+    "no_link_top-1": false,
+    "nothing-1": false,
+    "explained-1": false,
+    "not_in_graph-1": false,
+    "top-4": false,
+    "ambiguous-2": false,
+    "held-2": false,
+    "explained-2": false,
+    "unexplained_top-3": false,
+    "top-2": false,
+    "nearby-2": false,
+    "nearby-1": false,
+    "not_in_graph-2": false,
+    "unexplained_top-1": false,
+    "no_link_trait-3": false,
+    "held-1": false,
+    "nearby-3": false,
+    "rank-3": false,
+    "rank-1": false,
+    "no_link_top-2": false
+   }
+  },
+  "deepseek/deepseek-v4-flash|sql": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.034424914,
+   "calls": 125,
+   "by_family": {
+    "nothing": [
+     2,
+     2
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     1,
+     2
+    ]
+   },
+   "right": {
+    "nothing-1": true,
+    "no_link_trait-2": true,
+    "top-4": true,
+    "rank-3": true,
+    "no_link_top-2": true,
+    "nearby-3": true,
+    "explained-2": true,
+    "unexplained_top-1": true,
+    "explained-3": true,
+    "held-4": true,
+    "no_link_top-1": true,
+    "no_link_top-3": true,
+    "nothing-2": true,
+    "unexplained_top-2": true,
+    "rank-1": true,
+    "not_in_graph-3": true,
+    "nearby-2": true,
+    "explained-1": true,
+    "no_link_trait-1": true,
+    "top-1": true,
+    "held-3": true,
+    "rank-2": true,
+    "top-2": true,
+    "unexplained_top-3": true,
+    "no_link_trait-3": true,
+    "top-3": true,
+    "ambiguous-2": true,
+    "not_in_graph-1": true,
+    "explained-4": true,
+    "held-2": true,
+    "nearby-1": true,
+    "held-1": true,
+    "ambiguous-1": false,
+    "not_in_graph-2": true,
+    "rank-4": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.0361816326,
+   "calls": 74,
+   "by_family": {
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ]
+   },
+   "right": {
+    "no_link_trait-3": true,
+    "ambiguous-1": true,
+    "not_in_graph-1": true,
+    "nearby-2": true,
+    "nothing-2": true,
+    "top-2": true,
+    "no_link_trait-1": true,
+    "no_link_top-1": true,
+    "rank-4": true,
+    "held-4": true,
+    "held-1": true,
+    "top-1": true,
+    "top-3": true,
+    "not_in_graph-3": true,
+    "unexplained_top-3": true,
+    "no_link_top-3": true,
+    "no_link_trait-2": true,
+    "top-4": true,
+    "unexplained_top-1": true,
+    "not_in_graph-2": true,
+    "rank-1": true,
+    "no_link_top-2": true,
+    "rank-3": true,
+    "explained-2": true,
+    "explained-1": true,
+    "explained-3": true,
+    "rank-2": true,
+    "unexplained_top-2": true,
+    "held-2": true,
+    "held-3": true,
+    "explained-4": true,
+    "nearby-1": true,
+    "nearby-3": true,
+    "nothing-1": true,
+    "ambiguous-2": true
+   }
+  },
+  "inception/mercury-2.5|none": {
+   "n": 35,
+   "correct": 0,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.006980019999999998,
+   "calls": 0,
+   "by_family": {
+    "unexplained_top": [
+     0,
+     3
+    ],
+    "no_link_trait": [
+     0,
+     3
+    ],
+    "rank": [
+     0,
+     4
+    ],
+    "no_link_top": [
+     0,
+     3
+    ],
+    "ambiguous": [
+     0,
+     2
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "top": [
+     0,
+     4
+    ],
+    "held": [
+     0,
+     4
+    ],
+    "nearby": [
+     0,
+     3
+    ],
+    "explained": [
+     0,
+     4
+    ],
+    "nothing": [
+     0,
+     2
+    ]
+   },
+   "right": {
+    "unexplained_top-2": false,
+    "no_link_trait-1": false,
+    "rank-2": false,
+    "no_link_top-3": false,
+    "no_link_trait-2": false,
+    "ambiguous-2": false,
+    "not_in_graph-2": false,
+    "top-4": false,
+    "held-2": false,
+    "top-1": false,
+    "top-3": false,
+    "unexplained_top-3": false,
+    "not_in_graph-3": false,
+    "held-4": false,
+    "held-1": false,
+    "nearby-1": false,
+    "top-2": false,
+    "explained-1": false,
+    "no_link_top-2": false,
+    "nothing-2": false,
+    "rank-4": false,
+    "explained-4": false,
+    "nearby-3": false,
+    "not_in_graph-1": false,
+    "explained-3": false,
+    "no_link_trait-3": false,
+    "nearby-2": false,
+    "rank-3": false,
+    "ambiguous-1": false,
+    "nothing-1": false,
+    "no_link_top-1": false,
+    "explained-2": false,
+    "rank-1": false,
+    "unexplained_top-1": false,
+    "held-3": false
+   }
+  },
+  "inception/mercury-2.5|sql": {
+   "n": 35,
+   "correct": 32,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.0141698,
+   "calls": 83,
+   "by_family": {
+    "no_link_top": [
+     3,
+     3
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "rank": [
+     3,
+     4
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     0,
+     2
+    ]
+   },
+   "right": {
+    "no_link_top-1": true,
+    "top-4": true,
+    "not_in_graph-1": true,
+    "rank-3": true,
+    "nearby-1": true,
+    "nearby-3": true,
+    "explained-3": true,
+    "top-1": true,
+    "nearby-2": true,
+    "held-1": true,
+    "explained-1": true,
+    "unexplained_top-1": true,
+    "nothing-1": true,
+    "explained-2": true,
+    "top-3": true,
+    "no_link_top-2": true,
+    "no_link_trait-1": true,
+    "held-3": true,
+    "nothing-2": true,
+    "unexplained_top-3": true,
+    "explained-4": true,
+    "no_link_top-3": true,
+    "rank-4": true,
+    "not_in_graph-2": true,
+    "no_link_trait-2": true,
+    "rank-1": true,
+    "rank-2": false,
+    "not_in_graph-3": true,
+    "held-2": true,
+    "ambiguous-1": false,
+    "top-2": true,
+    "unexplained_top-2": true,
+    "held-4": true,
+    "ambiguous-2": false,
+    "no_link_trait-3": true
+   }
+  },
+  "inception/mercury-2.5|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.014436998000000001,
+   "calls": 62,
+   "by_family": {
+    "no_link_top": [
+     3,
+     3
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "no_link_top-1": true,
+    "nearby-2": true,
+    "nothing-2": true,
+    "ambiguous-2": true,
+    "top-4": true,
+    "no_link_trait-1": true,
+    "top-3": true,
+    "nothing-1": true,
+    "explained-2": true,
+    "rank-3": true,
+    "ambiguous-1": true,
+    "not_in_graph-3": true,
+    "held-3": true,
+    "unexplained_top-2": true,
+    "rank-2": true,
+    "no_link_top-3": true,
+    "no_link_top-2": true,
+    "explained-3": true,
+    "nearby-3": true,
+    "explained-1": true,
+    "no_link_trait-3": true,
+    "explained-4": true,
+    "rank-1": true,
+    "not_in_graph-1": true,
+    "held-2": true,
+    "nearby-1": true,
+    "no_link_trait-2": true,
+    "top-1": true,
+    "unexplained_top-1": true,
+    "rank-4": true,
+    "held-1": true,
+    "top-2": true,
+    "unexplained_top-3": true,
+    "held-4": true,
+    "not_in_graph-2": true
+   }
+  },
+  "z-ai/glm-5.3-flash|none": {
+   "n": 35,
+   "correct": 0,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.005962925600000001,
+   "calls": 0,
+   "by_family": {
+    "nearby": [
+     0,
+     3
+    ],
+    "nothing": [
+     0,
+     2
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "explained": [
+     0,
+     4
+    ],
+    "no_link_top": [
+     0,
+     3
+    ],
+    "held": [
+     0,
+     4
+    ],
+    "top": [
+     0,
+     4
+    ],
+    "no_link_trait": [
+     0,
+     3
+    ],
+    "unexplained_top": [
+     0,
+     3
+    ],
+    "rank": [
+     0,
+     4
+    ],
+    "ambiguous": [
+     0,
+     2
+    ]
+   },
+   "right": {
+    "nearby-3": false,
+    "nothing-2": false,
+    "not_in_graph-2": false,
+    "explained-4": false,
+    "explained-2": false,
+    "not_in_graph-3": false,
+    "no_link_top-3": false,
+    "held-1": false,
+    "held-4": false,
+    "held-2": false,
+    "top-3": false,
+    "no_link_top-1": false,
+    "no_link_trait-2": false,
+    "nothing-1": false,
+    "unexplained_top-3": false,
+    "no_link_trait-1": false,
+    "no_link_top-2": false,
+    "no_link_trait-3": false,
+    "rank-2": false,
+    "nearby-1": false,
+    "nearby-2": false,
+    "top-1": false,
+    "explained-1": false,
+    "not_in_graph-1": false,
+    "explained-3": false,
+    "rank-3": false,
+    "ambiguous-1": false,
+    "ambiguous-2": false,
+    "top-2": false,
+    "unexplained_top-2": false,
+    "top-4": false,
+    "unexplained_top-1": false,
+    "rank-1": false,
+    "rank-4": false,
+    "held-3": false
+   }
+  },
+  "z-ai/glm-5.3-flash|sql": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.017938008600000006,
+   "calls": 106,
+   "by_family": {
+    "explained": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "top": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "explained-1": true,
+    "explained-3": true,
+    "not_in_graph-1": true,
+    "no_link_top-2": true,
+    "rank-2": true,
+    "no_link_top-3": true,
+    "top-3": true,
+    "rank-4": true,
+    "unexplained_top-2": true,
+    "unexplained_top-1": true,
+    "ambiguous-1": true,
+    "top-4": true,
+    "rank-1": true,
+    "nothing-1": true,
+    "held-3": true,
+    "nearby-2": true,
+    "not_in_graph-2": true,
+    "no_link_trait-2": true,
+    "held-2": true,
+    "top-1": true,
+    "no_link_top-1": true,
+    "rank-3": true,
+    "explained-4": true,
+    "held-1": true,
+    "ambiguous-2": true,
+    "nothing-2": true,
+    "nearby-1": true,
+    "held-4": true,
+    "nearby-3": true,
+    "explained-2": true,
+    "unexplained_top-3": true,
+    "top-2": true,
+    "no_link_trait-3": true,
+    "not_in_graph-3": true,
+    "no_link_trait-1": true
+   }
+  },
+  "z-ai/glm-5.3-flash|typed": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.03140830239999999,
+   "calls": 70,
+   "by_family": {
+    "top": [
+     4,
+     4
+    ],
+    "nearby": [
+     3,
+     3
+    ],
+    "nothing": [
+     2,
+     2
+    ],
+    "explained": [
+     4,
+     4
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "no_link_trait": [
+     3,
+     3
+    ],
+    "no_link_top": [
+     3,
+     3
+    ],
+    "rank": [
+     4,
+     4
+    ],
+    "unexplained_top": [
+     2,
+     3
+    ],
+    "held": [
+     4,
+     4
+    ],
+    "ambiguous": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "top-3": true,
+    "nearby-1": true,
+    "nothing-1": true,
+    "explained-2": true,
+    "not_in_graph-2": true,
+    "explained-1": true,
+    "not_in_graph-1": true,
+    "no_link_trait-1": true,
+    "no_link_top-2": true,
+    "rank-4": true,
+    "top-4": true,
+    "rank-3": true,
+    "no_link_trait-3": true,
+    "unexplained_top-3": false,
+    "nothing-2": true,
+    "held-2": true,
+    "nearby-2": true,
+    "nearby-3": true,
+    "not_in_graph-3": true,
+    "no_link_trait-2": true,
+    "ambiguous-2": true,
+    "held-1": true,
+    "no_link_top-3": true,
+    "unexplained_top-1": true,
+    "held-3": true,
+    "top-2": true,
+    "rank-1": true,
+    "held-4": true,
+    "unexplained_top-2": true,
+    "rank-2": true,
+    "explained-3": true,
+    "ambiguous-1": true,
+    "no_link_top-1": true,
+    "explained-4": true,
+    "top-1": true
+   }
+  }
+ },
+ "typed_minus_sql": {
+  "deepseek/deepseek-v4-flash": {
+   "questions": 35,
+   "a_only": 1,
+   "b_only": 0,
+   "p_sign": 1.0
+  },
+  "inception/mercury-2.5": {
+   "questions": 35,
+   "a_only": 3,
+   "b_only": 0,
+   "p_sign": 0.25
+  },
+  "z-ai/glm-5.3-flash": {
+   "questions": 35,
+   "a_only": 0,
+   "b_only": 1,
+   "p_sign": 1.0
+  }
+ },
+ "pooled_typed_minus_sql": {
+  "models": [
+   "inception/mercury-2.5",
+   "deepseek/deepseek-v4-flash",
+   "z-ai/glm-5.3-flash"
+  ],
+  "questions": 35,
+  "difference": 0.02857142857142857,
+  "low": -0.019047619047619046,
+  "high": 0.08571428571428572
+ },
+ "verdicts": {
+  "all_hosted_cells_complete": true,
+  "usable_by_a_small_model": true,
+  "typed_better_than_sql": false
+ }
+}
