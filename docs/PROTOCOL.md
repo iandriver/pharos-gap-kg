@@ -1165,3 +1165,37 @@ prospective test was scored and before anything below was computed.**
 - *Usability.* The tests of 7 and 9 Oct were run on the layer as it was. None of their 105 frozen
   questions asks for a rank or a candidate, so their expected answers are unchanged. No usability test
   has been run on the ranking itself, before or after this change.
+
+**12 Oct 2026, position rankings for targets with no link, and a correction to calibration by rank.
+Written on Ian's decision to serve the rankings, before either was computed.**
+
+*What is served.* Since 11 Oct a target with no link as of the year asked is not ranked. It is now
+ranked by position alone, with no fitted number, in the two readings scored under "Cold start":
+
+- *For a trait*, the targets with no link that have a gene within 500,000 bases linked to the trait,
+  ordered by the number of such genes, ties broken by the number of links those genes hold in all
+  (P3). It is a list of its own, given when asked for. It is not merged into the combiner's list,
+  because the two were never scored on one list.
+- *For a target with no link*, the traits that a gene within 500,000 bases of it is linked to, ordered
+  by the number of such genes, ties broken by the number of targets linked to the trait (Q3).
+
+P3 beat P1, and Q3 beat Q1, with the interval above zero in each of three periods: the cutoffs of 2016
+and 2018 and the prospective split. A target with no link and no linked gene nearby is not ranked.
+Targets with no link that lie beside each other are shown as one lead. Nothing is fitted, so a ranking
+as of an earlier year is a backtest in the plain sense.
+
+*Calibration for it.* On the cold-start links of the prospective split. For every training trait that
+has a listed candidate (a target with no training link, not set aside, with a gene nearby linked to
+the trait), the listed candidates are ranked by P3, and over all those traits the share of candidates
+at ranks 1 to 5, 6 to 20 and 21 to 50 that are positives is taken. The same for every target with no
+training link that has a listed trait, ranked by Q3. Ties are broken under the five seeds.
+
+*The correction.* "Calibration by rank" pooled over scored units only, that is, over the traits (or
+targets) that had at least one positive. Someone asking about a trait cannot know it will be one of
+those, and the sentence the front end quotes did not say the share was conditional. On the
+prospective split 1,110 of the 2,225 traits are scored, so a share quoted for the top of a trait's list
+was about twice what holds for a trait asked about without that knowledge. From here on a share is
+pooled over every unit the front end ranks: every trait with a training link, and every target with
+one. The shares over scored units are kept in the record under their own name. The front end quotes
+the others, and says what they are pooled over. The 17.8% quoted on 11 Oct for the ten highest
+candidates of a trait is a share over scored traits.
