@@ -21,10 +21,14 @@ BINS = {"by_trait": [(1, 10), (11, 50), (51, 100), (101, 500)], "by_target": [(1
 
 
 def tally(S: np.ndarray, train: np.ndarray, test: np.ndarray, groups: dict[str, np.ndarray], bins: list[tuple[int, int]],
-          seeds: tuple[int, ...] = score.SEEDS) -> dict:
+          seeds: tuple[int, ...] = score.SEEDS, units: np.ndarray | None = None) -> dict:
     """For each rank bin and each named group of candidates: candidates and positives, pooled over
-    the scored columns and averaged over seeds. A group is a boolean matrix; "all" is every candidate."""
-    units = np.flatnonzero(test.any(axis=0))
+    columns and averaged over seeds. A group is a boolean matrix; "all" is every candidate.
+
+    The columns pooled are `units`. Left out, they are the scored columns, those with a positive: a
+    share over those is conditional on the column having had a later link at all, and overstates what
+    holds for a column asked about without knowing that."""
+    units = np.flatnonzero(test.any(axis=0)) if units is None else np.asarray(units)
     n = np.zeros((len(seeds), len(bins), len(groups)))
     k = np.zeros_like(n)
     names = list(groups)
@@ -65,7 +69,10 @@ def _selftest() -> int:
     ck("a bin counts its candidates and its positives", r["1-2"]["all"] == {"candidates": 2.0, "positives": 1.0, "share": 0.5})
     ck("a training link is never a candidate, so the second bin holds three", r["3-5"]["all"]["candidates"] == 3.0 and r["3-5"]["all"]["positives"] == 1.0)
     ck("a group counts only its own candidates", r["1-2"]["even"] == {"candidates": 1.0, "positives": 1.0, "share": 1.0})
-    ck("only columns with a positive are pooled", sum(v["all"]["candidates"] for v in r.values()) == 5.0)
+    ck("left to itself, only columns with a positive are pooled", sum(v["all"]["candidates"] for v in r.values()) == 5.0)
+    S2 = np.array([[9, 9], [8, 8], [7, 7], [6, 6], [5, 5], [4, 4]], float)
+    r2 = tally(S2, train, test, {"all": grp["all"]}, [(1, 2)], seeds=(0,), units=np.array([0, 1]))
+    ck("given every column, a column with no positive adds its candidates and halves the share", r2["1-2"]["all"] == {"candidates": 4.0, "positives": 1.0, "share": 0.25})
     return 0 if ok else 1
 
 

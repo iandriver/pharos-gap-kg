@@ -321,6 +321,38 @@ def cold(release: str) -> dict:
     return rec
 
 
+POSITION_BINS = [(1, 5), (6, 20), (21, 50)]
+
+
+def no_link_calibration(release: str, P: dict, M: dict) -> dict:
+    """Calibration by rank of the position rankings for targets with no link (docs/PROTOCOL.md, addition of
+    12 Oct 2026), on the cold-start links of the prospective split, pooled over every unit that has a
+    listed candidate."""
+    import pyarrow.parquet as pq
+    from pharos_gap_kg import calibrate, coldstart, registry
+    A, targets, traits = M["train"], M["targets"], M["traits"]
+    prot = pq.read_table(paths.tables(release) / "protein.parquet", columns=["uniprot"]).to_pandas()
+    cand = sorted(set("UniProtKB:" + prot.uniprot.dropna()) - set(targets))
+    tg = position.target_genes(release, position.genes(registry.require("ensembl_gtf_113")))
+    index = {**{t: i for i, t in enumerate(targets)}, **{t: len(targets) + i for i, t in enumerate(cand)}}
+    N = coldstart.beside(position.neighbour_pairs(tg, index), len(targets), len(index))
+    later = coldstart.parts_of(P["train"], P["unscored"])["new_target"]
+    Y = pair_matrix(later, cand, traits)
+    if int(Y.sum()) != len(later):
+        raise SystemExit("REFUSED: a cold-start link's target is not a target of the release")
+    aside = pair_matrix(P["aside"], cand, traits)
+    sc, by_t = coldstart.target_scores(A, N), coldstart.by_target_scores(A, N)
+    listed = (sc["P2"] > 0) & ~aside                                  # what the front end lists: a gene nearby has the link
+    one = lambda X: {"all": np.ones(X.shape, bool)}
+    by_trait = calibrate.tally(sc["P3"], ~listed, Y & listed, one(listed), POSITION_BINS, units=np.flatnonzero(listed.any(axis=0)))
+    by_target = calibrate.tally(by_t["Q3"], ~listed.T, (Y & listed).T, one(listed.T), POSITION_BINS, units=np.flatnonzero(listed.any(axis=1)))
+    return {"bins": [f"{a}-{b}" for a, b in POSITION_BINS], "by_trait": by_trait, "by_target": by_target,
+            "targets_with_no_link": len(cand), "of_them_listed_for_some_trait": int(listed.any(axis=1).sum()), "traits_with_a_listed_target": int(listed.any(axis=0).sum()),
+            "listed_pairs": int(listed.sum()), "positives": int(Y.sum()), "positives_listed": int((Y & listed).sum()),
+            "base_rate_among_listed": float((Y & listed).sum() / listed.sum()), "base_rate_among_all": float(Y.sum() / (~aside).sum()),
+            "first_year": int(later.year.min()), "data_ends": int(later.year.max())}
+
+
 def served_by_target(d: dict) -> str:
     """The protocol's rule for the direction the combiner was not tested in: it is served by target
     unless the interval of its difference from neighbours, over targets, lies below zero."""
@@ -355,11 +387,19 @@ def calibration(release: str) -> dict:
               "disease_like_not_linked": disease & ~linked}
     T = lambda g: {k: v.T for k, v in g.items()}
     only = {"all": groups["all"]}
-    res = {"by_trait": calibrate.tally(S, taken, Y, groups, calibrate.BINS["by_trait"]),
-           "by_target": calibrate.tally(S.T, taken.T, Y.T, T(groups), calibrate.BINS["by_target"]),
-           "neighbours_by_trait": calibrate.tally(raw["B3"], taken, Y, only, calibrate.BINS["by_trait"]),
-           "neighbours_by_target": calibrate.tally(raw["B3"].T, taken.T, Y.T, T(only), calibrate.BINS["by_target"]),
-           "degree_by_trait": calibrate.tally(raw["B1"], taken, Y, only, calibrate.BINS["by_trait"])}
+    every_trait, every_target = np.flatnonzero(A.any(axis=0)), np.flatnonzero(A.any(axis=1))      # every unit the front end ranks
+    bt, bg = calibrate.BINS["by_trait"], calibrate.BINS["by_target"]
+    res = {"by_trait": calibrate.tally(S, taken, Y, groups, bt, units=every_trait),
+           "by_target": calibrate.tally(S.T, taken.T, Y.T, T(groups), bg, units=every_target),
+           "neighbours_by_trait": calibrate.tally(raw["B3"], taken, Y, only, bt, units=every_trait),
+           "neighbours_by_target": calibrate.tally(raw["B3"].T, taken.T, Y.T, T(only), bg, units=every_target),
+           "degree_by_trait": calibrate.tally(raw["B1"], taken, Y, only, bt, units=every_trait),
+           # as first computed on 11 Oct: over the units that had a later link, which overstates what holds for a unit asked about
+           "over_scored_units_only": {"by_trait": calibrate.tally(S, taken, Y, groups, bt), "by_target": calibrate.tally(S.T, taken.T, Y.T, T(groups), bg),
+                                      "neighbours_by_trait": calibrate.tally(raw["B3"], taken, Y, only, bt),
+                                      "neighbours_by_target": calibrate.tally(raw["B3"].T, taken.T, Y.T, T(only), bg)},
+           "pooled_over": {"traits": int(len(every_trait)), "targets": int(len(every_target))},
+           "no_link": no_link_calibration(release, P, M)}
     a, b = score.by_axis(S, taken, Y, axis=0)["ap"], score.by_axis(raw["B3"], taken, Y, axis=0)["ap"]
     m, lo, hi = score.interval(a - b)
     by_target = {"combiner": float(a.mean()), "neighbours": float(b.mean()), "difference": m, "low": lo, "high": hi, "targets": int(len(a)), "targets_higher": int((a > b).sum())}
@@ -440,9 +480,15 @@ def main(argv: list[str] | None = None) -> int:
     elif a.stage == "calibrate":
         out = calibration(a.release)
         for axis in ("by_trait", "by_target"):
-            print(f"  {axis}: share of candidates at each rank reported in {out['first_year']} to {out['data_ends']} (base rate {out['base_rate']:.4f})")
+            print(f"  {axis}: share of candidates at each rank reported in {out['first_year']} to {out['data_ends']} (base rate {out['base_rate']:.4f}), over every unit ranked; over scored units only in brackets")
             for b_, v in out[axis].items():
-                print(f"    {b_:>8s} " + "  ".join(f"{g} {(v[g]['share'] if v[g]['share'] is not None else float('nan')):.3f}" for g in ("all", "linked", "not_linked", "disease_like_not_linked")))
+                print(f"    {b_:>8s} " + "  ".join(f"{g} {(v[g]['share'] if v[g]['share'] is not None else float('nan')):.3f} ({out['over_scored_units_only'][axis][b_][g]['share']:.3f})"
+                                                   for g in ("all", "linked", "not_linked", "disease_like_not_linked")))
+        nl = out["no_link"]
+        print(f"  targets with no link: {nl['targets_with_no_link']:,}, {nl['of_them_listed_for_some_trait']:,} listed for some trait; {nl['positives_listed']:,} of {nl['positives']:,} later links are to a listed pair; "
+              f"base rate among listed pairs {nl['base_rate_among_listed']:.4f}")
+        for axis in ("by_trait", "by_target"):
+            print(f"    {axis}: " + "  ".join(f"{b_} {v['all']['share']:.3f} of {v['all']['candidates']:.0f}" for b_, v in nl[axis].items()))
         d = out["by_target_against_neighbours"]
         print(f"  by target: combiner {d['combiner']:.4f}, neighbours {d['neighbours']:.4f}, {d['difference']:+.4f} [{d['low']:+.4f}, {d['high']:+.4f}] over {d['targets']:,} targets -> served by target: {out['served_by_target']}")
     else:
