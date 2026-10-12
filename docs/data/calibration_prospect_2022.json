@@ -1,0 +1,363 @@
+{
+ "cutoff": 2022,
+ "release": "pharos319",
+ "scorer": "combine[B1+B3+B5]:F1",
+ "terms": [
+  "log(1 + B1)",
+  "log(1 + B3)",
+  "log(1 + B5)"
+ ],
+ "weights": [
+  0.03125,
+  1.0,
+  0.25
+ ],
+ "weights_fitted_at": 2020,
+ "first_year": 2023,
+ "data_ends": 2026,
+ "base_rate": 0.00489611938055183,
+ "traits_scored": 1110,
+ "targets_scored": 17456,
+ "test_links": 194017,
+ "primary": 0.10121850454894846,
+ "neighbours_primary": 0.09466581805365792,
+ "split": {
+  "train": "5dbc0710d79efbcff0675bbbe67e335852ecd0d868c25b22bbd4f7096170b998",
+  "test": "a4d8c932a486db9b0a8fcc14984dc40720eb750dbf4903d1bd6caa777bc2cb6a",
+  "unscored": "7a92f64c2c9cb072b2ec431ec20138bfd5d2911c98badae7b8d8dda10f91304f",
+  "aside": "cdb28e19b98de4e91075e5f04b57ae445f8fc8455ba2569a5b8a630a3b37e209"
+ },
+ "reference_files": {
+  "gtf_sha256": "62f1709b40e083ce9d4cdc64a86b5ffec2c5d5371434bb7095c74dc89079c466",
+  "window": 500000,
+  "efo_sha256": "1f7bdc48b91c17cd98742d8c0fca77d576d4d74998efd643e51b1b49602ca49c"
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "by_trait": {
+  "1-10": {
+   "all": {
+    "candidates": 11100.0,
+    "positives": 1971.4,
+    "share": 0.1776036036036036
+   },
+   "linked": {
+    "candidates": 8265.0,
+    "positives": 1696.8,
+    "share": 0.2052994555353902
+   },
+   "not_linked": {
+    "candidates": 2835.0,
+    "positives": 274.6,
+    "share": 0.09686067019400353
+   },
+   "disease_like": {
+    "candidates": 3080.0,
+    "positives": 452.0,
+    "share": 0.14675324675324675
+   },
+   "measurement_or_other": {
+    "candidates": 8020.0,
+    "positives": 1519.4,
+    "share": 0.18945137157107234
+   },
+   "disease_like_not_linked": {
+    "candidates": 1107.0,
+    "positives": 101.0,
+    "share": 0.09123757904245709
+   }
+  },
+  "11-50": {
+   "all": {
+    "candidates": 44400.0,
+    "positives": 6112.0,
+    "share": 0.13765765765765767
+   },
+   "linked": {
+    "candidates": 24783.0,
+    "positives": 4340.2,
+    "share": 0.17512811201226647
+   },
+   "not_linked": {
+    "candidates": 19617.0,
+    "positives": 1771.8,
+    "share": 0.09031962073711576
+   },
+   "disease_like": {
+    "candidates": 12320.0,
+    "positives": 1377.0,
+    "share": 0.11176948051948052
+   },
+   "measurement_or_other": {
+    "candidates": 32080.0,
+    "positives": 4735.0,
+    "share": 0.14759975062344138
+   },
+   "disease_like_not_linked": {
+    "candidates": 7581.0,
+    "positives": 531.0,
+    "share": 0.07004352987732489
+   }
+  },
+  "51-100": {
+   "all": {
+    "candidates": 55500.0,
+    "positives": 6174.2,
+    "share": 0.11124684684684684
+   },
+   "linked": {
+    "candidates": 26812.0,
+    "positives": 3906.0,
+    "share": 0.14568103834104132
+   },
+   "not_linked": {
+    "candidates": 28688.0,
+    "positives": 2268.2,
+    "share": 0.0790644171779141
+   },
+   "disease_like": {
+    "candidates": 15400.0,
+    "positives": 1297.0,
+    "share": 0.08422077922077922
+   },
+   "measurement_or_other": {
+    "candidates": 40100.0,
+    "positives": 4877.2,
+    "share": 0.12162593516209476
+   },
+   "disease_like_not_linked": {
+    "candidates": 10586.0,
+    "positives": 679.0,
+    "share": 0.06414131872284148
+   }
+  },
+  "101-500": {
+   "all": {
+    "candidates": 444000.0,
+    "positives": 24383.8,
+    "share": 0.054918468468468463
+   },
+   "linked": {
+    "candidates": 150891.8,
+    "positives": 13891.6,
+    "share": 0.0920633195442032
+   },
+   "not_linked": {
+    "candidates": 293108.2,
+    "positives": 10492.2,
+    "share": 0.035796337325260774
+   },
+   "disease_like": {
+    "candidates": 123200.0,
+    "positives": 4868.0,
+    "share": 0.039512987012987014
+   },
+   "measurement_or_other": {
+    "candidates": 320800.0,
+    "positives": 19515.8,
+    "share": 0.06083478802992519
+   },
+   "disease_like_not_linked": {
+    "candidates": 103783.0,
+    "positives": 3006.0,
+    "share": 0.02896428124066562
+   }
+  }
+ },
+ "by_target": {
+  "1-5": {
+   "all": {
+    "candidates": 87280.0,
+    "positives": 6833.0,
+    "share": 0.07828826764436297
+   },
+   "linked": {
+    "candidates": 78840.2,
+    "positives": 6325.0,
+    "share": 0.08022557020403297
+   },
+   "not_linked": {
+    "candidates": 8439.8,
+    "positives": 508.0,
+    "share": 0.06019099978672481
+   },
+   "disease_like": {
+    "candidates": 5688.4,
+    "positives": 558.0,
+    "share": 0.09809436748470572
+   },
+   "measurement_or_other": {
+    "candidates": 81591.6,
+    "positives": 6275.0,
+    "share": 0.07690742674491001
+   },
+   "disease_like_not_linked": {
+    "candidates": 865.2,
+    "positives": 56.0,
+    "share": 0.06472491909385113
+   }
+  },
+  "6-20": {
+   "all": {
+    "candidates": 261840.0,
+    "positives": 14554.0,
+    "share": 0.05558356248090437
+   },
+   "linked": {
+    "candidates": 179928.6,
+    "positives": 10942.2,
+    "share": 0.06081412293543106
+   },
+   "not_linked": {
+    "candidates": 81911.4,
+    "positives": 3611.8,
+    "share": 0.04409398447590934
+   },
+   "disease_like": {
+    "candidates": 22980.2,
+    "positives": 1213.0,
+    "share": 0.052784571065525976
+   },
+   "measurement_or_other": {
+    "candidates": 238859.8,
+    "positives": 13341.0,
+    "share": 0.05585284756999713
+   },
+   "disease_like_not_linked": {
+    "candidates": 8129.8,
+    "positives": 253.0,
+    "share": 0.03112007675465571
+   }
+  },
+  "21-50": {
+   "all": {
+    "candidates": 523680.0,
+    "positives": 19552.2,
+    "share": 0.037336159486709444
+   },
+   "linked": {
+    "candidates": 194394.4,
+    "positives": 10038.4,
+    "share": 0.0516393476355286
+   },
+   "not_linked": {
+    "candidates": 329285.6,
+    "positives": 9513.8,
+    "share": 0.028892244300995854
+   },
+   "disease_like": {
+    "candidates": 57268.0,
+    "positives": 1840.2,
+    "share": 0.032133128448697354
+   },
+   "measurement_or_other": {
+    "candidates": 466412.0,
+    "positives": 17712.0,
+    "share": 0.037975009219316826
+   },
+   "disease_like_not_linked": {
+    "candidates": 32023.8,
+    "positives": 670.0,
+    "share": 0.020921939307639942
+   }
+  }
+ },
+ "neighbours_by_trait": {
+  "1-10": {
+   "all": {
+    "candidates": 11100.0,
+    "positives": 1916.8,
+    "share": 0.17268468468468468
+   }
+  },
+  "11-50": {
+   "all": {
+    "candidates": 44400.0,
+    "positives": 5879.0,
+    "share": 0.13240990990990992
+   }
+  },
+  "51-100": {
+   "all": {
+    "candidates": 55500.0,
+    "positives": 5854.8,
+    "share": 0.1054918918918919
+   }
+  },
+  "101-500": {
+   "all": {
+    "candidates": 444000.0,
+    "positives": 22589.0,
+    "share": 0.050876126126126124
+   }
+  }
+ },
+ "neighbours_by_target": {
+  "1-5": {
+   "all": {
+    "candidates": 87280.0,
+    "positives": 7076.6,
+    "share": 0.08107928505957837
+   }
+  },
+  "6-20": {
+   "all": {
+    "candidates": 261840.0,
+    "positives": 14035.4,
+    "share": 0.05360296364191873
+   }
+  },
+  "21-50": {
+   "all": {
+    "candidates": 523680.0,
+    "positives": 17989.6,
+    "share": 0.03435227619920562
+   }
+  }
+ },
+ "degree_by_trait": {
+  "1-10": {
+   "all": {
+    "candidates": 11100.0,
+    "positives": 1601.8,
+    "share": 0.1443063063063063
+   }
+  },
+  "11-50": {
+   "all": {
+    "candidates": 44400.0,
+    "positives": 6467.6,
+    "share": 0.14566666666666667
+   }
+  },
+  "51-100": {
+   "all": {
+    "candidates": 55500.0,
+    "positives": 5910.2,
+    "share": 0.10649009009009008
+   }
+  },
+  "101-500": {
+   "all": {
+    "candidates": 444000.0,
+    "positives": 19404.2,
+    "share": 0.04370315315315315
+   }
+  }
+ },
+ "by_target_against_neighbours": {
+  "combiner": 0.06292809121333566,
+  "neighbours": 0.061535926369207725,
+  "difference": 0.001392164844127938,
+  "low": 0.0005792642906145125,
+  "high": 0.002241332103777483,
+  "targets": 17456,
+  "targets_higher": 7077
+ },
+ "served_by_target": "combiner"
+}
