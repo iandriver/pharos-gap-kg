@@ -26,6 +26,7 @@ and where a dated graph has been built its edges must be among these under the s
 Run:  python -m pharos_gap_kg.bundle pharos319
       python -m pharos_gap_kg.bundle pharos319 --backtest-only     # refresh backtest.json in a built bundle
       python -m pharos_gap_kg.bundle pharos319 --context-only      # add the merged graph's other parts to a built bundle
+      python -m pharos_gap_kg.bundle pharos319 --sizes-only        # add the size of each study behind the links
       python -m pharos_gap_kg.bundle --selftest
 """
 from __future__ import annotations
@@ -40,10 +41,11 @@ import pandas as pd
 import pyarrow.parquet as pq
 from kgx_gaps import conformance
 
-from pharos_gap_kg import context, graph, ontology, paths, position, pubyear, registry
+from pharos_gap_kg import context, ctxtables, graph, ontology, paths, position, pubyear, registry
 
 FILES = ["nodes.parquet", "links.parquet", "evidence.parquet", "lineage.parquet", "neighbours.parquet"]
 GAP_FILES = ["target_gaps.parquet", "target_gaps.json"]
+SIZE_FILES = ["study_sizes.parquet"]
 CONTEXT_FILES = ["context_nodes.parquet", "assertions.parquet", "expression.parquet", "drug_targets.parquet", "drug_indications.parquet"]
 
 
@@ -95,6 +97,40 @@ def context_files(release: str, out: Path) -> tuple[list[str], dict | None]:
             "assertions": int((~a.withheld).sum()), "withheld": int(a.withheld.sum()), "sources": int(a.source.nunique()), "expression": len(T["expression"]),
             "drug_targets": len(T["drug_targets"]), "drug_indications": len(T["drug_indications"]), "graph_edges": man["edges"], "graph_gaps": man["gaps"], "graph_nodes": man["nodes"]}
     return list(CONTEXT_FILES), what
+
+
+def size_files(release: str, out: Path) -> tuple[list[str], dict | None]:
+    """Write the size of each study behind the bundle's links, where `studysize` has read them from
+    the GWAS Catalog, and return the file written and what it holds."""
+    rec = paths.DOCS_DATA / f"study_sizes_{release}.json"
+    src = paths.TABLES / "gwas_catalog_20261005" / "study_sizes.parquet"
+    if not (rec.is_file() and src.is_file()):
+        return [], None
+    r = json.loads(rec.read_text())
+    if graph.file_sha(src) != r["file_sha256"]:
+        raise SystemExit(f"REFUSED: {src} is not the table {rec.name} describes; run:  python -I -m pharos_gap_kg.studysize build {release}")
+    mine = set(pd.read_parquet(out / "evidence.parquet", columns=["study"]).study)
+    t = pd.read_parquet(src)
+    t = t[t.study.isin(mine) & t.cases.notna()][["study", "cases", "controls", "individuals"]].sort_values("study").reset_index(drop=True)
+    t.astype({"cases": "int64", "controls": "int64", "individuals": "int64"}).to_parquet(out / SIZE_FILES[0], index=False)
+    return list(SIZE_FILES), {"studies": len(mine), "with_a_size": len(t), "catalog": r["catalog"], "catalog_sha256": r["catalog_sha256"]}
+
+
+def add_sizes(release: str) -> dict:
+    """Add the study sizes to a bundle that is already built, and record them in its manifest."""
+    out = paths.bundle(release)
+    mf = out / "manifest.json"
+    if not mf.is_file():
+        raise SystemExit(f"no bundle at {out}; build one with:  python -m pharos_gap_kg.bundle {release}")
+    files, what = size_files(release, out)
+    if not files:
+        raise SystemExit(f"no study sizes to add; run:  python -I -m pharos_gap_kg.studysize build {release}")
+    man = json.loads(mf.read_text())
+    man["files"].update({f: graph.file_sha(out / f) for f in files})
+    man["study_sizes"] = what
+    mf.write_text(json.dumps(man, indent=1) + "\n")
+    (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
+    return man
 
 
 def add_context(release: str) -> dict:
@@ -269,7 +305,27 @@ def backtest() -> dict | None:
             "split": c["split"]}
     out = {"headline": head, "calibration": {k_: c[k_] for k_ in ("cutoff", "data_ends", "base_rate", "by_trait", "by_target")}}
     out.update(ranking() or {})
+    named = sources_then_gwas(c["cutoff"], c["split"])
+    if named:
+        out["sources_then_gwas"] = named
     return out
+
+
+def sources_then_gwas(cutoff: int, split: dict) -> dict | None:
+    """For each disease source: of the pairs it names that had no GWAS link by the cutoff, the share that
+    were GWAS-linked later. Read from the context audit of the same split (findings/CONTEXT.md). The
+    source that is the GWAS data again is left out."""
+    f = paths.DOCS_DATA / f"context_gene_trait_{cutoff}.json"
+    if not f.is_file():
+        return None
+    a = json.loads(f.read_text())
+    if a["split"] != split:
+        raise SystemExit("REFUSED: the context audit and the calibration are not from one split")
+    a = a["audit"]
+    by = {k: {"named_without_a_link": v["candidates_in_source"], "linked_later": v["positives_in_source"], "share": v["precision"]}
+          for k, v in a["sources"].items() if k not in ("any source", ctxtables.GWAS_AGAIN)}
+    return {"cutoff": cutoff, "disease_traits": a["traits"], "base_rate": a["base_rate"], "by_source": by,
+            "reading": "The sources carry no dates, so a source may have named a pair because of the very studies that linked it later."}
 
 
 def ranking() -> dict | None:
@@ -418,6 +474,10 @@ def build(release: str) -> dict:
     if cfiles:
         man["files"].update({f: graph.file_sha(out / f) for f in cfiles})
         man["context"] = what
+    sfiles, what = size_files(release, out)
+    if sfiles:
+        man["files"].update({f: graph.file_sha(out / f) for f in sfiles})
+        man["study_sizes"] = what
     (out / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
     return man
@@ -470,6 +530,10 @@ def main(argv: list[str] | None = None) -> int:
     if len(argv) == 2 and argv[1] == "--gaps-only":
         man = add_gaps(argv[0])
         print(f"{man['release']}: {man['target_gaps']:,} target-level gaps added to {paths.bundle(man['release'])}")
+        return 0
+    if len(argv) == 2 and argv[1] == "--sizes-only":
+        man = add_sizes(argv[0])
+        print(f"{man['release']}: the size of {man['study_sizes']['with_a_size']:,} of {man['study_sizes']['studies']:,} studies added to {paths.bundle(man['release'])}")
         return 0
     if len(argv) == 2 and argv[1] == "--context-only":
         man = add_context(argv[0])

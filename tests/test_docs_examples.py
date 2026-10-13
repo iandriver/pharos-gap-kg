@@ -135,6 +135,13 @@ def test_the_other_sources_as_the_guide_quotes_them(G):
     said = [G.status()["answer"], G.why("TREM2", "Alzheimer disease", as_of=2012)["answer"], G.why("HLA-B", "Parkinson disease")["answer"], G.why("TMEM271", "Parkinson disease")["answer"],
             G.why("ACHE", "Alzheimer disease")["answer"], G.why("MT-RNR1", "Tinnitus")["answer"], G.why("SH3D21", "malignant mesothelioma")["answer"],
             G.known("donepezil")["answer"], G.connect("donepezil", "ACHE")["answer"], G.known("Anesthesia for cesarean section")["answer"]]
+    if G.sizes is not None:
+        pd_ = G.gaps("Parkinson disease", top=2)
+        said += [pd_["answer"], pd_["reading"], G.gaps(disease="malignant mesothelioma")["answer"]]
+        import json
+        k = {g["kind"]: g for g in pd_["gaps"]}
+        for shown in (k["no_compound"]["top"][1], k["locus_not_resolved"]["top"][0]):
+            assert re.sub(r"\s+", " ", json.dumps(shown, indent=1)) in doc, "the guide no longer shows this row as the code gives it"
     for a in said:
         assert re.sub(r"\s+", " ", a) in doc, f"the guide no longer quotes: {a[:90]}"
     w = G.why("ACHE", "Alzheimer disease")["other_sources"]

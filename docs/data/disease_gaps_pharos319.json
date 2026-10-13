@@ -1,0 +1,86 @@
+{
+ "release": "pharos319",
+ "as_of": 2023,
+ "traits": 513,
+ "min_sources": 2,
+ "tied_genes_summed_over_traits": 47610,
+ "gwas_linked_genes_summed": 39271,
+ "summed_over_traits": {
+  "no_compound": 36823,
+  "dark": 5909,
+  "locus_genes": 36452,
+  "no_genetic_support": 8339,
+  "withheld": 1529,
+  "observed_only": 56220,
+  "loci": 7042,
+  "loci_singled_out": 647,
+  "two_sources": 8204,
+  "mechanism": 1260
+ },
+ "traits_with_at_least_one": {
+  "no_compound": 507,
+  "dark": 370,
+  "locus_genes": 461,
+  "no_genetic_support": 314,
+  "withheld": 122,
+  "observed_only": 51,
+  "loci": 461,
+  "two_sources": 289,
+  "mechanism": 166
+ },
+ "median_per_trait": {
+  "tied": 25.0,
+  "gwas": 13.0,
+  "no_compound": 16.0,
+  "locus_genes": 12.0,
+  "no_genetic_support": 2.0
+ },
+ "share_of_gwas_linked_genes_in_a_locus_with_another": 0.9282,
+ "share_of_such_loci_where_other_evidence_singles_out_one_gene": 0.0919,
+ "share_of_tied_genes_with_no_compound": 0.7734,
+ "traits_whose_largest_study_has_a_size": 513,
+ "of_them_cases_and_controls": 457,
+ "smallest_odds_ratio_the_largest_study_could_find": {
+  "median": 1.26,
+  "lower_quartile": 1.117,
+  "upper_quartile": 1.548,
+  "traits_above_1.5": 124
+ },
+ "most_tied": [
+  {
+   "trait": "MONDO:0005148",
+   "name": "type 2 diabetes mellitus",
+   "tied": 2549,
+   "no_compound": 2060,
+   "no_genetic_support": 115
+  },
+  {
+   "trait": "MONDO:0005090",
+   "name": "schizophrenia",
+   "tied": 1608,
+   "no_compound": 1321,
+   "no_genetic_support": 154
+  },
+  {
+   "trait": "EFO:0003888",
+   "name": "attention deficit hyperactivity disorder",
+   "tied": 1283,
+   "no_compound": 1068,
+   "no_genetic_support": 14
+  },
+  {
+   "trait": "MONDO:0002491",
+   "name": "substance abuse",
+   "tied": 1102,
+   "no_compound": 929,
+   "no_genetic_support": 3
+  },
+  {
+   "trait": "EFO:0001645",
+   "name": "coronary artery disease",
+   "tied": 1010,
+   "no_compound": 814,
+   "no_genetic_support": 38
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1",
+ "catalog_studies": 76336,
+ "catalog_studies_read": 76011,
+ "catalog_studies_with_more_than_one_line": 0,
+ "release_studies": 12335,
+ "release_studies_in_the_catalog": 12260,
+ "release_studies_read": 11952,
+ "share_of_release_studies_read": 0.969,
+ "of_them_cases_and_controls": 2413,
+ "of_them_individuals_only": 9539,
+ "median_size": {
+  "cases": 2098,
+  "controls": 8571,
+  "individuals": 5367
+ },
+ "constants": {
+  "K": 39.6006,
+  "F": 0.32000000000000006,
+  "variant_frequency": 0.2,
+  "p": 5e-08,
+  "power": 0.8
+ },
+ "file_sha256": "b30f9e84eaf5f5264be0c43f9d59a737f35c288865b2dea8727048caa631bcff"
+}

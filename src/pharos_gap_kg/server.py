@@ -32,7 +32,8 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - "What might be linked to X next", "candidate targets for Y" -> predict. Quote its how_often_this_held text with any candidate you pass on.
 - "Which unstudied genes might be linked to Y", "targets with no associations yet for Y" -> predict with unlinked=true. For a gene that has no link at all, predict on the gene gives the traits its neighbouring genes are linked to. Both are by position alone, and the rates they quote are a few in a hundred; say so.
 - "What changed since YEAR" -> whats_new.
-- "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps. Quote its how_often_this_closed text with any gap you pass on, and its reading.
+- "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps with target=X. Quote its how_often_this_closed text with any gap you pass on, and its reading.
+- "What is missing for disease Y", "where are the gaps in Y", "which targets for Y have no drug", "which Y loci are unresolved", "what would fill the gaps in Y" -> gaps with disease=Y. It lists the genes tied to Y and six kinds of gap, each with what would close it and how often that has been seen. Pass on its reading: a gap is evidence the graph does not hold, not a finding that the gene matters. When it gives the size of the largest study, pass that on with any "no GWAS link".
 - "What is this, where is it from, can I trust it" -> status.
 
 Rules for using the answers:
@@ -104,12 +105,17 @@ def build(bundle_dir: Path):
     def whats_new(node: str, since: int, limit: int = 10) -> dict:
         return G.whats_new(node, since, max(1, min(int(limit), 50)))
 
-    @app.tool(description="What a target lacks for the next Pharos development level, read from the release's own evidence: for a Tdark target, "
-                          "how many criteria must clear, the nearest route, and how often targets that close were promoted in the back-test; for a "
-                          "target with no qualifying compound, the potency cutoff it lacks. With no target, lists the Tdark targets nearest to "
-                          "leaving Tdark (optionally within one family, such as Kinase, GPCR or IC).")
-    def gaps(target: str | None = None, family: str | None = None, top: int = 10) -> dict:
-        return G.gaps(target, family, top)
+    @app.tool(description="What is missing, for a target or for a disease. target=X: what X lacks for the next Pharos development level, read from the "
+                          "release's own evidence: for a Tdark target, how many criteria must clear, the nearest route, and how often targets that close "
+                          "were promoted in the back-test; for a target with no qualifying compound, the potency cutoff it lacks. disease=Y (a trait or a "
+                          "condition): the genes the graph ties to Y (by a GWAS link, by two or more disease sources, or as the mechanism target of an "
+                          "indicated drug) and what they lack, in six lists: no_compound, dark, locus_not_resolved (one GWAS signal on several genes), "
+                          "no_genetic_support (tied with no GWAS link, with the size of the largest study and the smallest effect it could have found), "
+                          "withheld (rows a pruning rule withheld) and observed_only. Each list has a count, its strongest rows, closes_with and "
+                          "how_often_this_closed. top sets how many rows each list shows. With neither, lists the Tdark targets nearest to leaving Tdark "
+                          "(optionally within one family, such as Kinase, GPCR or IC).")
+    def gaps(target: str | None = None, family: str | None = None, top: int = 10, disease: str | None = None, as_of: int | None = None) -> dict:
+        return G.gaps(target, family, top, disease, as_of)
 
     @app.tool(description="What this graph is: its size and years, the published file it was built from and that file's digest, the checks "
                           "it passed, what it leaves out and why, what its candidates are ranked by, and how that ranking held on later links.")

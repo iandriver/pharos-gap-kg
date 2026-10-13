@@ -31,6 +31,7 @@ and for a target with no link, the traits its neighbouring genes are linked to. 
 Run:  python -m pharos_gap_kg.ask why APOE "Alzheimer disease"
       python -m pharos_gap_kg.ask predict "Parkinson disease" --as-of 2018
       python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked
+      python -m pharos_gap_kg.ask gaps "Parkinson disease"
       python -m pharos_gap_kg.ask --selftest
 """
 from __future__ import annotations
@@ -44,7 +45,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import graph, others, paths
+from pharos_gap_kg import diseasegaps, graph, others, paths
 
 NOT_ABSENCE = ("No link here means no study in this source had reported one by that year. "
                "It is not evidence that there is no association.")
@@ -134,6 +135,10 @@ class Graph:
         if "target_gaps.parquet" in self.manifest["files"]:
             self.tg = pd.read_parquet(self.dir / "target_gaps.parquet").set_index("id")
             self.tg_rates = json.loads((self.dir / "target_gaps.json").read_text())
+        self.sizes = None                                            # study -> (cases, controls, individuals), where the bundle holds them
+        if "study_sizes.parquet" in self.manifest["files"]:
+            z = pd.read_parquet(self.dir / "study_sizes.parquet")
+            self.sizes = {s_: (int(c), int(k), int(n)) for s_, c, k, n in zip(z.study, z.cases, z.controls, z.individuals)}
         self.has_others = all(f in self.manifest["files"] for f in others.FILES)   # the merged graph's other parts, where the bundle holds them
         self._others = None
         self._ev = None
@@ -1008,9 +1013,21 @@ class Graph:
                 "how_often_this_closed": (f"Of {R['candidates']:,} targets with no qualifying compound in the {self.tg_rates['earlier']} database, "
                                           f"{R['gained']:,} ({R['gained'] / R['candidates']:.0%}) held one in {self.tg_rates['later']}.")}
 
-    def gaps(self, target: str | None = None, family: str | None = None, top: int = 10) -> dict:
-        """What a target lacks for the next Pharos development level; or, with no target, the Tdark
-        targets nearest to leaving it."""
+    def gaps(self, target: str | None = None, family: str | None = None, top: int = 10, disease: str | None = None, as_of: int | None = None) -> dict:
+        """What a target lacks for the next Pharos development level; with no target, the Tdark targets
+        nearest to leaving it; and for a trait or a condition, the targets tied to it and what each lacks."""
+        text = disease if disease is not None else (target if family is None else None)
+        if text is not None:
+            r = self.resolve(text, "trait" if disease is not None else "any")
+            if r["ok"] and r["kind"] in ("trait", "condition"):
+                if not self.has_others:
+                    return {"found": False, "problem": "not built", "answer": "This bundle does not hold the merged graph's other parts, which the gaps of a condition are read from. "
+                            "They are added by:  python -m pharos_gap_kg.kg build <release>  and then  python -m pharos_gap_kg.bundle <release> --context-only"}
+                return {**diseasegaps.for_condition(self, r, self._year(as_of), top), "note": r["note"]}
+            if r["ok"] and r["kind"] == "drug":
+                return {"found": False, "problem": "not a target or a condition", "answer": f"{text!r} is a drug. gaps reads a target or a condition; ask known for what the graph holds on a drug."}
+            if disease is not None:
+                return {"found": False, "problem": r["problem"], "answer": r["say"], "candidates": r["candidates"]}
         reading = ("A gap is what Pharos's grade lacks, read from the release's own evidence. A PubMed score or an antibody count "
                    "measures attention to a protein. Closing the gap is not the same as learning its function.")
         if self.tg is None:
@@ -1135,7 +1152,7 @@ def main(argv: list[str] | None = None) -> int:
     elif q == "predict":
         out = G.predict(a.args[0], a.as_of, a.top, a.unexplained_only, a.unlinked)
     elif q == "gaps":
-        out = G.gaps(a.args[0] if a.args else None, a.family, a.top)
+        out = G.gaps(a.args[0] if a.args else None, a.family, a.top, as_of=a.as_of)
     else:
         out = G.whats_new(a.args[0], int(a.args[1]), a.top)
     print(json.dumps(out, indent=1, default=str))

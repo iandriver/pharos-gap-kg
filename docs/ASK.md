@@ -12,6 +12,7 @@ command line, or by any MCP client through `python -m pharos_gap_kg.server`.
 | `predict(node)` | what may be linked next, and how often that has held |
 | `whats_new(node, since)` | what was first reported after a year |
 | `gaps(target)` | what a target lacks for the next Pharos level, the nearest way to close it, and how often that closed |
+| `gaps(disease)` | the genes tied to a disease, what each lacks, what would supply it, and how often that has been seen |
 | `status()` | what the graph is, where it came from, what it leaves out |
 
 Three rules hold for every answer.
@@ -501,6 +502,148 @@ python -m pharos_gap_kg.ask gaps --family Kinase --top 3
 
 SBK2 (6 more antibodies), NRK (12 more antibodies) and RPS6KC1 (1 more GeneRIF).
 
+### What is missing for a disease
+
+`gaps` with a trait or a condition lists the genes the graph ties to it and what they lack. A gene is
+tied by a dated GWAS link, by assertions from two or more disease sources, or by being the mechanism
+target of a drug indicated for the condition. One source alone, an expression observation and a
+withheld row are counted and are not ties. Six lists follow, each with a count, its strongest rows,
+what would close the gap and how often that has been seen:
+
+| list | which genes | closes with |
+|---|---|---|
+| `no_compound` | tied, with no drug acting on it and no compound at its family's potency cutoff | a compound at that cutoff |
+| `dark` | tied and still Tdark | its nearest route to the next level |
+| `locus_not_resolved` | GWAS-linked genes within 500,000 bases of one another: one signal on several genes | evidence for one gene of the locus |
+| `no_genetic_support` | tied by sources or by a drug, with no GWAS link | a genome-wide significant association at the gene |
+| `withheld` | rows a pruning rule withheld for the condition | what the row's rule says restores it |
+| `observed_only` | an expression observation and nothing else | an assertion or a genetic association |
+
+```bash
+python -m pharos_gap_kg.ask gaps "Parkinson disease" --top 2
+```
+
+> The graph ties 345 gene(s) to Parkinson disease, some in more than one way: 248 by a GWAS link, 88
+> by two or more disease sources, 24 as the mechanism target of an indicated drug. Of them, 251 have
+> no drug and no compound at their family's cutoff; 22 are still Tdark; 228 GWAS-linked genes sit in
+> 39 loci that carry the link on more than one gene, and other evidence singles out one gene in 6 of
+> them; 97 are tied with no GWAS link. 0 row(s) are withheld by a pruning rule, and 79 gene(s) have
+> only an expression observation. The largest study behind its links (GCST010991, 2021): it had
+> 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio
+> of about 1.08 to be found. An absent link is no effect of about that size found at a common
+> variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study
+> that reported nothing for the trait is not in the source. These sources carry no dates: all but
+> the GWAS links are as of the release, whatever year was asked.
+
+A row names what ties the gene and the gap edge it rests on:
+
+```json
+{
+ "id": "UniProtKB:Q9BSA9",
+ "symbol": "TMEM175",
+ "pharos_level": "Tbio",
+ "tied_by": {
+  "gwas_link": {
+   "studies": 10,
+   "first_reported": 2010,
+   "edge": "pharosgapkg:edcf419e0970e"
+  },
+  "sources": [
+   "JensenLab Knowledge UniProtKB-KW",
+   "UniProt Disease"
+  ]
+ },
+ "lacks": "a compound at 1 uM or better, the potency cutoff for its family",
+ "graph_edge": "pharosgapkg:g306d5ab715f8"
+}
+```
+
+A locus lists its genes, and any gene that other evidence singles out:
+
+```json
+{
+ "genes": [
+  "BCKDK",
+  "PRSS53",
+  "STX1B",
+  "STX4",
+  "VKORC1",
+  "ZNF646",
+  "ZNF668",
+  "FUS"
+ ],
+ "genes_with_the_link": 16,
+ "other_evidence_for": {},
+ "singled_out_by_other_evidence": null,
+ "in_the_MHC": false,
+ "genes_more": 8
+}
+```
+
+An absent GWAS link is given with what the largest study could have seen, and with the rate at
+which pairs a source named were GWAS-linked later:
+
+```json
+{
+ "kind": "no_genetic_support",
+ "targets": 97,
+ "closes_with": "a genome-wide significant association at the gene, in a study of this trait",
+ "how_often_this_closed": "In the test on links after 2018, over 161 disease traits, a pair one of these sources named with no GWAS link was GWAS-linked later between 2.1% of the time (JensenLab Knowledge UniProtKB-KW) and 18.2% (JensenLab Knowledge MedlinePlus), by source, against 0.6% of all pairs. The sources carry no dates, so a source may have named a pair because of the very studies that linked it later.",
+ "what_an_absent_link_could_have_seen": {
+  "studies_behind_its_links": 29,
+  "with_a_size": 29,
+  "largest": {
+   "study": "GCST010991",
+   "year": 2021,
+   "design": "cases and controls",
+   "cases": 20184,
+   "controls": 397324,
+   "smallest_odds_ratio_it_could_find": 1.084
+  },
+  "reading": "The largest study behind its links (GCST010991, 2021): it had 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio of about 1.08 to be found. An absent link is no effect of about that size found at a common variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study that reported nothing for the trait is not in the source."
+ },
+ "top": [
+  {
+   "id": "UniProtKB:Q9NQ11",
+   "symbol": "ATP13A2",
+   "pharos_level": "Tbio",
+   "tied_by": {
+    "sources": [
+     "CTD",
+     "DisGeNET",
+     "JensenLab Knowledge MedlinePlus",
+     "JensenLab Knowledge UniProtKB-KW",
+     "JensenLab Text Mining",
+     "Monarch"
+    ]
+   },
+   "rank_among_gwas_candidates": 2565
+  }
+ ]
+}
+```
+
+For a condition that is not a GWAS trait, the lists that need a dated link are left out and the
+answer says why:
+
+```bash
+python -m pharos_gap_kg.ask gaps "malignant mesothelioma"
+```
+
+> The graph ties 105 gene(s) to malignant mesothelioma, some in more than one way: 105 by two or
+> more disease sources, 0 as the mechanism target of an indicated drug. Of them, 65 have no drug and
+> no compound at their family's cutoff; 1 is still Tdark. 0 row(s) are withheld by a pruning rule,
+> and 3,127 gene(s) have only an expression observation. malignant mesothelioma is not a GWAS trait
+> in this graph, so no dated link is present or absent for it and the kinds that need one are not
+> listed. These sources carry no dates: all but the GWAS links are as of the release, whatever year
+> was asked.
+
+Every answer ends with how to read it:
+
+> A gap is evidence this graph does not hold. It is not a finding that the target matters in the
+> disease, and closing it may show that it does not. Two or more sources, a GWAS link or a drug's
+> mechanism tie a target to the condition; one source alone does not.
+
 ## From an MCP client
 
 ```bash
@@ -532,7 +675,8 @@ For a client configured by JSON:
 links, the study behind each link, trait lineage, neighbouring genes, the scorer the questions rank by
 with its test on later links and its calibration by rank, the target-level gaps where they have been
 computed, the merged graph's other parts where it has been built (`python -m pharos_gap_kg.kg build
-pharos319`, then `bundle pharos319 --context-only`), and a manifest with the digest of every file and
-of every input. Each row of the other parts carries the id of its edge or gap in the merged graph. The links are every link in the release;
+pharos319`, then `bundle pharos319 --context-only`), the size of each study behind the links where
+they have been read (`python -I -m pharos_gap_kg.studysize build pharos319`, then `bundle pharos319
+--sizes-only`), and a manifest with the digest of every file and of every input. Each row of the other parts carries the id of its edge or gap in the merged graph. The links are every link in the release;
 "as of 2018" is a filter the questions apply. Where a dated KGX graph has been built, its edges must
 be in the bundle under the same ids or the build refuses.

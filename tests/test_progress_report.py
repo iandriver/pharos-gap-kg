@@ -145,6 +145,12 @@ def test_gaps(T):
     has(T, f"For {t['with_a_gap']:,} Tdark targets, Pharos's least-studied level", f"the {t['promoted']} of {t['in_both_releases']:,} targets that were promoted",
         f"{r['auc']:.3f} [{r['auc_low']:.3f}, {r['auc_high']:.3f}]", f"{d['difference']:+.3f} [{d['low']:+.3f}, {d['high']:+.3f}] over the PubMed score alone",
         f"{pc(t['bands']['1 flip, nearest third']['share'])} were promoted")
+    c = J("disease_gaps_pharos319.json")
+    o = c["smallest_odds_ratio_the_largest_study_could_find"]
+    has(T, f"Over the {c['traits']} disease traits", f"{pc(c['share_of_gwas_linked_genes_in_a_locus_with_another'])} of GWAS-linked genes share their locus",
+        f"singles out one gene in {pc(c['share_of_such_loci_where_other_evidence_singles_out_one_gene'])} of those loci", f"{pc(c['share_of_tied_genes_with_no_compound'])} of tied genes have no drug",
+        f"For the {c['of_them_cases_and_controls']} traits whose largest study has cases and controls, the median is an odds ratio of {o['median']:.2f}")
+    assert c["min_sources"] == 2 and "two or more disease sources" in T
 
 
 def test_findings_about_the_data(T):

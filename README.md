@@ -37,6 +37,15 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   targets and indications, and the 23,236 target-level gaps. A DrugCentral indication row is a path
   through a drug, and 10,327 of the 13,919 run through the drug's mechanism target. 394 `same_as`
   edges tie a retired GWAS trait id to its current term, which joins 346 traits to the other sources.
+- **Gaps for a disease** ([`findings/DGAPS.md`](findings/DGAPS.md)). `gaps` with a trait or a condition
+  lists the genes the graph ties to it (a GWAS link, two or more disease sources, or the mechanism
+  target of an indicated drug) and what they lack, in six lists, each with what would close the gap
+  and a rate where one was measured. Over the 513 disease traits, 92.8% of GWAS-linked genes share
+  their locus with another gene carrying the same link, and 77.3% of tied genes have no drug and no
+  compound at their family's cutoff. An absent GWAS link comes with the smallest effect the largest
+  study of the trait could have found (a median odds ratio of 1.26 where the study has cases and
+  controls), read from 11,952 of the release's 12,335 studies. A gap is evidence the graph does not
+  hold. It is not a finding that the gene matters in the disease.
 - **Baselines** ([`findings/BASELINES.md`](findings/BASELINES.md)). How well-studied a target was in
   2018 ranks later links at four times chance; a parameter-free neighbour score adds to that. A fitted
   model has to beat 0.0969.
@@ -204,6 +213,10 @@ python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
 python -m pharos_gap_kg.bundle pharos319                     # what the questions read
 python -m pharos_gap_kg.bundle pharos319 --context-only      # the merged graph's other parts, into a built bundle
+python -I -m pharos_gap_kg.studysize build pharos319         # the size of each study, read from the GWAS Catalog file
+python -m pharos_gap_kg.bundle pharos319 --sizes-only        # and into the bundle
+python -m pharos_gap_kg.ask gaps "Parkinson disease"         # the genes tied to a disease and what each lacks
+python -m pharos_gap_kg.diseasegaps census pharos319         # every disease trait, counted by kind of gap
 python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"     # no GWAS link; four sources and four drugs tie them
 python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --unexplained-only

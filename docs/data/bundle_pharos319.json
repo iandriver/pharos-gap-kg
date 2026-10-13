@@ -33,14 +33,15 @@
   "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
   "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
-  "backtest.json": "a01a4928d507de5b480700f93aa45d3c65a8f2b8366b50c4be21fe9de10e3dfb",
+  "backtest.json": "0e0d84b56c028bff3bb65596c97c3e21132b528bfac6930515e0218a81d8c8ee",
   "target_gaps.parquet": "eb600f84f5555e31f0ffe63adf861a43a96028c004d924913100d6764679a556",
   "target_gaps.json": "6db8a7f6ba5d227b0ebc6fab1ec8868b9357c3a67651308fc8f1b56a76325efb",
   "context_nodes.parquet": "271310c1f6050e36660a8b9d7c33ddcdd40131c7680b72eefab6a8596603d22f",
   "assertions.parquet": "6bb5d2cf19b57c565b6f8e14a057b084d25b291c4572ec86d3e6d99aa5b5e43c",
   "expression.parquet": "a59c5693ffdd03c40b863e0776d7a471d320909fbeb90816dcb473d7e25f1858",
   "drug_targets.parquet": "5551c9e7be32a8e69906c758a201bd86f25d65d8add61723755a7b6185909f8f",
-  "drug_indications.parquet": "ff0ade8738dda476cacde4e972e18f43e43a31791af99541a4b3d22ba0e81c52"
+  "drug_indications.parquet": "ff0ade8738dda476cacde4e972e18f43e43a31791af99541a4b3d22ba0e81c52",
+  "study_sizes.parquet": "6aa25ff43cb18c58c2737250bf6fcb84fc9cfd312346035525939f6b7123c8ae"
  },
  "target_gaps": 17737,
  "context": {
@@ -60,5 +61,11 @@
   "graph_edges": 620168,
   "graph_gaps": 30484,
   "graph_nodes": 39060
+ },
+ "study_sizes": {
+  "studies": 12335,
+  "with_a_size": 11952,
+  "catalog": "gwas_catalog_20261005",
+  "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1"
  }
 }
