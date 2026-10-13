@@ -861,6 +861,65 @@ kind, with more protein-level and biobank-wide studies, so the mix of traits dif
 publication, so the last year or two are incomplete. And the link rule is fitted to Pharos's, not
 taken from it.
 
+## Gaps for a disease
+
+Written on 13 Oct 2026, before the question was built or any of its lists was read. It adds no fitted
+parameter and scores nothing on a test split: it reads the merged graph and quotes rates that earlier
+sections measured.
+
+**The question.** `gaps` with a trait or a condition: which targets the graph ties to it, what each
+of them lacks, and what would supply it. The target-level `gaps` question is unchanged.
+
+**A tie.** A target is tied to the condition by any of three things, and a row says which:
+
+1. a dated GWAS link, as of the year asked (GWAS traits only);
+2. assertions by two or more of the nine disease sources. One source alone is counted and not treated
+   as a tie: one-source pairs are where the planted pairs sat in both pruning rounds;
+3. being the target the release marks as the mechanism of action of a drug indicated for it.
+
+An expression observation is never a tie. A withheld row is never a tie.
+
+**The kinds of gap**, each a list with a count, its strongest rows first (a GWAS link before none,
+then more studies, then more sources), what would close it, and how often that has been seen:
+
+| kind | which targets | closes with | rate quoted |
+|---|---|---|---|
+| `no_compound` | tied; no drug of the release acts on it and it holds the target-level gap "no qualifying compound" | a compound at the potency cutoff of its family | the share of such targets that held one in Pharos 4.0.0 ("Target-level gaps") |
+| `dark` | tied and Tdark with a target-level gap | its nearest route to Tbio | the share of its band promoted in Pharos 4.0.0 |
+| `locus_not_resolved` | GWAS-linked targets whose genes lie within 500,000 bases of another GWAS-linked target of the same trait, gathered into loci | evidence for one gene of the locus: in this graph, a tie of kind 2 or 3 on exactly one of them | none: not measured |
+| `no_genetic_support` | tied by 2 or 3 with no GWAS link as of the year (GWAS traits only) | a genome-wide significant association at the gene | per source, the share of pairs it named without a GWAS link by 2018 that were GWAS-linked by 2022 ("Disease traits, and the undated disease table") |
+| `withheld` | rows a pruning rule withheld for this condition | what the rule says restores the row | none |
+| `observed_only` | an expression observation in the condition and nothing else: no tie, no single source | an assertion or a genetic association | none |
+
+A locus is a set of GWAS-linked targets joined by the 500,000-base neighbour relation, entries of one
+gene symbol counted once. A locus in the MHC region is flagged. For a condition that is not a GWAS
+trait, kinds that need a dated link are not listed, and the answer says the condition has none to be
+present or absent.
+
+**What an absent GWAS link was able to see.** Each study behind a trait's links is looked up by
+accession in the GWAS Catalog release of 5 Oct 2026 for its initial sample, a line of text such as
+"1,383 Danish ancestry cases, 62,656 Danish ancestry controls". Each number in the line is read with
+the words up to the next number: a count of cases if they hold "case", of controls if "control", of
+individuals otherwise. The share of the release's studies this reads is recorded. For the largest
+study behind the trait as of the year, the answer gives the smallest effect a variant carried by 20%
+of chromosomes needed to be found at p = 5e-8 with 80% power, under an additive model:
+
+    cases and controls:   odds ratio  exp( sqrt( 39.60 x N / (0.32 x cases x controls) ) ),  N = cases + controls
+    individuals only:     sqrt( 39.60 / (0.32 x N) )  standard deviations per allele
+
+39.60 is the square of the two normal quantiles, 5.4513 and 0.8416, and 0.32 is 2 x 0.2 x 0.8. This
+is a rough floor for one variant frequency. It ignores covariates, staged designs and rarer variants,
+which need larger effects, and it describes only studies that reported some association for the
+trait, since a study with none is not in the file. It is given so that "no link" is read as "no
+effect of about this size was found", and never as a measured absence.
+
+**Not claimed.** That a listed gap is worth closing, or that closing it would show the target matters
+in the disease. The quoted rates are of what the graph's own sources later held, and the sources
+other than GWAS carry no dates. The threshold of two sources is a choice, stated here and not tuned.
+
+**Checks.** The counts of every kind are recomputed for several diseases by table code that does not
+call the question layer, and the two must agree. The floor is checked against hand-worked cases.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
