@@ -4,12 +4,12 @@
  "target_gaps_summary_sha256": "f327cb58088d99e2270a9448e5d0ffe7aa89d313f6baaa163119916f158e41d3",
  "rows": 650258,
  "merged": 0,
- "nodes": 38653,
+ "nodes": 39060,
  "edges": 620168,
  "gaps": 30484,
  "node_categories": {
   "biolink:Protein": 20412,
-  "biolink:Disease": 13301,
+  "biolink:Disease": 13708,
   "biolink:DiseaseOrPhenotypicFeature": 3043,
   "biolink:Drug": 1782,
   "biolink:PhenotypicFeature": 75,
@@ -128,9 +128,13 @@
   "traits": 2247,
   "traits_retired_and_replaced": 720,
   "same_as_edges": 394,
-  "replacements_with_no_declared_kind": 326
+  "replacements_with_no_declared_kind": 326,
+  "replacements_with_no_declared_kind_by_vocabulary": {
+   "OBA": 324,
+   "GSSO": 2
+  }
  },
- "conditions": 16459,
+ "conditions": 16866,
  "traits_that_reach_another_part": {
   "under_their_own_id": 41,
   "through_their_current_term": 305,
@@ -140,7 +144,7 @@
  "targets_in_more_than_one_part": 19271,
  "conformance": "10 of 10 checks passed",
  "files": {
-  "nodes": "7d944061118a35ca40579c531099619b07ad6e07abc8c799b173a3b26f73f391",
+  "nodes": "f628e11d71b59b8e16b5084a75036cc0c3ed5f638bc343fa9bbcc348659f24a4",
   "edges": "b5d39e6c75d5a14f91555ea93c63f68c8f4f0c1e4bd7389ca3123c48283daebc",
   "gaps": "64f783d3d4e0b03eff286a1cbd32d46ce3a395db0996ab6406b1225818c8ded6"
  }

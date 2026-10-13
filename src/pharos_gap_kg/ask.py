@@ -44,7 +44,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import graph, paths
+from pharos_gap_kg import graph, others, paths
 
 NOT_ABSENCE = ("No link here means no study in this source had reported one by that year. "
                "It is not evidence that there is no association.")
@@ -134,6 +134,8 @@ class Graph:
         if "target_gaps.parquet" in self.manifest["files"]:
             self.tg = pd.read_parquet(self.dir / "target_gaps.parquet").set_index("id")
             self.tg_rates = json.loads((self.dir / "target_gaps.json").read_text())
+        self.has_others = all(f in self.manifest["files"] for f in others.FILES)   # the merged graph's other parts, where the bundle holds them
+        self._others = None
         self._ev = None
         self._sym = {}
         for i, s in enumerate(t.name):
@@ -148,6 +150,13 @@ class Graph:
                 self._live.setdefault(c.casefold(), []).append(i)
 
     # ------------------------------------------------------------------ pieces
+    @property
+    def others(self) -> "others.Others":
+        """The disease sources, drugs and expression observations, read when a question first needs them."""
+        if self._others is None:
+            self._others = others.Others(self.dir, self.d[["id", "name", "live_term"]], lambda i: self.t["name"][self.ti[i]] if i in self.ti else i)
+        return self._others
+
     def _year(self, as_of: int | None) -> int:
         y = self.latest if as_of is None else int(as_of)
         if y < self.earliest:
@@ -221,6 +230,8 @@ class Graph:
             hit = [i for i, v in enumerate(self.d.id) if v.casefold() == cid.casefold()]
             out += [{"tier": 0, "kind": "trait", "i": i} for i in hit]
             out += [{"tier": 1, "kind": "trait", "i": i} for i in self._live.get(cid.casefold(), []) if i not in hit]
+            if self.has_others and not hit and self.others.folded.get(cid.casefold()) in self.di:      # an id of the other sources that is read as this trait
+                out.append({"tier": 0, "kind": "trait", "i": self.di[self.others.folded[cid.casefold()]]})
             toks = q.split()
             for i, n in enumerate(self._tname):
                 if n == q:
@@ -237,23 +248,46 @@ class Graph:
                 seen.add((m["kind"], m["i"]))
                 m["links"] = int(deg_t[m["i"]] if m["kind"] == "target" else deg_d[m["i"]])
                 uniq.append(m)
+        if self.has_others and kind in ("any", "trait", "condition", "drug"):
+            # a condition or a drug the other sources name. A condition that is a GWAS trait under another
+            # id or the same name is that trait, and is not offered twice.
+            kinds = {"any": ("condition", "drug"), "trait": ("condition",), "condition": ("condition",), "drug": ("drug",)}[kind]
+            uniq = sorted(uniq + self.others.match(text, kinds), key=lambda m: m["tier"])
         return uniq
 
     def _describe(self, m: dict) -> dict:
+        if m["kind"] in ("condition", "drug"):
+            return {"kind": m["kind"], **self.others.label(m["kind"], m["key"]), "rows_in_other_sources": m["links"]}
         lab = self._tlabel(m["i"]) if m["kind"] == "target" else self._dlabel(m["i"])
         return {"kind": m["kind"], **lab, "links": m["links"]}
+
+    def _no_dated_links(self, r: dict, question: str) -> dict:
+        lab = self.others.label(r["kind"], r["key"])
+        return {"found": False, "problem": "no dated links", "node": {"kind": r["kind"], **lab},
+                "answer": (f"{lab['name']} is a {r['kind']} named by the other sources, and this graph holds no dated GWAS link for it. "
+                           f"{question} reads the dated links only. Ask known for what the other sources say about it.")}
 
     def resolve(self, text: str, kind: str = "any") -> dict:
         """{'ok': True, 'kind', 'i', 'note'} or {'ok': False, 'problem', 'candidates'}."""
         ms = self._match(text, kind)
         if not ms:
-            what = {"any": "target or trait", "target": "target", "trait": "trait"}[kind]
+            what = ({"any": "target, trait, condition or drug", "target": "target", "trait": "trait or condition", "condition": "condition", "drug": "drug"} if self.has_others
+                    else {"any": "target or trait", "target": "target", "trait": "trait"})[kind]
             return {"ok": False, "problem": "not in the graph",
                     "say": f"No {what} in the graph matches {text!r}. Nothing is assumed about it.", "candidates": []}
         best = [m for m in ms if m["tier"] == ms[0]["tier"]]
         if ms[0]["tier"] <= 1:
             if len(best) == 1:
                 return {"ok": True, **best[0], "note": ""}
+            if any(m["kind"] in ("condition", "drug") for m in best):
+                # a gene symbol and a condition or drug of the other sources can share letters ("ACHE", "Ache").
+                # The one written exactly as asked is meant; if that does not single one out, it is ambiguous.
+                raw = str(text).strip()
+                spelt = [m for m in best if self._describe(m).get("symbol", self._describe(m).get("name")) == raw]
+                if len(spelt) == 1 or len({(m["kind"], self._describe(m).get("symbol")) for m in spelt}) == 1 and spelt and spelt[0]["kind"] == "target":
+                    rest = [self._describe(m) for m in best if m not in spelt]
+                    return {"ok": True, **spelt[0], "note": (f"{raw!r} is also, in other letter case, the name of " + ", ".join(f"the {d['kind']} {d.get('name', d.get('symbol'))} ({d['id']})" for d in rest[:3])
+                                                              + ". This answer is about the one written exactly as asked.") if rest else ""}
             if all(m["kind"] == "target" for m in best) and len({self.t["name"][m["i"]] for m in best}) == 1:
                 return {"ok": True, **best[0], "note": f"Pharos holds {len(best)} entries with the symbol {self.t['name'][best[0]['i']]}; this answer uses "
                         f"{self.t.id[best[0]['i']]}, which has the most links."}
@@ -451,6 +485,14 @@ class Graph:
             return err
         y = self._year(as_of)
         mask = self._mask(y)
+        if r["kind"] == "drug":
+            lab = self.others.label("drug", r["key"])
+            return {"found": True, "node": {"kind": "drug", **lab}, **self.others.drug(r["key"], limit), "source": self._source(y), "note": others.UNDATED}
+        if r["kind"] == "condition":
+            lab = self.others.label("condition", r["key"])
+            o = self.others.condition(self.others.ids("condition", r["key"]), lab["name"], limit)
+            return {"found": True, "node": {"kind": "condition", **lab}, "as_of": y, "links": 0, "top": [], "other_sources": o, "source": self._source(y), "note": others.UNDATED,
+                    "answer": f"{lab['name']} is not a GWAS trait in this graph, so no dated link is held for it. {o['answer']}"}
         if r["kind"] == "target":
             rows = np.flatnonzero(mask & (self.lt == r["i"]))
             lab = self._tlabel(r["i"])
@@ -484,6 +526,11 @@ class Graph:
             out["answer"] = (f"As of {y}, {noun} has {len(rows):,} GWAS {onoun} link(s){split_}. "
                              f"The list is ordered by how many studies report each."
                              + (f" {later} more were first reported after {y}." if later else ""))
+        if self.has_others:
+            o = (self.others.target(lab["id"], limit) if r["kind"] == "target" else
+                 self.others.condition(self.others.ids("trait", lab["id"]), lab["name"], limit))
+            out["other_sources"] = o
+            out["answer"] += " " + o["answer"]
         return out
 
     def why(self, target: str, trait: str, as_of: int | None = None, limit: int = 15) -> dict:
@@ -494,6 +541,23 @@ class Graph:
         if err:
             return err
         y = self._year(as_of)
+        tid = self.t.id[a["i"]]
+        if b["kind"] == "condition":
+            lab = self.others.label("condition", b["key"])
+            o = self.others.pair(tid, self.others.ids("condition", b["key"]))
+            return {"target": self._tlabel(a["i"]), "condition": {"kind": "condition", **lab}, "as_of": y, "source": self._source(y), "note": a["note"], "found": False,
+                    "asserted_elsewhere": bool(o["asserted_by"]), "other_sources": o,
+                    "answer": f"{lab['name']} is not a GWAS trait in this graph, so there is no dated link to ask about. {o['answer']}"}
+        out = self._why_dated(a, b, y, limit)
+        if self.has_others:
+            o = self.others.pair(tid, self.others.ids("trait", self.d.id[b["i"]]))
+            out["asserted_elsewhere"] = bool(o["asserted_by"])
+            out["other_sources"] = o
+            out["answer"] += " " + o["answer"]
+        return out
+
+    def _why_dated(self, a: dict, b: dict, y: int, limit: int) -> dict:
+        """The dated GWAS link between a target and a trait, or what stands near it where there is none."""
         mask = self._mask(y)
         ti, di = a["i"], b["i"]
         tl, dl = self._tlabel(ti), self._dlabel(di)
@@ -567,6 +631,8 @@ class Graph:
         if x["kind"] == "trait" and z["kind"] == "target":
             x, z = z, x
         base = {"as_of": y, "source": self._source(y)}
+        if {x["kind"], z["kind"]} & {"condition", "drug"}:
+            return {**base, **self._connect_other(x, z, mask, limit)}
         if x["kind"] == "target" and z["kind"] == "trait":
             ti, di = x["i"], z["i"]
             tl, dl = self._tlabel(ti), self._dlabel(di)
@@ -586,7 +652,8 @@ class Graph:
                                + f"Traits of {tl['symbol']} that are a broader, narrower or second wording of this one: {len(fl['lineage'])}. "
                                f"Genes within 500,000 bases that carry this link: {len(fl['position'])}. "
                                f"Traits of {tl['symbol']} that share targets with this one: {len([o for o in mine if sim[o] > 0])}."
-                               + ("" if direct else f" {NOT_ABSENCE}"))}
+                               + ("" if direct else f" {NOT_ABSENCE}") + self._connect_elsewhere(tl, dl)[1]),
+                    **self._connect_elsewhere(tl, dl)[0]}
         if x["kind"] == "target":
             ia, ib = x["i"], z["i"]
             da, db = set(self.ld[mask & (self.lt == ia)].tolist()), set(self.ld[mask & (self.lt == ib)].tolist())
@@ -617,6 +684,75 @@ class Graph:
                 "shared_targets_top": [{"symbol": self.t["name"][o], "id": self.t.id[o]} for o in top],
                 "answer": (f"As of {y}, {la['name']} and {lb['name']} share {len(both):,} target(s) (of {len(ta):,} and {len(tb):,})."
                            + (" The ontology files one under the other, so shared targets are expected." if rel else ""))}
+
+    def _connect_elsewhere(self, tl: dict, dl: dict) -> tuple[dict, str]:
+        """What the other sources add between a target and a GWAS trait: who asserts the pair and the drugs
+        between them, and the sentence that says so."""
+        if not self.has_others:
+            return {}, ""
+        o = self.others.pair(tl["id"], self.others.ids("trait", dl["id"]))
+        return {"asserted_by_other_sources": sorted({r["source"] for r in o["asserted_by"]}), "through_a_drug": o["through_a_drug"], "other_sources": o}, " " + o["answer"]
+
+    def _reach(self, r: dict, mask: np.ndarray) -> tuple[dict, dict, str]:
+        """A node's label, the targets it reaches with how it reaches each, and its name."""
+        O = self.others
+        if r["kind"] == "target":
+            lab = self._tlabel(r["i"])
+            return {"kind": "target", **lab}, {lab["id"]: "itself"}, lab["symbol"]
+        if r["kind"] == "drug":
+            lab = O.label("drug", r["key"])
+            t = O.DT.iloc[O.dt_d.get(r["key"], [])]
+            return {"kind": "drug", **lab}, {x.target: ("acts on it, as its mechanism" if x.mechanism else "acts on it") for x in t.itertuples()}, lab["name"]
+        if r["kind"] == "trait":
+            lab, ids = self._dlabel(r["i"]), O.ids("trait", self.d.id[r["i"]])
+            reach = {self.t.id[i]: "a GWAS link" for i in self.lt[mask & (self.ld == r["i"])]}
+        else:
+            lab, ids = O.label("condition", r["key"]), O.ids("condition", r["key"])
+            reach = {}
+        a = O.A.iloc[[p for c in ids for p in O.a_c.get(c, ())]]
+        for t, n in a[~a.withheld].groupby("target").source.nunique().items():
+            reach[t] = (reach[t] + " and " if t in reach else "") + f"asserted by {n} source(s)"
+        return {"kind": r["kind"], **lab}, reach, lab["name"]
+
+    def _connect_other(self, x: dict, z: dict, mask: np.ndarray, limit: int) -> dict:
+        """Two things where at least one is a condition or a drug of the other sources: what ties them."""
+        O = self.others
+        la, ra, na = self._reach(x, mask)
+        lb, rb, nb = self._reach(z, mask)
+        kinds = (x["kind"], z["kind"])
+        out = {"found": True, "a": la, "b": lb, "dated": False}
+        if "target" in kinds and ("condition" in kinds or "trait" in kinds):
+            t, c = (x, z) if x["kind"] == "target" else (z, x)
+            o = O.pair(self.t.id[t["i"]], O.ids(c["kind"], c["key"] if c["kind"] == "condition" else self.d.id[c["i"]]))
+            return {**out, "other_sources": o, "answer": o["answer"]}
+        if "drug" in kinds and "target" in kinds:
+            d, t = (x, z) if x["kind"] == "drug" else (z, x)
+            tid, nd, nt = self.t.id[t["i"]], (na if x["kind"] == "drug" else nb), (nb if x["kind"] == "drug" else na)
+            row = next((r for r in O.DT.iloc[O.dt_d.get(d["key"], [])].itertuples() if r.target == tid), None)
+            ind = O.DI.iloc[O.di_d.get(d["key"], [])]
+            asserted = {O.A.condition.iat[p] for p in O.a_t.get(tid, ()) if not O.A.withheld.iat[p]}
+            both = [{"id": c, "name": O.name.get(c, c)} for c in sorted(set(ind.condition) & asserted, key=lambda c: O.name.get(c, c))]
+            return {**out, "direct": ({"action": row.action or None, "activity": row.activity or None, "target_is_the_drugs_mechanism": bool(row.mechanism), "edge": row.edge} if row is not None else None),
+                    "indications_a_source_also_asserts_with_the_target": both[:limit], "indications_also_asserted": len(both),
+                    "answer": ((f"{nd} acts on {nt}" + (" as its mechanism of action" if row.mechanism else f". {others.NOT_MECHANISM[:-1]}") + "." if row is not None
+                                else f"The release records no action of {nd} on {nt}.")
+                               + f" Of the {len(ind)} condition(s) {nd} is indicated for, a disease source also asserts {nt} with {len(both)}. {others.UNDATED}")}
+        if "drug" in kinds and ("condition" in kinds or "trait" in kinds):
+            d, c = (x, z) if x["kind"] == "drug" else (z, x)
+            nd, nc = (na, nb) if x["kind"] == "drug" else (nb, na)
+            rd, rc = (ra, rb) if x["kind"] == "drug" else (rb, ra)
+            ids = set(O.ids(c["kind"], c["key"] if c["kind"] == "condition" else self.d.id[c["i"]]))
+            direct = next((r.edge for r in O.DI.iloc[O.di_d.get(d["key"], [])].itertuples() if r.condition in ids), None)
+            shared = sorted(set(rd) & set(rc), key=lambda t: (rd[t] != "acts on it, as its mechanism", O.symbol_of(t)))
+            return {**out, "indicated": direct is not None, "indication_edge": direct,
+                    "targets_of_the_drug_tied_to_the_condition": [{"id": t, "symbol": O.symbol_of(t), "drug": rd[t], "condition": rc[t]} for t in shared[:limit]],
+                    "targets_tied": len(shared),
+                    "answer": (f"{nd} is {'indicated for' if direct else 'not recorded as indicated for'} {nc}. Of the {len(rd)} target(s) it acts on, "
+                               f"{len(shared)} {'is' if len(shared) == 1 else 'are'} tied to {nc} by a GWAS link or a disease source. {others.UNDATED}")}
+        shared = sorted(set(ra) & set(rb), key=O.symbol_of)
+        return {**out, "shared_targets": len(shared), "targets_a": len(ra), "targets_b": len(rb),
+                "shared_targets_top": [{"id": t, "symbol": O.symbol_of(t), "a": ra[t], "b": rb[t]} for t in shared[:limit]],
+                "answer": f"{na} and {nb} share {len(shared):,} target(s) (of {len(ra):,} and {len(rb):,}), counting GWAS links, what the disease sources assert and what a drug acts on. {others.UNDATED}"}
 
     def _predict_no_link_for_trait(self, r: dict, y: int, mask: np.ndarray, top: int) -> dict:
         """For a trait: the targets with no link that lie beside a gene that has this one, by position."""
@@ -690,6 +826,8 @@ class Graph:
         r, err = self._need(node)
         if err:
             return err
+        if r["kind"] in ("condition", "drug"):
+            return self._no_dated_links(r, "predict")
         y = self._year(as_of)
         mask = self._mask(y)
         top = max(1, min(int(top), 50))
@@ -818,6 +956,8 @@ class Graph:
         r, err = self._need(node)
         if err:
             return err
+        if r["kind"] in ("condition", "drug"):
+            return self._no_dated_links(r, "whats_new")
         since = int(since)
         sel = (self.first > since) & ((self.lt == r["i"]) if r["kind"] == "target" else (self.ld == r["i"]))
         rows = np.flatnonzero(sel)
@@ -935,11 +1075,18 @@ class Graph:
                               "tables": m["source_tables"]},
                "also_reads": {"trait ontology (sha256)": m["ontology_sha256"], "gene coordinates (sha256)": m["coordinates_sha256"]},
                "checks": [m["conformance"]] + m["dated_graphs"],
-               "left_out": ["Pharos's other disease associations: they carry no dates, and one of the twelve sources is this GWAS data again.",
+               "left_out": [("One of Pharos's twelve disease sources, which is this GWAS data again." if self.has_others else
+                             "Pharos's other disease associations: they carry no dates, and one of the twelve sources is this GWAS data again."),
                             "Compound activities: after any year nearly every new target-compound pair involves a compound not seen before.",
                             f"{m['targets'] - m['targets_with_a_link']:,} targets have no link. They are in the graph, and asking about one says so."],
                "reading_a_link": "A GWAS link places an associated variant at a gene. It does not say the gene causes the trait.",
                "questions": ["find", "known", "why", "connect", "predict", "whats_new", "gaps", "status"]}
+        if self.has_others:
+            c = self.others.counts()
+            out["other_sources"] = {**c, "dated": False, "reading": others.OBSERVATION}
+            out["answer"] += (f" Beside them, as of the release and undated: {c['assertions']:,} assertions of a target with a condition from {c['sources']} disease sources, "
+                              f"{c['withheld']:,} more rows withheld by a pruning rule and kept as gaps, {c['drugs']:,} drugs with {c['drug_targets']:,} target and "
+                              f"{c['drug_indications']:,} indication edges, and {c['expression_observations']:,} expression observations, which are kept apart from the assertions.")
         if self.backtest and "headline" in self.backtest:
             out["backtest"] = self.backtest["headline"]
         if self.backtest and "scorer" in self.backtest:

@@ -29,6 +29,14 @@ Started 6 Oct 2026. No model has been fitted. What exists:
 - **The graph as of 2018.** 20,412 targets, 1,404 traits, 99,435 edges carrying only the studies dated
   2018 or earlier. It passes the `kgx-gaps` conformance suite, and `graph lineage` answers why one
   edge exists, down to the papers and the digest of the file they were read from.
+- **One graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). Since 13 Oct 2026 everything is one KGX
+  export with one node file: 620,168 edges and 30,484 gaps over 39,060 nodes, passing 10 of 10
+  conformance checks with every input row an edge or a gap. It holds every dated GWAS link of the
+  release, what nine disease sources assert (154,363 edges, and the 7,248 withheld rows as gaps),
+  159,846 expression observations with direction, fold change and p-value, 1,782 drugs with their
+  targets and indications, and the 23,236 target-level gaps. A DrugCentral indication row is a path
+  through a drug, and 10,327 of the 13,919 run through the drug's mechanism target. 394 `same_as`
+  edges tie a retired GWAS trait id to its current term, which joins 346 traits to the other sources.
 - **Baselines** ([`findings/BASELINES.md`](findings/BASELINES.md)). How well-studied a target was in
   2018 ranks later links at four times chance; a parameter-free neighbour score adds to that. A fitted
   model has to beat 0.0969.
@@ -42,8 +50,11 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   data under another name: used as context it would score 0.60 by reading the answers.
 
 - **Eight questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`, `gaps`,
-  `connect`, `predict`, `whats_new`, `status`, answered from a 12 MB bundle whose files are checked
-  against a manifest of digests. A name that matches nothing is "not in the graph"; an absent link is
+  `connect`, `predict`, `whats_new`, `status`, answered from a 20 MB bundle whose files are checked
+  against a manifest of digests. `known`, `why` and `connect` read every part of the merged graph:
+  beside the dated links they say which sources assert a pair, which rows are withheld and on what
+  count, which drugs act on a target and treat the condition, and where expression differs, with
+  observations kept apart from assertions. A name that matches nothing is "not in the graph"; an absent link is
   never reported as a negative; a prediction comes with the parts of its score and how often its rank
   held on later links. Since 11 Oct 2026 candidates are ranked by the position combiner of the
   prospective test below, and before that by the neighbour score alone.
@@ -145,8 +156,8 @@ fetch command. A missing input names the command that fetches it.
 
 ## Outputs
 
-`data/tables/<release>/<table>.parquet` (typed tables), `data/graph/<release>/` (KGX nodes, edges and
-gaps), `data/eval/` (frozen splits and scores), `data/bundle/<release>/` (what the questions read). `data/` is not committed; small summaries that the
+`data/tables/<release>/<table>.parquet` (typed tables), `data/graph/<release>/` (the merged graph: KGX
+nodes, edges and gaps; the three earlier exports sit beside it), `data/eval/` (frozen splits and scores), `data/bundle/<release>/` (what the questions read). `data/` is not committed; small summaries that the
 documents quote are committed under `docs/data/`.
 
 ## Run
@@ -187,9 +198,13 @@ python -m pharos_gap_kg.tgaps pharos319                     # what each target l
 python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
 python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
 python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
+python -m pharos_gap_kg.sqldump extract pharos319 --tables drug_activity
+python -m pharos_gap_kg.kg build pharos319                   # ONE graph: dated links, sources, drugs, observations, every gap
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
 python -m pharos_gap_kg.bundle pharos319                     # what the questions read
+python -m pharos_gap_kg.bundle pharos319 --context-only      # the merged graph's other parts, into a built bundle
+python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"     # no GWAS link; four sources and four drugs tie them
 python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --unexplained-only
 python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked          # targets with no link, by position

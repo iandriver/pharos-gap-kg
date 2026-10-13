@@ -37,15 +37,22 @@ def test_no_em_dash(T):
 
 
 def test_the_graphs(T):
-    b, c, g, a = J("bundle_pharos319.json"), J("graph_pharos319_context_disease.json"), J("graph_pharos319_target_gaps.json"), J("graph_pharos319_asof2018.json")
-    has(T, f"{b['links']:,} GWAS links between {b['targets_with_a_link']:,} of Pharos's {b['targets']:,} protein targets and {b['traits']:,} traits, from {b['studies']:,} studies in {b['papers']:,} papers",
-        f"{c['edges']:,} edges and {c['gaps']:,} gaps", f"{g['gaps']:,} target-level gaps", f"{c['gaps']:,} of {c['rows']:,} rows are withheld")
-    assert all(" PASS " in x for x in a["conformance"]) and len(a["conformance"]) == 10
-    assert c["conformance"] == g["conformance"] == "10 of 10 checks passed"
-    has(T, "All three graphs pass 10 of 10 checks")
-    for k in list(a["node_categories"]) + list(a["predicates"]) + list(c["predicates"]) + [g["gap_predicate"]]:
+    b, c, m = J("bundle_pharos319.json"), J("graph_pharos319_context_disease.json"), J("graph_pharos319.json")
+    d = m["drugs"]
+    has(T, f"{m['edges']:,} edges and {m['gaps']:,} gaps over {m['nodes']:,} nodes",
+        f"{b['links']:,} GWAS links between {b['targets_with_a_link']:,} of Pharos's {b['targets']:,} protein targets and {b['traits']:,} traits, from {b['studies']:,} studies in {b['papers']:,} papers",
+        f"{m['assertions']['edges']:,} assertions of a target with a condition from nine disease sources, and the {m['assertions']['gaps']:,} rows",
+        f"{m['expression']['edges']:,} expression observations", f"{d['drugs']:,} drugs with {d['drug_target_edges']:,} target and {d['drug_indication_edges']:,} indication edges",
+        f"{d['through_the_mechanism_target']:,} of {d['indication_rows']:,} rows", f"{m['target_gaps']['gaps']:,} target-level gaps",
+        f"{m['ontology']['same_as_edges']} `biolink:same_as` edges", f"joins {m['traits_that_reach_another_part']['joined']} GWAS traits",
+        f"{c['gaps']:,} of {c['rows']:,} rows are withheld", f"{d['indications_not_grounded']} indications the release names without an identifier")
+    assert m["conformance"] == "10 of 10 checks passed" and len(m["assertions"]["edges_by_source"]) == 9 and m["edges_by_part"]["links"] == b["links"]
+    has(T, "The merged graph passes 10 of 10 checks")
+    cats = [k for k in m["node_categories"] if k.startswith("biolink:")]
+    for k in cats + list(m["predicates"]) + [J("graph_pharos319_target_gaps.json")["gap_predicate"]]:
         has(T, f"`{k}`")
-    assert len(a["node_categories"]) == 5 and len(a["predicates"]) == 1 and len(c["predicates"]) == 3
+    assert len(cats) == 7 and len(m["predicates"]) == 6 and "seven BioLink categories" in T and "six BioLink predicates" in T
+    assert m["nodes_not_grounded"] == d["indications_not_grounded"] + m["node_categories"]["pharosgapkg:KnowledgeGap"], "the only nodes not grounded are those indications and the kinds of gap"
 
 
 def test_usability(T):

@@ -5,10 +5,10 @@ command line, or by any MCP client through `python -m pharos_gap_kg.server`.
 
 | question | what it answers |
 |---|---|
-| `find(text)` | which target or trait a loosely given name means |
-| `known(node)` | what is linked to a target or a trait, and since when |
-| `why(target, trait)` | the studies behind one link, or why there is none |
-| `connect(a, b)` | what ties two things together when no link does |
+| `find(text)` | which target, trait, condition or drug a loosely given name means |
+| `known(node)` | what is linked to a target or a trait, and since when; and what the other sources say of it |
+| `why(target, trait)` | the studies behind one link, or why there is none; and who else asserts the pair |
+| `connect(a, b)` | what ties two things together when no link does, a drug included |
 | `predict(node)` | what may be linked next, and how often that has held |
 | `whats_new(node, since)` | what was first reported after a year |
 | `gaps(target)` | what a target lacks for the next Pharos level, the nearest way to close it, and how often that closed |
@@ -33,6 +33,10 @@ python -m pharos_gap_kg.ask status
 
 > A graph of 295,327 GWAS links between 18,005 of Pharos's 20,412 protein targets and 2,247 traits,
 > each dated by the first study behind it (2005 to 2023), from 12,335 studies in 3,141 papers.
+> Beside them, as of the release and undated: 154,363 assertions of a target with a condition from 9
+> disease sources, 7,248 more rows withheld by a pruning rule and kept as gaps, 1,782 drugs with
+> 4,295 target and 5,943 indication edges, and 159,846 expression observations, which are kept apart
+> from the assertions.
 
 ### Why is A linked to B
 
@@ -44,7 +48,7 @@ python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
 {
  "found": true,
  "edge": "pharosgapkg:e2e3b1a3f2814",
- "answer": "APOE is linked to Alzheimer disease because 4 GWAS studies in 4 paper(s), the first in 2007, reported a genome-wide significant association assigned to this gene. 25 more studies came after 2010.",
+ "answer": "APOE is linked to Alzheimer disease because 4 GWAS studies in 4 paper(s), the first in 2007, reported a genome-wide significant association assigned to this gene. 25 more studies came after 2010. Apart from GWAS, as of the release: 8 sources assert APOE with this condition (CTD, DisGeNET, JensenLab Knowledge AmyCo, JensenLab Knowledge MedlinePlus, JensenLab Knowledge UniProtKB-KW, JensenLab Text Mining, Monarch, eRAM). This was also read under MONDO:0007088, which has the same name in the sources: a match on the name, not an ontology statement.",
  "claim": {
   "subject": "UniProtKB:P02649",
   "predicate": "biolink:genetically_associated_with",
@@ -82,10 +86,75 @@ python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
  "admitted_by": "a GWAS association the source lists for this target and trait, with a study dated by the as-of year",
  "caveat": "GWAS assigns a signal to genes by position. A link says an associated variant lies at this gene, not that this gene is the cause.",
  "source": {
+  "release": "pharos319",
   "file": "pharos319.sql.gz",
   "published": "2024-04-29",
   "sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
-  "as_of": 2010
+  "tables": [
+   "tiga",
+   "tiga_provenance",
+   "protein"
+  ],
+  "as_of": 2010,
+  "data_ends": 2023
+ },
+ "asserted_elsewhere": true,
+ "other_sources": {
+  "read_under": [
+   {
+    "id": "MONDO:0004975",
+    "tie": "as published"
+   },
+   {
+    "id": "MONDO:0007088",
+    "tie": "the sources give it the same name"
+   }
+  ],
+  "asserted_by": [
+   {
+    "source": "CTD",
+    "edge": "pharosgapkg:e2bae52301900",
+    "source_evidence": "therapeutic=0"
+   },
+   {
+    "source": "DisGeNET",
+    "edge": "pharosgapkg:e04f2e15211d0",
+    "source_evidence": "pubmed_ids=5; score=0.7; upstream_sources=1"
+   },
+   {
+    "source": "JensenLab Knowledge AmyCo",
+    "edge": "pharosgapkg:edaab3a9ce745"
+   },
+   {
+    "source": "JensenLab Knowledge MedlinePlus",
+    "edge": "pharosgapkg:e605e680ff0c9"
+   },
+   {
+    "source": "JensenLab Knowledge UniProtKB-KW",
+    "edge": "pharosgapkg:e2995d392f898"
+   },
+   {
+    "source": "JensenLab Text Mining",
+    "edge": "pharosgapkg:e405a625801bd",
+    "source_evidence": "zscore=8.483"
+   },
+   {
+    "source": "Monarch",
+    "edge": "pharosgapkg:ef0400fde8121",
+    "source_evidence": "s2o=48.68"
+   },
+   {
+    "source": "eRAM",
+    "edge": "pharosgapkg:ea1469ed2fc2a",
+    "source_evidence": "upstream_sources=3"
+   }
+  ],
+  "withheld": [],
+  "through_a_drug": [],
+  "drug_paths": 0,
+  "expression_observations": [],
+  "dated": false,
+  "answer": "Apart from GWAS, as of the release: 8 sources assert APOE with this condition (CTD, DisGeNET, JensenLab Knowledge AmyCo, JensenLab Knowledge MedlinePlus, JensenLab Knowledge UniProtKB-KW, JensenLab Text Mining, Monarch, eRAM). This was also read under MONDO:0007088, which has the same name in the sources: a match on the name, not an ontology statement."
  }
 }
 ```
@@ -100,7 +169,10 @@ python -m pharos_gap_kg.ask why TREM2 "Alzheimer disease" --as-of 2012
 ```
 
 > As of 2012 there was no link between TREM2 and Alzheimer disease. One was first reported in 2013.
-> Nothing nearby in the graph points either way.
+> Nothing nearby in the graph points either way. Apart from GWAS, as of the release: 5 sources
+> assert TREM2 with this condition (CTD, DisGeNET, JensenLab Text Mining, Monarch, eRAM). This was
+> also read under MONDO:0007088, which has the same name in the sources: a match on the name, not an
+> ontology statement.
 
 ```bash
 python -m pharos_gap_kg.ask why HLA-B "Parkinson disease"
@@ -109,9 +181,11 @@ python -m pharos_gap_kg.ask why HLA-B "Parkinson disease"
 > There is no link between HLA-B and Parkinson disease in this graph (data to 2023). No link here
 > means no study in this source had reported one by that year. It is not evidence that there is no
 > association. What nearby evidence exists: by this graph's ranking (shared-trait neighbours, traits
-> already linked, and linked genes nearby) HLA-B ranks 16 of 20,152 candidates for this trait. HLA-B is
-> in the MHC region of chromosome 6, where one association signal spans many genes, so a high rank here
-> says little about this gene in particular.
+> already linked, and linked genes nearby) HLA-B ranks 16 of 20,152 candidates for this trait. HLA-B
+> is in the MHC region of chromosome 6, where one association signal spans many genes, so a high
+> rank here says little about this gene in particular. Apart from GWAS, nothing in this graph ties
+> HLA-B to this condition: no disease source asserts the pair, no drug path runs between them, and
+> no expression observation is on record. That is not evidence that there is no association.
 
 ### How are two things related
 
@@ -258,11 +332,134 @@ python -m pharos_gap_kg.ask why TMEM271 "Parkinson disease"
 > means no study in this source had reported one by that year. It is not evidence that there is no
 > association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to this trait;
 > TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie
-> beside a gene with this one.
+> beside a gene with this one. Apart from GWAS, nothing in this graph ties TMEM271 to this
+> condition: no disease source asserts the pair, no drug path runs between them, and no expression
+> observation is on record. That is not evidence that there is no association.
 
 The ranking beat its own tie-breaker in three periods (`findings/COLDSTART.md`,
 `findings/PROSPECTIVE.md`). Because nothing is fitted, asking as of an earlier year is a backtest in
 the plain sense. A target with no link and no linked gene within 500,000 bases is not ranked.
+
+### Beside the dated links: other sources, drugs and expression
+
+The dated GWAS links are one part of the graph. `known`, `why` and `connect` also read the rest, and
+each of their answers ends with it: which of nine disease sources assert a target with a condition,
+which rows a pruning rule withheld and on what count, the drugs that act on a target and what they
+treat, and where a gene's expression differs in a condition. Four things hold for that part.
+
+- **It carries no dates.** It is as of the release, whatever year was asked, and the answer says so.
+- **An expression observation is not an assertion.** It says a gene's expression was higher or lower
+  in a condition, with the fold change and the p-value. It is listed apart from what sources assert.
+- **A drug ties a target to a condition through two edges**, drug to target and drug to indication.
+  The answer says whether the target is the one the release marks as the drug's mechanism of action.
+- **A condition is read under every id that names it**, and the answer lists them with how each is
+  tied: its own id, the current term of a retired id (the ontology's statement), or an id the sources
+  give the same name (a match on the name alone, which the answer points out).
+
+```bash
+python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"
+```
+
+> There is no link between ACHE and Alzheimer disease in this graph (data to 2023). No link here
+> means no study in this source had reported one by that year. It is not evidence that there is no
+> association. What nearby evidence exists: NYAP1, 395,192 bases away, was linked to this trait; by
+> this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby)
+> ACHE ranks 2,147 of 19,794 candidates for this trait. Apart from GWAS, as of the release: 4
+> sources assert ACHE with this condition (CTD, DisGeNET, JensenLab Text Mining, eRAM); 4 drugs that
+> act on ACHE are indicated for it (donepezil, galantamine, rivastigmine, tacrine; for 4 of them
+> ACHE is the mechanism target). This was also read under MONDO:0007088, which has the same name in
+> the sources: a match on the name, not an ontology statement.
+
+Each path names both of its edges:
+
+```json
+{
+ "drug": "donepezil",
+ "drug_id": "DrugCentral:946",
+ "action_on_target": "INHIBITOR",
+ "activity": "Ki=7.8",
+ "target_is_the_drugs_mechanism": true,
+ "edges": [
+  "pharosgapkg:e500c7efb5cdf",
+  "pharosgapkg:eb42774729f80"
+ ]
+}
+```
+
+A row a pruning rule withheld is reported with the rule, what was counted and what would restore it:
+
+```bash
+python -m pharos_gap_kg.ask why MT-RNR1 Tinnitus
+```
+
+> There is no link between MT-RNR1 and Tinnitus in this graph (data to 2023). No link here means no
+> study in this source had reported one by that year. It is not evidence that there is no
+> association. Nothing nearby in the graph points either way. Apart from GWAS, as of the release: 1
+> source asserts MT-RNR1 with this condition (DisGeNET); 1 row from CTD is withheld by a pruning
+> rule (PubMed mentions this gene with this disease no more often than the cut for its source; 0
+> papers mention both, a lift of 0 against a cut of 2.63). This was also read under MESH:D014012,
+> UMLS:C0040264, which have the same name in the sources: a match on the name, not an ontology
+> statement.
+
+```json
+{
+ "source": "CTD",
+ "gap": "pharosgapkg:g5f698fc1434d",
+ "rule": "literature_lift",
+ "why": "PubMed mentions this gene with this disease no more often than the cut for its source",
+ "restored_by": "a lift above the cut for its source, or a second source",
+ "papers_mentioning_both": 0,
+ "lift": 0.0,
+ "cut_for_this_source": 2.626
+}
+```
+
+An expression observation, for a condition that is not a GWAS trait:
+
+```bash
+python -m pharos_gap_kg.ask why SH3D21 "malignant mesothelioma"
+```
+
+> malignant mesothelioma is not a GWAS trait in this graph, so there is no dated link to ask about.
+> Apart from GWAS, as of the release: its expression was higher in this condition in 1 observation
+> and lower in 0. An expression observation says the gene's expression differed in the condition. It
+> does not say the gene is involved in it.
+
+```json
+{
+ "condition_as_the_source_names_it": "malignant mesothelioma",
+ "direction": "higher",
+ "log2_fold_change": 1.6,
+ "p": 2.12e-07,
+ "edge": "pharosgapkg:eb3aeed147972"
+}
+```
+
+A drug, and a drug with a target:
+
+```bash
+python -m pharos_gap_kg.ask known donepezil
+python -m pharos_gap_kg.ask connect donepezil ACHE
+```
+
+> As of the release, donepezil acts on 1 target (ACHE as its mechanism of action) and is indicated
+> for 2 conditions.
+
+> donepezil acts on ACHE as its mechanism of action. Of the 2 condition(s) donepezil is indicated
+> for, a disease source also asserts ACHE with 1. These sources carry no dates: this is as of the
+> release, whatever year was asked.
+
+An indication the release names without an identifier is in the graph under a local id, and says so:
+
+```bash
+python -m pharos_gap_kg.ask known "Anesthesia for cesarean section"
+```
+
+> Anesthesia for cesarean section is not a GWAS trait in this graph, so no dated link is held for
+> it. Apart from GWAS, as of the release: 3 drugs are indicated for it.
+
+`predict` and `whats_new` read the dated links only, and say so when asked about a drug or a
+condition that has none.
 
 ### What does a target lack
 
@@ -331,9 +528,11 @@ For a client configured by JSON:
 
 ## What the bundle is
 
-`python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 12 MB with the gap tables: nodes,
+`python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 20 MB in all: nodes,
 links, the study behind each link, trait lineage, neighbouring genes, the scorer the questions rank by
 with its test on later links and its calibration by rank, the target-level gaps where they have been
-computed, and a manifest with the digest of every file and of every input. The links are every link in the release;
+computed, the merged graph's other parts where it has been built (`python -m pharos_gap_kg.kg build
+pharos319`, then `bundle pharos319 --context-only`), and a manifest with the digest of every file and
+of every input. Each row of the other parts carries the id of its edge or gap in the merged graph. The links are every link in the release;
 "as of 2018" is a filter the questions apply. Where a dated KGX graph has been built, its edges must
 be in the bundle under the same ids or the build refuses.

@@ -85,7 +85,8 @@ def assertions(rows: pd.DataFrame, names: dict, evidence: dict) -> tuple[pd.Data
         mine = rows[rows.type.map(lambda s: ctxgraph.SOURCES[s][0]) == ks]
         ex = Exporter(mapping=ctxgraph.mapping(ks), resolver=resolver, extra_edge_columns=[AGG, EVIDENCE], extra_gap_columns=ctxgraph.EXTRA_GAP, extras=extras)
         for row in mine.to_dict("records"):
-            ex.add(row)
+            if ex.add(row) == "gap" and not str(row["object"]).startswith(ctxgraph.NOT_A_DISEASE):
+                ex.node(row["object"], "biolink:Disease", names.get(row["object"], ""), True)     # a gap runs to the kind of gap; the condition it withheld is a node too
         n, e, g = ex.frames()
         N.append(n), E.append(e), G.append(g)
         merged += ex.merged
@@ -210,17 +211,18 @@ def drug_frames(drugs: pd.DataFrame, dt: pd.DataFrame, di: pd.DataFrame, names: 
 
 # ---- ontology: a retired trait id is the same as its current term ---------------------------------
 
-def current_terms(traits, terms: dict) -> tuple[list[tuple[str, str]], int]:
+def current_terms(traits, terms: dict) -> tuple[list[tuple[str, str]], dict]:
     """(trait as published, its current term) where the ontology retired the id and names a replacement
-    whose kind is declared; and how many replacements were left out for having no declared kind."""
-    pairs, undeclared = [], 0
+    whose kind is declared; and, by vocabulary, the replacements left out for having no declared kind."""
+    pairs, undeclared = [], {}
     for t in sorted(traits):
         c = ontology.canonical(t, terms)
         if c and c != t:
-            if c.split(":", 1)[0] in graph.TRAIT_CATEGORY:
+            v = c.split(":", 1)[0]
+            if v in graph.TRAIT_CATEGORY:
                 pairs.append((t, c))
             else:
-                undeclared += 1
+                undeclared[v] = undeclared.get(v, 0) + 1
     return pairs, undeclared
 
 
@@ -353,8 +355,8 @@ def build(release: str) -> dict:
                           "conditions": int(ea.object.nunique()), "smallest_fold_change": float(ea.log2fc.abs().min()), "largest_p": float(ea.p.max()), "floor": FLOOR},
            "drugs": {**counts, "drug_target_edges": int((de[f"{PREFIX}:source_edge_type"] == DRUG_TARGET).sum()), "drug_indication_edges": int((de[f"{PREFIX}:source_edge_type"] == DRUG_INDICATION).sum())},
            "target_gaps": {"gaps": len(tg), "by_type": {k: int(v) for k, v in tg[f"{PREFIX}:gap_type"].value_counts().items()}},
-           "ontology": {"sha256": graph.file_sha(efo), "traits": len(traits), "traits_retired_and_replaced": len(pairs) + undeclared, "same_as_edges": len(oe),
-                        "replacements_with_no_declared_kind": undeclared},
+           "ontology": {"sha256": graph.file_sha(efo), "traits": len(traits), "traits_retired_and_replaced": len(pairs) + sum(undeclared.values()), "same_as_edges": len(oe),
+                        "replacements_with_no_declared_kind": sum(undeclared.values()), "replacements_with_no_declared_kind_by_vocabulary": undeclared},
            "conditions": len(conditions),
            "traits_that_reach_another_part": {"under_their_own_id": len(by_id), "through_their_current_term": len(by_term), "by_a_cross_reference_only_and_not_joined": len(by_xref),
                                               "joined": len(by_id) + len(by_term)},
@@ -381,6 +383,7 @@ def _selftest() -> int:
     ev = pd.DataFrame([("UniProtKB:A", "MONDO:1", "DisGeNET", "score", 0.3), ("UniProtKB:A", "MONDO:1", "DisGeNET", "pubmed_ids", 4.0), ("UniProtKB:A", "MONDO:1", "CTD", "therapeutic", 0.0)],
                       columns=["target", "disease", "source", "field", "value"])
     an, ae, ag, _ = assertions(rows, names, evidence_text(ev))
+    ck("the condition a withheld row names is a node, though the gap's edge runs to the kind of gap", "MONDO:2" in set(an.id) and "MONDO:2" not in set(ag.object))
     ck("an assertion carries the source's own evidence, and a withheld row is a gap with what was counted",
        sorted(ae[EVIDENCE]) == ["pubmed_ids=4; score=0.3", "therapeutic=0"] and len(ag) == 1 and ag[ctxgraph.LIFT].tolist() == ["1.2"])
     try:
@@ -449,7 +452,7 @@ name: an attribute
     pairs, undeclared = current_terms(["EFO:1", "EFO:2", "EFO:3"], terms)
     on, oe, og = ontology_frames(pairs, {"EFO:1": "old name"}, terms)
     ck("a retired trait id is tied to its current term by same_as; a live id is not; a replacement of no declared kind is counted",
-       pairs == [("EFO:1", "MONDO:1")] and undeclared == 1 and oe.predicate.tolist() == ["biolink:same_as"] and (oe.subject[0], oe.object[0]) == ("EFO:1", "MONDO:1")
+       pairs == [("EFO:1", "MONDO:1")] and undeclared == {"OBA": 1} and oe.predicate.tolist() == ["biolink:same_as"] and (oe.subject[0], oe.object[0]) == ("EFO:1", "MONDO:1")
        and set(oe[f"{PREFIX}:source_edge_type"]) == {""} and on.set_index("id").name.to_dict() == {"EFO:1": "old name", "MONDO:1": "a disease"})
     # the merged graph passes conformance, every row accounted for, one node per id
     nodes, edges, gaps = merge({"assertions": (an, ae, ag), "expression": (xn, xe, xg), "drugs": (dn, de, dg), "ontology": (on, oe, og)})

@@ -12,6 +12,11 @@ these files and their digests:
                          candidate at each rank was later reported, and the baselines on the 2018 split
     target_gaps.*        what each target lacks for the next development level, and how often targets in
                          each band were promoted in the back-test (where `tgaps` has been run)
+    assertions.parquet, expression.parquet, drug_targets.parquet, drug_indications.parquet,
+    context_nodes.parquet
+                         the merged graph's other parts (where `kg` has built it): which sources assert
+                         a target with a condition and which rows a rule withheld, expression
+                         observations, drugs, and the conditions and drugs those name
     manifest.json        the inputs' digests, each file's digest, and the counts
 
 The links are every link in the release, whatever its year. "As of 2018" is a filter the front end
@@ -20,6 +25,7 @@ and where a dated graph has been built its edges must be among these under the s
 
 Run:  python -m pharos_gap_kg.bundle pharos319
       python -m pharos_gap_kg.bundle pharos319 --backtest-only     # refresh backtest.json in a built bundle
+      python -m pharos_gap_kg.bundle pharos319 --context-only      # add the merged graph's other parts to a built bundle
       python -m pharos_gap_kg.bundle --selftest
 """
 from __future__ import annotations
@@ -29,6 +35,7 @@ import re
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 from kgx_gaps import conformance
@@ -37,6 +44,74 @@ from pharos_gap_kg import context, graph, ontology, paths, position, pubyear, re
 
 FILES = ["nodes.parquet", "links.parquet", "evidence.parquet", "lineage.parquet", "neighbours.parquet"]
 GAP_FILES = ["target_gaps.parquet", "target_gaps.json"]
+CONTEXT_FILES = ["context_nodes.parquet", "assertions.parquet", "expression.parquet", "drug_targets.parquet", "drug_indications.parquet"]
+
+
+def context_tables(nodes: pd.DataFrame, edges: pd.DataFrame, gaps: pd.DataFrame, traits: set) -> dict[str, pd.DataFrame]:
+    """The merged graph's other parts as the tables the questions read, each row with the id of its edge
+    or gap. `traits` are the GWAS traits the bundle's node table already holds."""
+    P = graph.PREFIX
+    part, src = f"{P}:part", f"{P}:source_edge_type"
+    num = lambda s: pd.to_numeric(s, errors="coerce")
+    a, w = edges[edges[part] == "assertions"], gaps[gaps[part] == "assertions"]
+    kept = pd.DataFrame({"target": a.subject, "condition": a.object, "source": a[src], "edge": a.id, "withheld": False, "rule": "",
+                         "papers": np.nan, "lift": np.nan, "cut": np.nan, "evidence": a[f"{P}:source_evidence"]})
+    held = pd.DataFrame({"target": w.subject, "condition": w[f"{P}:withheld_object"], "source": w[src], "edge": w.id, "withheld": True, "rule": w[f"{P}:rule"],
+                         "papers": num(w[f"{P}:papers_mentioning_both"]), "lift": num(w[f"{P}:lift"]), "cut": num(w[f"{P}:lift_cut"]), "evidence": ""})
+    x = edges[edges[part] == "expression"]
+    d = edges[edges[part] == "drugs"]
+    dt, di = d[d[src] == "drug_target"], d[d[src] == "drug_indication"]
+    other = nodes[~nodes.category.isin(["biolink:Protein", f"{P}:KnowledgeGap"]) & ~nodes.id.isin(traits)]
+    return {
+        "context_nodes": pd.DataFrame({"id": other.id, "kind": np.where(other.category == "biolink:Drug", "drug", "condition"), "category": other.category, "name": other.name,
+                                       "grounded": other.id_grounded.astype(str).str.lower() == "true", "xref": other.xref}).sort_values("id"),
+        "assertions": pd.concat([kept, held], ignore_index=True).sort_values(["target", "condition", "source"]),
+        "expression": pd.DataFrame({"target": x.subject, "condition": x.object, "label": x[f"{P}:context"], "log2fc": num(x[f"{P}:effect_size"]), "p": num(x[f"{P}:p_value"]),
+                                    "edge": x.id}).sort_values(["target", "condition", "label"]),
+        "drug_targets": pd.DataFrame({"drug": dt.subject, "target": dt.object, "action": dt[f"{P}:action_type"], "mechanism": dt[f"{P}:mechanism_of_action"] == "true",
+                                      "activity": dt[f"{P}:activity"], "source": dt[f"{P}:activity_source"], "edge": dt.id}).sort_values(["drug", "target"]),
+        "drug_indications": pd.DataFrame({"drug": di.subject, "condition": di.object, "edge": di.id}).sort_values(["drug", "condition"]),
+    }
+
+
+def context_files(release: str, out: Path) -> tuple[list[str], dict | None]:
+    """Write what the questions read of the merged graph's other parts, where `kg` has built it, and
+    return the files written and what they hold. The graph is read only if it is the one its record describes."""
+    g = paths.GRAPH / release
+    rec = g / "graph.json"
+    if not rec.is_file():
+        return [], None
+    man = json.loads(rec.read_text())
+    for k, want in man["files"].items():
+        if graph.file_sha(g / f"{k}.tsv") != want:
+            raise SystemExit(f"REFUSED: {g / (k + '.tsv')} is not the file {rec} describes; build the merged graph again:  python -m pharos_gap_kg.kg build {release}")
+    rd = lambda k: pd.read_csv(g / f"{k}.tsv", sep="\t", dtype=str, keep_default_na=False)
+    traits = set(pd.read_parquet(out / "nodes.parquet", columns=["id", "kind"]).query("kind == 'trait'").id)
+    T = context_tables(rd("nodes"), rd("edges"), rd("gaps"), traits)
+    for name, df in T.items():
+        df.reset_index(drop=True).to_parquet(out / f"{name}.parquet", index=False)
+    a = T["assertions"]
+    what = {"merged_graph": man["files"], "conditions": int((T["context_nodes"].kind == "condition").sum()), "drugs": int((T["context_nodes"].kind == "drug").sum()),
+            "assertions": int((~a.withheld).sum()), "withheld": int(a.withheld.sum()), "sources": int(a.source.nunique()), "expression": len(T["expression"]),
+            "drug_targets": len(T["drug_targets"]), "drug_indications": len(T["drug_indications"]), "graph_edges": man["edges"], "graph_gaps": man["gaps"], "graph_nodes": man["nodes"]}
+    return list(CONTEXT_FILES), what
+
+
+def add_context(release: str) -> dict:
+    """Add the merged graph's other parts to a bundle that is already built, and record them in its manifest."""
+    out = paths.bundle(release)
+    mf = out / "manifest.json"
+    if not mf.is_file():
+        raise SystemExit(f"no bundle at {out}; build one with:  python -m pharos_gap_kg.bundle {release}")
+    files, what = context_files(release, out)
+    if not files:
+        raise SystemExit(f"no merged graph to read; build it with:  python -m pharos_gap_kg.kg build {release}")
+    man = json.loads(mf.read_text())
+    man["files"].update({f: graph.file_sha(out / f) for f in files})
+    man["context"] = what
+    mf.write_text(json.dumps(man, indent=1) + "\n")
+    (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
+    return man
 
 
 def gap_files(release: str, out: Path) -> list[str]:
@@ -339,6 +414,10 @@ def build(release: str) -> dict:
     }
     if GAP_FILES[0] in files:
         man["target_gaps"] = int(len(pd.read_parquet(out / GAP_FILES[0])))
+    cfiles, what = context_files(release, out)
+    if cfiles:
+        man["files"].update({f: graph.file_sha(out / f) for f in cfiles})
+        man["context"] = what
     (out / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     (paths.DOCS_DATA / f"bundle_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
     return man
@@ -391,6 +470,12 @@ def main(argv: list[str] | None = None) -> int:
     if len(argv) == 2 and argv[1] == "--gaps-only":
         man = add_gaps(argv[0])
         print(f"{man['release']}: {man['target_gaps']:,} target-level gaps added to {paths.bundle(man['release'])}")
+        return 0
+    if len(argv) == 2 and argv[1] == "--context-only":
+        man = add_context(argv[0])
+        c = man["context"]
+        print(f"{man['release']}: {c['assertions']:,} assertions and {c['withheld']:,} withheld rows from {c['sources']} sources, {c['expression']:,} expression observations, "
+              f"{c['drugs']:,} drugs ({c['drug_targets']:,} target and {c['drug_indications']:,} indication edges), {c['conditions']:,} more conditions added to {paths.bundle(man['release'])}")
         return 0
     if len(argv) == 2 and argv[1] == "--backtest-only":
         man = refresh_backtest(argv[0])

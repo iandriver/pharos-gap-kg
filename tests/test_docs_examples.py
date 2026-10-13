@@ -95,7 +95,9 @@ def test_targets_with_no_link(G):
     w = G.why("TMEM271", "Parkinson disease")
     assert w["answer"] == ("There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here means no study in this source had reported "
                            "one by that year. It is not evidence that there is no association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to "
-                           "this trait; TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie beside a gene with this one.")
+                           "this trait; TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie beside a gene with this one. "
+                           "Apart from GWAS, nothing in this graph ties TMEM271 to this condition: no disease source asserts the pair, no drug path runs between them, "
+                           "and no expression observation is on record. That is not evidence that there is no association.")
     assert "same association signal" in u["caveat"] and "same association signal" in d["caveat"]
 
 
@@ -122,3 +124,25 @@ def test_gaps(G):
     assert "not the same as learning its function" in d["reading"]
     if G.tg_rates.get("graph"):
         assert d["gaps"][0]["graph_edge"] == "pharosgapkg:g46b1570d5751" and G.tg_rates["graph"]["gaps"] == 23236
+
+
+def test_the_other_sources_as_the_guide_quotes_them(G):
+    """Every answer the guide quotes for the merged graph's other parts is the answer the code gives."""
+    import re
+    if not G.has_others:
+        pytest.skip("the bundle does not hold the merged graph's other parts")
+    doc = re.sub(r"\s+", " ", (paths.ROOT / "docs" / "ASK.md").read_text().replace("\n> ", " "))
+    said = [G.status()["answer"], G.why("TREM2", "Alzheimer disease", as_of=2012)["answer"], G.why("HLA-B", "Parkinson disease")["answer"], G.why("TMEM271", "Parkinson disease")["answer"],
+            G.why("ACHE", "Alzheimer disease")["answer"], G.why("MT-RNR1", "Tinnitus")["answer"], G.why("SH3D21", "malignant mesothelioma")["answer"],
+            G.known("donepezil")["answer"], G.connect("donepezil", "ACHE")["answer"], G.known("Anesthesia for cesarean section")["answer"]]
+    for a in said:
+        assert re.sub(r"\s+", " ", a) in doc, f"the guide no longer quotes: {a[:90]}"
+    w = G.why("ACHE", "Alzheimer disease")["other_sources"]
+    assert [p["drug"] for p in w["through_a_drug"]] == ["donepezil", "galantamine", "rivastigmine", "tacrine"] and all(p["target_is_the_drugs_mechanism"] and len(p["edges"]) == 2 for p in w["through_a_drug"])
+    assert [t["tie"] for t in w["read_under"]] == ["as published", "the sources give it the same name"]
+    h = G.why("MT-RNR1", "Tinnitus")["other_sources"]["withheld"]
+    assert len(h) == 1 and h[0]["source"] == "CTD" and h[0]["rule"] == "literature_lift" and h[0]["papers_mentioning_both"] == 0 and h[0]["gap"].startswith("pharosgapkg:g")
+    x = G.why("SH3D21", "malignant mesothelioma")
+    assert x["found"] is False and x["other_sources"]["expression_observations"][0]["direction"] == "higher" and not x["other_sources"]["asserted_by"]
+    assert G.predict("donepezil")["problem"] == "no dated links" and G.whats_new("donepezil", 2015)["problem"] == "no dated links"
+    assert G.known("ACHE")["node"]["symbol"] == "ACHE" and "Ache" in G.known("ACHE")["note"] and G.known("Ache")["node"]["kind"] == "condition"
