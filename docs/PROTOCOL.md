@@ -1287,3 +1287,58 @@ tool in this round (15,691 against 4,816 on average); that is reported and not c
 
 The evaluation set is generated and frozen next, and no model has seen it. The development round cost
 0.23 of the 0.60 dollars.
+
+**13 Oct 2026, one graph, and each source exported as what it asserts. Written before the merged
+graph was built or any question read it.**
+
+Why. Three exports exist (the dated links as of 2018, the disease sources, the target-level gaps),
+with separate node files, and the questions read only the dated links and the target gaps. The dated
+links after 2018 are in no KGX file. And two of the three sources that no pruning rule reaches are
+not exported as what the release says they are. Looked up in the release's own tables on 13 Oct:
+
+- *DrugCentral Indication.* All 13,919 rows name a drug. Each is a row of the release's drug-activity
+  table (a drug with a measured or stated action on a target) joined to an indication of that drug:
+  10,327 through a target the release marks as the drug's mechanism of action, 3,592 through another
+  activity. 7,738 rows name the indication without an identifier, and they are every disease row
+  `ctxtables` leaves out for having none.
+- *Expression Atlas.* All 159,846 rows carry a log2 fold change of at least 1.0 in size and a p-value
+  below 0.05, over 142 conditions. The export carries neither.
+
+These counts are a look. The build recomputes each and writes it to its record; a difference is
+reported here as a dated note.
+
+What changes.
+
+1. *One export*, `data/graph/<release>/`, with one node file: every dated GWAS link of the release
+   with its first year, studies and papers; the disease-source assertions; the expression
+   observations; the drug edges; every withheld row as a gap; every target-level gap. It is written
+   only if it passes all ten conformance checks, and every input row is an edge or a gap. The three
+   earlier exports stay as built. The graph as of 2018 is the training graph of the 2018 test and
+   stays pinned to that split's digest.
+2. *DrugCentral Indication* is no longer a direct edge from target to disease. It is two edges
+   through a drug node (`DrugCentral:<id>`, category `biolink:Drug`): drug to target
+   (`biolink:directly_physically_interacts_with`, carrying the release's action type and whether the
+   target is the drug's mechanism of action) and drug to indication (`biolink:treats`). An
+   indication with no identifier is a node under the local prefix, flagged as not grounded. The
+   target and disease pair is the path, and an answer that reports it says whether it runs through
+   the drug's mechanism target.
+3. *Expression Atlas* stays `biolink:correlated_with` and gains what the release measured: the
+   subject aspect `expression`, a direction from the sign, the fold change as the effect size, the
+   p-value, and the source's own name for the condition as context. Its floor is 0.999: the release
+   holds no row below 1.0 at three decimals, so a pair that is absent may have a fold change up to
+   that size. This is the release's inclusion rule and not a statement of any experiment's power.
+4. *The other nine sources* keep their mapping. A kept edge also carries the source's own evidence
+   field where the release gives one.
+5. *The questions* read the merged tables. `known` and `why` report, beside the dated GWAS links,
+   which sources assert a pair, which rows are withheld and by which rule with what was counted, the
+   drugs that act on a target with their indications, and expression observations in a list of
+   their own, apart from the assertions. `connect` may pass through a drug. `predict` is unchanged:
+   the tested scorer reads the dated links only.
+
+What does not change. The pruning tests and their results stand as measured on the pair table of
+the eleven sources, and so does "three sources are out of reach of every rule tried". Nothing here
+prunes them. No withheld row belongs to either remodelled source, and the build refuses if one
+does. A pair reached through a target that is not the drug's mechanism is flagged and not withheld:
+no planted-pair test of that flag has been run, and a planted pair has no drug. The context arm's
+result, the fitted models and every scored test split are untouched. The usability results on
+record are of the question layer as it was before this change.
