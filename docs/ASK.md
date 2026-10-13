@@ -331,7 +331,7 @@ For a client configured by JSON:
 
 ## What the bundle is
 
-`python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 11 MB: nodes,
+`python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 12 MB with the gap tables: nodes,
 links, the study behind each link, trait lineage, neighbouring genes, the scorer the questions rank by
 with its test on later links and its calibration by rank, the target-level gaps where they have been
 computed, and a manifest with the digest of every file and of every input. The links are every link in the release;
