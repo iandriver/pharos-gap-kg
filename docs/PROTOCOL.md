@@ -1342,3 +1342,14 @@ does. A pair reached through a target that is not the drug's mechanism is flagge
 no planted-pair test of that flag has been run, and a planted pair has no drug. The context arm's
 result, the fitted models and every scored test split are untouched. The usability results on
 record are of the question layer as it was before this change.
+
+**13 Oct 2026, the merged graph, after its first build and before any question read it.** The build
+reproduced each count of the note above (`docs/data/graph_pharos319.json`). It also showed what the
+note had not looked at: of the 2,247 GWAS traits, 41 share an identifier with a condition in the
+other parts. The GWAS table names its traits by EFO ids, most of the disease sources by MONDO ids,
+and the ontology has since retired many of those EFO ids in favour of the MONDO term. Added: for a
+GWAS trait whose id the ontology has retired and replaced, one `biolink:same_as` edge from the trait
+as published to its current term, on the ontology's own `replaced_by` statement. Edge ids and node
+ids of the dated links do not change. A trait tied to another vocabulary only by a cross-reference
+is counted and not joined: a cross-reference is not a statement that two terms are one. The questions
+look a trait up in the other parts under its own id and its current term.
