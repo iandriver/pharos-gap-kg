@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from pathlib import Path
 
 import pandas as pd
 from kgx_gaps import Mapping, conformance
@@ -85,7 +86,8 @@ def export(gap_rows: list[dict], names: dict) -> tuple[pd.DataFrame, pd.DataFram
     return n, e, g, ex.merged
 
 
-def build(release: str) -> dict:
+def load_rows(release: str) -> tuple[list[dict], dict, dict, Path]:
+    """One row per target-level gap, the target names, the summary the rows were read with, and its file."""
     C, summary_file = paths.context(release), paths.DOCS_DATA / f"target_gaps_{release}.json"
     if not summary_file.is_file():
         raise SystemExit(f"no target-level gaps; run:  python -m pharos_gap_kg.tgaps {release}")
@@ -97,7 +99,11 @@ def build(release: str) -> dict:
     names = {f"UniProtKB:{u}": (s if isinstance(s, str) and s else u) for u, s in zip(lig.uniprot, lig.sym)}
     names.update({f"UniProtKB:{u}": (s if isinstance(s, str) and s else u) for u, s in zip(dark.uniprot, dark.sym)})
     spans = f"{release_name(release)} to Pharos 4.0.0 (May 2026)"
-    gap_rows = rows(dark, lig, summary, spans)
+    return rows(dark, lig, summary, spans), names, summary, summary_file
+
+
+def build(release: str) -> dict:
+    gap_rows, names, summary, summary_file = load_rows(release)
     nodes, edges, gaps, merged = export(gap_rows, names)
     rep = conformance.check(nodes, edges, gaps, mapping(), n_input_rows=len(gap_rows), n_merged=merged)
     if not rep.passed or rep.n_skipped:

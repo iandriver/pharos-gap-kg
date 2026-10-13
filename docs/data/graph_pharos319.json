@@ -1,0 +1,147 @@
+{
+ "release": "pharos319",
+ "source_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
+ "target_gaps_summary_sha256": "f327cb58088d99e2270a9448e5d0ffe7aa89d313f6baaa163119916f158e41d3",
+ "rows": 650258,
+ "merged": 0,
+ "nodes": 38653,
+ "edges": 620168,
+ "gaps": 30484,
+ "node_categories": {
+  "biolink:Protein": 20412,
+  "biolink:Disease": 13301,
+  "biolink:DiseaseOrPhenotypicFeature": 3043,
+  "biolink:Drug": 1782,
+  "biolink:PhenotypicFeature": 75,
+  "biolink:BiologicalProcess": 35,
+  "pharosgapkg:KnowledgeGap": 3,
+  "biolink:PhenotypicQuality": 2
+ },
+ "nodes_not_grounded": 982,
+ "edges_by_part": {
+  "links": 295327,
+  "expression": 159846,
+  "assertions": 154363,
+  "drugs": 10238,
+  "ontology": 394
+ },
+ "gaps_by_part": {
+  "target_gaps": 23236,
+  "assertions": 7248
+ },
+ "predicates": {
+  "biolink:genetically_associated_with": 295327,
+  "biolink:correlated_with": 159846,
+  "biolink:gene_associated_with_condition": 154363,
+  "biolink:treats": 5943,
+  "biolink:directly_physically_interacts_with": 4295,
+  "biolink:same_as": 394
+ },
+ "edge_categories": {
+  "biolink:GeneToDiseaseAssociation": 314209,
+  "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation": 294248,
+  "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation": 5943,
+  "biolink:ChemicalGeneInteractionAssociation": 4295,
+  "biolink:Association": 1473
+ },
+ "knowledge_sources": {
+  "infores:tiga": 295327,
+  "infores:expression-atlas": 159846,
+  "infores:disgenet": 82453,
+  "infores:ctd": 28815,
+  "infores:diseases": 14749,
+  "infores:eram": 14263,
+  "infores:drugcentral": 10238,
+  "infores:monarchinitiative": 8628,
+  "infores:uniprot": 5455,
+  "infores:efo": 394
+ },
+ "links": {
+  "rows": 295327,
+  "first_year": 2005,
+  "latest_year": 2023
+ },
+ "assertions": {
+  "rows": 161611,
+  "edges": 154363,
+  "gaps": 7248,
+  "edges_by_source": {
+   "DisGeNET": 82453,
+   "CTD": 28815,
+   "eRAM": 14263,
+   "Monarch": 8628,
+   "JensenLab Text Mining": 7394,
+   "UniProt Disease": 5455,
+   "JensenLab Knowledge MedlinePlus": 4004,
+   "JensenLab Knowledge UniProtKB-KW": 3091,
+   "JensenLab Knowledge AmyCo": 260
+  },
+  "gaps_by_source": {
+   "CTD": 5982,
+   "Monarch": 796,
+   "JensenLab Knowledge UniProtKB-KW": 273,
+   "JensenLab Knowledge MedlinePlus": 103,
+   "UniProt Disease": 94
+  },
+  "gaps_by_rule": {
+   "literature_lift": 6739,
+   "literature_lift|uncorroborated": 260,
+   "uncorroborated": 245,
+   "not_a_disease": 4
+  },
+  "edges_with_the_source's_own_evidence": 141553
+ },
+ "expression": {
+  "rows": 159846,
+  "edges": 159846,
+  "increased": 79696,
+  "decreased": 80150,
+  "conditions_as_named": 142,
+  "conditions": 107,
+  "smallest_fold_change": 1.0,
+  "largest_p": 0.0499961404152724,
+  "floor": 0.999
+ },
+ "drugs": {
+  "indication_rows": 13919,
+  "through_the_mechanism_target": 10327,
+  "through_another_activity": 3592,
+  "indication_rows_without_an_id": 7738,
+  "indications": 1444,
+  "indications_not_grounded": 979,
+  "drugs": 1782,
+  "drugs_with_an_indication": 1566,
+  "activity_rows": 4436,
+  "mechanism_pairs": 3356,
+  "drug_target_edges": 4295,
+  "drug_indication_edges": 5943
+ },
+ "target_gaps": {
+  "gaps": 23236,
+  "by_type": {
+   "no_qualifying_compound": 17737,
+   "below_tbio_evidence": 5499
+  }
+ },
+ "ontology": {
+  "sha256": "1f7bdc48b91c17cd98742d8c0fca77d576d4d74998efd643e51b1b49602ca49c",
+  "traits": 2247,
+  "traits_retired_and_replaced": 720,
+  "same_as_edges": 394,
+  "replacements_with_no_declared_kind": 326
+ },
+ "conditions": 16459,
+ "traits_that_reach_another_part": {
+  "under_their_own_id": 41,
+  "through_their_current_term": 305,
+  "by_a_cross_reference_only_and_not_joined": 13,
+  "joined": 346
+ },
+ "targets_in_more_than_one_part": 19271,
+ "conformance": "10 of 10 checks passed",
+ "files": {
+  "nodes": "7d944061118a35ca40579c531099619b07ad6e07abc8c799b173a3b26f73f391",
+  "edges": "b5d39e6c75d5a14f91555ea93c63f68c8f4f0c1e4bd7389ca3123c48283daebc",
+  "gaps": "64f783d3d4e0b03eff286a1cbd32d46ce3a395db0996ab6406b1225818c8ded6"
+ }
+}

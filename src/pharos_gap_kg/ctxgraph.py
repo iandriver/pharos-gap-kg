@@ -77,6 +77,15 @@ def figure(v, integer: bool = False) -> str:
     return str(int(v)) if integer else format(float(v), ".4g")
 
 
+def gap_extras(row: dict) -> dict:
+    """What a withheld row carries beside its reason: which disease, which rule, what restores it, what was counted."""
+    rules = rules_of(row)
+    counted = "literature_lift" in rules
+    return {"aggregator_knowledge_source": graph.AGGREGATOR, WITHHELD_OBJECT: row["object"], f"{PREFIX}:rule": "|".join(rules),
+            f"{PREFIX}:restored_by": "; or ".join(RULES[r][1] for r in rules),
+            PAPERS: figure(row.get("papers"), integer=True) if counted else "", LIFT: figure(row.get("lift")) if counted else "", CUT: figure(row.get("cut")) if counted else ""}
+
+
 def mapping(ks: str) -> Mapping:
     m = Mapping(prefix=PREFIX, knowledge_source=ks, gap_identity_columns=[WITHHELD_OBJECT])
     for s, (k, pred, level, agent) in SOURCES.items():
@@ -100,13 +109,7 @@ def export(rows: pd.DataFrame, names: dict) -> tuple[pd.DataFrame, pd.DataFrame,
         return label, "biolink:Disease", True, names.get(label, "")
 
     def extras(row, kind):
-        if kind == "edge":
-            return {"aggregator_knowledge_source": graph.AGGREGATOR}
-        rules = rules_of(row)
-        counted = "literature_lift" in rules
-        return {"aggregator_knowledge_source": graph.AGGREGATOR, WITHHELD_OBJECT: row["object"], f"{PREFIX}:rule": "|".join(rules),
-                f"{PREFIX}:restored_by": "; or ".join(RULES[r][1] for r in rules),
-                PAPERS: figure(row.get("papers"), integer=True) if counted else "", LIFT: figure(row.get("lift")) if counted else "", CUT: figure(row.get("cut")) if counted else ""}
+        return {"aggregator_knowledge_source": graph.AGGREGATOR} if kind == "edge" else gap_extras(row)
 
     N, E, G, merged = [], [], [], 0
     for ks in sorted({v[0] for v in SOURCES.values()}):
@@ -124,7 +127,8 @@ def export(rows: pd.DataFrame, names: dict) -> tuple[pd.DataFrame, pd.DataFrame,
     return nodes, pd.concat(E, ignore_index=True), pd.concat(G, ignore_index=True), merged
 
 
-def build(release: str) -> dict:
+def load_rows(release: str) -> tuple[pd.DataFrame, dict]:
+    """Every row of the disease-source table as subject, object, type and whether a rule withheld it; and node names."""
     C = paths.context(release)
     links = pd.read_parquet(C / "disease_links.parquet")
     wp = C / "disease_links_withheld.parquet"
@@ -145,6 +149,12 @@ def build(release: str) -> dict:
     dz["id"] = [ctxtables.disease_id(m, x) for m, x in zip(dz.mondoid, dz.did)]
     best = dz.dropna(subset=["id"]).groupby(["id", "name"]).size().reset_index(name="n").sort_values(["id", "n", "name"], ascending=[True, False, True])
     names.update({i: graph.repair(n) for i, n in zip(best.drop_duplicates("id").id, best.drop_duplicates("id").name)})
+    return rows, names
+
+
+def build(release: str) -> dict:
+    rows, names = load_rows(release)
+    d = paths.tables(release)
     nodes, edges, gaps, merged = export(rows, names)
     rep = conformance.check(nodes, edges, gaps, mapping("infores:disgenet"), n_input_rows=len(rows), n_merged=merged)
     if not rep.passed or rep.n_skipped:

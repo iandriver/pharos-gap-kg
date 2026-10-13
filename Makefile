@@ -36,6 +36,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.fulltext --selftest
 	$(PY) -m pharos_gap_kg.tgaps --selftest
 	$(PY) -m pharos_gap_kg.tgapgraph --selftest
+	$(PY) -m pharos_gap_kg.kg --selftest
 	$(PY) -m pharos_gap_kg.combine --selftest
 	$(PY) -m pharos_gap_kg.rehearse --selftest
 	$(PY) -m pharos_gap_kg.coldstart --selftest
