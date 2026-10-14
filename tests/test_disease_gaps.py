@@ -139,3 +139,26 @@ def test_what_it_refuses_and_what_it_leaves_alone(G):
     assert G.gaps("Parkinson disease", kind="nope")["problem"] == "no such kind" and "does not apply" in G.gaps(disease="malignant mesothelioma", kind="locus_not_resolved")["answer"]
     later = [x for x in G.gaps("Alzheimer disease", as_of=2010, top=25)["gaps"][3]["top"] if "gwas_link_first_reported_later" in x]
     assert all(x["gwas_link_first_reported_later"] > 2010 for x in later)
+
+
+def test_the_tables_built_without_the_question_layer_agree_with_it(G):
+    """`gaptables` computes every disease trait and condition at once and imports none of the question
+    layer. Forty disease traits and forty conditions, drawn with a fixed seed, must read the same."""
+    import random
+
+    from pharos_gap_kg import diseasegaps, gaptables
+    rng = random.Random(20261013)
+    traits = rng.sample([int(i) for i in np.flatnonzero(G.d.disease_like.to_numpy())], 40)
+    conds = rng.sample(sorted(G.others.groups), 40)
+    s = gaptables.build(gaptables.read(B), only={G.d.id[i] for i in traits} | set(conds))["disease_gap_summary"].set_index("condition_id")
+    same = lambda a, b: (a is None and (b is None or pd.isna(b))) or (a is not None and b is not None and not pd.isna(b) and (a == b or float(a) == float(b)))
+    for r in [{"kind": "trait", "i": i} for i in traits] + [{"kind": "condition", "key": c} for c in conds]:
+        o = diseasegaps.for_condition(G, r, G.latest, top=1)
+        h, n, row = o["holds"], o["counts"], s.loc[G.d.id[r["i"]] if r["kind"] == "trait" else r["key"]]
+        f = (next((g for g in o["gaps"] if g["kind"] == "no_genetic_support"), {}).get("what_an_absent_link_could_have_seen") or {}).get("largest") or {}
+        pairs = [(h["tied_genes"], row.genes_tied), (h["gwas_linked_genes"], row.genes_with_a_gwas_link), (h["genes_asserted_by_two_or_more_sources"], row.genes_asserted_by_two_or_more_sources),
+                 (h["genes_asserted_by_one_source_only"], row.genes_asserted_by_one_source_only), (h["drugs_indicated"], row.drugs_indicated),
+                 (h["genes_that_are_the_mechanism_target_of_one"], row.genes_that_are_a_mechanism_target), (n["no_compound"], row.no_compound), (n["dark"], row.dark),
+                 (n.get("locus_not_resolved"), row.loci_not_resolved), (n.get("no_genetic_support"), row.no_genetic_support), (n["withheld"], row.withheld_rows), (n["observed_only"], row.observed_only),
+                 (f.get("study"), row.largest_study), (f.get("smallest_odds_ratio_it_could_find"), row.smallest_odds_ratio_it_could_find)]
+        assert all(same(a, b) for a, b in pairs), (o["condition"], pairs)
