@@ -79,6 +79,12 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   34, 32 and 35 with SQL (+0.029 [-0.019, +0.086] of a question, not shown better) and 0 with no tool.
   Its development round found that the server did not say which question gives one named target's
   rank; that was fixed before the evaluation questions were written.
+  The other sources, the drugs and the gaps of a disease were tested the same way on 13 Oct: 34, 35
+  and 35 of 35 through the typed questions, 28, 34 and 35 with SQL (+0.067 [+0.019, +0.124], six of
+  the seven answers that differ being one model's) and 0, 0 and 1 with no tool. Every typed answer a
+  model gave was right; the one miss is a question a provider refused. Its development round found
+  that `find`, asked for a condition, did not look among diseases that are GWAS traits; that was
+  fixed before the evaluation questions were written.
 
 - **Context** ([`findings/ENRICH.md`](findings/ENRICH.md)). Interactions, pathways, GO terms, compounds
   and eleven disease sources, each scored alone and blended with the neighbour score. Each carries

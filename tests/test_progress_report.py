@@ -56,7 +56,8 @@ def test_the_graphs(T):
 
 
 def test_usability(T):
-    rows = {"usability_results_eval.json": "the first seven questions", "usability_results_gaps.json": "target-level gaps", "usability_results_rank.json": "rankings and their rates"}
+    rows = {"usability_results_eval.json": "the first seven questions", "usability_results_gaps.json": "target-level gaps", "usability_results_rank.json": "rankings and their rates",
+            "usability_results_new.json": "other sources, drugs and the gaps of a disease"}
     typed = []
     for f, name in rows.items():
         u = J(f)
@@ -66,9 +67,11 @@ def test_usability(T):
         typed += [u["cells"][f"{m}|typed"]["correct"] for m in MODELS]
         assert not any(v["fabricated"] for v in u["cells"].values())
     assert set(typed) == {34, 35}
-    e, g, r = (J(f)["pooled_typed_minus_sql"] for f in rows)
-    assert [J(f)["verdicts"]["typed_better_than_sql"] for f in rows] == [True, False, False]
-    has(T, f"beat SQL on the first set ({iv3(e)})", iv3(g), iv3(r))
+    e, g, r, n = (J(f)["pooled_typed_minus_sql"] for f in rows)
+    assert [J(f)["verdicts"]["typed_better_than_sql"] for f in rows] == [True, False, False, True]
+    has(T, f"beat SQL on the first set ({iv3(e)}) and on the fourth ({iv3(n)})", iv3(g), iv3(r), "on four separate frozen task sets")
+    by_model = J("usability_results_new.json")["typed_minus_sql"]
+    assert sorted(v["a_only"] for v in by_model.values()) == [0, 1, 6] and not any(v["b_only"] for v in by_model.values()) and "six of the seven answers that differ are one model's" in T
 
 
 def test_pruning(T):

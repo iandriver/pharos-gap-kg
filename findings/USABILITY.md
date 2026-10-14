@@ -231,3 +231,94 @@ how often the rank held beside every row.
 
 **Cost.** 525 conversations over the two rounds cost 0.40 dollars against this test's cap of 0.60.
 All usability testing to date has cost 1.12 dollars of the 1.50 stated.
+
+## Added 13 Oct 2026: the other sources and the gaps of a disease
+
+`python -m pharos_gap_kg.usability run pharos319 --set new ...` and `report --set new` write
+`docs/data/usability_results_new.json`; the development set is `new_dev`. The test was written into
+`docs/PROTOCOL.md` ("Usability of the other sources and of the gaps of a disease") before any model
+was asked a question of this kind: 35 questions in thirteen kinds, three conditions, the same three
+hosted models, and the two verdicts of the first test. The questions ask how many sources assert a
+pair, whether a row is withheld and on how many papers, whether a drug ties a target to a condition
+and through its mechanism, how many targets a drug acts on, which way an expression observation
+went, four counts of the gaps of a disease, the odds ratio the largest study could have found, a
+count that cannot be made for a condition with no GWAS data, three invented names and two ambiguous
+words.
+
+The expected answers come from `gaptables`, which computes them from the bundle's tables and imports
+none of the question layer. The two agree on every count summed over the 513 disease traits, on forty
+disease traits and forty conditions compared one by one (`tests/test_disease_gaps.py`), and on all 35
+questions of each set. The SQL condition is given those same tables.
+
+**Changed before the test, from reading the answer and not from a model.** The answer of `gaps` for
+a disease ran to 18,000 characters with its summary last, and the harness passes a model the first
+8,000 characters of a tool's result. It now leads with the summary and the count of every list, shows
+two rows a list, and gives one list in full when asked for by name.
+
+**Development round** (typed and SQL only; reported, not read against the verdicts):
+
+| model | typed | SQL |
+|---|---|---|
+| deepseek-v4-flash | 33 | 34 |
+| glm-5.3-flash | 32 | 35 |
+| mercury-2.5 | 31 | 33 |
+
+Pooled, typed minus SQL was -0.057 [-0.124, +0.000] of a question.
+
+- **Seven of the nine typed misses were one fault in `find`.** Each was a disease that is a GWAS trait,
+  reported as absent or as having no exact name. `find` takes a kind, and under the kind "condition"
+  it looked only among conditions that are not GWAS traits, so asthma was not found as asthma. The
+  harness keeps a tool's name and not its arguments; asked directly with that kind, `find` gave for
+  each of the six disease names the answer the models quote.
+- **The other two were a null given as zero**, by one model, for a condition that is not a GWAS trait.
+  The answer had left the two lists out and given no count for them.
+- **Between the rounds**, recorded in the protocol: `find` treats "trait" and "condition" as one kind,
+  and `gaps` gives a count that cannot be made as null. For the SQL condition only, its table of
+  conditions no longer lists a condition a second time under the name of the GWAS trait the graph
+  reads it as; two of the three SQL misses were on such a name. The questions, the expected answers,
+  the rules text and the grading were not changed.
+
+**Evaluation round**, on a set generated and frozen after those changes:
+
+| model | typed | SQL | no tool |
+|---|---|---|---|
+| deepseek-v4-flash | 35 | 34 | 0 |
+| glm-5.3-flash | 35 | 35 | 1 |
+| mercury-2.5 | 34 | 28 | 0 |
+
+- **Usable by a small model: met.** All three answer 28 or more of 35 through the typed questions, and
+  no model in any condition answered a not-in-graph question as if the thing were known.
+- **Better than SQL: met, and on one model.** Pooled over the three models, typed minus SQL is +0.067
+  [+0.019, +0.124] of a question. Typed was right where SQL was wrong on 7 answers and SQL where typed
+  was wrong on none. Six of the seven are mercury-2.5's and one is deepseek-v4-flash's; glm-5.3-flash
+  answered all 35 both ways. The verdict holds by the rule stated in advance, and it would not hold
+  without mercury-2.5.
+- **Every typed answer a model gave was right.** 104 of 105. The other is a question about an invented
+  drug, "brivoquamide", that mercury-2.5's provider refused three times in every condition with "I'm
+  sorry, but I can't help with that request". By the protocol it counts as wrong.
+- **The gaps of a disease were read correctly.** All 45 answers to the six kinds of gap question are
+  right under typed, and `gaps` was called for every one.
+- **Where SQL went wrong.** Seven answers and that refusal. Four are the number of sources asserting a
+  pair: twice a GWAS trait was looked for in the table of conditions and called absent, once the
+  assertions were said to belong to conditions and not to traits, and once the join was made and still
+  gave none. One is an ambiguous word called not in the graph, one a null given as zero, and one an
+  odds ratio given without any query, 1.146 where the table holds 1.066.
+- **Without a tool the models score 1 of 105.** They answered "unknown" to 101 questions.
+
+**What the typed questions cost.** A typed conversation used 13,789 tokens on average and an SQL one
+9,821. Across the 105 typed conversations `find` was called 116 times, `gaps` 47, `why` 36, `known`
+27 and `connect` twice.
+
+**What this does not show.**
+
+- One question is in both sets: how many genes tied to mucocutaneous lymph node syndrome are still
+  Tdark. The two sets have different seeds, invented names and words, and nothing kept a disease from
+  being drawn twice. Two models missed it in the development round through the fault in `find`, and
+  all three answered it in the evaluation round under both typed and SQL, so it moves neither verdict.
+- The typed result follows a fix made on the development round. That is what the round is for, and it
+  is why the two rounds differ.
+- I wrote the questions, and each has one code-graded answer. Whether a person can use the answers,
+  and whether a listed gap is real or worth closing, are not tested.
+
+**Cost.** The development round cost 0.20 dollars and the evaluation round 0.24: 0.44 of this test's
+0.60. All usability testing has cost 1.56 of the 1.72 that the protocol now allows.

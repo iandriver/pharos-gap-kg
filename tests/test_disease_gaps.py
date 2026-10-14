@@ -171,3 +171,27 @@ def test_the_tables_built_without_the_question_layer_agree_with_it(G):
                  (n.get("locus_not_resolved"), row.loci_not_resolved), (n.get("no_genetic_support"), row.no_genetic_support), (n["withheld"], row.withheld_rows), (n["observed_only"], row.observed_only),
                  (f.get("study"), row.largest_study), (f.get("smallest_odds_ratio_it_could_find"), row.smallest_odds_ratio_it_could_find)]
         assert all(same(a, b) for a, b in pairs), (o["condition"], pairs)
+
+
+def test_every_disease_trait_summed_two_ways():
+    """The census asks the question layer about each of the disease traits in turn and records the
+    sums. `gaptables` computes the same traits at once without it. The sums must be the same."""
+    from pharos_gap_kg import gaptables
+    rec = paths.DOCS_DATA / "disease_gaps_pharos319.json"
+    if not rec.is_file():
+        pytest.skip("no census on record")
+    c = json.loads(rec.read_text())
+    T = gaptables.read(B)
+    d = T["nodes"][(T["nodes"].kind == "trait") & T["nodes"].disease_like]
+    linked = set(T["links"].trait)
+    s = gaptables.build(T, only=set(d[d.id.isin(linked)].id))["disease_gap_summary"]
+    S = c["summed_over_traits"]
+    got = {"traits": len(s), "tied": int(s.genes_tied.sum()), "gwas": int(s.genes_with_a_gwas_link.sum()), "no_compound": int(s.no_compound.sum()), "dark": int(s.dark.sum()),
+           "loci": int(s.loci_not_resolved.sum()), "locus_genes": int(s.genes_in_those_loci.sum()), "loci_singled_out": int(s.loci_where_other_evidence_singles_out_one_gene.sum()),
+           "no_genetic_support": int(s.no_genetic_support.sum()), "withheld": int(s.withheld_rows.sum()), "observed_only": int(s.observed_only.sum()),
+           "two_sources": int(s.genes_asserted_by_two_or_more_sources.sum()), "mechanism": int(s.genes_that_are_a_mechanism_target.sum()),
+           "sized": int(s.largest_study.notna().sum()), "cases_and_controls": int(s.smallest_odds_ratio_it_could_find.notna().sum())}
+    want = {"traits": c["traits"], "tied": c["tied_genes_summed_over_traits"], "gwas": c["gwas_linked_genes_summed"], **{k: S[k] for k in ("no_compound", "dark", "loci", "locus_genes", "loci_singled_out",
+            "no_genetic_support", "withheld", "observed_only", "two_sources", "mechanism")}, "sized": c["traits_whose_largest_study_has_a_size"], "cases_and_controls": c["of_them_cases_and_controls"]}
+    assert got == want
+    assert round(float(s.smallest_odds_ratio_it_could_find.median()), 3) == c["smallest_odds_ratio_the_largest_study_could_find"]["median"]
