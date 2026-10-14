@@ -566,6 +566,80 @@ better than SQL if the pooled paired interval excludes zero.
 **What it does not test.** A person. Whether a ranking is right: that is the prospective test. Nor
 whether these are the questions a user would ask: they were written by the author of the tool.
 
+## Usability of the other sources and of the gaps of a disease
+
+Defined on 13 Oct 2026, before any model was put a question of this kind.
+
+**What is tested.** Whether a small model, given only what the server says, answers questions about
+what the questions read since 13 Oct: which disease sources assert a target with a condition, rows a
+pruning rule withheld, drugs with their targets and indications, expression observations, and the
+gaps of a disease. And whether it does so better than with SQL over tables that hold the same things.
+The three earlier usability tests asked no question of this kind.
+
+**Changed before the test, from reading the answer and not from a model.** The answer of `gaps` for
+a disease ran to 18,000 characters with its summary last, and the harness passes a model the first
+8,000 characters of a tool's result. It now leads with the summary and the count of every list, shows
+two rows a list, and gives one list in full when asked for by name.
+
+**Questions.** 35, written by code with a fixed seed, in thirteen kinds:
+
+- how many of the disease sources assert a target with a condition: three pairs that two or more
+  assert, and one pair that has an expression observation and no assertion, where the answer is
+  none (4);
+- whether a pruning rule withheld a row for a pair, and if so how many papers mention both: two
+  pairs with one withheld row, one pair with none (3);
+- whether a drug acts on a target and treats a condition, and if so whether the target is the
+  mechanism target of at least one such drug: one pair of each of the three outcomes (3);
+- how many targets a drug acts on, and for how many it is the drug's mechanism of action (3);
+- whether a target's expression was higher or lower in a condition, for a pair with one
+  observation (2);
+- of the genes tied to a disease, how many have no drug and no compound at their family's cutoff (2);
+- of the genes tied to a disease, how many are still Tdark (2);
+- how many loci of a disease carry the GWAS link on more than one gene (3);
+- how many genes are tied to a disease with no GWAS link (3);
+- the odds ratio a variant carried by 20% of chromosomes needed to be found by the largest study
+  behind a disease's GWAS links (3);
+- the number of such loci for a condition that is not a GWAS trait, where the answer is that none
+  can be present or absent (2);
+- a gene, a drug and a disease that are not in the graph (3);
+- a word that means several conditions (2).
+
+The expected answers are computed from the bundle's tables by code that does not call the question
+layer (`gaptables`). Before a set is frozen, the question layer is asked each question directly and
+must give the expected answer; a disagreement means one of the two is wrong and nothing is written.
+
+**Conditions.** As before. *typed*: the eight tools as the server serves them. *sql*: the tables of
+the first test and those of the gaps test, and more that hold what the questions read, described to
+the model: the conditions and the drugs; which ids one condition is read under; every assertion with
+its source, whether it is withheld, the rule and the count; the expression observations; the drugs'
+targets and indications; and, for every disease trait and every condition, the count of each kind of
+gap, the genes in each list, the loci, and the size of the largest study with the smallest effect it
+could have found. *none*: no tool. One rules text is given in every condition. It says what a reader
+needs to answer at all: what ties a gene to a condition, what each list is, that an expression
+observation is not an assertion, that only the GWAS links are dated, and that a condition which is
+not a GWAS trait has no dated link to be present or absent.
+
+**Models, limits, grading.** The three hosted models of the earlier tests, temperature 0, at most 8
+tool calls a question, one run per cell, graded by code from the `FINAL` line. An odds ratio is right
+within 0.011. A question is put up to three times, and one the provider fails each time counts as
+wrong. Spend on this test is capped at 0.60 dollars. That passes the limit of 1.50 stated above for
+all usability testing, of which 1.12 has been spent: Ian was told so and said to run the test on
+13 Oct, so the limit on all usability testing is 1.72 from this test on.
+
+**Two sets.** A development set (seed 20261014) is run first, under *typed* and *sql*, to find faults
+in the test itself. Its results are reported and are not read against the verdicts. The evaluation
+set (seed 20261015, with other invented names and words) is generated and frozen after the
+development round and before any model sees it, and is run under all three conditions. Whatever is
+changed between the rounds is recorded.
+
+**How it will be read.** On the evaluation set, by the two verdicts of the earlier tests, unchanged.
+The new answers are usable by a small model if at least two of the three hosted models answer 28 or
+more of 35 under *typed* and none answers a not-in-graph question as if the thing were known. Typed
+is better than SQL if the pooled paired interval excludes zero.
+
+**What it does not test.** A person. Whether a gap is real or worth closing. Nor whether these are
+the questions a user would ask: they were written by the author of the tool.
+
 ## Lineage and position as inputs
 
 Defined on 9 Oct 2026, before any model here was fitted. Every model in this section is **added after
