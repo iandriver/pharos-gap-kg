@@ -43,6 +43,7 @@ BUNDLE = Path(os.environ.get("PHAROS_GAP_KG_BUNDLE", DATA / "bundle"))   # bundl
 CONTEXT = DATA / "context"                                    # context/<release>: undated link tables, one per kind
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
 RECORDED = (ROOT / "recorded") if ROOT else DATA / "recorded"      # recorded/<release>: committed answers from live services
+RELEASE = DATA / "release"                                    # the bundle archive, as attached to a published release
 
 
 def tables(release: str) -> Path:

@@ -41,3 +41,13 @@ def test_a_sample_drawn_again_that_differs_is_refused_and_not_recorded(tmp_path,
     with pytest.raises(SystemExit, match="REFUSED: the sample just drawn"):
         prune2.freeze("pharos319")
     assert json.loads((tmp_path / rec.name).read_text())["files"]["sample.parquet"] == "0" * 64
+
+
+def test_the_release_archive_holds_the_committed_bundle():
+    """The archive a release carries must hold the bundle whose manifest is committed, file for file. A
+    bundle rebuilt without archiving it again fails here, before a stale archive is attached."""
+    from pharos_gap_kg import release
+    arc = json.loads(release.record_path("pharos319").read_text())
+    man = (paths.DOCS_DATA / "bundle_pharos319.json").read_bytes()
+    assert arc["members"] == {**json.loads(man)["files"], "manifest.json": release.sha(man)}
+    assert arc["file"] == release.name("pharos319") and arc["url"] == release.url("pharos319")

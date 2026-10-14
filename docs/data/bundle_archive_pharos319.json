@@ -1,0 +1,24 @@
+{
+ "release": "pharos319",
+ "file": "pharos-gap-kg-bundle-pharos319.tar.gz",
+ "url": "https://github.com/iandriver/pharos-gap-kg/releases/latest/download/pharos-gap-kg-bundle-pharos319.tar.gz",
+ "bytes": 16192791,
+ "sha256": "9a1380cd3ea2b7626f30646df2ba175818c393b320a2ad5f112ef8ec6e823eb4",
+ "members": {
+  "assertions.parquet": "6bb5d2cf19b57c565b6f8e14a057b084d25b291c4572ec86d3e6d99aa5b5e43c",
+  "backtest.json": "0e0d84b56c028bff3bb65596c97c3e21132b528bfac6930515e0218a81d8c8ee",
+  "context_nodes.parquet": "271310c1f6050e36660a8b9d7c33ddcdd40131c7680b72eefab6a8596603d22f",
+  "drug_indications.parquet": "ff0ade8738dda476cacde4e972e18f43e43a31791af99541a4b3d22ba0e81c52",
+  "drug_targets.parquet": "5551c9e7be32a8e69906c758a201bd86f25d65d8add61723755a7b6185909f8f",
+  "evidence.parquet": "c22ea2b143b0069145b30cdf7480d5c23d371ba2bc6ac40869837ef3fc0bad47",
+  "expression.parquet": "a59c5693ffdd03c40b863e0776d7a471d320909fbeb90816dcb473d7e25f1858",
+  "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
+  "links.parquet": "9e54546a9b42ca00dbdb49a9fce8fc3898a4237cd7f5e1dbefd85cebc97d68fe",
+  "manifest.json": "e0e55a12920491c3978790d2e1c71c0c941f91d4091f3ec9caaa911b1236a051",
+  "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
+  "nodes.parquet": "565c576a01965cff1a8a080ac15afd44d01e738c174f26f1527a3c983dff0f39",
+  "study_sizes.parquet": "6aa25ff43cb18c58c2737250bf6fcb84fc9cfd312346035525939f6b7123c8ae",
+  "target_gaps.json": "6db8a7f6ba5d227b0ebc6fab1ec8868b9357c3a67651308fc8f1b56a76325efb",
+  "target_gaps.parquet": "eb600f84f5555e31f0ffe63adf861a43a96028c004d924913100d6764679a556"
+ }
+}

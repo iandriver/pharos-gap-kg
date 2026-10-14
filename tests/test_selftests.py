@@ -165,3 +165,8 @@ def test_model_selftest():
 def test_recorded_selftest():
     from pharos_gap_kg import recorded
     assert recorded._selftest() == 0
+
+
+def test_release_selftest():
+    from pharos_gap_kg import release
+    assert release._selftest() == 0

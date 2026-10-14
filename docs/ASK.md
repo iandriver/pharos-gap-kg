@@ -1,7 +1,9 @@
 # Asking the graph
 
 Eight questions, answered from one bundle of files with their digests. They can be asked from the
-command line, or by any MCP client through `python -m pharos_gap_kg.server`.
+command line, or by any MCP client through `python -m pharos_gap_kg.server`. The bundle is built by
+the README's Run steps, or downloaded, checked and unpacked by `python -m pharos_gap_kg.release get
+pharos319` (a 16 MB archive attached to each release).
 
 | question | what it answers |
 |---|---|

@@ -13,6 +13,26 @@ Three properties are the point of it:
 - **Predictions are scored on links that became known later.** A link is dated by the first paper it
   cites, and every score is reported beside a baseline that knows only how well-studied each node is.
 
+## Try it
+
+The questions read a bundle of files that each release carries as a 16 MB archive, so trying them
+needs neither the 2.5 GB of published files nor the build:
+
+```bash
+git clone https://github.com/iandriver/pharos-gap-kg && cd pharos-gap-kg
+uv venv && source .venv/bin/activate
+uv pip install -e ".[server]" -c constraints.txt
+python -m pharos_gap_kg.release get pharos319          # downloads the bundle, checks every digest, unpacks it
+python -m pharos_gap_kg.ask gaps "Parkinson disease"   # the genes tied to a disease, what each lacks, the study that would close it
+python -m pharos_gap_kg.ask why TREM2 "Alzheimer disease" --as-of 2012
+python -m pharos_gap_kg.server                         # the same eight questions over MCP
+```
+
+`get` refuses an archive, or a file in it, whose digest is not the one committed in
+`docs/data/bundle_archive_pharos319.json`. Without `uv`, `python -m venv .venv` and `pip install` take
+the same arguments. [`docs/ASK.md`](docs/ASK.md) describes the eight questions and how to add the
+server to an MCP client. To build the bundle from the published files instead, see [Run](#run).
+
 ## Status
 
 Started 6 Oct 2026. No model has been fitted. What exists:
@@ -225,6 +245,7 @@ python -I -m pharos_gap_kg.studysize build pharos319            # the size of ea
 python -m pharos_gap_kg.bundle pharos319                        # again, now with the gaps, the other parts and the study sizes
 python -m pharos_gap_kg.diseasegaps census pharos319            # every disease trait, counted by kind of gap
 make check
+python -m pharos_gap_kg.release archive pharos319               # the bundle as the archive a release carries; its digest is committed
 ```
 
 Ask:
