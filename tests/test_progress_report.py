@@ -159,11 +159,25 @@ def test_gaps(T):
             f"{o['counts']['no_genetic_support']} genes are tied with no GWAS link", f"an odds ratio of about {f['smallest_odds_ratio_it_could_find']:.2f} to find a variant")
         top = k["no_genetic_support"]["top"]
         assert [x["symbol"] for x in top] == ["ATP13A2", "PARK7"] and all(len(x["tied_by"]["sources"]) == 6 for x in top) and "ATP13A2 and PARK7, are each asserted by six sources" in T
+        from pharos_gap_kg import studysize
+        nd = k["no_genetic_support"]["what_an_absent_link_could_have_seen"]["the_study_that_would_close_it"]
+        assert [x["the_largest_study_had_them"] for x in nd["common_variant"]] == [False, True, True]
+        lr = next(g for g in ask.Graph(paths.bundle("pharos319")).gaps("Parkinson disease", kind="locus_not_resolved", top=25)["gaps"] if g["kind"] == "locus_not_resolved")
+        held = [r for r in lr["top"] if r["what_each_holds_besides_the_link"] and r["singled_out_by_other_evidence"] is None]
+        assert {"APOE", "SLC41A1"} <= {next(iter(r["what_each_holds_besides_the_link"])) for r in held if "one_source" in next(iter(r["what_each_holds_besides_the_link"].values()))}
+        has(T, f"At 1.05 a study would need about {studysize.two(nd['common_variant'][0]['cases'])} cases", f"rare variants about {studysize.two(nd['rare_variants']['cases'])} cases",
+            f"Of the {lr['loci'] - lr['loci_where_other_evidence_singles_out_one_gene']} loci that no tie singles out, one source or an expression observation points to a gene in "
+            f"{lr['loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene']}, among them APOE and SLC41A1")
     c = J("disease_gaps_pharos319.json")
     o = c["smallest_odds_ratio_the_largest_study_could_find"]
     has(T, f"Over the {c['traits']} disease traits", f"{pc(c['share_of_gwas_linked_genes_in_a_locus_with_another'])} of GWAS-linked genes share their locus",
         f"singles out one gene in {pc(c['share_of_such_loci_where_other_evidence_singles_out_one_gene'])} of those loci", f"{pc(c['share_of_tied_genes_with_no_compound'])} of tied genes have no drug",
         f"for the {c['of_them_cases_and_controls']} traits whose largest study has cases and controls, the median is an odds ratio of {o['median']:.2f}")
+    st, lo = c["the_study_an_absent_link_calls_for"], c["loci_not_singled_out"]
+    lacked = st["traits_with_cases_and_controls"] - st["by_odds_ratio"]["1.2"]["traits_whose_largest_study_had_them"]
+    has(T, f"for {lacked} of them the largest study lacked the cases to find a common variant at an odds ratio of 1.2",
+        f"of the {lo['loci']:,} loci that no tie singles out, one source or an expression observation points to a gene in "
+        f"{lo['with_one_source_or_an_observation_pointing_to_a_gene']} ({pc(lo['with_one_source_or_an_observation_pointing_to_a_gene'] / lo['loci'])})")
     assert c["min_sources"] == 2 and "two or more disease sources" in T
 
 
