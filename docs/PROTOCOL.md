@@ -994,6 +994,64 @@ other than GWAS carry no dates. The threshold of two sources is a choice, stated
 **Checks.** The counts of every kind are recomputed for several diseases by table code that does not
 call the question layer, and the two must agree. The floor is checked against hand-worked cases.
 
+## The study each gap calls for
+
+Written on 14 Oct 2026, before any of it was built or computed. It adds no fitted parameter and scores
+nothing: it turns two lists of "Gaps for a disease" and the `why` question into a stated study, with
+the assumptions each rests on. The lists, their members and their counts are unchanged.
+
+**1. The study an absent GWAS link calls for.** Given with `no_genetic_support`, and in `why` when a
+target and a trait have no link as of the year. It is read from the trait's largest study, chosen as
+in "Gaps for a disease", and is one answer for the trait, the same for every gene.
+
+- *A common variant.* For a variant carried by 20% of chromosomes, at p = 5e-8 and 80% power under
+  the additive model of the floor, the cases needed to find odds ratios of 1.05, 1.1 and 1.2, with
+  controls at the largest study's ratio of controls to cases (r):
+
+      cases = 39.60 x (1 + 1/r) / (0.32 x (ln OR)^2),   controls = r x cases
+
+  This is the floor's formula solved for the cases, so the largest study "already had" a size exactly
+  when its own floor is at or below that odds ratio. Each odds ratio is marked one way or the other.
+- *Rare variants.* If the gene acts through rare variants: qualifying variants carried by 1 in 1,000
+  chromosomes combined, an odds ratio of 3, a gene-based test at p = 2.5e-6 (the usual threshold for
+  about 20,000 genes) and 80% power, with the same r:
+
+      cases = 30.80 x (1 + 1/r) / (0.001998 x (ln 3)^2)
+
+  30.80 is the square of 4.7081 and 0.8416, and 0.001998 is 2 x 0.001 x 0.999. Where the largest
+  study already reached the common-variant sizes, this is the study that remains.
+- *Individuals only.* Where the largest study gives individuals and no cases and controls, the
+  individuals needed for 0.02, 0.05 and 0.1 standard deviations per allele at a frequency of 20%,
+  39.60 / (0.32 x sd^2). No rare-variant line is given for these traits.
+- Sizes are rounded up to whole people in the record and given to two significant figures in prose.
+
+**2. The genes a locus asks to test.** Given with `locus_not_resolved`. Every gene of the locus, in
+the order of what the graph holds for it with the condition besides the link: a tie by two or more
+sources or by a drug's mechanism first, then one source alone, then an expression observation in the
+condition, then nothing; within each, more studies behind its link first, then by symbol. What each
+gene holds is named. The study proposed is the same for every locus: fine-mapping with colocalisation
+against expression, or a perturbation of each gene in a relevant cell, and the answer gives how many
+genes that is. The order says where the graph's other evidence points. It is not a prediction of
+which gene is causal, and how often the first gene proves to be the one is not measured.
+
+**3. `why` with no link.** When a target and a trait have no link as of the year, `why` adds what the
+trait's largest study could have seen and the study of part 1.
+
+**Census.** Over the disease traits of "Gaps for a disease": how many of those with cases and controls
+already had the cases for each odds ratio; the median cases needed for each, and for the rare-variant
+line; for loci not singled out by a tie, how many have at least one gene that holds one source or an
+expression observation, and the median number of genes to test.
+
+**Checks.** Solved back through the floor, each size gives the odds ratio it was computed for. For
+every sized study in the Catalog table, the cases needed at its own floor's odds ratio equal its cases
+to rounding. The order of genes within loci is recomputed from the tables for the traits of the
+existing disease-gap checks.
+
+**Not claimed.** That a study of these sizes would find an association: the gene's variants may be
+rarer or their effects smaller, and the sizes are for one variant at one frequency, not for every
+variant near the gene. That the rare-variant parameters fit any particular gene. That the first gene
+of a locus is the causal one.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
