@@ -159,15 +159,22 @@ The plan is [`docs/PLAN.md`](docs/PLAN.md).
 ## Inputs
 
 Public files only, each listed in `src/pharos_gap_kg/registry.py` with its size, publication date and
-fetch command. A missing input names the command that fetches it.
+fetch command. A missing input names the command that fetches it. The five the build reads come to
+2.5 GB. They go in `data/raw`, which may be a symlink to a larger volume, or in the directory that
+`PHAROS_GAP_KG_RAW` names.
 
-| key | published | what |
-|---|---|---|
-| `pharos316` | 2023-04-12 | Pharos 3.16 database; same links as 3.19 |
-| `pharos319` | 2024-04-29 | Pharos 3.19, the last full legacy database; the graph is built from it |
-| `pharos400_canonicals` | 2026-05-28 | development levels for 20,654 canonical proteins |
-| `efo_obo` | 2026-09-15 | trait ontology, for the lineage control |
-| `ensembl_gtf_113` | 2024-08-18 | gene coordinates, for the position and locus controls |
+| key | published | size | what |
+|---|---|---|---|
+| `pharos319` | 2024-04-29 | 2.26 GB | Pharos 3.19, the last full legacy database; the graph is built from it |
+| `pharos400_canonicals` | 2026-05-28 | 45 MB | Pharos 4.0.0 development levels, for the target-level gaps' back-test |
+| `efo_obo` | 2026-09-15 | 88 MB | trait ontology, for lineage and for the names a disease is searched under |
+| `ensembl_gtf_113` | 2024-08-18 | 64 MB | gene coordinates, for position and loci |
+| `gwas_catalog_20261005` | 2026-10-05 | 73 MB | the GWAS Catalog, for study sizes and the prospective test |
+| `pharos316` | 2023-04-12 | 2.20 GB | optional: Pharos 3.16, only to show its link tables equal 3.19's |
+
+Three stages ask a live service: NCBI for the year of each cited paper, and PubMed for co-mention
+counts (33,879 searches). PubMed's answers move with time, so the answers the graph was built from are
+committed under `recorded/` and restored in place of asking again.
 
 ## Outputs
 
@@ -177,59 +184,84 @@ documents quote are committed under `docs/data/`.
 
 ## Run
 
+Install, with the library versions the committed records were written with (a parquet file carries
+the version of the library that wrote it, so other versions give other digests):
+
 ```bash
-uv venv && uv pip install -e ".[test]"
+uv venv && source .venv/bin/activate
+uv pip install -e ".[test,server]" -c constraints.txt
+```
+
+Fetch, extract every table the build reads in one pass, and restore the recorded answers:
+
+```bash
 python -m pharos_gap_kg.registry            # what is needed and what is on disk
-python -m pharos_gap_kg.fetch pharos319     # ranged, resumable, refuses a file that changed
-python -m pharos_gap_kg.sqldump extract pharos319 --tables tiga,tiga_provenance,protein
-NCBI_EMAIL=you@example.org python -m pharos_gap_kg.pubyear pharos319
-python -m pharos_gap_kg.split pharos319 --cutoff 2018          # rebuilds the split and checks its digests
+python -m pharos_gap_kg.fetch pharos319 pharos400_canonicals efo_obo ensembl_gtf_113 gwas_catalog_20261005
+python -m pharos_gap_kg.sqldump extract pharos319 --tables tiga,tiga_provenance,gwas,protein,target,t2tc,xref,disease,ncats_ppi,pathway,goa,ncats_ligand_activity,drug_activity,tdl_info,generif,pmscore
+python -m pharos_gap_kg.recorded restore pharos319     # PubMed and NCBI answers as they were asked
+python -m pharos_gap_kg.pubyear pharos319              # the year of each cited paper; nothing to ask once restored
+```
+
+Build the graph and the bundle the questions read (about four minutes):
+
+```bash
+python -m pharos_gap_kg.split pharos319 --cutoff 2018           # rebuilds the split and checks its digests
 python -m pharos_gap_kg.graph build pharos319 --cutoff 2018
-python -m pharos_gap_kg.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
-python -m pharos_gap_kg.baselines --cutoff 2018
-python -m pharos_gap_kg.fetch efo_obo ensembl_gtf_113
-python -m pharos_gap_kg.sqldump extract pharos319 --tables xref
-python -m pharos_gap_kg.controls pharos319 --cutoff 2018
-python -m pharos_gap_kg.sqldump extract pharos319 --tables disease
-python -m pharos_gap_kg.context pharos319 --cutoff 2018
-python -m pharos_gap_kg.sqldump extract pharos319 --tables ncats_ppi,pathway,goa,ncats_ligand_activity
-python -m pharos_gap_kg.ctxtables pharos319                  # the rest of the release as link tables
-python -m pharos_gap_kg.enrich pharos319 --cutoff 2018       # needs the [eval] extra
-python -m pharos_gap_kg.planted pharos319
-python -m pharos_gap_kg.evidence pharos319                   # each source's own evidence field, per pair
-python -m pharos_gap_kg.prune2 freeze pharos319              # second pruning round; stages in its docstring
-python -m pharos_gap_kg.applycut search pharos319            # the lift cut on the sources it passed on (hours; resumes)
-python -m pharos_gap_kg.applycut write pharos319
-python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
-python -m pharos_gap_kg.combine fit pharos319 --cutoff 2018   # fitted weights over the baselines, lineage and position; [eval] extra
-python -m pharos_gap_kg.coldstart pharos319 --cutoff 2018     # a trait or a target with no link: lineage and position transfer
-python -m pharos_gap_kg.rehearse report pharos319             # the procedure one step back in time; stages in its docstring
-python -m pharos_gap_kg.fetch gwas_catalog_20261005           # the GWAS Catalog as curated since, for the prospective test
-python -I -m pharos_gap_kg.gwascat extract                    # then `rule` and `build`: links first reported from 2023
-python -m pharos_gap_kg.prospect score pharos319              # the prospective test; stages in its docstring
-python -m pharos_gap_kg.prospect calibrate pharos319          # how often a rank held, for the scorer the questions rank by
-python -m pharos_gap_kg.bundle pharos319 --backtest-only      # put that scorer and its calibration into a built bundle
-python -m pharos_gap_kg.tgaps pharos319                     # what each target lacks for the next level, against Pharos 4.0.0
-python -m pharos_gap_kg.tgapgraph pharos319                 # those gaps as KGX gap edges
-python -m pharos_gap_kg.bundle pharos319 --gaps-only        # and into the bundle the questions read
-python -m pharos_gap_kg.ctxgraph pharos319                   # the disease sources as KGX, withheld pairs as gaps
-python -m pharos_gap_kg.sqldump extract pharos319 --tables drug_activity
-python -m pharos_gap_kg.kg build pharos319                   # ONE graph: dated links, sources, drugs, observations, every gap
-python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
-python -m pharos_gap_kg.sqldump extract pharos319 --tables target,t2tc
-python -m pharos_gap_kg.bundle pharos319                     # what the questions read
-python -m pharos_gap_kg.bundle pharos319 --context-only      # the merged graph's other parts, into a built bundle
-python -I -m pharos_gap_kg.studysize build pharos319         # the size of each study, read from the GWAS Catalog file
-python -m pharos_gap_kg.bundle pharos319 --sizes-only        # and into the bundle
-python -m pharos_gap_kg.ask gaps "Parkinson disease"         # the genes tied to a disease and what each lacks
-python -m pharos_gap_kg.diseasegaps census pharos319         # every disease trait, counted by kind of gap
-python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"     # no GWAS link; four sources and four drugs tie them
+python -m pharos_gap_kg.ctxtables pharos319                     # the rest of the release as link tables
+python -m pharos_gap_kg.bundle pharos319                        # the dated links, which the next step reads
+python -m pharos_gap_kg.planted pharos319                       # planted false pairs, for scoring pruning rules
+python -m pharos_gap_kg.evidence pharos319                      # each source's own evidence field, per pair
+python -m pharos_gap_kg.prune2 freeze pharos319                 # refuses unless it draws the committed sample
+python -m pharos_gap_kg.prune2 ingraph pharos319
+python -m pharos_gap_kg.applycut write pharos319                # the lift cut, applied from the recorded searches
+python -m pharos_gap_kg.tgaps pharos319                         # what each target lacks for the next level
+python -m pharos_gap_kg.tgapgraph pharos319                     # those gaps as KGX gap edges
+python -m pharos_gap_kg.ctxgraph pharos319                      # the disease sources as KGX, withheld pairs as gaps
+python -m pharos_gap_kg.kg build pharos319                      # ONE graph: dated links, sources, drugs, observations, every gap
+python -I -m pharos_gap_kg.studysize build pharos319            # the size of each study, read from the GWAS Catalog file
+python -m pharos_gap_kg.bundle pharos319                        # again, now with the gaps, the other parts and the study sizes
+python -m pharos_gap_kg.diseasegaps census pharos319            # every disease trait, counted by kind of gap
+make check
+```
+
+Ask:
+
+```bash
+python -m pharos_gap_kg.ask gaps "Parkinson disease"            # the genes tied to a disease, what each lacks, the study that would close it
+python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"        # no GWAS link; four sources and four drugs tie them
 python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
 python -m pharos_gap_kg.ask predict "type 2 diabetes mellitus" --as-of 2018 --unexplained-only
 python -m pharos_gap_kg.ask predict "Parkinson disease" --unlinked          # targets with no link, by position
-python -m pharos_gap_kg.server                               # the same questions over MCP (needs the [server] extra)
-make check
+python -m pharos_gap_kg.server                                  # the same questions over MCP; docs/ASK.md
 ```
+
+The evaluations. Each was scored once, and its figures are on record under `docs/data/`; running them
+again reproduces those figures.
+
+```bash
+python -m pharos_gap_kg.graph lineage pharos319 --cutoff 2018 --target APOE --trait MONDO:0004975
+python -m pharos_gap_kg.baselines --cutoff 2018
+python -m pharos_gap_kg.controls pharos319 --cutoff 2018
+python -m pharos_gap_kg.context pharos319 --cutoff 2018
+python -m pharos_gap_kg.enrich pharos319 --cutoff 2018
+python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitted models, [model] extra; docs/BREV.md for a GPU
+python -m pharos_gap_kg.combine fit pharos319 --cutoff 2018     # fitted weights over the baselines, lineage and position
+python -m pharos_gap_kg.coldstart pharos319 --cutoff 2018       # a trait or a target with no link: lineage and position transfer
+python -m pharos_gap_kg.rehearse report pharos319               # the procedure one step back in time; stages in its docstring
+python -I -m pharos_gap_kg.gwascat extract                      # then `rule` and `build`: links first reported from 2023
+python -m pharos_gap_kg.prospect score pharos319                # the prospective test; stages in its docstring
+python -m pharos_gap_kg.prospect calibrate pharos319            # how often a rank held, for the scorer the questions rank by
+python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
+python -m pharos_gap_kg.bundle pharos319 --backtest-only        # put the scorer and its calibration into a built bundle
+```
+
+To ask PubMed and NCBI again instead of restoring (about three hours at NCBI's rate; the counts will
+have moved, so the withheld rows will differ from the record), set `NCBI_EMAIL` to your address and run
+`python -m pharos_gap_kg.pubyear pharos319` after extracting, `python -m pharos_gap_kg.prune2 search
+pharos319` after `prune2 freeze`, and `python -m pharos_gap_kg.applycut search pharos319` before
+`applycut write`.
+The pruning round's other stages (`read`, `choose`, `report`) call a model through OpenRouter and are
+not needed to build the graph; they are listed in `prune2`'s docstring.
 
 ## Layout
 

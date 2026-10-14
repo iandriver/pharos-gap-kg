@@ -160,3 +160,8 @@ def test_model_selftest():
     pytest.importorskip("torch")
     from pharos_gap_kg import model
     assert model._selftest() == 0
+
+
+def test_recorded_selftest():
+    from pharos_gap_kg import recorded
+    assert recorded._selftest() == 0

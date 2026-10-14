@@ -26,7 +26,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gap_kg import graph, levels, paths, prune2, registry, score
+from pharos_gap_kg import graph, levels, paths, prune2, registry, score, sqldump
 
 CLEARS = {"pubmed_score": 5.0, "generifs": 4.0, "antibodies": 51.0}      # the least value that is no longer dark
 CRITERIA = list(CLEARS)
@@ -42,6 +42,9 @@ N_BOOT = 2000
 def evidence(release: str) -> pd.DataFrame:
     """One row per target: uniprot, sym, tdl, fam, pubmed_score, generifs, antibodies, go (an experimental
     leaf annotation), recent (score added in RECENT), has_rows (a ligand activity row), partners_with_ligand."""
+    sqldump.need(release, ["target", "t2tc", "protein", "tdl_info", "generif", "pmscore", "ncats_ligand_activity"])
+    if not (paths.context(release) / "partners.parquet").is_file():
+        raise SystemExit(f"{release} has no context tables; run:  python -m pharos_gap_kg.ctxtables {release}")
     d = paths.tables(release)
     rd = lambda t, cols: pq.read_table(d / f"{t}.parquet", columns=cols).to_pandas()
     x = levels.old_levels(release).merge(rd("t2tc", ["target_id", "protein_id"]), on="target_id")

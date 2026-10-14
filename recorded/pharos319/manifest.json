@@ -1,0 +1,10 @@
+{
+ "release": "pharos319",
+ "files": {
+  "pubmed_year.parquet": "80e7d563c86a0089b6a9f558d172a5120b7c6c33817fc5faf826f72a5edb1136",
+  "search.parquet": "b84a73dcc15151be27c80457190a9d08eefe3102912d86148be244684064625f",
+  "search.json": "2733b9e9b8d615a1c6dbb7296103a6a977383a178af4b487c8567f1eed21e2c2",
+  "applied.parquet": "6986718f86c84fdd4faa1db9aee4c717145b0a3ceee27b938a2f14d4beefff0e",
+  "applied.json": "95fbc6b987f94612eda24f06c1cc449696ea9158b04a11b7b1aa765f3bb67d41"
+ }
+}

@@ -14,13 +14,13 @@ authors = [{ name = "Ian Driver" }]
 dependencies = [
   "pandas>=2.0",
   "pyarrow>=15",
+  "scipy>=1.11",
   "kgx-gaps @ git+https://github.com/iandriver/kgx-gaps@4eef0128c8d3dc646213d37f6ddc3f6559830504",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
 server = ["mcp>=2,<3"]
-eval = ["scipy>=1.11"]
 model = ["torch>=2.2"]
 
 [tool.hatch.metadata]

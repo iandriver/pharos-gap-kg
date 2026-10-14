@@ -242,6 +242,9 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(__doc__)
     release = argv[0]
     C = paths.context(release)
+    for f, cmd in ((C / "disease_links.parquet", f"python -m pharos_gap_kg.ctxtables {release}"), (paths.bundle(release) / "links.parquet", f"python -m pharos_gap_kg.bundle {release}")):
+        if not f.is_file():
+            raise SystemExit(f"{f.name} is not built for {release}; run:  {cmd}")
     real = pd.read_parquet(C / "disease_links.parquet")
     partners = pd.read_parquet(C / "partners.parquet")
     gwas = pd.read_parquet(paths.bundle(release) / "links.parquet", columns=["target", "trait"])

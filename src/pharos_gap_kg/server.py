@@ -12,7 +12,7 @@ Run:  python -m pharos_gap_kg.server                 # stdio, the bundle under d
       python -m pharos_gap_kg.server --bundle PATH
       PHAROS_GAP_KG_BUNDLE=PATH python -m pharos_gap_kg.server
 
-Needs the optional dependency:  pip install "pharos-gap-kg[server]"
+Needs the optional dependency, from a checkout:  uv pip install -e ".[server]" -c constraints.txt
 """
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ def build(bundle_dir: Path):
     try:
         from mcp.server.mcpserver import MCPServer
     except ModuleNotFoundError as e:
-        raise SystemExit('the server needs the MCP library:  pip install "pharos-gap-kg[server]"') from e
+        raise SystemExit('the server needs the MCP library; from a checkout:  uv pip install -e ".[server]" -c constraints.txt') from e
     G = ask.Graph(bundle_dir)
     app = MCPServer("pharos-gap-kg", instructions=INSTRUCTIONS)
 

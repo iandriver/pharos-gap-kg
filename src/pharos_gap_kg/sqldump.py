@@ -206,6 +206,14 @@ def extract(src, wanted: set[str], out_dir: Path) -> dict:
     return done
 
 
+def need(release: str, tables: list[str]) -> None:
+    """Refuse, naming the one command that extracts them, when any of these tables has not been extracted."""
+    from pharos_gap_kg import paths
+    missing = [t for t in tables if not (paths.tables(release) / f"{t}.parquet").is_file()]
+    if missing:
+        raise SystemExit(f"{release} has no extracted {', '.join(missing)}; run:  python -m pharos_gap_kg.sqldump extract {release} --tables {','.join(missing)}")
+
+
 def _source(key: str) -> tuple[Path, dict]:
     p = registry.require(key)
     side = p.with_name(p.name + ".lineage.json")

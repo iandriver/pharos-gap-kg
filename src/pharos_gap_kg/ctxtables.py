@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-from pharos_gap_kg import graph, paths
+from pharos_gap_kg import graph, paths, sqldump
 
 GWAS_AGAIN = "JensenLab Experiment TIGA"
 STRING_MIN = 700
@@ -74,6 +74,7 @@ def memberships(rows: pd.DataFrame, target_col: str, group: pd.Series, target_of
 
 
 def build(release: str) -> dict:
+    sqldump.need(release, ["protein", "t2tc", "disease", "ncats_ppi", "pathway", "goa", "ncats_ligand_activity"])
     d = paths.tables(release)
     rd = lambda t, cols: pq.read_table(d / f"{t}.parquet", columns=cols).to_pandas()
     prot = rd("protein", ["id", "uniprot"])

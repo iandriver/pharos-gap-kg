@@ -733,7 +733,7 @@ Every answer ends with how to read it:
 ## From an MCP client
 
 ```bash
-pip install "pharos-gap-kg[server]"
+uv pip install -e ".[server]" -c constraints.txt     # from a checkout; the package is not on PyPI
 python -m pharos_gap_kg.server                # stdio; reads data/bundle
 python -m pharos_gap_kg.server --bundle PATH  # or name the bundle
 ```

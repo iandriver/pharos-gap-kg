@@ -149,7 +149,14 @@ def freeze(release: str) -> dict:
     out = {"release": release, "seed": SEED, "fraction": FRACTION, "at_least": AT_LEAST, "sample_per_source": SAMPLE, "dev": DEV, "test": TEST,
            "disease_links_sha256": json.loads((C / "manifest.json").read_text())["tables"]["disease_links"]["sha256"],
            "files": {f: graph.file_sha(W / f) for f in ("planted.parquet", "sample.parquet")}, "sources": per}
-    (paths.DOCS_DATA / f"pruning2_sample_{release}.json").write_text(json.dumps(out, indent=1) + "\n")
+    rec = paths.DOCS_DATA / f"pruning2_sample_{release}.json"
+    if rec.is_file():
+        old = json.loads(rec.read_text())
+        if (old["files"], old["disease_links_sha256"]) != (out["files"], out["disease_links_sha256"]):
+            raise SystemExit(f"REFUSED: the sample just drawn is not the one frozen in {rec.name}, so the record is left as it is and the later stages will "
+                             "refuse these files. The input or the library that writes the files differs: build the context tables from the registered "
+                             "release, and install with the versions in constraints.txt (see the README).")
+    rec.write_text(json.dumps(out, indent=1) + "\n")
     return out
 
 

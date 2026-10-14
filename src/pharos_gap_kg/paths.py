@@ -42,6 +42,7 @@ EVAL = DATA / "eval"                                          # frozen splits an
 BUNDLE = Path(os.environ.get("PHAROS_GAP_KG_BUNDLE", DATA / "bundle"))   # bundle/<release>: what the front end reads
 CONTEXT = DATA / "context"                                    # context/<release>: undated link tables, one per kind
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
+RECORDED = (ROOT / "recorded") if ROOT else DATA / "recorded"      # recorded/<release>: committed answers from live services
 
 
 def tables(release: str) -> Path:
