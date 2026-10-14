@@ -111,11 +111,12 @@ def build(bundle_dir: Path):
                           "condition): the genes the graph ties to Y (by a GWAS link, by two or more disease sources, or as the mechanism target of an "
                           "indicated drug) and what they lack, in six lists: no_compound, dark, locus_not_resolved (one GWAS signal on several genes), "
                           "no_genetic_support (tied with no GWAS link, with the size of the largest study and the smallest effect it could have found), "
-                          "withheld (rows a pruning rule withheld) and observed_only. Each list has a count, its strongest rows, closes_with and "
-                          "how_often_this_closed. top sets how many rows each list shows. With neither, lists the Tdark targets nearest to leaving Tdark "
-                          "(optionally within one family, such as Kinase, GPCR or IC).")
-    def gaps(target: str | None = None, family: str | None = None, top: int = 10, disease: str | None = None, as_of: int | None = None) -> dict:
-        return G.gaps(target, family, top, disease, as_of)
+                          "withheld (rows a pruning rule withheld) and observed_only. The answer leads with a summary and the count of every list "
+                          "(counts), then each list with closes_with, how_often_this_closed and its two strongest rows. To see one list in full, call "
+                          "again with kind set to its name (and top up to 25). With neither target nor disease, lists the Tdark targets nearest to "
+                          "leaving Tdark (optionally within one family, such as Kinase, GPCR or IC).")
+    def gaps(target: str | None = None, family: str | None = None, top: int | None = None, disease: str | None = None, as_of: int | None = None, kind: str | None = None) -> dict:
+        return G.gaps(target, family, top, disease, as_of, kind)
 
     @app.tool(description="What this graph is: its size and years, the published file it was built from and that file's digest, the checks "
                           "it passed, what it leaves out and why, what its candidates are ranked by, and how that ranking held on later links.")

@@ -535,6 +535,9 @@ python -m pharos_gap_kg.ask gaps "Parkinson disease" --top 2
 > that reported nothing for the trait is not in the source. These sources carry no dates: all but
 > the GWAS links are as of the release, whatever year was asked.
 
+The answer leads with that summary and the count of every list, then shows each list's two strongest
+rows. One list is shown in full by naming it: `--kind no_genetic_support --top 10`.
+
 A row names what ties the gene and the gap edge it rests on:
 
 ```json

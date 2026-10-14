@@ -130,5 +130,12 @@ def test_what_it_refuses_and_what_it_leaves_alone(G):
     assert G.gaps("LSM14B")["answer"].startswith("LSM14B is Tdark. To leave it needs 2 criteria to clear")
     assert G.gaps(family="Kinase", top=3)["answer"].startswith("The 3 Tdark targets in the family Kinase")
     assert "as of 2015" in G.gaps("Alzheimer disease", as_of=2015)["answer"]
+    # the answer leads with its summary and counts, and stays short enough to be read whole; one list can be asked for in full
+    o = G.gaps("Parkinson disease")
+    assert list(o)[:2] == ["found", "answer"] and o["rows_shown_per_list"] == 2 and all(len(g["top"]) <= 2 for g in o["gaps"]) and len(json.dumps(o)) < 10_000
+    assert o["counts"] == {g["kind"]: g.get("targets", g.get("loci", g.get("rows"))) for g in o["gaps"]}
+    one = G.gaps("Parkinson disease", kind="no_genetic_support", top=4)
+    assert [("top" in g) for g in one["gaps"]] == [False, False, False, True, False, False] and len(one["gaps"][3]["top"]) == 4 and one["counts"] == o["counts"]
+    assert G.gaps("Parkinson disease", kind="nope")["problem"] == "no such kind" and "does not apply" in G.gaps(disease="malignant mesothelioma", kind="locus_not_resolved")["answer"]
     later = [x for x in G.gaps("Alzheimer disease", as_of=2010, top=25)["gaps"][3]["top"] if "gwas_link_first_reported_later" in x]
     assert all(x["gwas_link_first_reported_later"] > 2010 for x in later)

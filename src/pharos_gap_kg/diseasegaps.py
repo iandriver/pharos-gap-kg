@@ -87,10 +87,15 @@ def study_floor(G, trait_id: str, y: int) -> dict | None:
     return out
 
 
-def for_condition(G, r: dict, y: int, top: int = 5) -> dict:
-    """G: ask.Graph. r: a resolved trait or condition. y: the year the dated links are read as of."""
+def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None = None) -> dict:
+    """G: ask.Graph. r: a resolved trait or condition. y: the year the dated links are read as of.
+    The answer leads with its summary and the counts, since the lists are long. Each list shows `top`
+    rows, two unless asked. With `kind`, that one list shows up to `top` rows (ten unless asked) and
+    the others show their counts only."""
     O = G.others
-    top = max(1, min(int(top), 25))
+    if kind is not None and kind not in KINDS:
+        return {"found": False, "problem": "no such kind", "answer": f"gaps has no list called {kind!r} for a condition. The lists are: {', '.join(KINDS)}."}
+    top = max(1, min(int(top if top is not None else (10 if kind else 2)), 25))
     sym = lambda i: G.t["name"][i]
     is_trait = r["kind"] == "trait"
     if is_trait:
@@ -244,9 +249,18 @@ def for_condition(G, r: dict, y: int, top: int = 5) -> dict:
         say += f" {name} is a measurement and not a disease, so the disease sources and the drugs seldom name it."
     if floor and "reading" in floor:
         say += " " + floor["reading"]
-    out = {"found": True, "condition": lab, "as_of": y, "read_under": ties, "holds": held_, "gaps": gaps,
-           "not_listed": [] if is_trait else list(NEEDS_A_DATED_LINK), "answer": say + tied_say + " " + others.UNDATED.replace("this is", "all but the GWAS links are"), "reading": READING}
-    return out
+    count = lambda g_: next(g_[f] for f in ("targets", "loci", "rows") if f in g_)
+    if kind is not None:
+        if kind not in by:
+            return {"found": True, "condition": lab, "as_of": y, "answer": f"{name} is not a GWAS trait in this graph, so no dated link is present or absent for it and the list "
+                    f"{kind} does not apply.", "counts": {g_["kind"]: count(g_) for g_ in gaps}, "not_listed": list(NEEDS_A_DATED_LINK), "reading": READING}
+        for g_ in gaps:                       # the one list asked for keeps its rows; the others keep their counts
+            if g_["kind"] != kind:
+                g_.pop("top"), g_.pop("more")
+    return {"found": True, "answer": say + tied_say + " " + others.UNDATED.replace("this is", "all but the GWAS links are"), "reading": READING,
+            "condition": lab, "as_of": y, "holds": held_, "counts": {g_["kind"]: count(g_) for g_ in gaps},
+            "rows_shown_per_list": top if kind is None else {kind: top}, "to_see_more": "ask again with kind set to one list's name, and top up to 25",
+            "not_listed": [] if is_trait else list(NEEDS_A_DATED_LINK), "read_under": ties, "gaps": gaps}
 
 
 def _selftest() -> int:

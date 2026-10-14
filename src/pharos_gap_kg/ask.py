@@ -1013,7 +1013,8 @@ class Graph:
                 "how_often_this_closed": (f"Of {R['candidates']:,} targets with no qualifying compound in the {self.tg_rates['earlier']} database, "
                                           f"{R['gained']:,} ({R['gained'] / R['candidates']:.0%}) held one in {self.tg_rates['later']}.")}
 
-    def gaps(self, target: str | None = None, family: str | None = None, top: int = 10, disease: str | None = None, as_of: int | None = None) -> dict:
+    def gaps(self, target: str | None = None, family: str | None = None, top: int | None = None, disease: str | None = None, as_of: int | None = None,
+             kind: str | None = None) -> dict:
         """What a target lacks for the next Pharos development level; with no target, the Tdark targets
         nearest to leaving it; and for a trait or a condition, the targets tied to it and what each lacks."""
         text = disease if disease is not None else (target if family is None else None)
@@ -1023,7 +1024,7 @@ class Graph:
                 if not self.has_others:
                     return {"found": False, "problem": "not built", "answer": "This bundle does not hold the merged graph's other parts, which the gaps of a condition are read from. "
                             "They are added by:  python -m pharos_gap_kg.kg build <release>  and then  python -m pharos_gap_kg.bundle <release> --context-only"}
-                return {**diseasegaps.for_condition(self, r, self._year(as_of), top), "note": r["note"]}
+                return {**diseasegaps.for_condition(self, r, self._year(as_of), top, kind), "note": r["note"]}
             if r["ok"] and r["kind"] == "drug":
                 return {"found": False, "problem": "not a target or a condition", "answer": f"{text!r} is a drug. gaps reads a target or a condition; ask known for what the graph holds on a drug."}
             if disease is not None:
@@ -1041,7 +1042,7 @@ class Graph:
                 if d.empty:
                     return {"found": False, "problem": "no such family", "answer": f"No Tdark target with a gap has the family {family!r}. "
                             f"Families: {', '.join(sorted(set(self.tg.family.dropna())))}."}
-            d = d.sort_values(["cost", "id"]).head(max(1, min(int(top), 50)))
+            d = d.sort_values(["cost", "id"]).head(max(1, min(int(top or 10), 50)))
             rows = [{**self._tlabel(self.ti[i]), "nearest_route": r.proposal, "band": r.band,
                      "promoted_in_this_band": f"{R['dark']['bands'][r.band]['promoted']['share']:.0%}"} for i, r in d.iterrows() if i in self.ti]
             return {"found": True, "answer": (f"The {len(rows)} Tdark targets{' in the family ' + family if family else ''} nearest to leaving Tdark, of "
@@ -1132,7 +1133,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--family")
     ap.add_argument("args", nargs="*")
     ap.add_argument("--as-of", type=int)
-    ap.add_argument("--top", type=int, default=10)
+    ap.add_argument("--top", type=int)
+    ap.add_argument("--kind", help="gaps, for a disease: show one list in full, such as no_genetic_support")
     ap.add_argument("--unexplained-only", action="store_true")
     ap.add_argument("--unlinked", action="store_true", help="predict, for a trait: rank the targets that have no link and lie beside a gene that has this one")
     ap.add_argument("--bundle", type=Path)
@@ -1144,17 +1146,17 @@ def main(argv: list[str] | None = None) -> int:
     elif q == "find":
         out = G.find(a.args[0])
     elif q == "known":
-        out = G.known(a.args[0], a.as_of, a.top)
+        out = G.known(a.args[0], a.as_of, a.top or 10)
     elif q == "why":
         out = G.why(a.args[0], a.args[1], a.as_of)
     elif q == "connect":
         out = G.connect(a.args[0], a.args[1], a.as_of)
     elif q == "predict":
-        out = G.predict(a.args[0], a.as_of, a.top, a.unexplained_only, a.unlinked)
+        out = G.predict(a.args[0], a.as_of, a.top or 10, a.unexplained_only, a.unlinked)
     elif q == "gaps":
-        out = G.gaps(a.args[0] if a.args else None, a.family, a.top, as_of=a.as_of)
+        out = G.gaps(a.args[0] if a.args else None, a.family, a.top, as_of=a.as_of, kind=a.kind)
     else:
-        out = G.whats_new(a.args[0], int(a.args[1]), a.top)
+        out = G.whats_new(a.args[0], int(a.args[1]), a.top or 10)
     print(json.dumps(out, indent=1, default=str))
     return 0
 
