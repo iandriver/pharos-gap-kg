@@ -218,6 +218,9 @@ python -m pharos_gap_kg.tgaps pharos319                         # what each targ
 python -m pharos_gap_kg.tgapgraph pharos319                     # those gaps as KGX gap edges
 python -m pharos_gap_kg.ctxgraph pharos319                      # the disease sources as KGX, withheld pairs as gaps
 python -m pharos_gap_kg.kg build pharos319                      # ONE graph: dated links, sources, drugs, observations, every gap
+python -I -m pharos_gap_kg.gwascat extract                      # the GWAS Catalog's columns, from the registered zip
+python -m pharos_gap_kg.gwascat rule pharos319                  # how well the link rule reproduces Pharos
+python -m pharos_gap_kg.gwascat build pharos319                 # links first reported from 2023; refuses unless it is the frozen split
 python -I -m pharos_gap_kg.studysize build pharos319            # the size of each study, read from the GWAS Catalog file
 python -m pharos_gap_kg.bundle pharos319                        # again, now with the gaps, the other parts and the study sizes
 python -m pharos_gap_kg.diseasegaps census pharos319            # every disease trait, counted by kind of gap
@@ -248,7 +251,6 @@ python -m pharos_gap_kg.model tune pharos319 --cutoff 2018 --model mf    # fitte
 python -m pharos_gap_kg.combine fit pharos319 --cutoff 2018     # fitted weights over the baselines, lineage and position
 python -m pharos_gap_kg.coldstart pharos319 --cutoff 2018       # a trait or a target with no link: lineage and position transfer
 python -m pharos_gap_kg.rehearse report pharos319               # the procedure one step back in time; stages in its docstring
-python -I -m pharos_gap_kg.gwascat extract                      # then `rule` and `build`: links first reported from 2023
 python -m pharos_gap_kg.prospect score pharos319                # the prospective test; stages in its docstring
 python -m pharos_gap_kg.prospect calibrate pharos319            # how often a rank held, for the scorer the questions rank by
 python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
