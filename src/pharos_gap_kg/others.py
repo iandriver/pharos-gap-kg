@@ -195,7 +195,7 @@ class Others:
             bits.append(f"its expression was higher in this condition in {plural(up, 'observation')} and lower in {down}")
         ties, tied = self.read_under(ids)
         under = lambda c: {} if c == ids[0] else {"under": c}
-        out = {"read_under": ties, "asserted_by": [{"source": r.source, "edge": r.edge, **under(r.condition), **({"source_evidence": r.evidence} if r.evidence else {})} for r in kept.itertuples()][:limit],
+        out = {"read_under": ties, "sources_asserting": int(kept.source.nunique()), "withheld_rows": len(held), "expression_rows": len(x), "asserted_by": [{"source": r.source, "edge": r.edge, **under(r.condition), **({"source_evidence": r.evidence} if r.evidence else {})} for r in kept.itertuples()][:limit],
                "withheld": [self._withheld(r) for r in held.itertuples()][:limit],
                "through_a_drug": paths_[:limit], "drug_paths": len(paths_),
                "expression_observations": [{"condition_as_the_source_names_it": r.label, "direction": "higher" if r.log2fc > 0 else "lower", "log2_fold_change": round(float(r.log2fc), 3),

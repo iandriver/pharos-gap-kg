@@ -38,7 +38,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import ask, paths, ranktables
+from pharos_gap_kg import ask, gaptables, paths, ranktables
 
 SEED = 20261007
 # The first set is the development set: its results shaped the second round (docs/PROTOCOL.md).
@@ -58,6 +58,12 @@ SETS = {
                  "file": "usability_questions_rank_dev.json", "results": "usability_results_rank_dev.json"},
     "rank": {"seed": 20261013, "schema": 4, "fakes": ("XZQJ4", "KVWP6", "JQZT3"), "words": ("cardiomyopathy", "colitis"),
              "file": "usability_questions_rank.json", "results": "usability_results_rank.json"},
+    # the other sources and the gaps of a disease (docs/PROTOCOL.md, "Usability of the other sources and of the gaps of a disease").
+    # fakes: a gene, a drug and a disease that are in no source
+    "new_dev": {"seed": 20261014, "schema": 5, "fakes": ("QVZK7", "zelvotamab", "Harwick syndrome"), "words": ("neuropathy", "dystrophy"),
+                "file": "usability_questions_new_dev.json", "results": "usability_results_new_dev.json"},
+    "new": {"seed": 20261015, "schema": 5, "fakes": ("JXQZ8", "brivoquamide", "Tessler disease"), "words": ("retinopathy", "encephalopathy"),
+            "file": "usability_questions_new.json", "results": "usability_results_new.json"},
 }
 STATUSES = ["answered", "no_link_reported", "not_in_graph", "ambiguous", "unknown"]
 CONDITIONS = ["typed", "sql", "none"]
@@ -65,7 +71,8 @@ MAX_TOOL_CALLS = 8
 PROMPT_VERSION = 1
 GAPS_CAP = 0.75          # dollars, over both sets of the gaps test (docs/PROTOCOL.md)
 RANK_CAP = 0.60          # dollars, over both sets of the rankings test
-CAPS = {3: GAPS_CAP, 4: RANK_CAP}
+NEW_CAP = 0.60           # dollars, over both sets of the test of the other sources and the gaps of a disease
+CAPS = {3: GAPS_CAP, 4: RANK_CAP, 5: NEW_CAP}
 PRICES = {"inception/mercury-2.5": (0.04, 0.15), "deepseek/deepseek-v4-flash": (0.09, 0.18), "z-ai/glm-5.3-flash": (0.15, 0.50)}
 
 RULES = """You answer questions about a graph of dated GWAS links between human protein targets and traits, built from NIH Pharos.
@@ -133,8 +140,46 @@ SQL_SCHEMA_RANK = """
       -- for each target that has no link at all, the traits its neighbouring genes are linked to, rank 1 first. A target with no link and
       -- no row here has nothing to rank"""
 
-RULES_BY_SCHEMA = {1: RULES, 2: RULES_V2, 3: RULES_GAPS, 4: RULES_RANK}
-SQL_EXTRA = {3: SQL_SCHEMA_GAPS, 4: SQL_SCHEMA_RANK}
+RULES_NEW = """You answer questions about a graph built from NIH Pharos. It holds dated GWAS links between human protein targets and traits and, beside them, what nine disease sources assert, drugs with their targets and indications, and expression observations.
+- A disease source ASSERTS a target with a condition. A row that a pruning rule withheld is not an assertion: it is reported apart, with its rule and the number of papers that mention both.
+- An expression observation says a gene's expression was higher or lower in a condition. It is not an assertion, and it never counts as a source asserting the pair.
+- A drug acts on targets and is indicated for conditions. A target may be marked as the drug's mechanism of action.
+- A gene is TIED to a condition by a GWAS link, by assertions from two or more disease sources, or by being the mechanism target of a drug indicated for it. One source alone, an expression observation or a withheld row is not a tie.
+- The gaps of a disease are counted over the genes tied to it: those with no drug acting on them and no compound at their family's potency cutoff; those still Tdark; the loci that carry the GWAS link on more than one gene; and the genes tied with no GWAS link. A count is of genes, not of database entries.
+- For the largest study behind a trait's GWAS links, the graph gives the smallest odds ratio a variant carried by 20% of chromosomes needed in order to be found.
+- A condition that the other sources name and that is not a GWAS trait has no dated link, so nothing about its GWAS links or its loci can be counted. That is an answer: "problem" is null and the field asked for is null.
+- Only the GWAS links carry dates. Everything else is as of the release.
+Explain briefly, then end with one last line of the form  FINAL: {...}  holding the JSON object the question asks for.
+Every FINAL object has a "problem" field:
+  null             you found what was asked.
+  "not_in_graph"   the gene, the drug or the condition is not in the graph. Do not answer from your own knowledge.
+  "ambiguous"      a name in the question matches nothing in the graph exactly and could mean more than one thing. Do not choose one.
+  "unknown"        you could not determine the answer.
+When "problem" is not null, set the other fields to null."""
+
+SQL_SCHEMA_NEW = """
+  conditions(id, name)                                               -- conditions the other sources name that are not GWAS traits
+  drugs(id, name)
+  same_condition(asked_id, read_id, tie)
+      -- one trait or condition is read under every read_id listed for its id. A row of the four tables below belongs to a trait or a
+      -- condition when its condition_id is one of those read_ids, so join through this table
+  assertions(target_id, condition_id, source, withheld, rule, papers_mentioning_both)
+      -- one row per source that names the pair. withheld is 1 when a pruning rule withheld the row: then it is not an assertion
+  expression(target_id, condition_id, condition_as_named, log2_fold_change, p)   -- observations; above zero is higher in the condition
+  drug_targets(drug_id, target_id, action, is_mechanism)             -- is_mechanism is 1 when the target is the drug's mechanism of action
+  drug_indications(drug_id, condition_id)
+  disease_gap_summary(condition_id, name, is_a_gwas_trait, genes_tied, genes_with_a_gwas_link, genes_asserted_by_two_or_more_sources,
+                      genes_asserted_by_one_source_only, drugs_indicated, genes_that_are_a_mechanism_target, no_compound, dark, loci_not_resolved,
+                      genes_in_those_loci, loci_where_other_evidence_singles_out_one_gene, no_genetic_support, withheld_rows, observed_only,
+                      largest_study, largest_study_year, cases, controls, individuals, smallest_odds_ratio_it_could_find, smallest_effect_it_could_find_in_sd)
+      -- one row per disease trait and per condition, by its own id (join same_condition only for the four tables above). no_compound and dark
+      -- count tied genes; loci_not_resolved counts loci that carry the GWAS link on more than one gene; no_genetic_support counts genes tied
+      -- with no GWAS link. Those two are NULL when is_a_gwas_trait is 0
+  disease_gap_genes(condition_id, list, symbol)                      -- list is 'tied', 'no_compound', 'dark', 'no_genetic_support' or 'observed_only'
+  disease_loci(condition_id, locus, genes_with_the_link, genes, gene_singled_out_by_other_evidence)"""
+
+RULES_BY_SCHEMA = {1: RULES, 2: RULES_V2, 3: RULES_GAPS, 4: RULES_RANK, 5: RULES_NEW}
+SQL_EXTRA = {3: SQL_SCHEMA_GAPS, 4: SQL_SCHEMA_RANK, 5: SQL_SCHEMA_GAPS + SQL_SCHEMA_NEW}
 
 SQL_SCHEMA = """You have one tool, sql(query), which runs one read-only SQLite SELECT and returns up to 50 rows.
 Tables:
@@ -542,6 +587,168 @@ def via_ask_rank(q: dict, G) -> dict:
     return {"problem": None, "symbol": c["symbol"]}
 
 
+def make_new_questions(bundle: Path, seed: int, fakes: tuple, words: tuple) -> list[dict]:
+    """35 questions about the other sources and the gaps of a disease, in thirteen kinds. Expected
+    answers are read from `gaptables`, which computes them from the bundle's tables without the
+    question layer; `ask` is used only to choose names it resolves without a note, and names it finds
+    ambiguous or absent."""
+    G = ask.Graph(bundle)
+    rng = random.Random(seed)
+    T = gaptables.read(bundle)
+    R = gaptables.build(T)
+    S, summ = R["same_condition"], R["disease_gap_summary"].set_index("condition_id")
+    nodes = T["nodes"]
+    t, d = nodes[nodes.kind == "target"], nodes[nodes.kind == "trait"]
+    cn = T["context_nodes"]
+    n_sym = t.groupby("name").id.transform("size")
+    plain = lambda r: r["ok"] and not r["note"]
+    clean_t = {r.id for r in t[n_sym == 1].itertuples() if (lambda x: plain(x) and x["kind"] == "target" and G.t.id[x["i"]] == r.id)(G.resolve(r.name))}
+    clean_d = {r.id for r in d[d.disease_like].itertuples() if (lambda x: plain(x) and x["kind"] == "trait" and G.d.id[x["i"]] == r.id)(G.resolve(r.name))}
+    cond = cn[cn.kind == "condition"]
+    one_name = cond.groupby(cond.name.map(gaptables.norm)).id.transform("size") == 1
+    clean_c = {r.id for r in cond[one_name].itertuples() if r.id in summ.index and (lambda x: plain(x) and x["kind"] == "condition" and x["key"] == r.id)(G.resolve(r.name))}
+    drugs_ = cn[cn.kind == "drug"]
+    clean_g = {r.id for r in drugs_.itertuples() if (lambda x: plain(x) and x["kind"] == "drug" and x["key"] == r.id)(G.resolve(r.name))}
+    sym = dict(zip(t.id, t.name))
+    name = dict(zip(d.id, d.name)) | dict(zip(cn.id, cn.name))
+    asked_of = S[S.asked_id.isin(clean_d | clean_c)].groupby("read_id").asked_id.apply(list).to_dict()       # an id a row sits under -> the clean things read under it
+    used_c, used_t, used_g = set(), set(), set()
+    qs: list[dict] = []
+
+    def add(fam: str, text: str, gold: dict) -> None:
+        qs.append({"id": f"{fam}-{sum(1 for q in qs if q['family'] == fam) + 1}", "family": fam, "text": text, "gold": gold})
+
+    def pairs(rows: pd.DataFrame, keep, n: int) -> list[tuple[str, str, dict]]:
+        """n (target, asked condition, what gaptables says of the pair), from rows of target and condition, each target and condition used once."""
+        got = []
+        for r in rows.sample(frac=1.0, random_state=rng.randrange(2 ** 31)).itertuples():
+            if r.target not in clean_t or r.target in used_t:
+                continue
+            for c in asked_of.get(r.condition, []):
+                if c in used_c:
+                    continue
+                p = gaptables.pair(T, S, r.target, c)
+                if keep(p):
+                    used_t.add(r.target), used_c.add(c)
+                    got.append((r.target, c, p))
+                    break
+            if len(got) == n:
+                return got
+        raise SystemExit(f"REFUSED: fewer than {n} pairs of the kind wanted")
+
+    A, X, DT, DI = T["assertions"], T["expression"], T["drug_targets"], T["drug_indications"]
+    kept = A[~A.withheld]
+    many = kept.groupby(["target", "condition"]).source.nunique().reset_index()
+    how_many = lambda s_, c: f"How many of the disease sources assert {s_} with {c}?" + _final2('"sources": N')
+    for tg_, c, p in pairs(many[many.source >= 2], lambda p: p["sources"] >= 2, 3):
+        add("sources", how_many(sym[tg_], name[c]), {"problem": None, "sources": p["sources"]})
+    tg_, c, p = pairs(X, lambda p: p["sources"] == 0 and p["withheld_rows"] == 0 and p["observations"] >= 1, 1)[0]
+    add("sources", how_many(sym[tg_], name[c]), {"problem": None, "sources": 0})
+
+    was_held = lambda s_, c: (f"Has a pruning rule withheld a row for {s_} and {c}? If one has, how many papers mention both?" + _final2('"withheld": true or false, "papers": N or null'))
+    lit = A[A.withheld & A.rule.str.contains("literature_lift")]
+    for tg_, c, p in pairs(lit, lambda p: p["withheld_rows"] == 1 and len(p["papers"]) == 1, 2):
+        add("withheld", was_held(sym[tg_], name[c]), {"problem": None, "withheld": True, "papers": p["papers"][0]})
+    tg_, c, p = pairs(many, lambda p: p["sources"] >= 1 and p["withheld_rows"] == 0, 1)[0]
+    add("withheld", was_held(sym[tg_], name[c]), {"problem": None, "withheld": False, "papers": None})
+
+    a_drug = lambda s_, c: (f"Does any drug act on {s_} and treat {c}? If one does, is {s_} the mechanism target of at least one such drug?" + _final2('"drug": true or false, "mechanism": true, false or null'))
+    path = DT.merge(DI, on="drug").rename(columns={"condition": "condition"})
+    for want in (True, False):
+        tg_, c, p = pairs(path[path.mechanism == want][["target", "condition"]], lambda p: p["drugs"] >= 1 and p["mechanism"] == want, 1)[0]
+        add("drug_path", a_drug(sym[tg_], name[c]), {"problem": None, "drug": True, "mechanism": want})
+    tg_, c, p = pairs(many[many.source >= 2], lambda p: p["drugs"] == 0, 1)[0]
+    add("drug_path", a_drug(sym[tg_], name[c]), {"problem": None, "drug": False, "mechanism": None})
+
+    facts = {g: gaptables.drug(T, g) for g in sorted(clean_g)}
+    both = sorted(g for g, f in facts.items() if 2 <= f["targets"] <= 12 and 1 <= f["mechanism_targets"] < f["targets"])
+    acts_on = lambda g_: f"How many targets does the drug {g_} act on, and for how many of them is that its mechanism of action?" + _final2('"targets": N, "mechanism_targets": N')
+    for g in rng.sample(both, 3):
+        used_g.add(g)
+        add("drug_targets", acts_on(name[g]), {"problem": None, "targets": facts[g]["targets"], "mechanism_targets": facts[g]["mechanism_targets"]})
+
+    for tg_, c, p in pairs(X, lambda p: p["observations"] == 1, 2):
+        add("observed", f"The graph holds one expression observation for {sym[tg_]} in {name[c]}. Was its expression higher or lower?" + _final2('"direction": "higher" or "lower"'),
+            {"problem": None, "direction": p["directions"][0]})
+
+    def diseases(keep, n: int, pool=clean_d) -> list[str]:
+        ok = sorted(c for c in pool if c not in used_c and c in summ.index and keep(summ.loc[c]))
+        got = rng.sample(ok, n)
+        used_c.update(got)
+        return got
+
+    no_compound = lambda c: f"Of the genes tied to {c}, how many have no drug acting on them and no compound at their family's potency cutoff?" + _final2('"genes": N')
+    still_dark = lambda c: f"Of the genes tied to {c}, how many are still Tdark?" + _final2('"genes": N')
+    n_loci = lambda c: f"How many loci of {c} carry the GWAS link on more than one gene?" + _final2('"loci": N or null')
+    for c in diseases(lambda r: r.no_compound >= 5 and r.no_compound < r.genes_tied, 2):
+        add("no_compound", no_compound(name[c]), {"problem": None, "genes": int(summ.loc[c].no_compound)})
+    for c in diseases(lambda r: r.dark >= 2, 2):
+        add("dark", still_dark(name[c]), {"problem": None, "genes": int(summ.loc[c].dark)})
+    for c in diseases(lambda r: r.loci_not_resolved >= 3, 3):
+        add("loci", n_loci(name[c]), {"problem": None, "loci": int(summ.loc[c].loci_not_resolved)})
+    for c in diseases(lambda r: r.no_genetic_support >= 3, 3):
+        add("no_genetics", f"How many genes are tied to {name[c]} with no GWAS link?" + _final2('"genes": N'), {"problem": None, "genes": int(summ.loc[c].no_genetic_support)})
+    for c in diseases(lambda r: pd.notna(r.smallest_odds_ratio_it_could_find), 3):
+        add("floor", f"For the largest study behind the GWAS links of {name[c]}, what odds ratio did a variant carried by 20% of chromosomes need in order to be found?"
+            + _final2('"odds_ratio": NUMBER'), {"problem": None, "odds_ratio": float(summ.loc[c].smallest_odds_ratio_it_could_find)})
+    for c in diseases(lambda r: r.is_a_gwas_trait == 0 and r.genes_tied >= 5, 2, pool=clean_c):
+        add("not_gwas", n_loci(name[c]), {"problem": None, "loci": None})
+
+    for f in fakes:
+        if G.resolve(f)["ok"] or G.resolve(f)["problem"] != "not in the graph":
+            raise SystemExit(f"REFUSED: {f!r} is in the graph, or looks like something in it")
+    c = diseases(lambda r: r.genes_tied >= 5, 1)[0]
+    add("not_in_graph", how_many(fakes[0], name[c]), {"problem": "not_in_graph"})
+    add("not_in_graph", acts_on(fakes[1]), {"problem": "not_in_graph"})
+    add("not_in_graph", no_compound(fakes[2]), {"problem": "not_in_graph"})
+    for w in words:
+        if (lambda r: r["ok"] or r["problem"] != "ambiguous")(G.resolve(w, "trait")):
+            raise SystemExit(f"REFUSED: {w!r} does not mean several conditions in this graph")
+        add("ambiguous", still_dark(w), {"problem": "ambiguous"})
+    if len(qs) != 35:
+        raise SystemExit(f"REFUSED: {len(qs)} questions were written, 35 are wanted")
+    return qs
+
+
+def via_ask_new(q: dict, G) -> dict:
+    """What the question layer itself would put in FINAL for one of these questions. Used only to
+    cross-check the expected answers, which are computed without it."""
+    text, fam = q["text"].split(" End with")[0], q["family"]
+    prob = lambda a: {"problem": {"not in the graph": "not_in_graph", "ambiguous": "ambiguous"}.get(a.get("problem"), a.get("problem"))}
+    m = (re.match(r"^How many of the disease sources assert (\S+) with (.+)\?$", text) or re.match(r"^Has a pruning rule withheld a row for (\S+) and (.+?)\? If one has", text)
+         or re.match(r"^Does any drug act on (\S+) and treat (.+?)\? If one does", text) or re.match(r"^The graph holds one expression observation for (\S+) in (.+?)\. Was", text))
+    if m:
+        w = G.why(m.group(1), m.group(2))
+        if "other_sources" not in w:
+            return prob(w)
+        o = w["other_sources"]
+        if text.startswith("How many"):
+            return {"problem": None, "sources": o["sources_asserting"]}
+        if text.startswith("Has a pruning"):
+            return {"problem": None, "withheld": o["withheld_rows"] > 0, "papers": o["withheld"][0].get("papers_mentioning_both") if o["withheld"] else None}
+        if text.startswith("Does any drug"):
+            return {"problem": None, "drug": o["drug_paths"] > 0, "mechanism": any(p["target_is_the_drugs_mechanism"] for p in o["through_a_drug"]) if o["drug_paths"] else None}
+        return {"problem": None, "direction": o["expression_observations"][0]["direction"]}
+    m = re.match(r"^How many targets does the drug (.+?) act on, and", text)
+    if m:
+        k = G.known(m.group(1), limit=50)
+        if not k["found"]:
+            return prob(k)
+        return {"problem": None, "targets": len(k["targets"]) + k["targets_more"], "mechanism_targets": sum(x["is_the_drugs_mechanism"] for x in k["targets"])}
+    c = (re.match(r"^Of the genes tied to (.+?), how many", text) or re.match(r"^How many loci of (.+?) carry the GWAS link", text) or re.match(r"^How many genes are tied to (.+?) with no GWAS link\?$", text)
+         or re.match(r"^For the largest study behind the GWAS links of (.+?), what odds ratio", text)).group(1)
+    o = G.gaps(disease=c)
+    if not o["found"]:
+        return prob(o)
+    n = o["counts"]
+    if fam == "floor":
+        f = next(g for g in o["gaps"] if g["kind"] == "no_genetic_support")["what_an_absent_link_could_have_seen"]["largest"]
+        return {"problem": None, "odds_ratio": f["smallest_odds_ratio_it_could_find"]}
+    if fam in ("loci", "not_gwas"):
+        return {"problem": None, "loci": n.get("locus_not_resolved")}
+    return {"problem": None, "genes": n["no_compound" if "no compound" in text else "dark" if "Tdark" in text else "no_genetic_support"]}
+
+
 def digest(qs: list[dict]) -> str:
     return hashlib.sha256(json.dumps(qs, sort_keys=True).encode()).hexdigest()
 
@@ -625,8 +832,17 @@ def grade(q: dict, final: dict | None) -> bool:
                     return False
             except (TypeError, ValueError):
                 return False
-        elif k in ("has_gap", "explained"):
+        elif k in ("has_gap", "explained") or (k in ("withheld", "drug", "mechanism") and want is not None):
             if final.get(k) not in (want, str(want).lower()):
+                return False
+        elif k == "direction":
+            if str(final.get(k) or "").strip().casefold() != want:
+                return False
+        elif k == "odds_ratio":
+            try:
+                if abs(float(str(final.get(k)).strip()) - want) > 0.011:
+                    return False
+            except (TypeError, ValueError):
                 return False
         elif k == "trait_any_of":
             got = str(final.get("trait") or "").strip().casefold()
@@ -663,7 +879,7 @@ def fabricated(q: dict, final: dict | None) -> bool:
 
 
 # ----------------------------------------------------------------------------- the two tool sets
-def sql_db(bundle: Path, rankings: bool = False) -> sqlite3.Connection:
+def sql_db(bundle: Path, rankings: bool = False, others_and_gaps: bool = False) -> sqlite3.Connection:
     T = _tables(bundle)
     nb = pd.read_parquet(bundle / "neighbours.parquet")
     n = T["nodes"]
@@ -694,6 +910,27 @@ def sql_db(bundle: Path, rankings: bool = False) -> sqlite3.Connection:
         R["no_link_traits"].drop(columns="targets_linked_to_this_trait").to_sql("no_link_traits", con, index=False)
         for stmt in ("CREATE INDEX r1 ON candidates(trait_id, rank)", "CREATE INDEX r2 ON candidates(symbol)", "CREATE INDEX r3 ON no_link_targets(trait_id, rank)",
                      "CREATE INDEX r4 ON no_link_traits(symbol)"):
+            con.execute(stmt)
+    if others_and_gaps:
+        X = gaptables.read(bundle)
+        R = gaptables.build(X)
+        cn = X["context_nodes"]
+        cn[cn.kind == "condition"][["id", "name"]].to_sql("conditions", con, index=False)
+        cn[cn.kind == "drug"][["id", "name"]].to_sql("drugs", con, index=False)
+        R["same_condition"].to_sql("same_condition", con, index=False)
+        a = X["assertions"]
+        pd.DataFrame({"target_id": a.target, "condition_id": a.condition, "source": a.source, "withheld": a.withheld.astype(int), "rule": a.rule,
+                      "papers_mentioning_both": a.papers}).to_sql("assertions", con, index=False)
+        x = X["expression"]
+        pd.DataFrame({"target_id": x.target, "condition_id": x.condition, "condition_as_named": x.label, "log2_fold_change": x.log2fc, "p": x.p}).to_sql("expression", con, index=False)
+        dt = X["drug_targets"]
+        pd.DataFrame({"drug_id": dt.drug, "target_id": dt.target, "action": dt.action, "is_mechanism": dt.mechanism.astype(int)}).to_sql("drug_targets", con, index=False)
+        X["drug_indications"].rename(columns={"drug": "drug_id", "condition": "condition_id"})[["drug_id", "condition_id"]].to_sql("drug_indications", con, index=False)
+        for k in ("disease_gap_summary", "disease_gap_genes", "disease_loci"):
+            R[k].to_sql(k, con, index=False)
+        for stmt in ("CREATE INDEX n1 ON same_condition(asked_id)", "CREATE INDEX n2 ON assertions(target_id)", "CREATE INDEX n3 ON assertions(condition_id)", "CREATE INDEX n4 ON expression(target_id)",
+                     "CREATE INDEX n5 ON drug_targets(drug_id)", "CREATE INDEX n6 ON drug_targets(target_id)", "CREATE INDEX n7 ON drug_indications(condition_id)",
+                     "CREATE INDEX n8 ON disease_gap_summary(condition_id)", "CREATE INDEX n9 ON disease_gap_genes(condition_id, list)", "CREATE INDEX n10 ON conditions(name)", "CREATE INDEX n11 ON drugs(name)"):
             con.execute(stmt)
     for stmt in ("CREATE INDEX i1 ON links(target_id)", "CREATE INDEX i2 ON links(trait_id)", "CREATE INDEX i3 ON studies(target_id, trait_id)",
                  "CREATE INDEX i4 ON targets(symbol)", "CREATE INDEX i5 ON traits(name)", "PRAGMA query_only = ON"):
@@ -857,7 +1094,7 @@ async def run(bundle: Path, model: str, condition: str, base_url: str, key: str 
                 fp = hashlib.sha256(json.dumps([system, specs], sort_keys=True).encode()).hexdigest()[:12]
                 rows = await body(s, system, specs, call_tool, fp)
     elif condition == "sql":
-        con = sql_db(bundle, rankings=schema == 4)
+        con = sql_db(bundle, rankings=schema == 4, others_and_gaps=schema == 5)
 
         async def call_tool(name: str, args: dict) -> str:
             return run_sql(con, args.get("query", "")) if name == "sql" else f"unknown tool {name}; the only tool is sql"
@@ -1038,8 +1275,28 @@ def _selftest() -> int:
     q = {"family": "nothing", "gold": {"problem": None, "trait": None}}
     ck("nothing to rank is right as a null with no problem, and wrong as a problem or a guess",
        grade(q, {"problem": None, "trait": None}) and not grade(q, {"problem": "unknown", "trait": None}) and not grade(q, {"problem": None, "trait": "body height"}))
-    ck("each later test has its own cap, and the rankings test its own rules and tables", CAPS == {3: 0.75, 4: 0.60} and "ranked apart" in RULES_BY_SCHEMA[4] and "no_link_traits" in SQL_EXTRA[4]
+    ck("each later test has its own cap, and the rankings test its own rules and tables", CAPS == {3: 0.75, 4: 0.60, 5: 0.60} and "ranked apart" in RULES_BY_SCHEMA[4] and "no_link_traits" in SQL_EXTRA[4]
        and SETS["rank"]["seed"] != SETS["rank_dev"]["seed"] and not set(SETS["rank"]["fakes"]) & set(SETS["rank_dev"]["fakes"]))
+    # the other sources and the gaps of a disease
+    ck("the newest test has its own rules and tables, and its two sets share no seed, invented name or word",
+       "is not an assertion" in RULES_BY_SCHEMA[5] and "disease_gap_summary" in SQL_EXTRA[5] and "target_gaps" in SQL_EXTRA[5] and SETS["new"]["seed"] != SETS["new_dev"]["seed"]
+       and not set(SETS["new"]["fakes"]) & set(SETS["new_dev"]["fakes"]) and not set(SETS["new"]["words"]) & set(SETS["new_dev"]["words"]))
+    q = {"family": "withheld", "gold": {"problem": None, "withheld": True, "papers": 3}}
+    ck("a withheld row is right with its count of papers, and wrong without it or with another", grade(q, {"problem": None, "withheld": True, "papers": 3}) and grade(q, {"problem": None, "withheld": "true", "papers": "3"})
+       and not grade(q, {"problem": None, "withheld": True, "papers": None}) and not grade(q, {"problem": None, "withheld": False, "papers": 3}))
+    q = {"family": "drug_path", "gold": {"problem": None, "drug": False, "mechanism": None}}
+    ck("no drug between them is right with the mechanism left null, and wrong with one claimed", grade(q, {"problem": None, "drug": False, "mechanism": None}) and not grade(q, {"problem": None, "drug": False, "mechanism": False})
+       and not grade(q, {"problem": None, "drug": True, "mechanism": None}))
+    q = {"family": "observed", "gold": {"problem": None, "direction": "lower"}}
+    ck("a direction is right in any letter case", grade(q, {"problem": None, "direction": "Lower"}) and not grade(q, {"problem": None, "direction": "higher"}) and not grade(q, {"problem": None}))
+    q = {"family": "floor", "gold": {"problem": None, "odds_ratio": 1.084}}
+    ck("an odds ratio is right within 0.011", grade(q, {"problem": None, "odds_ratio": 1.08}) and grade(q, {"problem": None, "odds_ratio": "1.09"}) and not grade(q, {"problem": None, "odds_ratio": 1.10})
+       and not grade(q, {"problem": None, "odds_ratio": None}))
+    q = {"family": "not_gwas", "gold": {"problem": None, "loci": None}}
+    ck("a condition with no dated link is right as a null with no problem, and wrong as a count or a problem", grade(q, {"problem": None, "loci": None}) and not grade(q, {"problem": None, "loci": 0})
+       and not grade(q, {"problem": "not_in_graph", "loci": None}))
+    q = {"family": "sources", "gold": {"problem": None, "sources": 0}}
+    ck("no source asserting a pair is right as zero, and wrong as one", grade(q, {"problem": None, "sources": 0}) and not grade(q, {"problem": None, "sources": 1}) and not grade(q, {"problem": None, "sources": None}))
     return 0 if ok else 1
 
 
@@ -1069,13 +1326,14 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "questions":
         S = SETS[a.set_]
-        qs = (make_rank_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 4
+        qs = (make_new_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 5
+              else make_rank_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 4
               else make_gap_questions(paths.bundle(a.release), S["seed"], S["fakes"], S["words"]) if S["schema"] == 3
               else make_questions(paths.bundle(a.release), S["seed"], S["schema"], S["fakes"], S["words"]))
         d = {"release": a.release, "seed": S["seed"], "sha256": digest(qs), "questions": qs}
         if S["schema"] >= 3:
             G = ask.Graph(paths.bundle(a.release))
-            differ = [q["id"] for q in qs if not grade(q, (via_ask_rank if S["schema"] == 4 else via_ask)(q, G))]
+            differ = [q["id"] for q in qs if not grade(q, {5: via_ask_new, 4: via_ask_rank}.get(S["schema"], via_ask)(q, G))]
             if differ:
                 raise SystemExit(f"REFUSED: the expected answer and the question layer disagree on {differ}; one of them is wrong. Nothing was written.")
             print(f"the question layer gives the expected answer to all {len(qs)}")
