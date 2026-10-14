@@ -4,8 +4,9 @@
  "window": 200,
  "sample_sha256": "b12395ace6dfcb766e1345fca27e8220e6f5865a5fa424e9def0b2afcd623048",
  "states": {
-  "not asked yet": 200,
-  "answered": 32
+  "answered": 209,
+  "not asked yet": 22,
+  "error": 1
  },
  "sources": {
   "Expression Atlas": {
@@ -50,6 +51,94 @@
    "real_pairs_an_abstract_mentions": {
     "n": 3,
     "not_found_in_full_text": 3
+   }
+  },
+  "DrugCentral Indication": {
+   "planted_withheld": {
+    "n": 50,
+    "share": 0.76,
+    "low": 0.6258731612803865,
+    "high": 0.8570260866267342
+   },
+   "real_withheld": {
+    "n": 50,
+    "share": 0.56,
+    "low": 0.42306027918110306,
+    "high": 0.6883780087974634
+   },
+   "passes": false,
+   "provisional": false,
+   "complete": true,
+   "stopped_after": null,
+   "abstracts_on_the_same_pairs": {
+    "planted_withheld": {
+     "n": 50,
+     "share": 0.8,
+     "low": 0.6696289395351799,
+     "high": 0.8875625003576517
+    },
+    "real_withheld": {
+     "n": 50,
+     "share": 0.44,
+     "low": 0.3116219912025367,
+     "high": 0.5769397208188971
+    }
+   },
+   "real_pairs_no_abstract_mentions": {
+    "n": 22,
+    "found_in_full_text": 2
+   },
+   "planted_pairs_no_abstract_mentions": {
+    "n": 40,
+    "found_in_full_text": 5
+   },
+   "real_pairs_an_abstract_mentions": {
+    "n": 28,
+    "not_found_in_full_text": 8
+   }
+  },
+  "JensenLab Knowledge AmyCo": {
+   "planted_withheld": {
+    "n": 38,
+    "share": 0.8421052631578947,
+    "low": 0.6958318808733855,
+    "high": 0.9255613662827871
+   },
+   "real_withheld": {
+    "n": 39,
+    "share": 0.6923076923076923,
+    "low": 0.5357874549954498,
+    "high": 0.8143406776986681
+   },
+   "passes": false,
+   "provisional": false,
+   "complete": false,
+   "stopped_after": null,
+   "abstracts_on_the_same_pairs": {
+    "planted_withheld": {
+     "n": 38,
+     "share": 0.868421052631579,
+     "low": 0.7267314042437727,
+     "high": 0.9424613234628749
+    },
+    "real_withheld": {
+     "n": 39,
+     "share": 0.6410256410256411,
+     "low": 0.48418148437048797,
+     "high": 0.7725791462718652
+    }
+   },
+   "real_pairs_no_abstract_mentions": {
+    "n": 25,
+    "found_in_full_text": 7
+   },
+   "planted_pairs_no_abstract_mentions": {
+    "n": 33,
+    "found_in_full_text": 3
+   },
+   "real_pairs_an_abstract_mentions": {
+    "n": 14,
+    "not_found_in_full_text": 9
    }
   }
  }
