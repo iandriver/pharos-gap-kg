@@ -148,11 +148,22 @@ def test_gaps(T):
     has(T, f"For {t['with_a_gap']:,} Tdark targets, Pharos's least-studied level", f"the {t['promoted']} of {t['in_both_releases']:,} targets that were promoted",
         f"{r['auc']:.3f} [{r['auc_low']:.3f}, {r['auc_high']:.3f}]", f"{d['difference']:+.3f} [{d['low']:+.3f}, {d['high']:+.3f}] over the PubMed score alone",
         f"{pc(t['bands']['1 flip, nearest third']['share'])} were promoted")
+    if (paths.bundle("pharos319") / "study_sizes.parquet").is_file():       # the worked disease, as the question layer answers it
+        from pharos_gap_kg import ask
+        o = ask.Graph(paths.bundle("pharos319")).gaps("Parkinson disease", kind="no_genetic_support", top=2)
+        h, k = o["holds"], {g["kind"]: g for g in o["gaps"]}
+        f = k["no_genetic_support"]["what_an_absent_link_could_have_seen"]["largest"]
+        has(T, f"For Parkinson disease the graph ties {h['tied_genes']} genes: {h['gwas_linked_genes']} by a GWAS link, {h['genes_asserted_by_two_or_more_sources']} by two or more sources and "
+               f"{h['genes_that_are_the_mechanism_target_of_one']} as the mechanism target", f"{o['counts']['no_compound']} have no drug and no compound", f"and {o['counts']['dark']} are still Tdark",
+            f"{k['locus_not_resolved']['genes']} of the {h['gwas_linked_genes']} GWAS-linked genes sit in {o['counts']['locus_not_resolved']} loci",
+            f"{o['counts']['no_genetic_support']} genes are tied with no GWAS link", f"an odds ratio of about {f['smallest_odds_ratio_it_could_find']:.2f} to find a variant")
+        top = k["no_genetic_support"]["top"]
+        assert [x["symbol"] for x in top] == ["ATP13A2", "PARK7"] and all(len(x["tied_by"]["sources"]) == 6 for x in top) and "ATP13A2 and PARK7, are each asserted by six sources" in T
     c = J("disease_gaps_pharos319.json")
     o = c["smallest_odds_ratio_the_largest_study_could_find"]
     has(T, f"Over the {c['traits']} disease traits", f"{pc(c['share_of_gwas_linked_genes_in_a_locus_with_another'])} of GWAS-linked genes share their locus",
         f"singles out one gene in {pc(c['share_of_such_loci_where_other_evidence_singles_out_one_gene'])} of those loci", f"{pc(c['share_of_tied_genes_with_no_compound'])} of tied genes have no drug",
-        f"For the {c['of_them_cases_and_controls']} traits whose largest study has cases and controls, the median is an odds ratio of {o['median']:.2f}")
+        f"for the {c['of_them_cases_and_controls']} traits whose largest study has cases and controls, the median is an odds ratio of {o['median']:.2f}")
     assert c["min_sources"] == 2 and "two or more disease sources" in T
 
 
