@@ -1524,3 +1524,17 @@ are computed, the rules text, the grading, the models, the limits and the two ve
 
 The evaluation set is generated and frozen next, and no model has seen it. The development round cost
 0.20 of the 0.60 dollars.
+
+**14 Oct 2026, full text: DrugCentral Indication is extended. Written after its first 50 planted and 50
+real pairs were answered. The extension is the rule of 9 Oct, stated before any sample pair was
+searched; the order of the added pairs was chosen after these answers were seen.**
+
+Of DrugCentral Indication's first 50 of each, Rule F withholds 38 planted pairs (76.0%) and 28 real
+ones (56.0%). Each share is within 10 points of the bar (80% and 50%), so its first 100 planted and
+first 100 real pairs are asked about. The module did not carry the rule and now does
+(`fulltext.extends`): a source is decided from its first 50 of each once all are answered, and a
+share exactly 10 points off counts as within. JensenLab Knowledge AmyCo is decided the same way when
+its first 50 are answered (38 planted and 39 real so far). Pairs 51 to 100 are asked after every
+source's first 50, source by source, planted and real in turn. An extended source is reported on its
+first 100 of each, with its shares at 50 beside them. Rule F, the names, the bar, the sample and the
+allowance are unchanged.

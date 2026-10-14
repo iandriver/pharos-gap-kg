@@ -20,6 +20,10 @@ fixed in docs/PROTOCOL.md before a sample pair was searched:
 THE FORM FIXED is `near`, as an exhaustive scan. The whole-paper form needs every word of one name
 and stops counting at 20.
 
+THE EXTENSION. A source whose first 50 planted and first 50 real pairs are all answered, and whose two
+shares are each inside the bar or within 10 points of it, is asked about up to its first 100 of each.
+Pairs 51 to 100 are asked after every source's first 50, source by source.
+
 Run:  python -m pharos_gap_kg.fulltext pilot pharos319
       python -m pharos_gap_kg.fulltext run pharos319 --calls 30    # the next pairs in the fixed order
       python -m pharos_gap_kg.fulltext report pharos319
@@ -47,6 +51,7 @@ DAY, MINUTE = 100, 25           # the free allowance, as Ian gave it on 9 Oct 20
 PER_DAY, GAP = 90, 3.0          # what this module lets itself use: some of the day is left, and 20 a minute
 SOURCES = ("Expression Atlas", "DrugCentral Indication", "JensenLab Knowledge AmyCo")
 FIRST = 50                      # of each source: the first 50 planted and the first 50 real pairs, in drawn order
+EXTENDED, EXTEND_WITHIN = 100, 0.10   # a source whose two shares at 50 are each inside the bar or within 10 points of it
 STOPPED = {"Expression Atlas": 16}   # stopped after this many of each, by an amendment made after its answers were read
 WINDOW = 200
 MAX_NAMES, MIN_NAME = 12, 5     # how many names of a disease go into one question, and the shortest one used
@@ -262,37 +267,69 @@ def pilot(release: str) -> pd.DataFrame:
 
 # ---- the sample, in a fixed order, a day's share at a time --------------------------------------------------
 
-def ordered(sample: pd.DataFrame, first: int = FIRST) -> pd.DataFrame:
+def ordered(sample: pd.DataFrame, first: int = FIRST, extended=()) -> pd.DataFrame:
     """The sample pairs this check asks about, in the order it asks: source by source, and within a source
-    planted and real pairs in turn by drawn order, so that wherever a day stops the two groups are level."""
-    upto = sample.source.map(lambda x: min(first, STOPPED.get(x, first)))
+    planted and real pairs in turn by drawn order, so that wherever a day stops the two groups are level.
+    The first `first` of each come first; then, for the sources in `extended`, pairs `first` to EXTENDED."""
+    upto = sample.source.map(lambda x: EXTENDED if x in extended and x not in STOPPED else min(first, STOPPED.get(x, first)))
     s = sample[sample.source.isin(SOURCES) & (sample.order < upto)].copy()
+    s["_stage"] = (s.order >= first).astype(int)
     s["_src"] = s.source.map({x: i for i, x in enumerate(SOURCES)})
-    return s.sort_values(["_src", "order", "planted"], ascending=[True, True, False]).drop(columns="_src").reset_index(drop=True)
+    return s.sort_values(["_stage", "_src", "order", "planted"], ascending=[True, True, True, False]).drop(columns=["_stage", "_src"]).reset_index(drop=True)
+
+
+def extends(rows: pd.DataFrame, first: int = FIRST) -> dict:
+    """source -> True when its first `first` planted and real pairs are all answered (or unsearchable) and
+    both shares are inside the bar or within EXTEND_WITHIN of it; False when they are not; None while a
+    pair is still to be answered. A stopped source is never extended."""
+    keep, lose = prune2.round1.KEEP_AT_LEAST - EXTEND_WITHIN, prune2.round1.LOSE_AT_MOST + EXTEND_WITHIN
+    out = {}
+    for src in SOURCES:
+        if src in STOPPED:
+            out[src] = False
+            continue
+        g = rows[(rows.source == src) & (rows.order < first)] if len(rows) else rows
+        if len(g) < 2 * first or not g.state.isin(["answered", "unsearchable"]).all():
+            out[src] = None
+            continue
+        a = g[g.state == "answered"]
+        fp, fr = (a[a.planted]["count"] == 0).mean(), (a[~a.planted]["count"] == 0).mean()
+        out[src] = bool(fp >= keep - 1e-9 and fr <= lose + 1e-9)
+    return out
 
 
 def run(release: str, calls: int) -> pd.DataFrame:
-    """Ask about the next pairs, at most `calls` new requests, and write what is known so far."""
+    """Ask about the next pairs, at most `calls` new requests, and write what is known so far. The first
+    50 of each source come first; a source the rule extends is then asked about up to its first 100."""
     _, sample = prune2.frozen(release)
-    plan = with_names(ordered(sample))
+    plan = with_names(ordered(sample, extended=[s for s in SOURCES if s not in STOPPED]))
     c = Client()
-    rows, new, why = [], 0, None
-    for r in plan.itertuples():
-        row = {k: getattr(r, k) for k in KEY + ["planted", "order"]}
-        if not isinstance(r.symbol, str) or not r.names:
-            rows.append({**row, "count": None, "state": "unsearchable"})
-            continue
-        q = near_question(r.symbol, r.names)
-        if why is None and new >= calls:
-            why = f"the {calls} requests asked for were sent"
-        try:
-            a = c.ask(*q) if why is None else Client(per_day=0).ask(*q)      # once stopped, only kept answers are read
-        except Spent as e:
-            why = why or str(e)
-            rows.append({**row, "count": None, "state": "not asked yet"})
-            continue
-        new += 0 if a.get("kept") else 1
-        rows.append({**row, "count": a["count"], "state": "answered" if a["count"] is not None else "error: " + str(a["error"])[:80]})
+    new, why = 0, None
+
+    def ask(part: pd.DataFrame) -> list[dict]:
+        nonlocal new, why
+        rows = []
+        for r in part.itertuples():
+            row = {k: getattr(r, k) for k in KEY + ["planted", "order"]}
+            if not isinstance(r.symbol, str) or not r.names:
+                rows.append({**row, "count": None, "state": "unsearchable"})
+                continue
+            q = near_question(r.symbol, r.names)
+            if why is None and new >= calls:
+                why = f"the {calls} requests asked for were sent"
+            try:
+                a = c.ask(*q) if why is None else Client(per_day=0).ask(*q)      # once stopped, only kept answers are read
+            except Spent as e:
+                why = why or str(e)
+                rows.append({**row, "count": None, "state": "not asked yet"})
+                continue
+            new += 0 if a.get("kept") else 1
+            rows.append({**row, "count": a["count"], "state": "answered" if a["count"] is not None else "error: " + str(a["error"])[:80]})
+        return rows
+
+    rows = ask(plan[plan.order < plan.source.map(lambda x: min(FIRST, STOPPED.get(x, FIRST)))])
+    more = [s for s, v in extends(pd.DataFrame(rows)).items() if v]
+    rows += ask(plan[(plan.order >= FIRST) & plan.source.isin(more)])
     out = pd.DataFrame(rows)
     out["count"] = out["count"].astype("Int64")
     W = prune2.work(release)
@@ -309,16 +346,23 @@ def report(release: str) -> dict:
     done = x[x.state == "answered"].copy()
     done["f"] = (done["count"] == 0).to_numpy()
     done["l0"] = (done.both == 0).to_numpy()
-    out = {"release": release, "first": FIRST, "window": WINDOW, "sample_sha256": prune2.graph.file_sha(W / "sample.parquet"),
+    ext = extends(ft)
+    out = {"release": release, "first": FIRST, "extended_to": EXTENDED, "extend_within": EXTEND_WITHIN, "window": WINDOW,
+           "sample_sha256": prune2.graph.file_sha(W / "sample.parquet"),
            "states": {str(k): int(v) for k, v in ft.state.str.replace(r"^error.*", "error", regex=True).value_counts().items()}, "sources": {}}
     for src in SOURCES:
         g = done[done.source == src]
         p, r = g[g.planted], g[~g.planted]
         if not len(g):
             continue
+        size = EXTENDED if ext[src] else FIRST
+        mine = ft[ft.source == src]
         fp, fr = prune2.share(p.f.to_numpy()), prune2.share(r.f.to_numpy())
-        out["sources"][src] = {"planted_withheld": fp, "real_withheld": fr, **prune2.bar(fp, fr), "complete": bool(len(p) == FIRST and len(r) == FIRST),
-                               "stopped_after": STOPPED.get(src),
+        p1, r1 = p[p.order < FIRST], r[r.order < FIRST]
+        out["sources"][src] = {"planted_withheld": fp, "real_withheld": fr, **prune2.bar(fp, fr),
+                               "complete": bool(src not in STOPPED and len(mine) == 2 * size and mine.state.isin(["answered", "unsearchable"]).all()),
+                               "extended": ext[src], "asked_up_to": size, "stopped_after": STOPPED.get(src),
+                               "at_the_first_50": {"planted_withheld": prune2.share(p1.f.to_numpy()), "real_withheld": prune2.share(r1.f.to_numpy())},
                                "abstracts_on_the_same_pairs": {"planted_withheld": prune2.share(p.l0.to_numpy()), "real_withheld": prune2.share(r.l0.to_numpy())},
                                "real_pairs_no_abstract_mentions": {"n": int(r.l0.sum()), "found_in_full_text": int((r.l0 & ~r.f).sum())},
                                "planted_pairs_no_abstract_mentions": {"n": int(p.l0.sum()), "found_in_full_text": int((p.l0 & ~p.f).sum())},
@@ -379,6 +423,20 @@ synonym: "x" EXACT []
     ck("pairs are asked source by source, planted and real in turn by drawn order, and only the first of each",
        list(zip(od.source, od.planted, od.order)) == [(SOURCES[0], True, 0), (SOURCES[0], False, 0), (SOURCES[0], True, 1), (SOURCES[0], False, 1),
                                                        (SOURCES[1], True, 0), (SOURCES[1], False, 0), (SOURCES[1], True, 1), (SOURCES[1], False, 1)])
+    ex = ordered(pd.DataFrame([(s, pl_, o) for s in SOURCES for pl_ in (False, True) for o in range(4)], columns=["source", "planted", "order"]), first=2, extended=[SOURCES[1], SOURCES[0]])
+    ck("an extended source's later pairs come after every source's first, source by source, planted and real in turn, and a stopped source is not extended",
+       list(zip(ex.source, ex.planted, ex.order))[-4:] == [(SOURCES[1], True, 2), (SOURCES[1], False, 2), (SOURCES[1], True, 3), (SOURCES[1], False, 3)]
+       and set(ex.source[:12]) == set(SOURCES) and ex.order[:12].max() == 1 and len(ex) == 16)
+
+    def at50(withheld_planted: int, withheld_real: int, src: str = SOURCES[1], pending: int = 0) -> pd.DataFrame:
+        rows = [(src, True, o, 0 if o < withheld_planted else 3, "answered") for o in range(FIRST)]
+        rows += [(src, False, o, 0 if o < withheld_real else 3, "answered" if o < FIRST - pending else "not asked yet") for o in range(FIRST)]
+        return pd.DataFrame(rows, columns=["source", "planted", "order", "count", "state"])
+    ck("a source is extended when its shares at 50 are each inside the bar or within 10 points of it, the edges included",
+       extends(at50(38, 28))[SOURCES[1]] is True and extends(at50(35, 30))[SOURCES[1]] is True and extends(at50(40, 25))[SOURCES[1]] is True)
+    ck("and not when either share is further off", extends(at50(34, 20))[SOURCES[1]] is False and extends(at50(45, 31))[SOURCES[1]] is False)
+    ck("nothing is decided while a pair of the first 50 is unanswered, and a stopped source is never extended",
+       extends(at50(40, 20, pending=1))[SOURCES[1]] is None and extends(at50(40, 20))[SOURCES[2]] is None and extends(at50(40, 20, src=SOURCES[0]))[SOURCES[0]] is False)
     import tempfile
     old = paths.EVAL
     with tempfile.TemporaryDirectory() as d:
@@ -426,7 +484,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  states: {out['states']}")
         for src, r in out["sources"].items():
             a = r["abstracts_on_the_same_pairs"]
-            print(f"  {src:28s} full text: planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}{'' if r['complete'] else f"  [stopped after {r['stopped_after']} of each]" if r['stopped_after'] else '  [not complete]'}")
+            print(f"  {src:28s} full text: planted {pc(r['planted_withheld'])}  real {pc(r['real_withheld'])}  {'PASS' if r['passes'] else 'no'}{' (provisional)' if r['provisional'] else ''}{'' if r['complete'] else f"  [stopped after {r['stopped_after']} of each]" if r['stopped_after'] else '  [not complete]'}"
+                  f"{f'  [extended to {EXTENDED}]' if r['extended'] else ''}")
+            if r["extended"]:
+                f50 = r["at_the_first_50"]
+                print(f"  {'':28s} at the first 50: planted {pc(f50['planted_withheld'])}  real {pc(f50['real_withheld'])}")
             print(f"  {'':28s} abstracts: planted {pc(a['planted_withheld'])}  real {pc(a['real_withheld'])}; real pairs no abstract mentions: {r['real_pairs_no_abstract_mentions']}; planted: {r['planted_pairs_no_abstract_mentions']}")
         return 0
     if argv[0] == "pilot":
