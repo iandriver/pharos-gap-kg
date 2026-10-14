@@ -1486,3 +1486,41 @@ as published to its current term, on the ontology's own `replaced_by` statement.
 ids of the dated links do not change. A trait tied to another vocabulary only by a cross-reference
 is counted and not joined: a cross-reference is not a statement that two terms are one. The questions
 look a trait up in the other parts under its own id and its current term.
+
+**14 Oct 2026, usability of the other sources and of the gaps of a disease, between the two rounds.
+Written after the development round and before the evaluation questions were generated.**
+
+The development round, 35 questions (`docs/data/usability_results_new_dev.json`): under *typed* the
+three models answered 31, 33 and 32; under *sql* 33, 34 and 35. No answer was invented. The nine
+typed misses are of two kinds.
+
+- Seven are a disease that is a GWAS trait, reported as absent or as having no exact name. In each
+  the model went to `find` and came back with nothing, or with a list of other conditions. `find`
+  takes a kind, and under the kind "condition" it looked only among conditions that the other sources
+  name and that are not GWAS traits, so asthma was not found as asthma. The harness keeps a tool's
+  name and not its arguments; asked directly with that kind, `find` gives for each of the six names
+  the answer the models quote. The fault is in the tool: to a reader a disease is a condition whether
+  or not a GWAS studied it.
+- Two are one model giving a count that cannot be made as zero where the rules ask for null, for a
+  condition that is not a GWAS trait. The answer left the two lists out and gave no count for them.
+
+The three *sql* misses: two on a disease name that two rows carried, a GWAS trait and a condition of
+the same name that the graph reads as that trait; one a join not made.
+
+Changed, in the tools:
+
+1. *`find`* treats the kinds "trait" and "condition" as one: either finds a disease whether it is a
+   GWAS trait or is named only by the other sources. Its description says so.
+2. *`gaps` for a condition that is not a GWAS trait* gives the count of loci and the count of genes
+   with no GWAS link as null, in its counts and in its sentence, where it had left them out.
+
+Changed, in the test, for the *sql* condition only: its table of conditions lists what can be asked
+about by name, as the typed questions do. A condition that the graph reads as part of a GWAS trait is
+no longer listed a second time under the trait's name, and the description says that two ids with one
+name are one condition.
+
+Unchanged: the thirteen kinds of question and how they are written, the expected answers and how they
+are computed, the rules text, the grading, the models, the limits and the two verdicts.
+
+The evaluation set is generated and frozen next, and no model has seen it. The development round cost
+0.20 of the 0.60 dollars.

@@ -158,7 +158,8 @@ Every FINAL object has a "problem" field:
 When "problem" is not null, set the other fields to null."""
 
 SQL_SCHEMA_NEW = """
-  conditions(id, name)                                               -- conditions the other sources name that are not GWAS traits
+  conditions(id, name)                                               -- conditions the other sources name that are not GWAS traits. Two ids
+                                                                     -- with one name are one condition: same_condition lists each under the other
   drugs(id, name)
   same_condition(asked_id, read_id, tie)
       -- one trait or condition is read under every read_id listed for its id. A row of the four tables below belongs to a trait or a
@@ -915,7 +916,9 @@ def sql_db(bundle: Path, rankings: bool = False, others_and_gaps: bool = False) 
         X = gaptables.read(bundle)
         R = gaptables.build(X)
         cn = X["context_nodes"]
-        cn[cn.kind == "condition"][["id", "name"]].to_sql("conditions", con, index=False)
+        d_ids = set(n[n.kind == "trait"].id)
+        askable = set(R["same_condition"].asked_id) - d_ids                 # a condition read as part of a GWAS trait is that trait, and is not listed a second time
+        cn[(cn.kind == "condition") & cn.id.isin(askable)][["id", "name"]].to_sql("conditions", con, index=False)
         cn[cn.kind == "drug"][["id", "name"]].to_sql("drugs", con, index=False)
         R["same_condition"].to_sql("same_condition", con, index=False)
         a = X["assertions"]

@@ -136,6 +136,15 @@ def test_what_it_refuses_and_what_it_leaves_alone(G):
     assert o["counts"] == {g["kind"]: g.get("targets", g.get("loci", g.get("rows"))) for g in o["gaps"]}
     one = G.gaps("Parkinson disease", kind="no_genetic_support", top=4)
     assert [("top" in g) for g in one["gaps"]] == [False, False, False, True, False, False] and len(one["gaps"][3]["top"]) == 4 and one["counts"] == o["counts"]
+    # a disease is found whether it is a GWAS trait or a condition of the other sources, whichever of the two kinds is asked
+    for name in ("asthma", "mucocutaneous lymph node syndrome", "Alopecia", "Dengue Hemorrhagic Fever"):
+        for kind in ("any", "trait", "condition"):
+            f = G.find(name, kind)
+            assert f["found"] and f["exact_match"] and f["matches"][0]["name"] == name and f["matches"][0]["kind"] == "disease or phenotype", (name, kind)
+    assert G.find("malignant mesothelioma", "trait")["matches"][0]["kind"] == "condition" and not G.find("donepezil", "condition")["found"]
+    # a count that cannot be made is null, not missing and not zero
+    m = G.gaps(disease="malignant mesothelioma")
+    assert m["counts"]["locus_not_resolved"] is None and m["counts"]["no_genetic_support"] is None and m["counts"]["no_compound"] > 0 and "null, not zero" in m["answer"]
     assert G.gaps("Parkinson disease", kind="nope")["problem"] == "no such kind" and "does not apply" in G.gaps(disease="malignant mesothelioma", kind="locus_not_resolved")["answer"]
     later = [x for x in G.gaps("Alzheimer disease", as_of=2010, top=25)["gaps"][3]["top"] if "gwas_link_first_reported_later" in x]
     assert all(x["gwas_link_first_reported_later"] > 2010 for x in later)

@@ -637,9 +637,9 @@ python -m pharos_gap_kg.ask gaps "malignant mesothelioma"
 > more disease sources, 0 as the mechanism target of an indicated drug. Of them, 65 have no drug and
 > no compound at their family's cutoff; 1 is still Tdark. 0 row(s) are withheld by a pruning rule,
 > and 3,127 gene(s) have only an expression observation. malignant mesothelioma is not a GWAS trait
-> in this graph, so no dated link is present or absent for it and the kinds that need one are not
-> listed. These sources carry no dates: all but the GWAS links are as of the release, whatever year
-> was asked.
+> in this graph, so no dated link is present or absent for it: its count of loci and its count of
+> genes with no GWAS link are null, not zero, and those two lists are not given. These sources carry
+> no dates: all but the GWAS links are as of the release, whatever year was asked.
 
 Every answer ends with how to read it:
 

@@ -56,8 +56,9 @@ def build(bundle_dir: Path):
     G = ask.Graph(bundle_dir)
     app = MCPServer("pharos-gap-kg", instructions=INSTRUCTIONS)
 
-    @app.tool(description="Resolve a loosely given name to targets, traits, conditions or drugs in the graph. kind is 'any', 'target', 'trait' "
-                          "(GWAS traits and the conditions the other sources name), 'condition' or 'drug'. "
+    @app.tool(description="Resolve a loosely given name to targets, traits, conditions or drugs in the graph. kind is 'any', 'target', 'drug', or "
+                          "'trait' / 'condition', which mean the same: any disease, phenotype or measurement, whether it is a GWAS trait or is named only "
+                          "by the other sources. "
                           "Says whether any name matches exactly (exact_match) and whether to ask which is meant (ask_which_is_meant), "
                           "and returns each match's id, name and how many links or rows it has. Use it first when a name could mean several things.")
     def find(text: str, kind: str = "any", limit: int = 8) -> dict:

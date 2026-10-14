@@ -230,7 +230,7 @@ class Graph:
                 for s, idx in self._sym.items():
                     if s != q and s.startswith(q):
                         out += [{"tier": 3, "kind": "target", "i": i} for i in idx]
-        if kind in ("any", "trait"):
+        if kind in ("any", "trait", "condition"):       # "trait" and "condition" are one kind to a reader: a disease may be either here
             cid = raw.replace("_", ":", 1) if re.match(r"^[A-Za-z]+_[A-Za-z0-9]+$", raw) else raw
             hit = [i for i, v in enumerate(self.d.id) if v.casefold() == cid.casefold()]
             out += [{"tier": 0, "kind": "trait", "i": i} for i in hit]
@@ -276,7 +276,7 @@ class Graph:
         """{'ok': True, 'kind', 'i', 'note'} or {'ok': False, 'problem', 'candidates'}."""
         ms = self._match(text, kind)
         if not ms:
-            what = ({"any": "target, trait, condition or drug", "target": "target", "trait": "trait or condition", "condition": "condition", "drug": "drug"} if self.has_others
+            what = ({"any": "target, trait, condition or drug", "target": "target", "trait": "trait or condition", "condition": "trait or condition", "drug": "drug"} if self.has_others
                     else {"any": "target or trait", "target": "target", "trait": "trait"})[kind]
             return {"ok": False, "problem": "not in the graph",
                     "say": f"No {what} in the graph matches {text!r}. Nothing is assumed about it.", "candidates": []}

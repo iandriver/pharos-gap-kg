@@ -244,21 +244,23 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
         bits.append(f"{n('no_genetic_support'):,} {'is' if n('no_genetic_support') == 1 else 'are'} tied with no GWAS link")
     say += "; ".join(bits) + f". {len(held):,} row(s) are withheld by a pruning rule, and {n('observed_only'):,} gene(s) have only an expression observation."
     if not is_trait:
-        say += f" {name} is not a GWAS trait in this graph, so no dated link is present or absent for it and the kinds that need one are not listed."
+        say += (f" {name} is not a GWAS trait in this graph, so no dated link is present or absent for it: its count of loci and its count of genes with no GWAS link "
+                "are null, not zero, and those two lists are not given.")
     elif not G.d.disease_like[r["i"]]:
         say += f" {name} is a measurement and not a disease, so the disease sources and the drugs seldom name it."
     if floor and "reading" in floor:
         say += " " + floor["reading"]
     count = lambda g_: next(g_[f] for f in ("targets", "loci", "rows") if f in g_)
+    counts = lambda: {k_: (count(by[k_]) if k_ in by else None) for k_ in KINDS}        # null where the list needs a dated link and the condition has none
     if kind is not None:
         if kind not in by:
             return {"found": True, "condition": lab, "as_of": y, "answer": f"{name} is not a GWAS trait in this graph, so no dated link is present or absent for it and the list "
-                    f"{kind} does not apply.", "counts": {g_["kind"]: count(g_) for g_ in gaps}, "not_listed": list(NEEDS_A_DATED_LINK), "reading": READING}
+                    f"{kind} does not apply.", "counts": counts(), "not_listed": list(NEEDS_A_DATED_LINK), "reading": READING}
         for g_ in gaps:                       # the one list asked for keeps its rows; the others keep their counts
             if g_["kind"] != kind:
                 g_.pop("top"), g_.pop("more")
     return {"found": True, "answer": say + tied_say + " " + others.UNDATED.replace("this is", "all but the GWAS links are"), "reading": READING,
-            "condition": lab, "as_of": y, "holds": held_, "counts": {g_["kind"]: count(g_) for g_ in gaps},
+            "condition": lab, "as_of": y, "holds": held_, "counts": counts(),
             "rows_shown_per_list": top if kind is None else {kind: top}, "to_see_more": "ask again with kind set to one list's name, and top up to 25",
             "not_listed": [] if is_trait else list(NEEDS_A_DATED_LINK), "read_under": ties, "gaps": gaps}
 
