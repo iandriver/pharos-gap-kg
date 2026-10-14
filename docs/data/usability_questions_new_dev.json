@@ -1,0 +1,326 @@
+{
+ "release": "pharos319",
+ "seed": 20261014,
+ "sha256": "cde0fb5c21ae86598f7457f4d9926085c13a99fabc210184c65615835551c3f2",
+ "questions": [
+  {
+   "id": "sources-1",
+   "family": "sources",
+   "text": "How many of the disease sources assert AHR with Vascular disease? End with a last line  FINAL: {\"problem\": P, \"sources\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "sources": 2
+   }
+  },
+  {
+   "id": "sources-2",
+   "family": "sources",
+   "text": "How many of the disease sources assert MED12 with adrenocortical carcinoma? End with a last line  FINAL: {\"problem\": P, \"sources\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "sources": 3
+   }
+  },
+  {
+   "id": "sources-3",
+   "family": "sources",
+   "text": "How many of the disease sources assert MEIS2 with 15q14 microdeletion syndrome? End with a last line  FINAL: {\"problem\": P, \"sources\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "sources": 2
+   }
+  },
+  {
+   "id": "sources-4",
+   "family": "sources",
+   "text": "How many of the disease sources assert NPY with adult high grade glioma? End with a last line  FINAL: {\"problem\": P, \"sources\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "sources": 0
+   }
+  },
+  {
+   "id": "withheld-1",
+   "family": "withheld",
+   "text": "Has a pruning rule withheld a row for ATP1A1 and myocardial infarction? If one has, how many papers mention both? End with a last line  FINAL: {\"problem\": P, \"withheld\": true or false, \"papers\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "withheld": true,
+    "papers": 1
+   }
+  },
+  {
+   "id": "withheld-2",
+   "family": "withheld",
+   "text": "Has a pruning rule withheld a row for CCL5 and pulmonary fibrosis? If one has, how many papers mention both? End with a last line  FINAL: {\"problem\": P, \"withheld\": true or false, \"papers\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "withheld": true,
+    "papers": 2
+   }
+  },
+  {
+   "id": "withheld-3",
+   "family": "withheld",
+   "text": "Has a pruning rule withheld a row for TNF and Endotoxic shock? If one has, how many papers mention both? End with a last line  FINAL: {\"problem\": P, \"withheld\": true or false, \"papers\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "withheld": false,
+    "papers": null
+   }
+  },
+  {
+   "id": "drug_path-1",
+   "family": "drug_path",
+   "text": "Does any drug act on NDUFA12 and treat Treatment Refractory Type 2 Diabetes Mellitus? If one does, is NDUFA12 the mechanism target of at least one such drug? End with a last line  FINAL: {\"problem\": P, \"drug\": true or false, \"mechanism\": true, false or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "drug": true,
+    "mechanism": true
+   }
+  },
+  {
+   "id": "drug_path-2",
+   "family": "drug_path",
+   "text": "Does any drug act on ABCB1 and treat Cardioversion of Atrial Fibrillation? If one does, is ABCB1 the mechanism target of at least one such drug? End with a last line  FINAL: {\"problem\": P, \"drug\": true or false, \"mechanism\": true, false or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "drug": true,
+    "mechanism": false
+   }
+  },
+  {
+   "id": "drug_path-3",
+   "family": "drug_path",
+   "text": "Does any drug act on ELAC2 and treat PROSTATE CANCER, HEREDITARY, 2? If one does, is ELAC2 the mechanism target of at least one such drug? End with a last line  FINAL: {\"problem\": P, \"drug\": true or false, \"mechanism\": true, false or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "drug": false,
+    "mechanism": null
+   }
+  },
+  {
+   "id": "drug_targets-1",
+   "family": "drug_targets",
+   "text": "How many targets does the drug pramipexole act on, and for how many of them is that its mechanism of action? End with a last line  FINAL: {\"problem\": P, \"targets\": N, \"mechanism_targets\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "targets": 2,
+    "mechanism_targets": 1
+   }
+  },
+  {
+   "id": "drug_targets-2",
+   "family": "drug_targets",
+   "text": "How many targets does the drug osilodrostat act on, and for how many of them is that its mechanism of action? End with a last line  FINAL: {\"problem\": P, \"targets\": N, \"mechanism_targets\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "targets": 2,
+    "mechanism_targets": 1
+   }
+  },
+  {
+   "id": "drug_targets-3",
+   "family": "drug_targets",
+   "text": "How many targets does the drug prazosin act on, and for how many of them is that its mechanism of action? End with a last line  FINAL: {\"problem\": P, \"targets\": N, \"mechanism_targets\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "targets": 5,
+    "mechanism_targets": 3
+   }
+  },
+  {
+   "id": "observed-1",
+   "family": "observed",
+   "text": "The graph holds one expression observation for UBE2C in breast carcinoma. Was its expression higher or lower? End with a last line  FINAL: {\"problem\": P, \"direction\": \"higher\" or \"lower\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "direction": "higher"
+   }
+  },
+  {
+   "id": "observed-2",
+   "family": "observed",
+   "text": "The graph holds one expression observation for COL6A1 in dermatomyositis. Was its expression higher or lower? End with a last line  FINAL: {\"problem\": P, \"direction\": \"higher\" or \"lower\"}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "direction": "lower"
+   }
+  },
+  {
+   "id": "no_compound-1",
+   "family": "no_compound",
+   "text": "Of the genes tied to esophageal squamous cell carcinoma, how many have no drug acting on them and no compound at their family's potency cutoff? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 74
+   }
+  },
+  {
+   "id": "no_compound-2",
+   "family": "no_compound",
+   "text": "Of the genes tied to Dengue Hemorrhagic Fever, how many have no drug acting on them and no compound at their family's potency cutoff? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 12
+   }
+  },
+  {
+   "id": "dark-1",
+   "family": "dark",
+   "text": "Of the genes tied to mucocutaneous lymph node syndrome, how many are still Tdark? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 2
+   }
+  },
+  {
+   "id": "dark-2",
+   "family": "dark",
+   "text": "Of the genes tied to lung adenocarcinoma, how many are still Tdark? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 18
+   }
+  },
+  {
+   "id": "loci-1",
+   "family": "loci",
+   "text": "How many loci of osteoarthritis carry the GWAS link on more than one gene? End with a last line  FINAL: {\"problem\": P, \"loci\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "loci": 27
+   }
+  },
+  {
+   "id": "loci-2",
+   "family": "loci",
+   "text": "How many loci of allergic rhinitis carry the GWAS link on more than one gene? End with a last line  FINAL: {\"problem\": P, \"loci\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "loci": 101
+   }
+  },
+  {
+   "id": "loci-3",
+   "family": "loci",
+   "text": "How many loci of Alopecia carry the GWAS link on more than one gene? End with a last line  FINAL: {\"problem\": P, \"loci\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "loci": 51
+   }
+  },
+  {
+   "id": "no_genetics-1",
+   "family": "no_genetics",
+   "text": "How many genes are tied to asthma with no GWAS link? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 71
+   }
+  },
+  {
+   "id": "no_genetics-2",
+   "family": "no_genetics",
+   "text": "How many genes are tied to polyneuropathy with no GWAS link? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 3
+   }
+  },
+  {
+   "id": "no_genetics-3",
+   "family": "no_genetics",
+   "text": "How many genes are tied to acute coronary syndrome with no GWAS link? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "genes": 38
+   }
+  },
+  {
+   "id": "floor-1",
+   "family": "floor",
+   "text": "For the largest study behind the GWAS links of Oral ulcer, what odds ratio did a variant carried by 20% of chromosomes need in order to be found? End with a last line  FINAL: {\"problem\": P, \"odds_ratio\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "odds_ratio": 1.056
+   }
+  },
+  {
+   "id": "floor-2",
+   "family": "floor",
+   "text": "For the largest study behind the GWAS links of adolescent idiopathic scoliosis, what odds ratio did a variant carried by 20% of chromosomes need in order to be found? End with a last line  FINAL: {\"problem\": P, \"odds_ratio\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "odds_ratio": 1.171
+   }
+  },
+  {
+   "id": "floor-3",
+   "family": "floor",
+   "text": "For the largest study behind the GWAS links of scoliosis, what odds ratio did a variant carried by 20% of chromosomes need in order to be found? End with a last line  FINAL: {\"problem\": P, \"odds_ratio\": NUMBER}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "odds_ratio": 1.571
+   }
+  },
+  {
+   "id": "not_gwas-1",
+   "family": "not_gwas",
+   "text": "How many loci of Pseudohypoaldosteronism, Type I, Autosomal Dominant carry the GWAS link on more than one gene? End with a last line  FINAL: {\"problem\": P, \"loci\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "loci": null
+   }
+  },
+  {
+   "id": "not_gwas-2",
+   "family": "not_gwas",
+   "text": "How many loci of Centronuclear myopathy carry the GWAS link on more than one gene? End with a last line  FINAL: {\"problem\": P, \"loci\": N or null}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": null,
+    "loci": null
+   }
+  },
+  {
+   "id": "not_in_graph-1",
+   "family": "not_in_graph",
+   "text": "How many of the disease sources assert QVZK7 with Inguinal hernia? End with a last line  FINAL: {\"problem\": P, \"sources\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-2",
+   "family": "not_in_graph",
+   "text": "How many targets does the drug zelvotamab act on, and for how many of them is that its mechanism of action? End with a last line  FINAL: {\"problem\": P, \"targets\": N, \"mechanism_targets\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "not_in_graph-3",
+   "family": "not_in_graph",
+   "text": "Of the genes tied to Harwick syndrome, how many have no drug acting on them and no compound at their family's potency cutoff? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "ambiguous-1",
+   "family": "ambiguous",
+   "text": "Of the genes tied to neuropathy, how many are still Tdark? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  },
+  {
+   "id": "ambiguous-2",
+   "family": "ambiguous",
+   "text": "Of the genes tied to dystrophy, how many are still Tdark? End with a last line  FINAL: {\"problem\": P, \"genes\": N}  where P is null, \"not_in_graph\", \"ambiguous\" or \"unknown\".",
+   "gold": {
+    "problem": "ambiguous"
+   }
+  }
+ ]
+}
