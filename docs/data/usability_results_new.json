@@ -1,0 +1,934 @@
+{
+ "set": "new",
+ "questions": 35,
+ "sha256": "d39d1a7f561ffdb2dd6389ad2ee9392bb133f2f330d555bc2d9d39e5730a1552",
+ "cells": {
+  "deepseek/deepseek-v4-flash|none": {
+   "n": 35,
+   "correct": 0,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.00641326706,
+   "calls": 0,
+   "by_family": {
+    "no_compound": [
+     0,
+     2
+    ],
+    "drug_path": [
+     0,
+     3
+    ],
+    "sources": [
+     0,
+     4
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "ambiguous": [
+     0,
+     2
+    ],
+    "floor": [
+     0,
+     3
+    ],
+    "no_genetics": [
+     0,
+     3
+    ],
+    "observed": [
+     0,
+     2
+    ],
+    "drug_targets": [
+     0,
+     3
+    ],
+    "loci": [
+     0,
+     3
+    ],
+    "withheld": [
+     0,
+     3
+    ],
+    "dark": [
+     0,
+     2
+    ],
+    "not_gwas": [
+     0,
+     2
+    ]
+   },
+   "right": {
+    "no_compound-2": false,
+    "drug_path-3": false,
+    "drug_path-1": false,
+    "sources-4": false,
+    "not_in_graph-1": false,
+    "no_compound-1": false,
+    "sources-1": false,
+    "not_in_graph-2": false,
+    "ambiguous-2": false,
+    "floor-2": false,
+    "no_genetics-1": false,
+    "floor-3": false,
+    "observed-1": false,
+    "drug_targets-3": false,
+    "loci-3": false,
+    "withheld-1": false,
+    "no_genetics-2": false,
+    "loci-1": false,
+    "sources-3": false,
+    "drug_targets-1": false,
+    "dark-2": false,
+    "floor-1": false,
+    "sources-2": false,
+    "drug_path-2": false,
+    "withheld-2": false,
+    "not_gwas-1": false,
+    "drug_targets-2": false,
+    "observed-2": false,
+    "withheld-3": false,
+    "not_in_graph-3": false,
+    "no_genetics-3": false,
+    "dark-1": false,
+    "not_gwas-2": false,
+    "loci-2": false,
+    "ambiguous-1": false
+   }
+  },
+  "deepseek/deepseek-v4-flash|sql": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.05556635929999999,
+   "calls": 159,
+   "by_family": {
+    "not_gwas": [
+     2,
+     2
+    ],
+    "sources": [
+     3,
+     4
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "drug_path": [
+     3,
+     3
+    ],
+    "no_genetics": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "no_compound": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "withheld": [
+     3,
+     3
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "floor": [
+     3,
+     3
+    ],
+    "dark": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "not_gwas-1": true,
+    "sources-1": false,
+    "observed-1": true,
+    "drug_path-3": true,
+    "no_genetics-3": true,
+    "not_in_graph-3": true,
+    "no_compound-2": true,
+    "ambiguous-1": true,
+    "not_gwas-2": true,
+    "drug_targets-1": true,
+    "withheld-3": true,
+    "not_in_graph-2": true,
+    "sources-3": true,
+    "no_genetics-1": true,
+    "loci-2": true,
+    "drug_targets-2": true,
+    "withheld-1": true,
+    "floor-2": true,
+    "ambiguous-2": true,
+    "dark-1": true,
+    "floor-1": true,
+    "dark-2": true,
+    "not_in_graph-1": true,
+    "no_compound-1": true,
+    "loci-1": true,
+    "no_genetics-2": true,
+    "sources-4": true,
+    "loci-3": true,
+    "drug_path-2": true,
+    "withheld-2": true,
+    "drug_path-1": true,
+    "sources-2": true,
+    "drug_targets-3": true,
+    "floor-3": true,
+    "observed-2": true
+   }
+  },
+  "deepseek/deepseek-v4-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.05111014479999999,
+   "calls": 88,
+   "by_family": {
+    "drug_path": [
+     3,
+     3
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "withheld": [
+     3,
+     3
+    ],
+    "sources": [
+     4,
+     4
+    ],
+    "no_genetics": [
+     3,
+     3
+    ],
+    "floor": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "dark": [
+     2,
+     2
+    ],
+    "no_compound": [
+     2,
+     2
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "not_gwas": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "drug_path-1": true,
+    "ambiguous-2": true,
+    "loci-1": true,
+    "observed-2": true,
+    "withheld-3": true,
+    "sources-1": true,
+    "sources-4": true,
+    "drug_path-2": true,
+    "no_genetics-3": true,
+    "floor-3": true,
+    "not_in_graph-3": true,
+    "dark-1": true,
+    "loci-2": true,
+    "not_in_graph-2": true,
+    "floor-2": true,
+    "no_compound-2": true,
+    "floor-1": true,
+    "dark-2": true,
+    "drug_targets-2": true,
+    "drug_targets-1": true,
+    "no_genetics-2": true,
+    "not_gwas-2": true,
+    "withheld-2": true,
+    "ambiguous-1": true,
+    "not_in_graph-1": true,
+    "no_genetics-1": true,
+    "not_gwas-1": true,
+    "no_compound-1": true,
+    "withheld-1": true,
+    "sources-3": true,
+    "drug_path-3": true,
+    "sources-2": true,
+    "observed-1": true,
+    "loci-3": true,
+    "drug_targets-3": true
+   }
+  },
+  "inception/mercury-2.5|none": {
+   "n": 35,
+   "correct": 0,
+   "fabricated": 0,
+   "no_final": 1,
+   "cost": 0.00709576,
+   "calls": 0,
+   "by_family": {
+    "floor": [
+     0,
+     3
+    ],
+    "no_compound": [
+     0,
+     2
+    ],
+    "not_in_graph": [
+     0,
+     3
+    ],
+    "not_gwas": [
+     0,
+     2
+    ],
+    "drug_path": [
+     0,
+     3
+    ],
+    "ambiguous": [
+     0,
+     2
+    ],
+    "observed": [
+     0,
+     2
+    ],
+    "withheld": [
+     0,
+     3
+    ],
+    "no_genetics": [
+     0,
+     3
+    ],
+    "loci": [
+     0,
+     3
+    ],
+    "drug_targets": [
+     0,
+     3
+    ],
+    "dark": [
+     0,
+     2
+    ],
+    "sources": [
+     0,
+     4
+    ]
+   },
+   "right": {
+    "floor-3": false,
+    "no_compound-1": false,
+    "not_in_graph-1": false,
+    "not_gwas-1": false,
+    "drug_path-3": false,
+    "floor-1": false,
+    "ambiguous-2": false,
+    "observed-1": false,
+    "withheld-3": false,
+    "no_genetics-2": false,
+    "drug_path-1": false,
+    "loci-3": false,
+    "drug_targets-3": false,
+    "withheld-1": false,
+    "drug_targets-2": false,
+    "dark-1": false,
+    "floor-2": false,
+    "no_compound-2": false,
+    "not_in_graph-3": false,
+    "not_gwas-2": false,
+    "observed-2": false,
+    "no_genetics-1": false,
+    "sources-1": false,
+    "drug_path-2": false,
+    "drug_targets-1": false,
+    "dark-2": false,
+    "sources-2": false,
+    "withheld-2": false,
+    "loci-2": false,
+    "sources-4": false,
+    "sources-3": false,
+    "no_genetics-3": false,
+    "loci-1": false,
+    "not_in_graph-2": false,
+    "ambiguous-1": false
+   }
+  },
+  "inception/mercury-2.5|sql": {
+   "n": 35,
+   "correct": 28,
+   "fabricated": 0,
+   "no_final": 1,
+   "cost": 0.019378161999999997,
+   "calls": 107,
+   "by_family": {
+    "drug_path": [
+     3,
+     3
+    ],
+    "no_genetics": [
+     3,
+     3
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "sources": [
+     1,
+     4
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "floor": [
+     2,
+     3
+    ],
+    "not_in_graph": [
+     2,
+     3
+    ],
+    "not_gwas": [
+     1,
+     2
+    ],
+    "ambiguous": [
+     1,
+     2
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "withheld": [
+     3,
+     3
+    ],
+    "dark": [
+     2,
+     2
+    ],
+    "no_compound": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "drug_path-3": true,
+    "no_genetics-3": true,
+    "drug_targets-1": true,
+    "sources-1": false,
+    "loci-1": true,
+    "floor-1": false,
+    "drug_path-2": true,
+    "not_in_graph-3": true,
+    "floor-3": true,
+    "not_gwas-1": true,
+    "sources-3": true,
+    "ambiguous-2": false,
+    "observed-1": true,
+    "floor-2": true,
+    "withheld-1": true,
+    "no_genetics-2": true,
+    "dark-2": true,
+    "loci-2": true,
+    "not_gwas-2": false,
+    "withheld-3": true,
+    "observed-2": true,
+    "withheld-2": true,
+    "drug_path-1": true,
+    "not_in_graph-1": true,
+    "ambiguous-1": true,
+    "not_in_graph-2": false,
+    "sources-2": false,
+    "drug_targets-2": true,
+    "sources-4": false,
+    "drug_targets-3": true,
+    "no_compound-1": true,
+    "loci-3": true,
+    "dark-1": true,
+    "no_genetics-1": true,
+    "no_compound-2": true
+   }
+  },
+  "inception/mercury-2.5|typed": {
+   "n": 35,
+   "correct": 34,
+   "fabricated": 0,
+   "no_final": 1,
+   "cost": 0.01666494,
+   "calls": 68,
+   "by_family": {
+    "no_compound": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "floor": [
+     3,
+     3
+    ],
+    "not_gwas": [
+     2,
+     2
+    ],
+    "sources": [
+     4,
+     4
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "no_genetics": [
+     3,
+     3
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "drug_path": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     2,
+     3
+    ],
+    "dark": [
+     2,
+     2
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "withheld": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "no_compound-1": true,
+    "ambiguous-2": true,
+    "floor-2": true,
+    "not_gwas-2": true,
+    "ambiguous-1": true,
+    "sources-1": true,
+    "floor-1": true,
+    "not_gwas-1": true,
+    "no_compound-2": true,
+    "drug_targets-2": true,
+    "sources-2": true,
+    "no_genetics-3": true,
+    "loci-1": true,
+    "drug_path-1": true,
+    "sources-3": true,
+    "not_in_graph-3": true,
+    "loci-2": true,
+    "drug_path-3": true,
+    "dark-1": true,
+    "no_genetics-1": true,
+    "loci-3": true,
+    "observed-1": true,
+    "not_in_graph-2": false,
+    "no_genetics-2": true,
+    "withheld-2": true,
+    "sources-4": true,
+    "drug_targets-1": true,
+    "drug_targets-3": true,
+    "not_in_graph-1": true,
+    "dark-2": true,
+    "observed-2": true,
+    "withheld-1": true,
+    "withheld-3": true,
+    "floor-3": true,
+    "drug_path-2": true
+   }
+  },
+  "z-ai/glm-5.3-flash|none": {
+   "n": 35,
+   "correct": 1,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.008144644799999998,
+   "calls": 0,
+   "by_family": {
+    "not_in_graph": [
+     1,
+     3
+    ],
+    "no_compound": [
+     0,
+     2
+    ],
+    "ambiguous": [
+     0,
+     2
+    ],
+    "drug_path": [
+     0,
+     3
+    ],
+    "dark": [
+     0,
+     2
+    ],
+    "withheld": [
+     0,
+     3
+    ],
+    "loci": [
+     0,
+     3
+    ],
+    "sources": [
+     0,
+     4
+    ],
+    "not_gwas": [
+     0,
+     2
+    ],
+    "observed": [
+     0,
+     2
+    ],
+    "no_genetics": [
+     0,
+     3
+    ],
+    "drug_targets": [
+     0,
+     3
+    ],
+    "floor": [
+     0,
+     3
+    ]
+   },
+   "right": {
+    "not_in_graph-1": true,
+    "no_compound-1": false,
+    "not_in_graph-2": false,
+    "ambiguous-1": false,
+    "drug_path-3": false,
+    "dark-2": false,
+    "withheld-3": false,
+    "loci-3": false,
+    "sources-2": false,
+    "no_compound-2": false,
+    "not_gwas-1": false,
+    "drug_path-1": false,
+    "observed-2": false,
+    "drug_path-2": false,
+    "no_genetics-1": false,
+    "not_gwas-2": false,
+    "sources-4": false,
+    "sources-3": false,
+    "dark-1": false,
+    "drug_targets-2": false,
+    "drug_targets-1": false,
+    "withheld-1": false,
+    "no_genetics-2": false,
+    "drug_targets-3": false,
+    "sources-1": false,
+    "floor-1": false,
+    "withheld-2": false,
+    "observed-1": false,
+    "floor-2": false,
+    "not_in_graph-3": false,
+    "ambiguous-2": false,
+    "no_genetics-3": false,
+    "loci-2": false,
+    "loci-1": false,
+    "floor-3": false
+   }
+  },
+  "z-ai/glm-5.3-flash|sql": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.029073656199999996,
+   "calls": 145,
+   "by_family": {
+    "floor": [
+     3,
+     3
+    ],
+    "withheld": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "no_genetics": [
+     3,
+     3
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "no_compound": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "dark": [
+     2,
+     2
+    ],
+    "not_gwas": [
+     2,
+     2
+    ],
+    "sources": [
+     4,
+     4
+    ],
+    "drug_path": [
+     3,
+     3
+    ]
+   },
+   "right": {
+    "floor-1": true,
+    "withheld-1": true,
+    "not_in_graph-1": true,
+    "loci-1": true,
+    "floor-3": true,
+    "loci-2": true,
+    "no_genetics-2": true,
+    "drug_targets-3": true,
+    "loci-3": true,
+    "observed-1": true,
+    "no_compound-2": true,
+    "observed-2": true,
+    "no_genetics-1": true,
+    "no_compound-1": true,
+    "ambiguous-2": true,
+    "no_genetics-3": true,
+    "floor-2": true,
+    "dark-2": true,
+    "not_gwas-2": true,
+    "not_gwas-1": true,
+    "sources-4": true,
+    "drug_path-3": true,
+    "withheld-3": true,
+    "drug_path-1": true,
+    "withheld-2": true,
+    "ambiguous-1": true,
+    "not_in_graph-2": true,
+    "sources-2": true,
+    "dark-1": true,
+    "sources-3": true,
+    "sources-1": true,
+    "drug_path-2": true,
+    "drug_targets-2": true,
+    "drug_targets-1": true,
+    "not_in_graph-3": true
+   }
+  },
+  "z-ai/glm-5.3-flash|typed": {
+   "n": 35,
+   "correct": 35,
+   "fabricated": 0,
+   "no_final": 0,
+   "cost": 0.045762158799999994,
+   "calls": 72,
+   "by_family": {
+    "no_genetics": [
+     3,
+     3
+    ],
+    "observed": [
+     2,
+     2
+    ],
+    "not_gwas": [
+     2,
+     2
+    ],
+    "ambiguous": [
+     2,
+     2
+    ],
+    "drug_targets": [
+     3,
+     3
+    ],
+    "drug_path": [
+     3,
+     3
+    ],
+    "not_in_graph": [
+     3,
+     3
+    ],
+    "loci": [
+     3,
+     3
+    ],
+    "floor": [
+     3,
+     3
+    ],
+    "sources": [
+     4,
+     4
+    ],
+    "withheld": [
+     3,
+     3
+    ],
+    "no_compound": [
+     2,
+     2
+    ],
+    "dark": [
+     2,
+     2
+    ]
+   },
+   "right": {
+    "no_genetics-2": true,
+    "observed-2": true,
+    "not_gwas-2": true,
+    "ambiguous-2": true,
+    "drug_targets-3": true,
+    "drug_targets-2": true,
+    "drug_path-1": true,
+    "not_in_graph-2": true,
+    "loci-2": true,
+    "drug_path-3": true,
+    "floor-1": true,
+    "loci-3": true,
+    "ambiguous-1": true,
+    "sources-2": true,
+    "observed-1": true,
+    "withheld-1": true,
+    "no_genetics-3": true,
+    "drug_targets-1": true,
+    "no_compound-2": true,
+    "dark-1": true,
+    "withheld-2": true,
+    "sources-1": true,
+    "drug_path-2": true,
+    "no_genetics-1": true,
+    "loci-1": true,
+    "dark-2": true,
+    "not_in_graph-3": true,
+    "no_compound-1": true,
+    "not_in_graph-1": true,
+    "not_gwas-1": true,
+    "floor-3": true,
+    "floor-2": true,
+    "sources-3": true,
+    "sources-4": true,
+    "withheld-3": true
+   }
+  }
+ },
+ "typed_minus_sql": {
+  "deepseek/deepseek-v4-flash": {
+   "questions": 35,
+   "a_only": 1,
+   "b_only": 0,
+   "p_sign": 1.0
+  },
+  "inception/mercury-2.5": {
+   "questions": 35,
+   "a_only": 6,
+   "b_only": 0,
+   "p_sign": 0.03125
+  },
+  "z-ai/glm-5.3-flash": {
+   "questions": 35,
+   "a_only": 0,
+   "b_only": 0,
+   "p_sign": 1.0
+  }
+ },
+ "pooled_typed_minus_sql": {
+  "models": [
+   "inception/mercury-2.5",
+   "deepseek/deepseek-v4-flash",
+   "z-ai/glm-5.3-flash"
+  ],
+  "questions": 35,
+  "difference": 0.06666666666666667,
+  "low": 0.01904761904761905,
+  "high": 0.1238095238095238
+ },
+ "verdicts": {
+  "all_hosted_cells_complete": true,
+  "usable_by_a_small_model": true,
+  "typed_better_than_sql": true
+ }
+}
