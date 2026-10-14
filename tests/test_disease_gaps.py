@@ -195,3 +195,100 @@ def test_every_disease_trait_summed_two_ways():
             "no_genetic_support", "withheld", "observed_only", "two_sources", "mechanism")}, "sized": c["traits_whose_largest_study_has_a_size"], "cases_and_controls": c["of_them_cases_and_controls"]}
     assert got == want
     assert round(float(s.smallest_odds_ratio_it_could_find.median()), 3) == c["smallest_odds_ratio_the_largest_study_could_find"]["median"]
+
+
+# ---- the study each gap calls for (docs/PROTOCOL.md, "The study each gap calls for") ------------------------
+
+def test_every_sized_study_needs_its_own_cases_at_its_own_floor():
+    """Solved back through the floor, each study's cases are what it needed for the odds ratio it could
+    find. gaptables sizes a study with its own formula; studysize marks which odds ratios a study
+    already had the cases for. Both are read against the floor for every sized study in the table."""
+    import math
+
+    from pharos_gap_kg import gaptables
+    s = pd.read_parquet(B / "study_sizes.parquet").dropna(subset=["cases"])
+    s = s[(s.cases > 0) & (s.controls > 0)]
+    assert len(s) > 1000
+    for c, k in zip(s.cases.astype(int), s.controls.astype(int)):
+        f = math.exp(math.sqrt(studysize.K * (c + k) / (studysize.F * c * k)))
+        assert gaptables.cases_needed(c, k, f) in (c, c + 1), (c, k)
+        nd = studysize.needed(c, k, 0)
+        assert [x["the_largest_study_had_them"] for x in nd["common_variant"]] == [f <= o * (1 + 1e-12) for o in studysize.ODDS_RATIOS], (c, k, f)
+        assert [x["cases"] for x in nd["common_variant"]] == [gaptables.cases_needed(c, k, o) for o in studysize.ODDS_RATIOS]
+        assert nd["rare_variants"]["cases"] == gaptables.cases_needed(c, k, 3.0, gaptables.K_RARE, gaptables.F_RARE)
+
+
+def _lead(held: dict) -> str | None:
+    if not held:
+        return None
+    first = next(iter(held.values()))
+    return "a tie" if ("sources" in first or "mechanism_target_of" in first) else "one source" if "one_source" in first else "an expression observation"
+
+
+def test_the_order_a_locus_is_tested_in_agrees_with_the_tables(G):
+    """The genes of each locus, in the order of what the graph holds for them, and what points first:
+    from the question, and from gaptables, for the disease traits of the checks above and forty more."""
+    import random
+    from collections import Counter
+
+    from pharos_gap_kg import gaptables
+    named = [int(np.flatnonzero(G.d.name.to_numpy() == n)[0]) for n, y in CASES if y is None and n in set(G.d.name)]
+    rng = random.Random(20261014)
+    deg = np.bincount(G.ld, minlength=len(G.d))
+    traits = named + rng.sample([int(i) for i in np.flatnonzero(G.d.disease_like.to_numpy() & (deg > 0))], 40)
+    T = gaptables.read(B)
+    loci = gaptables.build(T, only={G.d.id[i] for i in traits})["disease_loci"]
+    checked = 0
+    for i in traits:
+        o = G.gaps(disease=G.d.id[i], kind="locus_not_resolved", top=25)
+        lr = next(g for g in o["gaps"] if g["kind"] == "locus_not_resolved")
+        mine = Counter((r["genes_with_the_link"], tuple(r["genes"]), r["singled_out_by_other_evidence"], _lead(r["what_each_holds_besides_the_link"])) for r in lr["top"])
+        L = loci[loci.condition_id == G.d.id[i]]
+        theirs = Counter((int(n), tuple(g.split(", ")[:8]), s if isinstance(s, str) else None, w if isinstance(w, str) else None)
+                         for n, g, s, w in zip(L.genes_with_the_link, L.genes_in_the_order_to_test, L.gene_singled_out_by_other_evidence, L.what_points_first))
+        assert not (mine - theirs), (G.d.name[i], mine - theirs)
+        if lr["more"] == 0:
+            assert mine == theirs, G.d.name[i]
+        for r in lr["top"]:
+            levels = [{"a tie": 0, "one source": 1, "an expression observation": 2}[_lead({g: r["what_each_holds_besides_the_link"][g]})] if g in r["what_each_holds_besides_the_link"] else 3
+                      for g in r["genes"]]
+            assert levels == sorted(levels) and str(r["genes_with_the_link"]) in r["proposal"]
+            checked += 1
+    assert checked > 100
+
+
+def test_the_study_an_absent_link_calls_for_agrees_with_the_tables(G):
+    """The census of the study each gap calls for, against gaptables over every disease trait."""
+    from pharos_gap_kg import gaptables
+    rec = paths.DOCS_DATA / "disease_gaps_pharos319.json"
+    if not rec.is_file():
+        pytest.skip("no census on record")
+    c = json.loads(rec.read_text())
+    T = gaptables.read(B)
+    d = T["nodes"][(T["nodes"].kind == "trait") & T["nodes"].disease_like]
+    s = gaptables.build(T, only=set(d[d.id.isin(set(T["links"].trait))].id))["disease_gap_summary"]
+    cc = s[s.cases_needed_for_rare_variants.notna()]
+    want = c["the_study_an_absent_link_calls_for"]
+    assert want["traits_with_cases_and_controls"] == len(cc)
+    for o in studysize.ODDS_RATIOS:
+        n = cc[f"cases_needed_for_odds_ratio_{o}"].astype(float)
+        assert want["by_odds_ratio"][str(o)] == {"median_cases": int(round(n.median())), "traits_whose_largest_study_had_them": int((cc.cases.astype(float) >= n).sum())}
+    assert want["rare_variants_median_cases"] == int(round(cc.cases_needed_for_rare_variants.astype(float).median()))
+    assert c["loci_not_singled_out"]["with_one_source_or_an_observation_pointing_to_a_gene"] == int(s.loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene.sum())
+    assert c["loci_not_singled_out"]["loci"] == c["summed_over_traits"]["loci"] - c["summed_over_traits"]["loci_singled_out"]
+    # and the question gives the same study for one trait
+    p = G.gaps("Parkinson disease")
+    f = next(g for g in p["gaps"] if g["kind"] == "no_genetic_support")["what_an_absent_link_could_have_seen"]
+    row = s.set_index("condition_id").loc[G.d.id[int(np.flatnonzero(G.d.name.to_numpy() == "Parkinson disease")[0])]]
+    assert [x["cases"] for x in f["the_study_that_would_close_it"]["common_variant"]] == [int(row[f"cases_needed_for_odds_ratio_{o}"]) for o in studysize.ODDS_RATIOS]
+    assert studysize.say_needed(f["the_study_that_would_close_it"]) in p["answer"] and f["the_study_that_would_close_it"]["rare_variants"]["cases"] == int(row.cases_needed_for_rare_variants)
+
+
+def test_why_with_no_link_gives_the_floor_and_the_study(G):
+    w = G.why("TMEM271", "Parkinson disease")
+    f = w["what_an_absent_link_could_have_seen"]
+    assert f["largest"]["study"] == G.gaps("Parkinson disease")["gaps"][3]["what_an_absent_link_could_have_seen"]["largest"]["study"]
+    assert f["reading"] in w["answer"] and f["proposal"] in w["answer"] and "gene-based test on sequence data" in w["answer"]
+    early = G.why("TREM2", "Alzheimer disease", as_of=2012)["what_an_absent_link_could_have_seen"]
+    assert early["largest"]["year"] <= 2012 and early["largest"]["smallest_odds_ratio_it_could_find"] > f["largest"]["smallest_odds_ratio_it_could_find"]
+    assert "what_an_absent_link_could_have_seen" not in G.why("APOE", "Alzheimer disease")

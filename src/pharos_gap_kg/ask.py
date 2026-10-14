@@ -619,6 +619,10 @@ class Graph:
                         "calibration": self._no_link_calibration("by_trait", r0)})
             bits.append(f"{tl['symbol']} has no link of its own, and by position it ranks {r0:,} of the {len(order):,} targets with no link that lie beside a gene with this one")
         out["answer"] = head + (" What nearby evidence exists: " + "; ".join(bits) + "." if bits else " Nothing nearby in the graph points either way.")
+        floor = diseasegaps.study_floor(self, self.d.id[di], y)
+        if floor and "largest" in floor:
+            out["what_an_absent_link_could_have_seen"] = floor
+            out["answer"] += " " + floor["reading"] + " " + floor["proposal"]
         if self.mhc[ti]:
             out["caution"] = f"{tl['symbol']} is {MHC_NOTE.split(';')[0]}, so a high rank here says little about this gene in particular."
             out["answer"] += " " + out["caution"]

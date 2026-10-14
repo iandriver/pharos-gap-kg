@@ -82,5 +82,30 @@
    "no_compound": 814,
    "no_genetic_support": 38
   }
- ]
+ ],
+ "the_study_an_absent_link_calls_for": {
+  "traits_with_cases_and_controls": 457,
+  "median_controls_per_case": 5.23,
+  "by_odds_ratio": {
+   "1.05": {
+    "median_cases": 61921,
+    "traits_whose_largest_study_had_them": 28
+   },
+   "1.1": {
+    "median_cases": 16227,
+    "traits_whose_largest_study_had_them": 93
+   },
+   "1.2": {
+    "median_cases": 4435,
+    "traits_whose_largest_study_had_them": 187
+   }
+  },
+  "rare_variants_median_cases": 15213
+ },
+ "loci_not_singled_out": {
+  "loci": 6395,
+  "with_one_source_or_an_observation_pointing_to_a_gene": 689,
+  "median_genes_to_test": 3.0,
+  "genes_to_test": 32575
+ }
 }

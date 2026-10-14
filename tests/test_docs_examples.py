@@ -93,11 +93,16 @@ def test_targets_with_no_link(G):
                                                          "were linked to it by 2026. Of all listed pairs 2.8% were, and of all pairs of a target with no link and a trait "
                                                          "0.13%. A pair not reported is not known to be absent.")
     w = G.why("TMEM271", "Parkinson disease")
-    assert w["answer"] == ("There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here means no study in this source had reported "
-                           "one by that year. It is not evidence that there is no association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to "
-                           "this trait; TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie beside a gene with this one. "
-                           "Apart from GWAS, nothing in this graph ties TMEM271 to this condition: no disease source asserts the pair, no drug path runs between them, "
-                           "and no expression observation is on record. That is not evidence that there is no association.")
+    assert w["answer"] == ("There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here means no study in this source had reported one by "
+                           "that year. It is not evidence that there is no association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to this trait; TMEM271 "
+                           "has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie beside a gene with this one. The largest study behind this "
+                           "trait's links (GCST010991, 2021): it had 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio of about "
+                           "1.08 to be found. An absent link is no effect of about that size found at a common variant; smaller effects and rarer variants were not visible. This "
+                           "is a rough floor, and a study that reported nothing for the trait is not in the source. The study an absent link calls for: for a common variant, "
+                           "about 55,000 cases for an odds ratio of 1.05, 14,000 for 1.1 and 3,900 for 1.2, with the largest study's 19.7 controls per case; the largest study had"
+                           " enough for 1.1 and 1.2. For rare variants (1 in 1,000 chromosomes combined, odds ratio 3), a gene-based test on sequence data would need about 13,000"
+                           " cases. Apart from GWAS, nothing in this graph ties TMEM271 to this condition: no disease source asserts the pair, no drug path runs between them, and"
+                           " no expression observation is on record. That is not evidence that there is no association.")
     assert "same association signal" in u["caveat"] and "same association signal" in d["caveat"]
 
 

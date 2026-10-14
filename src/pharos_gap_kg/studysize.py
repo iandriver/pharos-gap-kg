@@ -30,6 +30,10 @@ import pandas as pd
 
 K = (5.4513 + 0.8416) ** 2
 F = 2 * 0.2 * 0.8
+ODDS_RATIOS, SDS = (1.05, 1.1, 1.2), (0.02, 0.05, 0.1)        # the effects a proposed study is sized for
+RARE = {"combined_frequency": 0.001, "odds_ratio": 3.0, "p": 2.5e-6}
+K_RARE = (4.7081 + 0.8416) ** 2
+F_RARE = 2 * 0.001 * 0.999
 NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+|\d+")
 KEY = "gwas_catalog_20261005"
 
@@ -84,6 +88,51 @@ def say(e: dict) -> str:
                 f"{e['smallest_odds_ratio_it_could_find']:.2f} to be found")
     return (f"it had {e['individuals']:,} individuals, so a variant carried by 20% of chromosomes needed an effect of about "
             f"{e['smallest_effect_it_could_find_in_standard_deviations_per_allele']:.3f} standard deviations per allele to be found")
+
+
+def needed(cases: int, controls: int, people: int) -> dict | None:
+    """The study that would close an absent link, sized from the largest study so far: for a common
+    variant, the cases (with controls at that study's ratio) or the individuals needed for each effect
+    in ODDS_RATIOS or SDS, and whether that study already had them; for rare variants, one gene-based
+    test (RARE). The floor's formula solved for the cases; docs/PROTOCOL.md, "The study each gap calls for"."""
+    if cases > 0 and controls > 0:
+        r = controls / cases
+        size = lambda k, f, o: math.ceil(k * (1 + 1 / r) / (f * math.log(o) ** 2))
+        common = [{"odds_ratio": o, "cases": size(K, F, o), "controls": math.ceil(r * size(K, F, o)), "the_largest_study_had_them": cases >= size(K, F, o)}
+                  for o in ODDS_RATIOS]
+        n = size(K_RARE, F_RARE, RARE["odds_ratio"])
+        return {"design": "cases and controls", "controls_per_case": round(r, 2), "largest_study_cases": int(cases), "common_variant": common,
+                "rare_variants": {**RARE, "cases": n, "controls": math.ceil(r * n), "data": "sequence, which a genotyped GWAS is not"}}
+    n0 = cases + controls + people
+    if n0 <= 0:
+        return None
+    common = [{"sd_per_allele": s, "individuals": math.ceil(K / (F * s * s)), "the_largest_study_had_them": n0 >= math.ceil(K / (F * s * s))} for s in SDS]
+    return {"design": "individuals", "largest_study_individuals": int(n0), "common_variant": common}
+
+
+def two(n: int) -> str:
+    """A size to two significant figures, for prose."""
+    return f"{float(f'{n:.2g}'):,.0f}"
+
+
+def _and(xs: list[str]) -> str:
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def say_needed(e: dict) -> str:
+    """One or two sentences for the study an absent link calls for."""
+    cv = e["common_variant"]
+    unit, eff = ("cases", "odds_ratio") if e["design"] == "cases and controls" else ("individuals", "sd_per_allele")
+    sizes = [f"{two(c[unit])} for {c[eff]:g}" for c in cv]
+    sizes[0] = f"about {two(cv[0][unit])} {unit} for {'an odds ratio of' if unit == 'cases' else 'an effect of'} {cv[0][eff]:g}" + ("" if unit == "cases" else " standard deviations per allele")
+    had = [f"{c[eff]:g}" for c in cv if c["the_largest_study_had_them"]]
+    had_say = ("enough for none of them" if not had else "enough for all three" if len(had) == len(cv) else f"enough for {_and(had)}")
+    if unit == "cases":
+        rv = e["rare_variants"]
+        return (f"The study an absent link calls for: for a common variant, {_and(sizes)}, with the largest study's {e['controls_per_case']:.1f} controls per case; the largest "
+                f"study had {had_say}. For rare variants (1 in {round(1 / rv['combined_frequency']):,} chromosomes combined, odds ratio {rv['odds_ratio']:g}), a gene-based "
+                f"test on sequence data would need about {two(rv['cases'])} cases.")
+    return f"The study an absent link calls for: for a common variant, {_and(sizes)}; the largest study had {had_say}."
 
 
 def table(studies: pd.DataFrame) -> pd.DataFrame:
@@ -161,6 +210,26 @@ def _selftest() -> int:
     t = table(pd.DataFrame({"study": ["a", "b"], "text": ["10 cases, 20 controls", "NR"]}))
     ck("a study that is not read keeps no counts", t.cases.tolist()[0] == 10 and t.controls.tolist()[0] == 20 and pd.isna(t.cases[1]) and pd.isna(t.individuals[1]))
     ck("the sentence gives the size and the floor", "10,000 cases and 10,000 controls" in say(e) and "1.17" in say(e) and "0.035 standard deviations" in say(q))
+    nd = needed(10_000, 10_000, 0)
+    back = [smallest_effect(c["cases"], c["controls"], 0)["smallest_odds_ratio_it_could_find"] for c in nd["common_variant"]]
+    ck("the cases needed, solved back through the floor, give the odds ratio they were sized for", all(abs(b - o) <= 0.0015 for b, o in zip(back, ODDS_RATIOS)))
+    ck("the cases needed at 1:1 for an odds ratio of 1.1 are 2K/(F (ln 1.1)^2)", nd["common_variant"][1]["cases"] == math.ceil(2 * K / (F * math.log(1.1) ** 2)) and nd["controls_per_case"] == 1)
+    ck("a study whose floor is 1.17 had the cases for 1.2 and not for 1.1 or 1.05", [c["the_largest_study_had_them"] for c in nd["common_variant"]] == [False, False, True])
+    rv = nd["rare_variants"]
+    ck("the rare-variant test uses its own threshold and frequency, and is not marked as within a GWAS's reach",
+       rv["cases"] == math.ceil(K_RARE * 2 / (F_RARE * math.log(3) ** 2)) and abs(K_RARE - 30.80) < 0.01 and abs(F_RARE - 0.001998) < 1e-12 and "the_largest_study_had_them" not in rv)
+    many = needed(20_000, 400_000, 0)
+    ck("more controls per case need fewer cases, and the controls follow the ratio", many["common_variant"][0]["cases"] < nd["common_variant"][0]["cases"] and many["common_variant"][0]["controls"] >= 20 * many["common_variant"][0]["cases"])
+    ni = needed(0, 0, 100_000)
+    ck("for individuals, K/(F sd^2) each, and whether the study had them", [c["individuals"] for c in ni["common_variant"]] == [math.ceil(K / (F * s * s)) for s in SDS]
+       and [c["the_largest_study_had_them"] for c in ni["common_variant"]] == [False, True, True] and needed(0, 0, 0) is None)
+    ck("sizes are said to two significant figures, with what the largest study had enough for",
+       two(54_321) == "54,000" and two(3_712) == "3,700" and two(95) == "95"
+       and say_needed(nd) == ("The study an absent link calls for: for a common variant, about 100,000 cases for an odds ratio of 1.05, 27,000 for 1.1 and 7,400 for 1.2, with "
+                              "the largest study's 1.0 controls per case; the largest study had enough for 1.2. For rare variants (1 in 1,000 chromosomes combined, odds "
+                              "ratio 3), a gene-based test on sequence data would need about 26,000 cases.")
+       and say_needed(ni) == ("The study an absent link calls for: for a common variant, about 310,000 individuals for an effect of 0.02 standard deviations per allele, "
+                              "50,000 for 0.05 and 12,000 for 0.1; the largest study had enough for 0.05 and 0.1."))
     return 0 if ok else 1
 
 

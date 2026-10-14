@@ -169,11 +169,19 @@ digest under `source` is that of the published file the studies were read from.
 python -m pharos_gap_kg.ask why TREM2 "Alzheimer disease" --as-of 2012
 ```
 
-> As of 2012 there was no link between TREM2 and Alzheimer disease. One was first reported in 2013.
-> Nothing nearby in the graph points either way. Apart from GWAS, as of the release: 5 sources
-> assert TREM2 with this condition (CTD, DisGeNET, JensenLab Text Mining, Monarch, eRAM). This was
-> also read under MONDO:0007088, which has the same name in the sources: a match on the name, not an
-> ontology statement.
+> As of 2012 there was no link between TREM2 and Alzheimer disease. One was first reported in
+> 2013. Nothing nearby in the graph points either way. The largest study behind this trait's links
+> (GCST001025, 2011): it had 6,688 cases and 13,685 controls, so a variant carried by 20% of
+> chromosomes needed an odds ratio of about 1.18 to be found. An absent link is no effect of about
+> that size found at a common variant; smaller effects and rarer variants were not visible. This
+> is a rough floor, and a study that reported nothing for the trait is not in the source. The
+> study an absent link calls for: for a common variant, about 77,000 cases for an odds ratio of
+> 1.05, 20,000 for 1.1 and 5,500 for 1.2, with the largest study's 2.0 controls per case; the
+> largest study had enough for 1.2. For rare variants (1 in 1,000 chromosomes combined, odds ratio
+> 3), a gene-based test on sequence data would need about 19,000 cases. Apart from GWAS, as of the
+> release: 5 sources assert TREM2 with this condition (CTD, DisGeNET, JensenLab Text Mining,
+> Monarch, eRAM). This was also read under MONDO:0007088, which has the same name in the sources:
+> a match on the name, not an ontology statement.
 
 ```bash
 python -m pharos_gap_kg.ask why HLA-B "Parkinson disease"
@@ -181,12 +189,21 @@ python -m pharos_gap_kg.ask why HLA-B "Parkinson disease"
 
 > There is no link between HLA-B and Parkinson disease in this graph (data to 2023). No link here
 > means no study in this source had reported one by that year. It is not evidence that there is no
-> association. What nearby evidence exists: by this graph's ranking (shared-trait neighbours, traits
-> already linked, and linked genes nearby) HLA-B ranks 16 of 20,152 candidates for this trait. HLA-B
-> is in the MHC region of chromosome 6, where one association signal spans many genes, so a high
-> rank here says little about this gene in particular. Apart from GWAS, nothing in this graph ties
-> HLA-B to this condition: no disease source asserts the pair, no drug path runs between them, and
-> no expression observation is on record. That is not evidence that there is no association.
+> association. What nearby evidence exists: by this graph's ranking (shared-trait neighbours,
+> traits already linked, and linked genes nearby) HLA-B ranks 16 of 20,152 candidates for this
+> trait. The largest study behind this trait's links (GCST010991, 2021): it had 20,184 cases and
+> 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio of about 1.08
+> to be found. An absent link is no effect of about that size found at a common variant; smaller
+> effects and rarer variants were not visible. This is a rough floor, and a study that reported
+> nothing for the trait is not in the source. The study an absent link calls for: for a common
+> variant, about 55,000 cases for an odds ratio of 1.05, 14,000 for 1.1 and 3,900 for 1.2, with
+> the largest study's 19.7 controls per case; the largest study had enough for 1.1 and 1.2. For
+> rare variants (1 in 1,000 chromosomes combined, odds ratio 3), a gene-based test on sequence
+> data would need about 13,000 cases. HLA-B is in the MHC region of chromosome 6, where one
+> association signal spans many genes, so a high rank here says little about this gene in
+> particular. Apart from GWAS, nothing in this graph ties HLA-B to this condition: no disease
+> source asserts the pair, no drug path runs between them, and no expression observation is on
+> record. That is not evidence that there is no association.
 
 ### How are two things related
 
@@ -329,13 +346,22 @@ so. `why` gives such a target its place in the list too:
 python -m pharos_gap_kg.ask why TMEM271 "Parkinson disease"
 ```
 
-> There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link here
-> means no study in this source had reported one by that year. It is not evidence that there is no
-> association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to this trait;
-> TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link that lie
-> beside a gene with this one. Apart from GWAS, nothing in this graph ties TMEM271 to this
-> condition: no disease source asserts the pair, no drug path runs between them, and no expression
-> observation is on record. That is not evidence that there is no association.
+> There is no link between TMEM271 and Parkinson disease in this graph (data to 2023). No link
+> here means no study in this source had reported one by that year. It is not evidence that there
+> is no association. What nearby evidence exists: PCGF3, 129,453 bases away, was linked to this
+> trait; TMEM271 has no link of its own, and by position it ranks 7 of the 38 targets with no link
+> that lie beside a gene with this one. The largest study behind this trait's links (GCST010991,
+> 2021): it had 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes
+> needed an odds ratio of about 1.08 to be found. An absent link is no effect of about that size
+> found at a common variant; smaller effects and rarer variants were not visible. This is a rough
+> floor, and a study that reported nothing for the trait is not in the source. The study an absent
+> link calls for: for a common variant, about 55,000 cases for an odds ratio of 1.05, 14,000 for
+> 1.1 and 3,900 for 1.2, with the largest study's 19.7 controls per case; the largest study had
+> enough for 1.1 and 1.2. For rare variants (1 in 1,000 chromosomes combined, odds ratio 3), a
+> gene-based test on sequence data would need about 13,000 cases. Apart from GWAS, nothing in this
+> graph ties TMEM271 to this condition: no disease source asserts the pair, no drug path runs
+> between them, and no expression observation is on record. That is not evidence that there is no
+> association.
 
 The ranking beat its own tie-breaker in three periods (`findings/COLDSTART.md`,
 `findings/PROSPECTIVE.md`). Because nothing is fitted, asking as of an earlier year is a backtest in
@@ -363,13 +389,22 @@ python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"
 
 > There is no link between ACHE and Alzheimer disease in this graph (data to 2023). No link here
 > means no study in this source had reported one by that year. It is not evidence that there is no
-> association. What nearby evidence exists: NYAP1, 395,192 bases away, was linked to this trait; by
-> this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby)
-> ACHE ranks 2,147 of 19,794 candidates for this trait. Apart from GWAS, as of the release: 4
-> sources assert ACHE with this condition (CTD, DisGeNET, JensenLab Text Mining, eRAM); 4 drugs that
-> act on ACHE are indicated for it (donepezil, galantamine, rivastigmine, tacrine; for 4 of them
-> ACHE is the mechanism target). This was also read under MONDO:0007088, which has the same name in
-> the sources: a match on the name, not an ontology statement.
+> association. What nearby evidence exists: NYAP1, 395,192 bases away, was linked to this trait;
+> by this graph's ranking (shared-trait neighbours, traits already linked, and linked genes
+> nearby) ACHE ranks 2,147 of 19,794 candidates for this trait. The largest study behind this
+> trait's links (GCST007320, 2019): it had 24,087 cases and 383,378 controls, so a variant carried
+> by 20% of chromosomes needed an odds ratio of about 1.08 to be found. An absent link is no
+> effect of about that size found at a common variant; smaller effects and rarer variants were not
+> visible. This is a rough floor, and a study that reported nothing for the trait is not in the
+> source. The study an absent link calls for: for a common variant, about 55,000 cases for an odds
+> ratio of 1.05, 14,000 for 1.1 and 4,000 for 1.2, with the largest study's 15.9 controls per
+> case; the largest study had enough for 1.1 and 1.2. For rare variants (1 in 1,000 chromosomes
+> combined, odds ratio 3), a gene-based test on sequence data would need about 14,000 cases. Apart
+> from GWAS, as of the release: 4 sources assert ACHE with this condition (CTD, DisGeNET,
+> JensenLab Text Mining, eRAM); 4 drugs that act on ACHE are indicated for it (donepezil,
+> galantamine, rivastigmine, tacrine; for 4 of them ACHE is the mechanism target). This was also
+> read under MONDO:0007088, which has the same name in the sources: a match on the name, not an
+> ontology statement.
 
 Each path names both of its edges:
 
@@ -393,14 +428,21 @@ A row a pruning rule withheld is reported with the rule, what was counted and wh
 python -m pharos_gap_kg.ask why MT-RNR1 Tinnitus
 ```
 
-> There is no link between MT-RNR1 and Tinnitus in this graph (data to 2023). No link here means no
-> study in this source had reported one by that year. It is not evidence that there is no
-> association. Nothing nearby in the graph points either way. Apart from GWAS, as of the release: 1
-> source asserts MT-RNR1 with this condition (DisGeNET); 1 row from CTD is withheld by a pruning
-> rule (PubMed mentions this gene with this disease no more often than the cut for its source; 0
-> papers mention both, a lift of 0 against a cut of 2.63). This was also read under MESH:D014012,
-> UMLS:C0040264, which have the same name in the sources: a match on the name, not an ontology
-> statement.
+> There is no link between MT-RNR1 and Tinnitus in this graph (data to 2023). No link here means
+> no study in this source had reported one by that year. It is not evidence that there is no
+> association. Nothing nearby in the graph points either way. The largest study behind this
+> trait's links (GCST011785, 2020): it had 172,995 individuals, so a variant carried by 20% of
+> chromosomes needed an effect of about 0.027 standard deviations per allele to be found. An
+> absent link is no effect of about that size found at a common variant; smaller effects and rarer
+> variants were not visible. This is a rough floor, and a study that reported nothing for the
+> trait is not in the source. The study an absent link calls for: for a common variant, about
+> 310,000 individuals for an effect of 0.02 standard deviations per allele, 50,000 for 0.05 and
+> 12,000 for 0.1; the largest study had enough for 0.05 and 0.1. Apart from GWAS, as of the
+> release: 1 source asserts MT-RNR1 with this condition (DisGeNET); 1 row from CTD is withheld by
+> a pruning rule (PubMed mentions this gene with this disease no more often than the cut for its
+> source; 0 papers mention both, a lift of 0 against a cut of 2.63). This was also read under
+> MESH:D014012, UMLS:C0040264, which have the same name in the sources: a match on the name, not
+> an ontology statement.
 
 ```json
 {
@@ -514,8 +556,8 @@ what would close the gap and how often that has been seen:
 |---|---|---|
 | `no_compound` | tied, with no drug acting on it and no compound at its family's potency cutoff | a compound at that cutoff |
 | `dark` | tied and still Tdark | its nearest route to the next level |
-| `locus_not_resolved` | GWAS-linked genes within 500,000 bases of one another: one signal on several genes | evidence for one gene of the locus |
-| `no_genetic_support` | tied by sources or by a drug, with no GWAS link | a genome-wide significant association at the gene |
+| `locus_not_resolved` | GWAS-linked genes within 500,000 bases of one another: one signal on several genes | evidence for one gene of the locus; the genes are listed in the order to test them |
+| `no_genetic_support` | tied by sources or by a drug, with no GWAS link | a genome-wide significant association at the gene; the study size that would find one is given |
 | `withheld` | rows a pruning rule withheld for the condition | what the row's rule says restores it |
 | `observed_only` | an expression observation and nothing else | an assertion or a genetic association |
 
@@ -523,17 +565,22 @@ what would close the gap and how often that has been seen:
 python -m pharos_gap_kg.ask gaps "Parkinson disease" --top 2
 ```
 
-> The graph ties 345 gene(s) to Parkinson disease, some in more than one way: 248 by a GWAS link, 88
-> by two or more disease sources, 24 as the mechanism target of an indicated drug. Of them, 251 have
-> no drug and no compound at their family's cutoff; 22 are still Tdark; 228 GWAS-linked genes sit in
-> 39 loci that carry the link on more than one gene, and other evidence singles out one gene in 6 of
-> them; 97 are tied with no GWAS link. 0 row(s) are withheld by a pruning rule, and 79 gene(s) have
-> only an expression observation. The largest study behind its links (GCST010991, 2021): it had
-> 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio
-> of about 1.08 to be found. An absent link is no effect of about that size found at a common
-> variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study
-> that reported nothing for the trait is not in the source. These sources carry no dates: all but
-> the GWAS links are as of the release, whatever year was asked.
+> The graph ties 345 gene(s) to Parkinson disease, some in more than one way: 248 by a GWAS link,
+> 88 by two or more disease sources, 24 as the mechanism target of an indicated drug. Of them, 251
+> have no drug and no compound at their family's cutoff; 22 are still Tdark; 228 GWAS-linked genes
+> sit in 39 loci that carry the link on more than one gene, and other evidence singles out one
+> gene in 6 of them (in 3 more, one source or an expression observation points to a gene); 97 are
+> tied with no GWAS link. 0 row(s) are withheld by a pruning rule, and 79 gene(s) have only an
+> expression observation. The largest study behind this trait's links (GCST010991, 2021): it had
+> 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds
+> ratio of about 1.08 to be found. An absent link is no effect of about that size found at a
+> common variant; smaller effects and rarer variants were not visible. This is a rough floor, and
+> a study that reported nothing for the trait is not in the source. The study an absent link calls
+> for: for a common variant, about 55,000 cases for an odds ratio of 1.05, 14,000 for 1.1 and
+> 3,900 for 1.2, with the largest study's 19.7 controls per case; the largest study had enough for
+> 1.1 and 1.2. For rare variants (1 in 1,000 chromosomes combined, odds ratio 3), a gene-based
+> test on sequence data would need about 13,000 cases. These sources carry no dates: all but the
+> GWAS links are as of the release, whatever year was asked.
 
 The answer leads with that summary and the count of every list, then shows each list's two strongest
 rows. One list is shown in full by naming it: `--kind no_genetic_support --top 10`.
@@ -561,7 +608,8 @@ A row names what ties the gene and the gap edge it rests on:
 }
 ```
 
-A locus lists its genes, and any gene that other evidence singles out:
+A locus lists its genes in the order to test them, what each holds besides the link, any gene that other
+evidence singles out, and how many genes a study would test:
 
 ```json
 {
@@ -576,21 +624,24 @@ A locus lists its genes, and any gene that other evidence singles out:
   "FUS"
  ],
  "genes_with_the_link": 16,
+ "what_each_holds_besides_the_link": {},
  "other_evidence_for": {},
  "singled_out_by_other_evidence": null,
  "in_the_MHC": false,
+ "proposal": "16 genes to test. Nothing else in the graph points to one of them.",
  "genes_more": 8
 }
 ```
 
-An absent GWAS link is given with what the largest study could have seen, and with the rate at
-which pairs a source named were GWAS-linked later:
+An absent GWAS link is given with what the largest study could have seen, the study it calls for (the
+cases to find a common variant at odds ratios of 1.05, 1.1 and 1.2, and a gene-based test of rare
+variants), and the rate at which pairs a source named were GWAS-linked later:
 
 ```json
 {
  "kind": "no_genetic_support",
  "targets": 97,
- "closes_with": "a genome-wide significant association at the gene, in a study of this trait",
+ "closes_with": "a genome-wide significant association at the gene, in a study of this trait. The size of study that would find one is under what_an_absent_link_could_have_seen, the_study_that_would_close_it: the same for every gene of the trait",
  "how_often_this_closed": "In the test on links after 2018, over 161 disease traits, a pair one of these sources named with no GWAS link was GWAS-linked later between 2.1% of the time (JensenLab Knowledge UniProtKB-KW) and 18.2% (JensenLab Knowledge MedlinePlus), by source, against 0.6% of all pairs. The sources carry no dates, so a source may have named a pair because of the very studies that linked it later.",
  "what_an_absent_link_could_have_seen": {
   "studies_behind_its_links": 29,
@@ -603,7 +654,39 @@ which pairs a source named were GWAS-linked later:
    "controls": 397324,
    "smallest_odds_ratio_it_could_find": 1.084
   },
-  "reading": "The largest study behind its links (GCST010991, 2021): it had 20,184 cases and 397,324 controls, so a variant carried by 20% of chromosomes needed an odds ratio of about 1.08 to be found. An absent link is no effect of about that size found at a common variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study that reported nothing for the trait is not in the source."
+  "the_study_that_would_close_it": {
+   "design": "cases and controls",
+   "controls_per_case": 19.69,
+   "largest_study_cases": 20184,
+   "common_variant": [
+    {
+     "odds_ratio": 1.05,
+     "cases": 54627,
+     "controls": 1075338,
+     "the_largest_study_had_them": false
+    },
+    {
+     "odds_ratio": 1.1,
+     "cases": 14316,
+     "controls": 281812,
+     "the_largest_study_had_them": true
+    },
+    {
+     "odds_ratio": 1.2,
+     "cases": 3912,
+     "controls": 77009,
+     "the_largest_study_had_them": true
+    }
+   ],
+   "rare_variants": {
+    "combined_frequency": 0.001,
+    "odds_ratio": 3.0,
+    "p": 2.5e-06,
+    "cases": 13421,
+    "controls": 264194,
+    "data": "sequence, which a genotyped GWAS is not"
+   }
+  }
  },
  "top": [
   {

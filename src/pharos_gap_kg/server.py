@@ -33,7 +33,7 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - "Which unstudied genes might be linked to Y", "targets with no associations yet for Y" -> predict with unlinked=true. For a gene that has no link at all, predict on the gene gives the traits its neighbouring genes are linked to. Both are by position alone, and the rates they quote are a few in a hundred; say so.
 - "What changed since YEAR" -> whats_new.
 - "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps with target=X. Quote its how_often_this_closed text with any gap you pass on, and its reading.
-- "What is missing for disease Y", "where are the gaps in Y", "which targets for Y have no drug", "which Y loci are unresolved", "what would fill the gaps in Y" -> gaps with disease=Y. It lists the genes tied to Y and six kinds of gap, each with what would close it and how often that has been seen. Pass on its reading: a gap is evidence the graph does not hold, not a finding that the gene matters. When it gives the size of the largest study, pass that on with any "no GWAS link".
+- "What is missing for disease Y", "where are the gaps in Y", "which targets for Y have no drug", "which Y loci are unresolved", "what would fill the gaps in Y" -> gaps with disease=Y. It lists the genes tied to Y and six kinds of gap, each with what would close it and how often that has been seen. Pass on its reading: a gap is evidence the graph does not hold, not a finding that the gene matters. When it gives the size of the largest study, pass that on with any "no GWAS link". "What study would close it", "how large a study is needed", "which gene of a locus to test first" -> gaps with disease=Y: it gives the cases a study needs to find a common variant at odds ratios of 1.05, 1.1 and 1.2 and for a rare-variant gene test, and lists each locus's genes in the order to test them; pass on that the order is where the graph's evidence points, not which gene is causal.
 - "What is this, where is it from, can I trust it" -> status.
 
 Rules for using the answers:
@@ -76,7 +76,8 @@ def build(bundle_dir: Path):
                           "they were read from with its digest. If there is no link as of the year, says so, says whether one was reported "
                           "later, and lists nearby evidence (the same trait under another wording, a neighbouring gene with the link). With no link "
                           "it also gives the target's own rank among the trait's candidates and how often candidates at that rank were later "
-                          "reported: use this, not predict, to place one named target. Under other_sources, undated: which disease sources assert the "
+                          "reported: use this, not predict, to place one named target. With no link it also gives what the trait's largest study could "
+                          "have seen and the study an absent link calls for (what_an_absent_link_could_have_seen). Under other_sources, undated: which disease sources assert the "
                           "pair (asserted_by), rows a pruning rule withheld with the rule, the count behind it and what would restore the row (withheld), "
                           "drugs that act on the target and treat the condition with the two edges of each path (through_a_drug), and expression "
                           "observations with direction, fold change and p-value. The second argument may be a disease the other sources name.")
@@ -110,8 +111,10 @@ def build(bundle_dir: Path):
                           "release's own evidence: for a Tdark target, how many criteria must clear, the nearest route, and how often targets that close "
                           "were promoted in the back-test; for a target with no qualifying compound, the potency cutoff it lacks. disease=Y (a trait or a "
                           "condition): the genes the graph ties to Y (by a GWAS link, by two or more disease sources, or as the mechanism target of an "
-                          "indicated drug) and what they lack, in six lists: no_compound, dark, locus_not_resolved (one GWAS signal on several genes), "
-                          "no_genetic_support (tied with no GWAS link, with the size of the largest study and the smallest effect it could have found), "
+                          "indicated drug) and what they lack, in six lists: no_compound, dark, locus_not_resolved (one GWAS signal on several genes, "
+                          "listed in the order to test them, with what each holds besides the link), "
+                          "no_genetic_support (tied with no GWAS link, with the size of the largest study, the smallest effect it could have found and the "
+                          "cases a study would need, the_study_that_would_close_it), "
                           "withheld (rows a pruning rule withheld) and observed_only. The answer leads with a summary and the count of every list "
                           "(counts), then each list with closes_with, how_often_this_closed and its two strongest rows. To see one list in full, call "
                           "again with kind set to its name (and top up to 25). With neither target nor disease, lists the Tdark targets nearest to "

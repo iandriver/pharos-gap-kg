@@ -99,3 +99,61 @@ eight.
 - The floor is rough: one variant frequency, an additive model, no covariates, and only studies that
   reported some association for the trait.
 - The question has not been put to a model or a person.
+
+## Added 14 Oct 2026: the study each gap calls for
+
+`python -m pharos_gap_kg.diseasegaps census pharos319`. The definitions are in `docs/PROTOCOL.md`,
+"The study each gap calls for", written before it was built. The record is
+`docs/data/disease_gaps_pharos319.json`. Nothing was fitted and no test split was scored. The lists,
+their members and their counts are as above.
+
+Two lists and `why` now end in a stated study.
+
+- `no_genetic_support` gives the cases a study of the trait needs to find a common variant (20% of
+  chromosomes, p = 5e-8, 80% power) at odds ratios of 1.05, 1.1 and 1.2, with controls at the ratio
+  of the trait's largest study, and marks which of the three that study already had the cases for.
+  It also gives the cases for a gene-based test of rare variants (1 in 1,000 chromosomes combined,
+  odds ratio 3, p = 2.5e-6), which needs sequence data and which a genotyped GWAS does not run.
+- `locus_not_resolved` lists each locus's genes in the order of what the graph holds for them besides
+  the link (a tie, one source, an expression observation, nothing), names what each holds, and gives
+  the number of genes a study would test.
+- `why` with no link gives the trait's floor and the same study.
+
+Over the 457 disease traits whose largest study has cases and controls (median 5.23 controls per case):
+
+| odds ratio | median cases needed | traits whose largest study had them |
+|---|---|---|
+| 1.05 | 61,921 | 28 (6.1%) |
+| 1.1 | 16,227 | 93 (20.4%) |
+| 1.2 | 4,435 | 187 (40.9%) |
+
+The rare-variant test needs a median of 15,213 cases.
+
+- **For 270 of the 457 traits (59.1%), the largest study lacked the cases to find a common variant
+  with an odds ratio of 1.2.** For those traits an absent link does not yet weigh against an effect
+  of that size.
+- **Of the 6,395 loci that no tie singles out, one source or an expression observation points to a
+  gene in 689 (10.8%).** In the other 5,706, no gene holds anything besides the link, or more than
+  one gene holds a tie. Such a locus holds a median of 3 genes, 32,575 in all.
+
+For Parkinson disease the largest study (20,184 cases, 397,324 controls) had the cases to find a
+common variant at 1.1 or 1.2. At 1.05 it would take about 55,000 cases at its ratio, and a
+rare-variant test about 13,000. Of the 33 loci no tie singles out (165 genes, a median of 4), one
+source or an expression observation points to a gene in 3, among them APOE and SLC41A1 (one source
+each). In two more, two genes hold ties equally: GAK and TMEM175, and HLA-DRB5 and HLA-DRA.
+
+**Checks.** `tests/test_disease_gaps.py` reads all 2,413 sized studies with cases and controls: at
+its own floor's odds ratio each needs its own cases, and the marks agree with the floor. `gaptables`
+computes the order of genes and the study sizes with its own code; it agrees with the question on
+the 384 locus rows shown for 45 disease traits (five named, forty drawn with a fixed seed) and with
+the census over all 513.
+
+**What this does not show.**
+
+- That a study of these sizes would find an association. The gene's variants may be rarer or their
+  effects smaller, and the sizes are for one variant at one frequency, with no covariates and no
+  staged design.
+- That the rare-variant parameters fit any particular gene. They give the scale of such a study.
+- That the first gene of a locus is the causal one. The order says where the graph's other evidence
+  points. How often the first gene proves to be the one is not measured.
+- The proposals have not been put to a model or a person.

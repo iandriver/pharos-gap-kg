@@ -29,6 +29,9 @@ import pandas as pd
 
 MIN_SOURCES = 2
 K, F = (5.4513 + 0.8416) ** 2, 0.32
+ODDS_RATIOS, RARE_OR = (1.05, 1.1, 1.2), 3.0                      # docs/PROTOCOL.md, "The study each gap calls for"
+K_RARE, F_RARE = (4.7081 + 0.8416) ** 2, 2 * 0.001 * 0.999
+LEADS = {0: "a tie", 1: "one source", 2: "an expression observation"}
 FILES = ("nodes", "links", "neighbours", "evidence", "context_nodes", "assertions", "expression", "drug_targets", "drug_indications", "target_gaps", "study_sizes")
 LISTS = ("tied", "no_compound", "dark", "no_genetic_support", "observed_only")
 
@@ -67,6 +70,11 @@ def floor(cases: int, controls: int, people: int) -> tuple[float | None, float |
     return (None, round(math.sqrt(K / (F * n)), 4)) if n > 0 else (None, None)
 
 
+def cases_needed(cases: int, controls: int, odds_ratio: float, k: float = K, f: float = F) -> int:
+    """The cases a study with this study's controls per case needs to find this odds ratio."""
+    return math.ceil(k * (1 + cases / controls) / (f * math.log(odds_ratio) ** 2))
+
+
 def size_for_comparison(cases: int, controls: int, people: int) -> float:
     return 4.0 * cases * controls / (cases + controls) if cases > 0 and controls > 0 else float(cases + controls + people)
 
@@ -93,6 +101,8 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
     lig, dark = set(tg[tg.lacks_ligand == True].id), set(tg[tg.flips.notna()].id)   # noqa: E712
     L = T["links"]
     gw_by = L.groupby("trait").target.apply(set).to_dict()
+    n_studies = {k: dict(zip(g.target, g.n_studies)) for k, g in L.groupby("trait")}
+    place = {v: i for i, v in enumerate(t.id)}
     nb = T["neighbours"]
     ev = T["evidence"].drop_duplicates(["trait", "study"]).merge(T["study_sizes"], on="study")
     ev_by = {k: g for k, g in ev.groupby("trait")}
@@ -117,7 +127,8 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
                "genes_that_are_a_mechanism_target": len(genes(moa)), "no_compound": len(G["no_compound"]), "dark": len(G["dark"]), "loci_not_resolved": None, "genes_in_those_loci": None,
                "loci_where_other_evidence_singles_out_one_gene": None, "no_genetic_support": None, "withheld_rows": int(a.withheld.sum()), "observed_only": len(G["observed_only"]),
                "largest_study": None, "largest_study_year": None, "cases": None, "controls": None, "individuals": None, "smallest_odds_ratio_it_could_find": None,
-               "smallest_effect_it_could_find_in_sd": None}
+               "smallest_effect_it_could_find_in_sd": None, "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": None,
+               **{f"cases_needed_for_odds_ratio_{o}": None for o in ODDS_RATIOS}, "cases_needed_for_rare_variants": None}
         if is_trait:
             G["no_genetic_support"] = genes((two | moa) & is_target - gw)
             row["no_genetic_support"] = len(G["no_genetic_support"])
@@ -130,25 +141,38 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
             else:
                 comp = np.array([], int)
             found = []
+            nst = n_studies.get(c, {})
             for k in np.unique(comp):
                 members = [order[i] for i in np.flatnonzero(comp == k)]
                 gs = sorted(genes(members))
                 if len(gs) >= 2:
                     other = sorted(genes(set(members) & (two | moa)))
-                    found.append((gs, other[0] if len(other) == 1 else None))
-            for j, (gs, single) in enumerate(sorted(found, key=lambda r: (-len(r[0]), r[0])), 1):
-                loci.append((c, j, len(gs), ", ".join(gs), single))
-            row.update({"loci_not_resolved": len(found), "genes_in_those_loci": sum(len(g) for g, _ in found), "loci_where_other_evidence_singles_out_one_gene": sum(s is not None for _, s in found)})
+                    first = {}                                   # one entry per symbol: the one listed first among the targets
+                    for m in sorted(members, key=place.get):
+                        first.setdefault(sym[m], m)
+                    level = {g: 0 if e in two or e in moa else 1 if e in one else 2 if e in seen else 3 for g, e in first.items()}
+                    tested = sorted(first, key=lambda g: (level[g], -nst.get(first[g], 0), g))
+                    lead = min(level.values())
+                    found.append((gs, other[0] if len(other) == 1 else None, tested, LEADS.get(lead)))
+            for j, (gs, single, tested, lead) in enumerate(sorted(found, key=lambda r: (-len(r[0]), r[0])), 1):
+                loci.append((c, j, len(gs), ", ".join(gs), single, ", ".join(tested), lead))
+            open_ = [r for r in found if r[1] is None]
+            row.update({"loci_not_resolved": len(found), "genes_in_those_loci": sum(len(r[0]) for r in found), "loci_where_other_evidence_singles_out_one_gene": sum(r[1] is not None for r in found),
+                        "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": sum(r[3] in ("one source", "an expression observation") for r in open_)})
             if c in ev_by:
                 z = ev_by[c].assign(size=[size_for_comparison(*r) for r in zip(ev_by[c].cases, ev_by[c].controls, ev_by[c].individuals)]).sort_values(["size", "study"]).iloc[-1]
                 o, sd = floor(int(z.cases), int(z.controls), int(z.individuals))
                 cc = o is not None
                 row.update({"largest_study": z.study, "largest_study_year": int(z.year), "cases": int(z.cases) if cc else None, "controls": int(z.controls) if cc else None,
                             "individuals": None if cc else int(z.cases + z.controls + z.individuals), "smallest_odds_ratio_it_could_find": o, "smallest_effect_it_could_find_in_sd": sd})
+                if cc:
+                    row.update({f"cases_needed_for_odds_ratio_{o_}": cases_needed(int(z.cases), int(z.controls), o_) for o_ in ODDS_RATIOS})
+                    row["cases_needed_for_rare_variants"] = cases_needed(int(z.cases), int(z.controls), RARE_OR, K_RARE, F_RARE)
         summary.append(row)
         lists += [(c, k, g) for k in LISTS if k in G for g in sorted(G[k])]
     return {"same_condition": S, "disease_gap_summary": pd.DataFrame(summary), "disease_gap_genes": pd.DataFrame(lists, columns=["condition_id", "list", "symbol"]),
-            "disease_loci": pd.DataFrame(loci, columns=["condition_id", "locus", "genes_with_the_link", "genes", "gene_singled_out_by_other_evidence"])}
+            "disease_loci": pd.DataFrame(loci, columns=["condition_id", "locus", "genes_with_the_link", "genes", "gene_singled_out_by_other_evidence", "genes_in_the_order_to_test",
+                                                       "what_points_first"])}
 
 
 # ---- one pair, one drug: what the usability questions ask ------------------------------------------
@@ -182,7 +206,8 @@ def _selftest() -> int:
     nodes = pd.DataFrame([N("t:A", "target", "AAA"), N("t:B", "target", "BBB"), N("t:C", "target", "CCC"), N("t:D", "target", "DDD"), N("t:E", "target", "EEE"), N("t:E2", "target", "EEE"),
                           N("EFO:1", "trait", "alpha as published", "MONDO:1"), N("MONDO:2", "trait", "Beta"), N("EFO:9", "trait", "a height", "", False)])
     T = {"nodes": nodes,
-         "links": pd.DataFrame([("t:A", "EFO:1", 2010), ("t:B", "EFO:1", 2012), ("t:E", "EFO:1", 2015), ("t:E2", "EFO:1", 2015), ("t:C", "MONDO:2", 2011)], columns=["target", "trait", "first_year"]),
+         "links": pd.DataFrame([("t:A", "EFO:1", 2010, 3), ("t:B", "EFO:1", 2012, 1), ("t:E", "EFO:1", 2015, 1), ("t:E2", "EFO:1", 2015, 1), ("t:C", "MONDO:2", 2011, 2)],
+                               columns=["target", "trait", "first_year", "n_studies"]),
          "neighbours": pd.DataFrame([("t:A", "t:B", 100), ("t:B", "t:A", 100), ("t:E", "t:E2", 1), ("t:E2", "t:E", 1)], columns=["a", "b", "gap"]),
          "evidence": pd.DataFrame([("t:A", "EFO:1", "S1", 1, 2010), ("t:B", "EFO:1", "S2", 2, 2012), ("t:C", "MONDO:2", "S3", 3, 2011)], columns=["target", "trait", "study", "pmid", "year"]),
          "study_sizes": pd.DataFrame([("S1", 1000, 1000, 0), ("S2", 10000, 10000, 0), ("S3", 0, 0, 100000)], columns=["study", "cases", "controls", "individuals"]),
@@ -205,7 +230,10 @@ def _selftest() -> int:
     ck("ties: three by a GWAS link (two entries of one gene are one), one by two sources, one as a mechanism target", (a.genes_with_a_gwas_link, a.genes_asserted_by_two_or_more_sources, a.genes_that_are_a_mechanism_target, a.genes_tied) == (3, 1, 1, 4))
     ck("one source alone, and a target a drug acts on outside its mechanism, are not ties", a.genes_asserted_by_one_source_only == 2 and "DDD" not in set(R["disease_gap_genes"].query("condition_id == 'EFO:1' and list == 'tied'").symbol))
     ck("no compound: tied, the gap on record and no drug acting on it", sorted(R["disease_gap_genes"].query("condition_id == 'EFO:1' and list == 'no_compound'").symbol) == ["AAA", "CCC"] and a.no_compound == 2 and a.dark == 1)
-    ck("a locus is linked genes that are neighbours, and other evidence singles out one", R["disease_loci"].values.tolist() == [["EFO:1", 1, 2, "AAA, BBB", "BBB"]] and (a.loci_not_resolved, a.genes_in_those_loci, a.loci_where_other_evidence_singles_out_one_gene) == (1, 2, 1))
+    ck("a locus is linked genes that are neighbours, and other evidence singles out one, which is tested first", R["disease_loci"].values.tolist() == [["EFO:1", 1, 2, "AAA, BBB", "BBB", "BBB, AAA", "a tie"]]
+       and (a.loci_not_resolved, a.genes_in_those_loci, a.loci_where_other_evidence_singles_out_one_gene, a.loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene) == (1, 2, 1, 0))
+    ck("the cases a study of the largest study's ratio needs for each odds ratio, and for the rare-variant test",
+       [a[f"cases_needed_for_odds_ratio_{o}"] for o in ODDS_RATIOS] == [103973, 27247, 7446] and a.cases_needed_for_rare_variants == 25544)
     ck("tied with no GWAS link; a withheld row; an observation with nothing else", (a.no_genetic_support, a.withheld_rows, a.observed_only) == (1, 1, 0) and sorted(R["disease_gap_genes"].query("condition_id == 'EFO:1' and list == 'no_genetic_support'").symbol) == ["CCC"])
     ck("the largest study is the one with most cases and controls, and its floor is an odds ratio", (a.largest_study, a.cases, a.controls, a.smallest_odds_ratio_it_could_find) == ("S2", 10000, 10000, 1.17))
     b = s.loc["MONDO:2"]

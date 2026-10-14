@@ -82,9 +82,26 @@ def study_floor(G, trait_id: str, y: int) -> dict | None:
     s, yr, n = max(sized, key=lambda r: (studysize.effective(*r[2]), r[0]))
     floor = studysize.smallest_effect(*n)
     out["largest"] = {"study": s, "year": yr, **floor}
-    out["reading"] = (f"The largest study behind its links ({s}, {yr}): {studysize.say(floor)}. An absent link is no effect of about that size found at a common variant; "
-                      "smaller effects and rarer variants were not visible. This is a rough floor, and a study that reported nothing for the trait is not in the source.")
+    out["reading"] = (f"The largest study behind this trait's links ({s}, {yr}): {studysize.say(floor)}. An absent link is no effect of about that size found at a common "
+                      "variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study that reported nothing for the trait is not in the source.")
+    out["the_study_that_would_close_it"] = studysize.needed(*n)
+    out["proposal"] = studysize.say_needed(out["the_study_that_would_close_it"])
     return out
+
+
+def holds(t, two: set, moa: dict, src: dict, x: pd.DataFrame, tie) -> tuple[int, dict]:
+    """What the graph holds for a target with the condition besides a GWAS link, and its place in the
+    order a locus is tested in: a tie by sources or a drug's mechanism, one source, an expression
+    observation, nothing."""
+    if t in two or t in moa:
+        return 0, {k: v for k, v in tie(t).items() if k != "gwas_link"}
+    if t in src:
+        return 1, {"one_source": src[t][0]}
+    e = x[x.target == t]
+    if len(e):
+        b = e.loc[e.log2fc.abs().idxmax()]
+        return 2, {"expression_observation": "higher" if b.log2fc > 0 else "lower", "log2_fold_change": round(float(b.log2fc), 3)}
+    return 3, {}
 
 
 def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None = None) -> dict:
@@ -170,17 +187,39 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
         for members in L:
             ids_ = [G.t.id[i] for i in members]
             other = {sym(G.ti[t]): {k: v for k, v in tie(t).items() if k != "gwas_link"} for t in ids_ if t in two or t in moa}
-            rows.append({"genes": [sym(i) for i in sorted(members, key=lambda i: (-studies(G.t.id[i]), sym(i)))], "genes_with_the_link": len(members),
+            hold = {t: holds(t, two, moa, src, x, tie) for t in ids_}
+            order = sorted(ids_, key=lambda t: (hold[t][0], -studies(t), sym(G.ti[t])))
+            lead = next((t for t in order if hold[t][0] < 3), None)
+            n_ = len(members)
+
+            def lead_say(t0):
+                level = hold[t0][0]
+                same = [sym(G.ti[t]) for t in order if hold[t][0] == level]
+                what = ("two or more sources or a drug's mechanism", "one source", "an expression observation")[level]
+                if len(same) == 1:
+                    return f"The graph's other evidence points first to {same[0]} ({what})."
+                return f"The graph's other evidence points equally to {', '.join(same[:-1])} and {same[-1]} ({what} each)."
+            rows.append({"genes": [sym(G.ti[t]) for t in order], "genes_with_the_link": n_,
+                         "what_each_holds_besides_the_link": {sym(G.ti[t]): hold[t][1] for t in order if hold[t][0] < 3},
                          "other_evidence_for": other, "singled_out_by_other_evidence": next(iter(other)) if len(other) == 1 else None,
-                         "in_the_MHC": bool(G.mhc[members].any())})
-        rows.sort(key=lambda r_: (r_["singled_out_by_other_evidence"] is not None, -r_["genes_with_the_link"], r_["genes"][0]))
+                         "lead": None if lead is None else ("one source" if hold[lead][0] == 1 else "an expression observation" if hold[lead][0] == 2 else "a tie"),
+                         "in_the_MHC": bool(G.mhc[members].any()), "_by_studies": min(sym(i) for i in members if studies(G.t.id[i]) == max(studies(G.t.id[j]) for j in members)),
+                         "proposal": f"{n_} genes to test. " + (lead_say(lead) if lead is not None else "Nothing else in the graph points to one of them.")})
+        rows.sort(key=lambda r_: (r_["singled_out_by_other_evidence"] is not None, -r_["genes_with_the_link"], r_["_by_studies"]))      # the order of loci is as before
         single = sum(r_["singled_out_by_other_evidence"] is not None for r_ in rows)
+        open_ = [r_ for r_ in rows if r_["singled_out_by_other_evidence"] is None]
+        sizes = pd.Series([r_["genes_with_the_link"] for r_ in open_], dtype=int).value_counts().sort_index()
         gaps.append({"kind": "locus_not_resolved", "what": "GWAS-linked genes within 500,000 bases of one another: one association signal assigned to several genes",
                      "loci": len(rows), "genes": sum(r_["genes_with_the_link"] for r_ in rows), "loci_where_other_evidence_singles_out_one_gene": single,
-                     "loci_in_the_MHC": sum(r_["in_the_MHC"] for r_ in rows), "top": [{**r_, "genes": r_["genes"][:8], "genes_more": max(0, len(r_["genes"]) - 8)} for r_ in rows[:top]],
+                     "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": sum(r_["lead"] in ("one source", "an expression observation") for r_ in open_),
+                     "loci_not_singled_out_by_number_of_genes": {str(k_): int(v) for k_, v in sizes.items()},
+                     "loci_in_the_MHC": sum(r_["in_the_MHC"] for r_ in rows),
+                     "top": [{**{k_: v for k_, v in r_.items() if k_ not in ("lead", "_by_studies")}, "genes": r_["genes"][:8], "genes_more": max(0, len(r_["genes"]) - 8),
+                              "what_each_holds_besides_the_link": {k_: v for k_, v in r_["what_each_holds_besides_the_link"].items() if k_ in r_["genes"][:8]}} for r_ in rows[:top]],
                      "more": max(0, len(rows) - top),
-                     "closes_with": ("evidence for one gene of the locus: fine-mapping, colocalisation with expression, or a functional result. In this graph that is a second "
-                                     "source or a drug's mechanism on exactly one of them"),
+                     "closes_with": ("evidence for one gene of the locus: fine-mapping with colocalisation against expression, or a perturbation of each gene. Each locus lists "
+                                     "its genes in the order of what the graph holds for them besides the link: a second source or a drug's mechanism, one source, an "
+                                     "expression observation, nothing. The order says where the graph's evidence points, not which gene is causal"),
                      "how_often_this_closed": "Not measured."})
         # ---- tied without a GWAS link
         ng = listed((two | set(moa)) & set(G.ti) - set(gw))
@@ -204,8 +243,10 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
         gaps.append({"kind": "no_genetic_support", "what": "tied by two or more sources or by a drug's mechanism, with no GWAS link" + (f" as of {y}" if y < G.latest else ""),
                      "targets": len(ng),
                      "top": [{**label(t), "tied_by": tie(t), "rank_among_gwas_candidates": (int((sc[cand] > sc[G.ti[t]]).sum()) + 1) if sc[G.ti[t]] > 0 else None, **later(t)} for t in ng[:top]],
-                     "more": max(0, len(ng) - top), "closes_with": "a genome-wide significant association at the gene, in a study of this trait",
-                     "how_often_this_closed": how, **({"what_an_absent_link_could_have_seen": floor} if floor else {})})
+                     "more": max(0, len(ng) - top),
+                     "closes_with": ("a genome-wide significant association at the gene, in a study of this trait. The size of study that would find one is under "
+                                     "what_an_absent_link_could_have_seen, the_study_that_would_close_it: the same for every gene of the trait"),
+                     "how_often_this_closed": how, **({"what_an_absent_link_could_have_seen": {k_: v for k_, v in floor.items() if k_ not in ("reading", "proposal")}} if floor else {})})   # the two sentences are in the answer
     # ---- withheld rows, and observations with nothing else
     hrows = sorted(held.itertuples(), key=lambda r_: (sym(G.ti[r_.target]) if r_.target in G.ti else r_.target, r_.source))
     gaps.append({"kind": "withheld", "what": "rows a pruning rule withheld for this condition", "rows": len(held),
@@ -238,7 +279,8 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
         lr = by["locus_not_resolved"]
         if lr["loci"]:
             bits.append(f"{lr['genes']:,} GWAS-linked genes sit in {lr['loci']:,} {'locus' if lr['loci'] == 1 else 'loci'} that carry the link on more than one gene, and other evidence "
-                        f"singles out one gene in {lr['loci_where_other_evidence_singles_out_one_gene']:,} of them")
+                        f"singles out one gene in {lr['loci_where_other_evidence_singles_out_one_gene']:,} of them (in "
+                        f"{lr['loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene']:,} more, one source or an expression observation points to a gene)")
         else:
             bits.append("no locus carries the link on more than one gene")
         bits.append(f"{n('no_genetic_support'):,} {'is' if n('no_genetic_support') == 1 else 'are'} tied with no GWAS link")
@@ -249,7 +291,7 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
     elif not G.d.disease_like[r["i"]]:
         say += f" {name} is a measurement and not a disease, so the disease sources and the drugs seldom name it."
     if floor and "reading" in floor:
-        say += " " + floor["reading"]
+        say += " " + floor["reading"] + " " + floor["proposal"]
     count = lambda g_: next(g_[f] for f in ("targets", "loci", "rows") if f in g_)
     counts = lambda: {k_: (count(by[k_]) if k_ in by else None) for k_ in KINDS}        # null where the list needs a dated link and the condition has none
     if kind is not None:
@@ -295,18 +337,28 @@ def census(release: str) -> dict:
     if not G.has_others or G.tg is None:
         raise SystemExit("the bundle does not hold the merged graph's other parts and the target-level gaps")
     deg = np.bincount(G.ld, minlength=len(G.d))
-    rows = []
+    rows, open_sizes = [], []
     for i in np.flatnonzero(G.d.disease_like.to_numpy() & (deg > 0)):
         o = for_condition(G, {"kind": "trait", "i": int(i)}, G.latest, top=1)
         k, h = {g["kind"]: g for g in o["gaps"]}, o["holds"]
         f = k["no_genetic_support"].get("what_an_absent_link_could_have_seen") or {}
         big = f.get("largest") or {}
+        nd = f.get("the_study_that_would_close_it") or {}
+        lr = k["locus_not_resolved"]
+        for g_, c_ in lr["loci_not_singled_out_by_number_of_genes"].items():
+            open_sizes.extend([int(g_)] * c_)
+        study = ({f"cases_{c['odds_ratio']}": c["cases"] for c in nd["common_variant"]} | {f"had_{c['odds_ratio']}": c["the_largest_study_had_them"] for c in nd["common_variant"]}
+                 | {"rare_cases": nd["rare_variants"]["cases"], "controls_per_case": nd["controls_per_case"]}) if nd.get("design") == "cases and controls" else {}
         rows.append({"trait": G.d.id[i], "name": G.d["name"][i], "tied": h["tied_genes"], "gwas": h["gwas_linked_genes"], "two_sources": h["genes_asserted_by_two_or_more_sources"],
                      "mechanism": h["genes_that_are_the_mechanism_target_of_one"], "no_compound": k["no_compound"]["targets"], "dark": k["dark"]["targets"],
                      "loci": k["locus_not_resolved"]["loci"], "locus_genes": k["locus_not_resolved"]["genes"], "loci_singled_out": k["locus_not_resolved"]["loci_where_other_evidence_singles_out_one_gene"],
                      "no_genetic_support": k["no_genetic_support"]["targets"], "withheld": k["withheld"]["rows"], "observed_only": k["observed_only"]["targets"],
-                     "odds_ratio": big.get("smallest_odds_ratio_it_could_find"), "sd": big.get("smallest_effect_it_could_find_in_standard_deviations_per_allele"), "sized": bool(big)})
+                     "odds_ratio": big.get("smallest_odds_ratio_it_could_find"), "sd": big.get("smallest_effect_it_could_find_in_standard_deviations_per_allele"), "sized": bool(big),
+                     "open_loci": sum(lr["loci_not_singled_out_by_number_of_genes"].values()),
+                     "open_loci_with_a_lead": lr["loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene"], **study})
     t = pd.DataFrame(rows)
+    cct = t[t.rare_cases.notna()] if "rare_cases" in t else t.iloc[:0]
+    ors = studysize.ODDS_RATIOS
     kinds = ["no_compound", "dark", "locus_genes", "no_genetic_support", "withheld", "observed_only"]
     cc = t.odds_ratio.dropna()
     man = {"release": release, "as_of": G.latest, "traits": len(t), "min_sources": MIN_SOURCES,
@@ -321,7 +373,13 @@ def census(release: str) -> dict:
            "smallest_odds_ratio_the_largest_study_could_find": {"median": round(float(cc.median()), 3), "lower_quartile": round(float(cc.quantile(0.25)), 3), "upper_quartile": round(float(cc.quantile(0.75)), 3),
                                                                 "traits_above_1.5": int((cc > 1.5).sum())},
            "most_tied": [{"trait": r_.trait, "name": r_.name, "tied": int(r_.tied), "no_compound": int(r_.no_compound), "no_genetic_support": int(r_.no_genetic_support)}
-                         for r_ in t.sort_values(["tied", "trait"], ascending=[False, True]).head(5).itertuples()]}
+                         for r_ in t.sort_values(["tied", "trait"], ascending=[False, True]).head(5).itertuples()],
+           "the_study_an_absent_link_calls_for": {
+               "traits_with_cases_and_controls": int(len(cct)), "median_controls_per_case": round(float(cct.controls_per_case.median()), 2),
+               "by_odds_ratio": {str(o): {"median_cases": int(round(cct[f"cases_{o}"].median())), "traits_whose_largest_study_had_them": int(cct[f"had_{o}"].astype(bool).sum())} for o in ors},
+               "rare_variants_median_cases": int(round(cct.rare_cases.median()))},
+           "loci_not_singled_out": {"loci": int(t.open_loci.sum()), "with_one_source_or_an_observation_pointing_to_a_gene": int(t.open_loci_with_a_lead.sum()),
+                                    "median_genes_to_test": float(np.median(open_sizes)), "genes_to_test": int(sum(open_sizes))}}
     (paths.DOCS_DATA / f"disease_gaps_{release}.json").write_text(json.dumps(man, indent=1) + "\n")
     return man
 
