@@ -1487,7 +1487,7 @@ ids of the dated links do not change. A trait tied to another vocabulary only by
 is counted and not joined: a cross-reference is not a statement that two terms are one. The questions
 look a trait up in the other parts under its own id and its current term.
 
-**14 Oct 2026, usability of the other sources and of the gaps of a disease, between the two rounds.
+**13 Oct 2026, usability of the other sources and of the gaps of a disease, between the two rounds.
 Written after the development round and before the evaluation questions were generated.**
 
 The development round, 35 questions (`docs/data/usability_results_new_dev.json`): under *typed* the
