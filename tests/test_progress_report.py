@@ -89,7 +89,11 @@ def test_pruning(T):
     ctd = ap["sources"]["CTD"]
     assert len(ap["sources"]) == 5 and ap["withheld"] == sum(v["withheld_in_all"] for v in ap["sources"].values())
     has(T, f"Of the {ap['withheld']:,} rows withheld, {ctd['withheld_in_all']:,} are CTD's", f"is {pc(ctd['share_of_one_source_pairs_withheld_in_all'])} against the bar of 50%",
-        f"rests on {p2['lift_cut_L0b']['CTD']['planted_pairs_the_cut_was_set_on']} planted pairs")
+        f"first rested on {p2['lift_cut_L0b']['CTD']['planted_withheld']['n']} planted pairs")
+    x = J("pruning2_extend_CTD_pharos319.json")
+    w = x["planted_withheld"]
+    assert x["the_cut_stands"] and x["pairs"] == 400 and x["cut"] == p2["lift_cut_L0b"]["CTD"]["cut"] and abs(x["real_withheld"]["share"] - ctd["share_of_searchable_withheld"]) < 1e-12
+    has(T, f"on {x['pairs']} more, drawn with them and searched only after the check was written down, the cut withholds {pc(w['share'])} [{pc(w['low'])}, {pc(w['high'])}] of planted pairs, so it stands")
     out = [k for k, v in p2["lift_cut_L0b"].items() if not v.get("passes") and not p2["reader"]["test_L1"][k].get("passes") and not p2["code_only_L0"][k].get("passes")]
     assert {"Expression Atlas", "DrugCentral Indication", "JensenLab Knowledge AmyCo"} <= set(out)
 

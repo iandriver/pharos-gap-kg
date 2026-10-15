@@ -1,0 +1,44 @@
+{
+ "release": "pharos319",
+ "source": "CTD",
+ "cut": 2.6264937460710533,
+ "planted_orders": [
+  200,
+  599
+ ],
+ "pairs": 400,
+ "unsearchable": 0,
+ "pubmed": {
+  "pubmed_records": 41252707,
+  "searches": 963
+ },
+ "planted_withheld": {
+  "n": 400,
+  "share": 0.8225,
+  "low": 0.7820404888994963,
+  "high": 0.8568240811590122
+ },
+ "real_withheld": {
+  "n": 12852,
+  "share": 0.465452847805789,
+  "low": null,
+  "high": null,
+  "note": "every searchable one-source pair of the source, not a sample"
+ },
+ "passes": true,
+ "provisional": false,
+ "the_cut_stands": true,
+ "planted_withheld_on_the_pairs_first_scored": {
+  "n": 100,
+  "share": 0.83,
+  "low": 0.7445199515664943,
+  "high": 0.8910643392459681
+ },
+ "planted_withheld_pooled": {
+  "n": 500,
+  "share": 0.824,
+  "low": 0.788185828409527,
+  "high": 0.8548735988940402
+ },
+ "file_sha256": "34f8aff42949f277c19e459ca8358c798d8601c60f960054433252c1834d086b"
+}

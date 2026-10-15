@@ -122,7 +122,8 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   field orders its pairs the way the literature does. Three sources are out of reach of every rule.
   The cut is applied to the five sources: 7,248 of 324,882 rows are withheld, each a typed gap that
   carries the papers counted, the lift and the cut. 5,982 of them are CTD's, where the cut costs 46.5%
-  of one-source pairs against a bar of 50%.
+  of one-source pairs against a bar of 50%. On 400 more planted CTD pairs, searched after the check was
+  written down, it withholds 82.2% [78.2%, 85.7%] against the bar's 80%, so it stands.
 - **Target-level gaps** ([`findings/TGAPS.md`](findings/TGAPS.md)). Pharos grades targets by explicit
   evidence, so what a target lacks for the next level is on record, and so is how far it is from having
   it. For each of 5,499 Tdark targets the gap names the nearest criterion and a distance. That distance

@@ -18,6 +18,7 @@ Stages, each writing what the next reads (data/eval/pruning2/<release>):
     python -m pharos_gap_kg.prune2 choose pharos319     # the reader, by the stated rule
     python -m pharos_gap_kg.prune2 read pharos319 test  # the chosen model reads the test part
     python -m pharos_gap_kg.prune2 report pharos319
+    python -m pharos_gap_kg.prune2 extend pharos319 CTD  # an applied cut on the source's next 400 planted pairs
     python -m pharos_gap_kg.prune2 --selftest
 """
 from __future__ import annotations
@@ -273,6 +274,42 @@ def search(release: str) -> pd.DataFrame:
     out.to_parquet(W / "search.parquet", index=False)
     (W / "search.json").write_text(json.dumps({"pubmed_records": total, "searches": n_searches, "sample_sha256": graph.file_sha(W / "sample.parquet")}, indent=1) + "\n")
     return out
+
+
+def extend(release: str, source: str = "CTD", upto: int = 600) -> dict:
+    """A source's applied lift cut, scored on its planted pairs from SAMPLE to `upto` in drawn order: pairs of
+    the frozen planting that the sample left out and nothing has searched (docs/PROTOCOL.md, 15 Oct 2026).
+    The cut stands on the bar as stated; the pairs it was first scored on are reported beside."""
+    pl, s = frozen(release)
+    name_of, symbol_of = names(release)
+    x = pl[(pl.source == source) & (pl.order >= SAMPLE) & (pl.order < upto)].sort_values("order").reset_index(drop=True)[KEY + ["order"]]
+    if len(x) != upto - SAMPLE:
+        raise SystemExit(f"REFUSED: {source} has {len(x)} planted pairs from {SAMPLE} to {upto}, and {upto - SAMPLE} were stated")
+    x = x.assign(planted=True, symbol=x.target.map(symbol_of), name=[name_of.get((src, d)) for src, d in zip(x.source, x.disease)])
+    found, n_searches, total = counts(x)
+    rec = json.loads((paths.DOCS_DATA / f"pruning2_{release}.json").read_text())["lift_cut_L0b"][source]
+    applied = json.loads((paths.DOCS_DATA / f"pruning2_applied_{release}.json").read_text())["sources"][source]
+    cut = float(rec["cut"])
+    out = pd.concat([x, found], axis=1).assign(cut=cut)
+    out["withheld"] = (out.unsearchable.isna() & (out.lift.astype(float) <= cut)).to_numpy()
+    W = work(release)
+    out.to_parquet(W / f"extend_{source}.parquet", index=False)
+    (W / f"extend_{source}.json").write_text(json.dumps({"pubmed_records": total, "searches": n_searches}, indent=1) + "\n")
+    se = pd.read_parquet(W / "search.parquet")
+    first = se[(se.source == source) & se.planted & (se.part != "rest") & se.unsearchable.isna()]
+    first_w = (first.lift.astype(float) <= cut).to_numpy()
+    new = out[out.unsearchable.isna()]
+    p_new, p_first = share(new.withheld.to_numpy()), share(first_w)
+    p_all = share(np.concatenate([new.withheld.to_numpy(), first_w]))
+    real = {"n": int(applied["one_source_pairs"] - applied["unsearchable"]), "share": float(applied["share_of_searchable_withheld"]), "low": None, "high": None,
+            "note": "every searchable one-source pair of the source, not a sample"}
+    verdict = bar(p_new, real)
+    o = {"release": release, "source": source, "cut": cut, "planted_orders": [SAMPLE, upto - 1], "pairs": len(out), "unsearchable": int(out.unsearchable.notna().sum()),
+         "pubmed": {"pubmed_records": total, "searches": n_searches}, "planted_withheld": p_new, "real_withheld": real, **verdict,
+         "the_cut_stands": verdict["passes"], "planted_withheld_on_the_pairs_first_scored": p_first, "planted_withheld_pooled": p_all,
+         "file_sha256": graph.file_sha(W / f"extend_{source}.parquet")}
+    (paths.DOCS_DATA / f"pruning2_extend_{source}_{release}.json").write_text(dump(o))
+    return o
 
 
 # ---- the reader --------------------------------------------------------------------------------------------
@@ -727,6 +764,13 @@ def main(argv: list[str] | None = None) -> int:
     elif stage == "search":
         out = search(release)
         print(f"  {len(out):,} pairs; unsearchable {int(out.unsearchable.notna().sum())}; no paper mentions {int((out.both == 0).sum())}")
+    elif stage == "extend":
+        o = extend(release, argv[2] if len(argv) > 2 else "CTD")
+        pc = lambda d: f"{d['share']:.1%} [{d['low']:.1%}, {d['high']:.1%}] n={d['n']}"
+        print(f"  {o['source']}: cut {o['cut']:.3f}; {o['pairs']} planted pairs (orders {o['planted_orders'][0]} to {o['planted_orders'][1]}), {o['unsearchable']} unsearchable; "
+              f"{o['pubmed']['searches']:,} searches over a PubMed of {o['pubmed']['pubmed_records']:,}")
+        print(f"  planted withheld {pc(o['planted_withheld'])}; real {o['real_withheld']['share']:.1%} (whole source); the cut stands: {o['the_cut_stands']}")
+        print(f"  first scored {pc(o['planted_withheld_on_the_pairs_first_scored'])}; pooled {pc(o['planted_withheld_pooled'])}")
     elif stage == "read":
         which = argv[2]
         from pharos_gap_kg.usability import PRICES

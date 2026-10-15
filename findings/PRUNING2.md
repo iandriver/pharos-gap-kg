@@ -339,3 +339,33 @@ DrugCentral Indication and JensenLab Knowledge AmyCo have not been asked about y
 these answers were read, on Ian's decision: the interval for real pairs withheld lies above both the
 bar and the margin that would have earned an extension. It is reported as stopped, not as having
 completed the test. The requests saved go to the other two sources, 200 pairs, asked at up to 90 a day.
+
+## Added 15 Oct 2026: CTD's cut on 400 more planted pairs
+
+`python -m pharos_gap_kg.prune2 extend pharos319 CTD`. The pairs, the measure and what follows were set
+in `docs/PROTOCOL.md` ("15 Oct 2026, CTD's lift cut on more planted pairs") before any of them was
+searched. The record is `docs/data/pruning2_extend_CTD_pharos319.json`, and the answers are committed
+under `recorded/pharos319/`.
+
+The pairs are CTD's planted pairs 200 to 599 in the drawn order of the frozen planting. They were drawn
+on 9 Oct with the others, left out of the sample, and never searched. All 400 were searchable. The 400
+pair counts were asked on 15 Oct (400 new searches); the gene and disease counts and PubMed's size
+(41,252,707 records) are the answers kept from 8 Oct.
+
+| planted pairs | withheld at the cut (2.626) |
+|---|---|
+| 200 to 599, new | 82.2% [78.2%, 85.7%], 329 of 400 |
+| 0 to 99, the pairs the cut was first scored on | 83.0% [74.5%, 89.1%], 83 of 100 |
+| both | 82.4% [78.8%, 85.5%], 412 of 500 |
+
+**CTD's cut stands.** On the new pairs it withholds 82.2% of planted pairs, against the bar's 80%, at a
+cost of 46.5% of CTD's searchable one-source pairs, against the bar's 50%. The 5,982 CTD rows stay
+withheld. The share agrees with the first 100 pairs within a point, and the interval's lower end
+moves from 74.5% to 78.2%. It still reaches below 80%: the pass is on the point share, as the bar is
+stated, and is not provisional.
+
+A planted pair is a crossing of two of CTD's own pairs that no source asserts, not a pair known to be
+false. Of the 71 the cut keeps, 48 are mentioned together in five papers or more, and the most
+mentioned, CDKN2A with lung adenocarcinoma, in 214. If some planted pairs are true associations that no
+source records, the planted share understates how much of the false pairs the cut withholds, by an
+amount this does not measure.

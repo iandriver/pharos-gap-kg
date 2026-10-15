@@ -51,3 +51,17 @@ def test_the_release_archive_holds_the_committed_bundle():
     man = (paths.DOCS_DATA / "bundle_pharos319.json").read_bytes()
     assert arc["members"] == {**json.loads(man)["files"], "manifest.json": release.sha(man)}
     assert arc["file"] == release.name("pharos319") and arc["url"] == release.url("pharos319")
+
+
+def test_ctds_cut_on_more_planted_pairs_agrees_with_its_answers_and_the_first_round():
+    """The record of CTD's cut on its next 400 planted pairs, recomputed from the recorded answers, and
+    its figure for the first 100 pairs against the second round's record of the same pairs."""
+    x = json.loads((paths.DOCS_DATA / "pruning2_extend_CTD_pharos319.json").read_text())
+    first = json.loads((paths.DOCS_DATA / "pruning2_pharos319.json").read_text())["lift_cut_L0b"]["CTD"]
+    e = pd.read_parquet(R / "extend_CTD.parquet")
+    assert sorted(e.order) == list(range(200, 600)) and (e.cut == first["cut"]).all() == True  # noqa: E712
+    ok = e[e.unsearchable.isna()]
+    assert x["planted_withheld"]["n"] == len(ok) and abs(x["planted_withheld"]["share"] - float((ok.lift.astype(float) <= first["cut"]).mean())) < 1e-12
+    assert x["planted_withheld_on_the_pairs_first_scored"] == first["planted_withheld"]
+    assert json.loads((R / "extend_CTD.json").read_text()) == x["pubmed"]
+    assert x["the_cut_stands"] == (x["planted_withheld"]["share"] >= 0.8 and x["real_withheld"]["share"] <= 0.5)

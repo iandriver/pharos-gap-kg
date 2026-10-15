@@ -1,8 +1,8 @@
 """Answers from live services, kept as they came, so that a rebuild reproduces the graph without asking again.
 
-Three stages ask a service whose answers move with time. `pubyear` asks NCBI for the year of each cited
-paper. `prune2 search` and `applycut search` ask PubMed how many papers mention a gene, a disease and
-both, and the lift they compute divides by PubMed's size on the day. Run again later, they withhold a
+Four stages ask a service whose answers move with time. `pubyear` asks NCBI for the year of each cited
+paper. `prune2 search`, `applycut search` and `prune2 extend` ask PubMed how many papers mention a gene,
+a disease and both, and the lift they compute divides by PubMed's size on the day. Run again later, they withhold a
 different set of rows. Their outputs are committed under `recorded/<release>/` with a digest of each
 file, and `restore` copies them to where the stages write them. After that `pubyear` finds nothing to
 ask, and the two searches need not be run: `applycut write` reads what was recorded.
@@ -30,7 +30,8 @@ def places(release: str) -> dict[str, Path]:
     work = paths.EVAL / "pruning2" / release
     return {"pubmed_year.parquet": paths.TABLES / "pubmed_year.parquet",
             "search.parquet": work / "search.parquet", "search.json": work / "search.json",
-            "applied.parquet": work / "applied.parquet", "applied.json": work / "applied.json"}
+            "applied.parquet": work / "applied.parquet", "applied.json": work / "applied.json",
+            "extend_CTD.parquet": work / "extend_CTD.parquet", "extend_CTD.json": work / "extend_CTD.json"}
 
 
 def sha(p: Path) -> str:
@@ -89,7 +90,7 @@ def _selftest() -> int:
                 p.parent.mkdir(parents=True, exist_ok=True)
                 p.write_bytes(bytes([i]) * 10)
             man = save("r")
-            ck("every answer is recorded with the digest of its bytes", len(man) == 5 and all(sha(paths.RECORDED / "r" / n) == h for n, h in man.items()))
+            ck("every answer is recorded with the digest of its bytes", len(man) == len(places("r")) and all(sha(paths.RECORDED / "r" / n) == h for n, h in man.items()))
             ck("what is already in place is left alone", set(restore("r").values()) == {"already in place"})
             for p in places("r").values():
                 p.unlink()
