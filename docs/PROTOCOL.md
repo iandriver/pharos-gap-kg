@@ -1596,3 +1596,25 @@ its first 50 are answered (38 planted and 39 real so far). Pairs 51 to 100 are a
 source's first 50, source by source, planted and real in turn. An extended source is reported on its
 first 100 of each, with its shares at 50 beside them. Rule F, the names, the bar, the sample and the
 allowance are unchanged.
+
+**15 Oct 2026, CTD's lift cut on more planted pairs. Written before any of these pairs was searched.**
+
+CTD's lift cut (2.626, set on its planted pairs 100 to 199 in drawn order) withheld 83.0% [74.5%,
+89.1%] of the 100 planted pairs it was scored on (0 to 99), and 46.5% of all its searchable one-source
+pairs, against the bar of at least 80% and at most 50%. It is applied, and 5,982 of the 7,248 withheld
+rows are CTD's. The planted side rests on 100 pairs, and its interval reaches below the bar.
+
+- *Pairs.* CTD's planted pairs 200 to 599 in the drawn order of the frozen planting
+  (`planted.parquet`, seed 20261009): 400 pairs, drawn on 9 Oct and never searched. No pair is drawn
+  anew. Their names and symbols are taken as the sample's were.
+- *Search.* As in the second round (`prune2.counts`): papers that mention both, the gene, the disease,
+  and PubMed's size. Answers kept from earlier searches are reused, which here are every gene and
+  disease count and PubMed's size, as asked on 8 Oct; the 400 pair counts are asked now.
+- *Measure.* The share of searchable planted pairs whose lift is at or below the cut, with a Wilson
+  interval. The real side is the whole-source figure, 46.5%, which is not a sample.
+- *Decision.* The bar as stated. CTD's cut stands if the share on these 400 is at least 80%. If it is
+  below 80%, the cut fails on CTD and is withdrawn there: CTD's 5,982 rows are restored to the graph,
+  and the graph, the bundle and the release archive are rebuilt. The four other sources are not
+  affected. The 100 pairs it was first scored on are reported beside, alone and pooled with these, and
+  do not enter the decision.
+- *Recorded.* The answers are committed under `recorded/` with the others.
