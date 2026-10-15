@@ -197,3 +197,10 @@ def test_findings_about_the_data(T):
     controls = re.sub(r"\s+", " ", (paths.ROOT / "findings" / "CONTROLS.md").read_text())
     assert "505 retired EFO disease ids" in controls and "505 of the 1,404 trait ids" in controls and k["coverage"]["traits"] == 1404
     has(T, "Of the 1,404 traits with a link by 2018, 505 carry an ontology id that has since been retired and replaced")
+
+
+def test_standards(T):
+    s, g = J("standards_pharos319.json"), J("graph_pharos319.json")
+    assert s["checked"] == {"nodes": g["nodes"], "edges": g["edges"]}
+    has(T, f"flags the identifiers of {s['nodes_with_an_error']:,} of {s['checked']['nodes']:,} nodes", f"against Biolink {s['biolink_model']}",
+        f"read all {s['checked']['nodes']:,} nodes and {s['checked']['edges']:,}")

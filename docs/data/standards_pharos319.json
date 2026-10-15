@@ -1,0 +1,95 @@
+{
+ "release": "pharos319",
+ "validator": "kgx 2.7.0",
+ "biolink_model": "4.4.3",
+ "bmt": "1.4.8",
+ "checked": {
+  "nodes": 39060,
+  "edges": 620168
+ },
+ "seconds": 46.7,
+ "checks": [
+  "required properties",
+  "property types",
+  "property values, including CURIE prefixes",
+  "node categories",
+  "edge predicates"
+ ],
+ "not_checked_here": "the gaps file (kgx-gaps' extension), and whether edges point at nodes; kgx-gaps' conformance suite checks both",
+ "nodes_with_an_error": 1042,
+ "subject_object_pairs_with_an_error": 1062,
+ "errors": [
+  {
+   "level": "ERROR",
+   "type": "INVALID_EDGE_PROPERTY_VALUE",
+   "message": "Edge property 'object' has a value <value> with a CURIE prefix 'pharosgapkg' that is not represented in Biolink Model JSON-LD context",
+   "records": 979,
+   "example": "Edge property 'object' has a value 'pharosgapkg:indication_9587bbc9bad0' with a CURIE prefix 'pharosgapkg' that is not represented in Biolink Model JSON-LD context",
+   "prefix": "pharosgapkg"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_NODE_PROPERTY_VALUE",
+   "message": "Node property 'id' has a value <value> with a CURIE prefix 'pharosgapkg' is not represented in Biolink Model JSON-LD context",
+   "records": 979,
+   "example": "Node property 'id' has a value 'pharosgapkg:indication_9587bbc9bad0' with a CURIE prefix 'pharosgapkg' is not represented in Biolink Model JSON-LD context",
+   "prefix": "pharosgapkg"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_NODE_PROPERTY_VALUE",
+   "message": "Node property 'id' has a value <value> with a CURIE prefix 'Orphanet' is not represented in Biolink Model JSON-LD context",
+   "records": 39,
+   "example": "Node property 'id' has a value 'Orphanet:79364' with a CURIE prefix 'Orphanet' is not represented in Biolink Model JSON-LD context",
+   "prefix": "Orphanet"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_EDGE_PROPERTY_VALUE",
+   "message": "Edge property 'object' has a value <value> with a CURIE prefix 'Orphanet' that is not represented in Biolink Model JSON-LD context",
+   "records": 34,
+   "example": "Edge property 'object' has a value 'Orphanet:79364' with a CURIE prefix 'Orphanet' that is not represented in Biolink Model JSON-LD context",
+   "prefix": "Orphanet"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_EDGE_PROPERTY_VALUE",
+   "message": "Edge property 'subject' has a value <value> with a CURIE prefix 'Orphanet' that is not represented in Biolink Model JSON-LD context",
+   "records": 26,
+   "example": "Edge property 'subject' has a value 'Orphanet:141136' with a CURIE prefix 'Orphanet' that is not represented in Biolink Model JSON-LD context",
+   "prefix": "Orphanet"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_EDGE_PROPERTY_VALUE",
+   "message": "Edge property 'object' has a value <value> with a CURIE prefix 'AmyCo' that is not represented in Biolink Model JSON-LD context",
+   "records": 23,
+   "example": "Edge property 'object' has a value 'AmyCo:26' with a CURIE prefix 'AmyCo' that is not represented in Biolink Model JSON-LD context",
+   "prefix": "AmyCo"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_NODE_PROPERTY_VALUE",
+   "message": "Node property 'id' has a value <value> with a CURIE prefix 'AmyCo' is not represented in Biolink Model JSON-LD context",
+   "records": 23,
+   "example": "Node property 'id' has a value 'AmyCo:26' with a CURIE prefix 'AmyCo' is not represented in Biolink Model JSON-LD context",
+   "prefix": "AmyCo"
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_CATEGORY",
+   "message": "Category 'KnowledgeGap' is unknown in the current Biolink Model",
+   "records": 1,
+   "example": "Category 'KnowledgeGap' is unknown in the current Biolink Model",
+   "prefix": null
+  },
+  {
+   "level": "ERROR",
+   "type": "INVALID_NODE_PROPERTY_VALUE",
+   "message": "Node property 'id' is expected to be of type 'CURIE'",
+   "records": 1,
+   "example": "Node property 'id' is expected to be of type 'CURIE'",
+   "prefix": null
+  }
+ ]
+}

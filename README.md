@@ -279,6 +279,14 @@ python -m pharos_gap_kg.calibrate pharos319 --cutoff 2018
 python -m pharos_gap_kg.bundle pharos319 --backtest-only        # put the scorer and its calibration into a built bundle
 ```
 
+The export against the Biolink model, with the reference KGX validator, offline, in an environment of
+its own (`findings/STANDARDS.md`):
+
+```bash
+uv venv .venv-standards && uv pip install --python .venv-standards/bin/python kgx==2.7.0 biolink-model==4.4.3
+.venv-standards/bin/python -I src/pharos_gap_kg/standards.py pharos319
+```
+
 To ask PubMed and NCBI again instead of restoring (about three hours at NCBI's rate; the counts will
 have moved, so the withheld rows will differ from the record), set `NCBI_EMAIL` to your address and run
 `python -m pharos_gap_kg.pubyear pharos319` after extracting, `python -m pharos_gap_kg.prune2 search
