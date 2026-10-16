@@ -369,3 +369,44 @@ false. Of the 71 the cut keeps, 48 are mentioned together in five papers or more
 mentioned, CDKN2A with lung adenocarcinoma, in 214. If some planted pairs are true associations that no
 source records, the planted share understates how much of the false pairs the cut withholds, by an
 amount this does not measure.
+
+## Added 16 Oct 2026: full text, complete
+
+`python -m pharos_gap_kg.fulltext run pharos319`, then `report`; the record is
+`docs/data/pruning2_fulltext_pharos319.json`. Every pair the protocol asks about is answered: 332 pairs,
+394 requests over five days, the pilot and the session openings included. DrugCentral Indication was
+extended to its first 100 of each by the rule of 9 Oct, which the module applied from 14 Oct, since
+both its shares at 50 were within 10 points of the bar. AmyCo's were not, and it stops at 50.
+Expression Atlas was stopped at 16 of each on 9 Oct.
+
+Rule F withholds a pair if no full text holds the gene symbol within 200 characters of one of the
+disease's names. L0 withholds a pair if no PubMed abstract mentions the gene with the disease.
+
+| source | pairs of each | full text, planted withheld | full text, real withheld | abstracts, same pairs |
+|---|---|---|---|---|
+| DrugCentral Indication | 100 | 76.0% [66.8%, 83.3%] | 53.0% [43.3%, 62.5%] | 68.0% and 53.0% |
+| DrugCentral Indication, first 50 | 50 | 76.0% [62.6%, 85.7%] | 56.0% [42.3%, 68.8%] | |
+| JensenLab Knowledge AmyCo | 50 | 80.0% [67.0%, 88.8%] | 70.0% [56.2%, 80.9%] | 80.0% and 70.0% |
+| Expression Atlas, stopped | 16 | 56.2% [33.2%, 76.9%] | 87.5% [64.0%, 96.5%] | 75.0% and 81.2% |
+
+**Full text does not bring any of the three sources inside the bar.** DrugCentral Indication misses on
+both sides, withholding 76.0% of planted pairs against the 80% wanted and 53.0% of real pairs against
+the 50% allowed. AmyCo withholds 70.0% of its real pairs, 20 points over. Expression Atlas withholds
+more real pairs than planted ones.
+
+**Full text withholds as many real pairs as abstracts do, on the same pairs:** 53 of 100 for
+DrugCentral Indication under both, 35 of 50 for AmyCo under both, and 14 of 16 against 13 for
+Expression Atlas. On planted pairs it withholds more for DrugCentral Indication (76 against 68), the
+same for AmyCo (40), and fewer for Expression Atlas (9 against 12).
+
+**The two disagree on single pairs, in both directions.** Of DrugCentral Indication's real pairs, full
+text finds 10 of the 53 that no abstract mentions, and finds no mention for 10 of the 47 that an
+abstract does mention. For AmyCo it finds 10 of 35 and misses 10 of 15; for Expression Atlas, 2 of 13
+and 3 of 3. Rule F asks for the gene and the disease within 200 characters on one line, in the papers
+the service holds in full text; an abstract counts a mention anywhere in it. Neither contains the
+other.
+
+**What follows.** No rule tried in either round cleans these three sources, and their rows are not
+withheld. Since 13 Oct DrugCentral Indication's rows are exported as paths through a drug and
+Expression Atlas's as observations, which is a change of form and not a pruning result. AmyCo's rows
+stay as the source asserts them.

@@ -6,8 +6,7 @@
  "window": 200,
  "sample_sha256": "b12395ace6dfcb766e1345fca27e8220e6f5865a5fa424e9def0b2afcd623048",
  "states": {
-  "answered": 298,
-  "not asked yet": 34
+  "answered": 332
  },
  "sources": {
   "Expression Atlas": {
@@ -72,20 +71,20 @@
   },
   "DrugCentral Indication": {
    "planted_withheld": {
-    "n": 83,
-    "share": 0.7590361445783133,
-    "low": 0.656902638573166,
-    "high": 0.8382525621101494
+    "n": 100,
+    "share": 0.76,
+    "low": 0.6676766357190022,
+    "high": 0.8330867449211199
    },
    "real_withheld": {
-    "n": 83,
-    "share": 0.5180722891566265,
-    "low": 0.41217757011683503,
-    "high": 0.6223681415587451
+    "n": 100,
+    "share": 0.53,
+    "low": 0.4328885689548006,
+    "high": 0.6248918211190597
    },
    "passes": false,
    "provisional": false,
-   "complete": false,
+   "complete": true,
    "extended": true,
    "asked_up_to": 100,
    "stopped_after": null,
@@ -105,29 +104,29 @@
    },
    "abstracts_on_the_same_pairs": {
     "planted_withheld": {
-     "n": 83,
-     "share": 0.6987951807228916,
-     "low": 0.5931097246619079,
-     "high": 0.7868931037694736
+     "n": 100,
+     "share": 0.68,
+     "low": 0.583373813107172,
+     "high": 0.7633085273359895
     },
     "real_withheld": {
-     "n": 83,
-     "share": 0.5180722891566265,
-     "low": 0.41217757011683503,
-     "high": 0.6223681415587451
+     "n": 100,
+     "share": 0.53,
+     "low": 0.4328885689548006,
+     "high": 0.6248918211190597
     }
    },
    "real_pairs_no_abstract_mentions": {
-    "n": 43,
-    "found_in_full_text": 9
+    "n": 53,
+    "found_in_full_text": 10
    },
    "planted_pairs_no_abstract_mentions": {
-    "n": 58,
+    "n": 68,
     "found_in_full_text": 5
    },
    "real_pairs_an_abstract_mentions": {
-    "n": 40,
-    "not_found_in_full_text": 9
+    "n": 47,
+    "not_found_in_full_text": 10
    }
   },
   "JensenLab Knowledge AmyCo": {

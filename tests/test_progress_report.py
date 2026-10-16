@@ -204,3 +204,12 @@ def test_standards(T):
     assert s["checked"] == {"nodes": g["nodes"], "edges": g["edges"]}
     has(T, f"flags the identifiers of {s['nodes_with_an_error']:,} of {s['checked']['nodes']:,} nodes", f"against Biolink {s['biolink_model']}",
         f"read all {s['checked']['nodes']:,} nodes and {s['checked']['edges']:,}")
+
+
+def test_full_text(T):
+    f = J("pruning2_fulltext_pharos319.json")
+    assert f["states"] == {"answered": 332}
+    d, a = f["sources"]["DrugCentral Indication"], f["sources"]["JensenLab Knowledge AmyCo"]
+    assert d["complete"] and d["extended"] and a["complete"] and a["extended"] is False and not d["passes"] and not a["passes"]
+    has(T, f"on DrugCentral Indication's first {d['planted_withheld']['n']} planted and real pairs it withholds {pc(d['planted_withheld']['share'])} and {pc(d['real_withheld']['share'])}",
+        f"on AmyCo's first {a['planted_withheld']['n']}, {pc(a['planted_withheld']['share'])} and {pc(a['real_withheld']['share'])}")
