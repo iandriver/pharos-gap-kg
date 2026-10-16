@@ -1,0 +1,34 @@
+{
+ "model": "lightgcn_ctx",
+ "cutoff": 2018,
+ "inner_cutoff": 2016,
+ "setting": {
+  "dim": 256,
+  "layers": 3,
+  "lr": 0.001,
+  "l2": 1e-06,
+  "passes": 290
+ },
+ "validation": 0.06643901655847685,
+ "traits": 284,
+ "against": {
+  "B1": {
+   "baseline": 0.03937522563619701,
+   "difference": 0.027063790922279844,
+   "low": 0.01112573925008339,
+   "high": 0.04470373621898388,
+   "half_width": 0.016788998484450243,
+   "traits_where_the_model_is_higher": 180
+  },
+  "B3": {
+   "baseline": 0.07119169798578848,
+   "difference": -0.004752681427311636,
+   "low": -0.013068805915405487,
+   "high": 0.0022556825224015844,
+   "half_width": 0.007662244218903535,
+   "traits_where_the_model_is_higher": 152
+  }
+ },
+ "settings_tried": 44,
+ "read_as": "the setting was chosen on these links, so this comparison flatters the model"
+}
