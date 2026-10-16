@@ -52,7 +52,8 @@ MAX_SWEEPS = 10
 FITTING = ("raw_scores", "terms", "design", "combined", "tie_lists", "mean_ap", "fit_weights", "cross_validated")
 VIEWS = ("full", "low", "neutral", "locus")
 # the comparisons between two scored models that the protocol declares: (model, the one it is read against)
-VERSUS = (("lightgcn_pos", "lightgcn"), ("lightgcn_lin_pos", "lightgcn_pos"), ("lightgcn_pos", "combine_pos"), ("lightgcn_lin_pos", "combine_lin_pos"))
+VERSUS = (("lightgcn_pos", "lightgcn"), ("lightgcn_lin_pos", "lightgcn_pos"), ("lightgcn_pos", "combine_pos"), ("lightgcn_lin_pos", "combine_lin_pos"),
+          ("lightgcn_ctx", "lightgcn"), ("lightgcn_ctx_pruned", "lightgcn_ctx"))      # the last two as "Fitted models" declared on 7 Oct: context or not, pruning or not
 
 
 def implementation(text: str | None = None) -> str:

@@ -213,3 +213,14 @@ def test_full_text(T):
     assert d["complete"] and d["extended"] and a["complete"] and a["extended"] is False and not d["passes"] and not a["passes"]
     has(T, f"on DrugCentral Indication's first {d['planted_withheld']['n']} planted and real pairs it withholds {pc(d['planted_withheld']['share'])} and {pc(d['real_withheld']['share'])}",
         f"on AmyCo's first {a['planted_withheld']['n']}, {pc(a['planted_withheld']['share'])} and {pc(a['real_withheld']['share'])}")
+
+
+def test_the_models_with_the_context(T):
+    v = J("versus_gene_trait_2018.json")["paired"]
+    m3, m4, m2 = J("model_lightgcn_ctx_2018_scored.json"), J("model_lightgcn_ctx_pruned_2018_scored.json"), J("model_lightgcn_2018_scored.json")
+    iv = lambda d: f"{d['difference']:+.4f} [{d['low']:+.4f}, {d['high']:+.4f}]"
+    c, p, b = v["lightgcn_ctx-lightgcn"], v["lightgcn_ctx_pruned-lightgcn_ctx"], m3["paired"]["model-B3"]["full"]
+    assert b["high"] < 0 and m4["paired"]["model-B3"]["full"]["high"] < 0 and c["full"]["low"] > 0 and c["low"]["low"] > 0
+    has(T, f"LightGCN scores {m3['results']['model']['full'][0]:.4f} against {m2['results']['model']['full'][0]:.4f}", f"without them, {iv(c['full'])}",
+        f"and {iv(c['low'])} on links neither lineage nor position explains", f"It stays below the neighbour score, {iv(b)}",
+        f"Leaving out the pruned rows changes it by {iv(p['full'])}")

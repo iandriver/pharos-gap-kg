@@ -137,8 +137,11 @@ Started 6 Oct 2026. No model has been fitted. What exists:
   "Fitted models"). The two on Pharos links alone are scored, and neither beats the neighbour baseline's
   0.0969: matrix factorisation scores 0.0906 (-0.0063 [-0.0155, +0.0025]) and LightGCN 0.0825 (-0.0144
   [-0.0232, -0.0064]). On links that lineage and position do not explain both are worse than it. Counted
-  by locus, matrix factorisation is ahead of it (0.0662 against 0.0512). The two models that join the
-  context on are not fitted yet; [`docs/BREV.md`](docs/BREV.md) is the route to a rented GPU for them.
+  by locus, matrix factorisation is ahead of it (0.0662 against 0.0512). The two that join the context
+  on (interactions, pathways, GO terms, compounds and the disease sources), scored on 16 Oct, do not beat
+  it either: 0.0866 with the withheld rows and 0.0864 without. The context adds to LightGCN (+0.0041
+  [+0.0006, +0.0085]), also on links neither lineage nor position explains, and pruning changes nothing
+  (-0.0002 [-0.0007, +0.0002]).
 - **Trait lineage and gene position as inputs** ([`findings/INPUTS.md`](findings/INPUTS.md)). Added
   after the two models above were scored, and marked so. Four combiners of parameter-free scores with
   fitted weights and two graph models with neighbour and lineage edges, fitted inside the training

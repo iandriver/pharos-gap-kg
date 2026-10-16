@@ -172,3 +172,54 @@ in `findings/INPUTS.md`.
 
 Added 10 Oct 2026: the six have been scored on the test links, once each, and none is shown to beat
 the neighbours baseline. The results are the last section of `findings/INPUTS.md`.
+
+## Added 16 Oct 2026: the two models with the context joined on
+
+`python -m pharos_gap_kg.model` `tune`, `validation`, `freeze`, `final` and `score` for `lightgcn_ctx`
+(M3) and `lightgcn_ctx_pruned` (M4), then `python -m pharos_gap_kg.combine versus pharos319 --cutoff
+2018`. Both were declared in `docs/PROTOCOL.md` ("Fitted models") on 7 Oct, with the settings amended
+on 8 Oct, before either was trained, and so were the two comparisons below. The records are
+`docs/data/model_lightgcn_ctx_2018*.json`, `docs/data/model_lightgcn_ctx_pruned_2018*.json` and
+`docs/data/versus_gene_trait_2018.json`. Each was tuned on all 44 settings inside the training years
+(about 35 hours of computing each, on this laptop's CPU) and scored on the test links once.
+
+On the inner split M3's graph holds 73,796 nodes: the training targets and traits, 4,999 diseases,
+44,400 compounds, 10,101 GO terms and 2,798 pathways, joined by 186,129 interaction edges and the
+memberships. M4 is the same graph without the disease pairs the pruning rules withheld: 160,718
+disease edges where M3 has 165,493. Both chose a vector length of 256, three steps, a learning rate
+of 0.001 and a weight of 1e-6 (M3 at 290 passes, M4 at 300). On validation they scored 0.0664 and
+0.0667, against the neighbours baseline's 0.0712.
+
+On the test links, the score of the mean of five seeds:
+
+| | all links | links neither lineage nor position explains | the same, neutral | by locus |
+|---|---|---|---|---|
+| neighbours (B3) | 0.0969 | 0.0539 | 0.0662 | 0.0512 |
+| M2 LightGCN | 0.0825 | 0.0433 | 0.0530 | 0.0527 |
+| M3 with context | 0.0866 | 0.0466 | 0.0566 | 0.0630 |
+| M4 with context, pruned | 0.0864 | 0.0463 | 0.0563 | 0.0635 |
+
+| paired difference | all links | neither explains | neutral | by locus |
+|---|---|---|---|---|
+| M3 - neighbours | -0.0103 [-0.0194, -0.0023] | -0.0073 [-0.0137, -0.0017] | -0.0096 [-0.0177, -0.0026] | +0.0118 [+0.0037, +0.0188] |
+| M4 - neighbours | -0.0105 [-0.0198, -0.0025] | -0.0076 [-0.0141, -0.0018] | -0.0099 [-0.0182, -0.0027] | +0.0123 [+0.0040, +0.0196] |
+| M3 - M2 | +0.0041 [+0.0006, +0.0085] | +0.0033 [+0.0017, +0.0051] | +0.0037 [+0.0018, +0.0057] | +0.0104 [+0.0066, +0.0149] |
+| M4 - M3 | -0.0002 [-0.0007, +0.0002] | -0.0003 [-0.0006, -0.0001] | -0.0003 [-0.0007, -0.0000] | +0.0005 [-0.0002, +0.0013] |
+
+- **Neither model beats the neighbours baseline.** Both are below it on all links and on the links
+  neither lineage nor position explains, with intervals that exclude zero. Counted by locus both are
+  ahead of it, as matrix factorisation was.
+- **The context adds to LightGCN on every view, including the links neither lineage nor position
+  explains** (+0.0033 [+0.0017, +0.0051]). Position and lineage, joined into LightGCN the same way,
+  did not (`findings/INPUTS.md`). The gain is smaller than the distance to the neighbours baseline.
+- **Pruning the disease sources does not change prediction.** M4 differs from M3 by 0.0002 on all
+  links, with an interval inside 0.0007 of zero. On the links neither explains it is 0.0003 lower,
+  an interval that just excludes zero.
+- Each seed alone scores 0.0842 to 0.0856 for M3 and 0.0844 to 0.0853 for M4. The mean of the five
+  scores above every seed, as it did for matrix factorisation. For LightGCN on links alone it did not
+  (0.0825, against a best seed of 0.0831).
+
+**For the key question.** On links first reported after 2018, a graph model given Pharos's
+interactions, pathways, GO terms, compounds and disease sources predicts better than the same model
+given Pharos's links alone, and worse than a neighbour score with no fitted parameter. The declared
+fitted models are all scored, and none beats that score.
