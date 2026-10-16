@@ -1,0 +1,17 @@
+{
+ "model": "lightgcn_ctx",
+ "cutoff": 2018,
+ "chosen": {
+  "dim": 256,
+  "layers": 3,
+  "lr": 0.001,
+  "l2": 1e-06,
+  "passes": 290
+ },
+ "validation": 0.06643901668314686,
+ "settings": 44,
+ "implementation": "c3ab3c573c1bf107",
+ "chosen_file": "docs/data/model_lightgcn_ctx_2018.json",
+ "chosen_sha256": "b4f1609b3a55a56f9cd7b3a98f1cff0fcd7e2181493bb41002fd5c5505acb0cb",
+ "commit": "3938119b0512c88dee72c81141617023daf84b37"
+}
