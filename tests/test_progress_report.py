@@ -41,7 +41,7 @@ def test_the_graphs(T):
     d = m["drugs"]
     has(T, f"{m['edges']:,} edges and {m['gaps']:,} gaps over {m['nodes']:,} nodes",
         f"{b['links']:,} GWAS links between {b['targets_with_a_link']:,} of Pharos's {b['targets']:,} protein targets and {b['traits']:,} traits, from {b['studies']:,} studies in {b['papers']:,} papers",
-        f"{m['assertions']['edges']:,} assertions of a target with a condition from nine disease sources, and the {m['assertions']['gaps']:,} rows",
+        f"{m['assertions']['edges']:,} assertions of a gene with a condition from nine disease sources, each naming the protein the source's row was for, and the {m['assertions']['gaps']:,} rows",
         f"{m['expression']['edges']:,} expression observations", f"{d['drugs']:,} drugs with {d['drug_target_edges']:,} target and {d['drug_indication_edges']:,} indication edges",
         f"{d['through_the_mechanism_target']:,} of {d['indication_rows']:,} rows", f"{m['target_gaps']['gaps']:,} target-level gaps",
         f"{m['ontology']['same_as_edges']} `biolink:same_as` edges", f"joins {m['traits_that_reach_another_part']['joined']} GWAS traits",
@@ -51,7 +51,7 @@ def test_the_graphs(T):
     cats = [k for k in m["node_categories"] if k.startswith("biolink:")]
     for k in cats + list(m["predicates"]) + [J("graph_pharos319_target_gaps.json")["gap_predicate"]]:
         has(T, f"`{k}`")
-    assert len(cats) == 7 and len(m["predicates"]) == 6 and "seven BioLink categories" in T and "six BioLink predicates" in T
+    assert len(cats) == 8 and len(m["predicates"]) == 8 and "eight BioLink categories" in T and "eight BioLink predicates" in T
     assert m["nodes_not_grounded"] == d["indications_not_grounded"] + m["node_categories"]["pharosgapkg:KnowledgeGap"], "the only nodes not grounded are those indications and the kinds of gap"
 
 
@@ -234,24 +234,39 @@ def test_the_models_with_the_context(T):
 
 
 def test_ingest_subgraph_and_biolink_constraints(T):
-    g, sc, i = J("biolink_checks_pharos319.json"), J("subgraph_check_pharos319.json"), J("ingest_pharos319.json")
-    x = J("ingest/exported_pharos319.json")
-    p = g["edges_by_problem"]
-    fail = g["edges"] - g["edges_of_kinds_that_pass"]
-    has(T, f"against those {fail:,} of the {g['edges']:,} edges fail, for four causes", f"{g['edges_of_kinds_that_pass']:,} of the {g['edges']:,} edges pass",
+    g0, g, sc, i = J("biolink_checks_pharos319_before_fix.json"), J("biolink_checks_pharos319.json"), J("subgraph_check_pharos319.json"), J("ingest_pharos319.json")
+    x, m, r = J("ingest/exported_pharos319.json"), J("graph_pharos319.json"), J("remodel_check_pharos319.json")
+    p = g0["edges_by_problem"]
+    has(T, f"before it, {g0['edges'] - g0['edges_of_kinds_that_pass']:,} of {g0['edges']:,} edges failed", f"{g0['edges_of_kinds_that_pass']:,} of the {g0['edges']:,} edges passed on 19 Oct",
         f"The {p['association category ' + chr(39) + 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' + chr(39) + ' is not a Biolink 4.4.3 class']:,} GWAS links and the "
         f"{p['biolink:treats is abstract, a mixin or deprecated']:,} drug indications",
         f"{p[next(k for k in p if 'domain is biolink:Gene' in k)]:,} disease-source assertions",
-        f"{p['biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier']:,} expression observations carry")
+        f"{p['biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier']:,} expression observations carried")
     assert len(p) == 5 and p["biolink:treats is abstract, a mixin or deprecated"] == p[next(k for k in p if "ChemicalToDisease" in k)], "four causes: the indications fail two checks"
-    q = [m for m, v in i["models"].items() if v["qualification"]["qualifies"]]
-    assert len(q) == 3 and all(m.startswith("anthropic/claude-") for m in q)
+    # after the remodel every kind of edge passes, in the merged graph and in the two others
+    ctx, dated = J("biolink_checks_pharos319_context_disease.json"), J("biolink_checks_pharos319_asof2018.json")
+    assert g["edges"] == g["edges_of_kinds_that_pass"] == m["edges"] and not g["edges_by_problem"]
+    assert ctx["edges"] == ctx["edges_of_kinds_that_pass"] and dated["edges"] == dated["edges_of_kinds_that_pass"]
+    has(T, f"Against those every one of the {g['edges']:,} edges passes", f"All {g['edges']:,} edges now pass, as do the {ctx['edges']:,} of the disease",
+        f"the {dated['edges']:,} of the dated graph of 2018")
+    acc = sum(c["accepted"] for c in g["graph_mappings_through_the_validator"].values())
+    assert acc == 5 and all(all(q.startswith("8_identifiers") for q in c["problems"]) for c in g["graph_mappings_through_the_validator"].values())
+    has(T, f"now pass the validator on {acc} of the 9 tables")
+    assert r["every_table_equal_but_for_ids"] and r["every_answer_equal_but_for_ids"] and len(r["answers"]) == 14
+    t = r["tables"]
+    assert {k for k, v in t.items() if v.get("values_that_differ")} == {"assertions", "drug_indications"}
+    has(T, f"fourteen typed answers", f"apart from the ids of the {t['assertions']['values_that_differ']['edge']:,} assertion rows and "
+        f"{t['drug_indications']['values_that_differ']['edge']:,} indication edges that moved")
+    gn = m["genes"]
+    has(T, f"{gn['has_gene_product_edges']:,} edges make each protein the product of its gene ({gn['gene_nodes']:,} genes); {m['assertions']['on_a_protein_with_no_gene']} assertions")
+    q = [k for k, v in i["models"].items() if v["qualification"]["qualifies"]]
+    assert len(q) == 3 and all(k.startswith("anthropic/claude-") for k in q)
     has(T, "Three Claude models qualified on the nine tables the graph already maps")
     assert sum(e["exported"] for e in x["views"].values()) == 3 and not x["joined_to_the_graph"]
     has(T, "three new tables are exported apart, not yet joined", "Joining the three new tables it mapped")
     assert sum(c["accepted"] for c in i["control"].values()) == 1 and len(i["control"]) == 9
-    has(T, "accepts 1 of the 9 that were scored")
-    assert sorted({i["models"][m]["qualification"]["accepted_cards"] for m in q}) == [8, 9]
+    has(T, "accepted 1 of the 9 that were scored")
+    assert sorted({i["models"][k]["qualification"]["accepted_cards"] for k in q}) == [8, 9]
     has(T, "accepted on 8 or 9")
     ev = sc["every_row"]["counts"]
     assert sc["n_differences"] == 0

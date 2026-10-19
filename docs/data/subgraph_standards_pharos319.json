@@ -4,8 +4,8 @@
  "biolink_model": "4.4.3",
  "bmt": "1.4.8",
  "checked": {
-  "nodes": 93,
-  "edges": 116
+  "nodes": 126,
+  "edges": 149
  },
  "seconds": 0.1,
  "checks": [
@@ -24,7 +24,7 @@
    "type": "INVALID_EDGE_PROPERTY_VALUE",
    "message": "Edge property 'object' has a value <value> with a CURIE prefix 'pharosgapkg' that is not represented in Biolink Model JSON-LD context",
    "records": 7,
-   "example": "Edge property 'object' has a value 'pharosgapkg:indication_a2a21aa52365' with a CURIE prefix 'pharosgapkg' that is not represented in Biolink Model JSON-LD context",
+   "example": "Edge property 'object' has a value 'pharosgapkg:indication_89c39feb5036' with a CURIE prefix 'pharosgapkg' that is not represented in Biolink Model JSON-LD context",
    "prefix": "pharosgapkg"
   },
   {

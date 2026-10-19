@@ -9,7 +9,8 @@
  "edges": 317634,
  "gaps": 7248,
  "merged": 0,
- "nodes": 30829,
+ "nodes": 30707,
+ "rows_on_a_protein_with_no_gene": 65,
  "edges_by_source": {
   "Expression Atlas": 159748,
   "DisGeNET": 82453,
@@ -38,13 +39,14 @@
  },
  "predicates": {
   "biolink:correlated_with": 159748,
-  "biolink:gene_associated_with_condition": 154363,
-  "biolink:target_for": 3523
+  "biolink:gene_associated_with_condition": 154359,
+  "biolink:target_for": 3512,
+  "biolink:associated_with": 15
  },
  "conformance": "10 of 10 checks passed",
  "files": {
-  "nodes": "de93366a7d089595864c67f6b5c06c8a4940c4798f94ea7143122ed00b58790b",
-  "edges": "cf55f545c96dd23b33f79d3a46c89164fd5d3133f1f45e869e623f42e0d59997",
-  "gaps": "f58f7845872947ab0204e38c468384b3814f3df3ee127159ba6e4bcd31a9cc38"
+  "nodes": "098de41cf3114bd6349208f744c1be3b85a275793871cf7b92b7072a815e65e9",
+  "edges": "adaca2b8a93c873e2a7e1f8fbcecfdf6f6f02ff482eeede55feaa7527fc1723d",
+  "gaps": "4dd64690484bfd4f1a9fb77a4352998de5e08149e54b7a7d16649c0eb964b186"
  }
 }

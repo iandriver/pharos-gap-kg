@@ -56,3 +56,13 @@ makes `biolink:treats` a mixin. The 154,363 disease-source assertions use
 159,846 expression observations carry `subject_direction_qualifier`, which
 `biolink:GeneToDiseaseAssociation` does not carry. kgx 2.7.0 checks that a predicate and a node
 category exist, and none of these.
+
+Added 19 Oct 2026, after the remodel (`findings/GRAPH.md`). Checks 2 to 6 pass on every kind of edge:
+the merged graph's 640,321 edges of 19 kinds, the disease sources' graph's 317,634 of 5 and the dated
+graph of 2018's 99,435 of 4 (`docs/data/biolink_checks_pharos319.json` and its two siblings; the
+figures before the remodel are in `docs/data/biolink_checks_pharos319_before_fix.json`). The graph's
+own mappings pass the ingest validator on 5 of the 9 scored cards; the other four fail check 8 on
+identifiers as the release gives them: DOIDs the release's own DOID table does not hold, AmyCo's prefix,
+and GO, Orphanet and PATO traits under one category in the form the validator reads. The reference
+validator, run again, reads 59,071 nodes and 640,321 edges and flags what it flagged before, 1,042
+nodes by its count, for the same four causes; the gene nodes raise nothing.

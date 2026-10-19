@@ -102,3 +102,17 @@ letter for letter, the name of a condition, and now needs an id.
 - The other parts carry no dates. An answer as of an earlier year dates the GWAS links only.
 - The graph as of 2018, the disease-source export and the target-gap export are unchanged. So are the
   pruning tests, the fitted models and every scored split.
+
+Added 19 Oct 2026, the remodel for Biolink 4.4.3 (`docs/PROTOCOL.md`, amendments of 19 Oct;
+`findings/STANDARDS.md`). The merged graph is now 640,321 edges and 30,484 gaps over 59,071 nodes. The
+nine disease sources' 154,363 assertions and 7,248 withheld rows run from the gene (`NCBIGene`) of the
+Pharos protein the row names, and name that protein as `pharosgapkg:gene_product`; 20,153 edges of a
+new part, `genes`, make each protein the product of its gene (20,011 genes; 259 proteins have no gene
+in the release). The 4 assertions on a protein with no gene stay on it, under `biolink:associated_with`.
+Indications are `biolink:applied_to_treat`; the GWAS links are `biolink:Association`; expression
+observations are `biolink:CorrelatedGeneToDiseaseAssociation`, with their direction as the property
+`pharosgapkg:expression_direction`. The ids of the assertions, their gaps and the indications changed;
+those of the links, expression observations, drug targets and target-level gaps did not. Compared with
+the bundle of commit 054853a, every table the questions read is equal row for row but for those ids and
+a new `gene` column, the census of disease gaps is unchanged, and fourteen typed answers are the same
+but for edge ids (`docs/data/remodel_check_pharos319.json`).

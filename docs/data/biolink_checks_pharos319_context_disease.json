@@ -1,0 +1,58 @@
+{
+ "release": "pharos319",
+ "graph": "pharos319_context_disease",
+ "biolink": "4.4.3",
+ "checks": "2 to 6 of docs/PROTOCOL.md, Ingest",
+ "edges": 317634,
+ "kinds": 5,
+ "edges_of_kinds_that_pass": 317634,
+ "edges_by_problem": {},
+ "by_kind": [
+  {
+   "predicate": "biolink:correlated_with",
+   "category": "biolink:CorrelatedGeneToDiseaseAssociation",
+   "subject_category": "biolink:Gene",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 159698,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:gene_associated_with_condition",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Gene",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 154359,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:target_for",
+   "category": "biolink:DruggableGeneToDiseaseAssociation",
+   "subject_category": "biolink:Gene",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 3512,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:correlated_with",
+   "category": "biolink:CorrelatedGeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 50,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:associated_with",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 15,
+   "problems": []
+  }
+ ],
+ "graph_mappings_through_the_validator": null
+}

@@ -62,6 +62,7 @@ def slice_of(y: dict) -> dict:
         if "related to" in line:
             predicates[f"biolink:{snake(n)}"] = {
                 "is_a": f"biolink:{snake(s['is_a'])}" if s.get("is_a") else None,
+                "mixins": [f"biolink:{snake(m)}" for m in s.get("mixins") or []],
                 "domain": rng(s.get("domain")), "range": rng(s.get("range")),
                 "mixin": bool(s.get("mixin")), "abstract": bool(s.get("abstract")), "deprecated": bool(s.get("deprecated")),
                 "symmetric": bool(s.get("symmetric")), "inverse": f"biolink:{snake(s['inverse'])}" if s.get("inverse") else None,

@@ -7,11 +7,11 @@
     "APOE",
     "Alzheimer disease"
    ],
-   "nodes": 3,
-   "edges": 10,
+   "nodes": 4,
+   "edges": 11,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 10
+   "rows_compared": 11
   },
   {
    "question": "why",
@@ -20,22 +20,22 @@
     "Alzheimer disease"
    ],
    "as_of": 2010,
-   "nodes": 3,
-   "edges": 10,
+   "nodes": 4,
+   "edges": 11,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 10
+   "rows_compared": 11
   },
   {
    "question": "known",
    "args": [
     "PCSK9"
    ],
-   "nodes": 29,
-   "edges": 35,
+   "nodes": 30,
+   "edges": 36,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 35
+   "rows_compared": 36
   },
   {
    "question": "connect",
@@ -43,22 +43,22 @@
     "LDLR",
     "PCSK9"
    ],
-   "nodes": 8,
-   "edges": 11,
+   "nodes": 10,
+   "edges": 13,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 11
+   "rows_compared": 13
   },
   {
    "question": "predict",
    "args": [
     "Parkinson disease"
    ],
-   "nodes": 11,
-   "edges": 3,
+   "nodes": 21,
+   "edges": 13,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 3
+   "rows_compared": 13
   },
   {
    "question": "whats_new",
@@ -66,43 +66,43 @@
     "type 2 diabetes mellitus",
     2020
    ],
-   "nodes": 11,
-   "edges": 10,
+   "nodes": 21,
+   "edges": 20,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 10
+   "rows_compared": 20
   },
   {
    "question": "gaps",
    "args": [],
    "disease": "Parkinson disease",
-   "nodes": 11,
-   "edges": 20,
+   "nodes": 19,
+   "edges": 28,
    "gaps": 4,
    "cited_ids_not_found": [],
-   "rows_compared": 24
+   "rows_compared": 32
   },
   {
    "question": "gaps",
    "args": [
     "POLR3E"
    ],
-   "nodes": 2,
-   "edges": 0,
+   "nodes": 3,
+   "edges": 1,
    "gaps": 1,
    "cited_ids_not_found": [],
-   "rows_compared": 1
+   "rows_compared": 2
   },
   {
    "question": "known",
    "args": [
     "atorvastatin"
    ],
-   "nodes": 12,
-   "edges": 11,
+   "nodes": 13,
+   "edges": 12,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 11
+   "rows_compared": 12
   },
   {
    "question": "why",
@@ -110,19 +110,19 @@
     "HMGCR",
     "hypercholesterolemia"
    ],
-   "nodes": 12,
-   "edges": 18,
+   "nodes": 13,
+   "edges": 19,
    "gaps": 0,
    "cited_ids_not_found": [],
-   "rows_compared": 18
+   "rows_compared": 19
   }
  ],
- "rows_compared": 133,
+ "rows_compared": 169,
  "every_row": {
   "counts": {
    "edges": {
-    "here": 619774,
-    "in_export": 620168,
+    "here": 639927,
+    "in_export": 640321,
     "same_as_not_in_bundle": 394,
     "differ_subject": 0,
     "differ_predicate": 0,

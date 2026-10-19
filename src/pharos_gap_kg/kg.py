@@ -3,8 +3,11 @@
 Five parts, each exported under its own knowledge source and joined on shared node ids:
 
     links         every dated GWAS link of the release, with its first year, studies and papers
-    assertions    the nine disease sources that assert a gene with a condition. A row a pruning rule
-                  withheld is a gap that names the rule, what was counted and what restores it.
+    assertions    the nine disease sources that assert a gene with a condition. The subject is the gene
+                  of the Pharos protein the row names, which the edge keeps as its gene product. A row a
+                  pruning rule withheld is a gap that names the rule, what was counted and what restores it.
+    genes         a gene has the protein as its product: the join between the assertions, on genes, and
+                  the rest of the graph, on proteins
     expression    Expression Atlas: a gene's expression is higher or lower in a condition, with the
                   fold change, the smallest change the release shows, and the p-value. An
                   observation of a difference, not an assertion that the gene is involved.
@@ -41,7 +44,10 @@ REMODELLED = (EXPRESSION, INDICATION)
 FLOOR = 0.999                     # the release holds no fold change below 1.0 in size, at three decimals
 AGG = "aggregator_knowledge_source"
 EVIDENCE, ROW, P = f"{PREFIX}:source_evidence", f"{PREFIX}:source_row", f"{PREFIX}:p_value"
-DIRECTION = "subject_direction_qualifier"
+# Biolink 4.4.3 has no gene-to-disease class that carries a subject direction, so the direction of an
+# expression observation is a property; it holds the place the qualifier held in the edge's identity.
+DIRECTION = f"{PREFIX}:expression_direction"
+GENE_PRODUCT, GENE_PRODUCT_TYPE = ctxgraph.GENE_PRODUCT, "gene_product"
 ACTION, MOA, ACTIVITY, ACT_SOURCE = (f"{PREFIX}:{c}" for c in ("action_type", "mechanism_of_action", "activity", "activity_source"))
 DRUG_TARGET, DRUG_INDICATION = "drug_target", "drug_indication"
 CONDITION = "biolink:DiseaseOrPhenotypicFeature"
@@ -73,17 +79,17 @@ def assertions(rows: pd.DataFrame, names: dict, evidence: dict) -> tuple[pd.Data
         raise SystemExit(f"REFUSED: {sorted(set(rows.type) & set(REMODELLED))} are not assertions of a gene with a condition here")
 
     def resolver(label):
-        return label, ("biolink:Protein" if label.startswith("UniProtKB:") else "biolink:Disease"), True, names.get(label, "")
+        return label, ctxgraph.node_category(label), True, names.get(label, "")
 
     def extras(row, kind):
         if kind == "edge":
-            return {AGG: graph.AGGREGATOR, EVIDENCE: evidence.get((row["subject"], row["object"], row["type"]), "")}
+            return {AGG: graph.AGGREGATOR, GENE_PRODUCT: row["gene_product"], EVIDENCE: evidence.get((row["gene_product"], row["object"], row["type"]), "")}
         return ctxgraph.gap_extras(row)
 
     N, E, G, merged = [], [], [], 0
     for ks in sorted({ctxgraph.SOURCES[s][0] for s in set(rows.type)}):
         mine = rows[rows.type.map(lambda s: ctxgraph.SOURCES[s][0]) == ks]
-        ex = Exporter(mapping=ctxgraph.mapping(ks), resolver=resolver, extra_edge_columns=[AGG, EVIDENCE], extra_gap_columns=ctxgraph.EXTRA_GAP, extras=extras)
+        ex = Exporter(mapping=ctxgraph.mapping(ks), resolver=resolver, extra_edge_columns=[AGG, GENE_PRODUCT, EVIDENCE], extra_gap_columns=ctxgraph.EXTRA_GAP, extras=extras)
         for row in mine.to_dict("records"):
             if ex.add(row) == "gap" and not str(row["object"]).startswith(ctxgraph.NOT_A_DISEASE):
                 ex.node(row["object"], "biolink:Disease", names.get(row["object"], ""), True)     # a gap runs to the kind of gap; the condition it withheld is a node too
@@ -97,7 +103,7 @@ def assertions(rows: pd.DataFrame, names: dict, evidence: dict) -> tuple[pd.Data
 
 def expression_mapping() -> Mapping:
     m = Mapping(prefix=PREFIX, knowledge_source="infores:expression-atlas", edge_identity_columns=[DIRECTION, ROW])
-    m.rules[EXPRESSION] = Rule(predicate="biolink:correlated_with", category="biolink:GeneToDiseaseAssociation", knowledge_level="statistical_association",
+    m.rules[EXPRESSION] = Rule(predicate="biolink:correlated_with", category="biolink:CorrelatedGeneToDiseaseAssociation", knowledge_level="statistical_association",
                                agent_type="data_analysis_pipeline", subject_aspect_qualifier="expression")
     problems = m.validate()
     if problems:
@@ -127,7 +133,8 @@ def drug_mapping() -> Mapping:
     m = Mapping(prefix=PREFIX, knowledge_source="infores:drugcentral")
     m.rules[DRUG_TARGET] = Rule(predicate="biolink:directly_physically_interacts_with", category="biolink:ChemicalGeneInteractionAssociation",
                                 knowledge_level="knowledge_assertion", agent_type="manual_agent")
-    m.rules[DRUG_INDICATION] = Rule(predicate="biolink:treats", category="biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation",
+    # 4.4.3 makes `treats` a mixin; `applied_to_treat` claims no more than a DrugCentral indication does
+    m.rules[DRUG_INDICATION] = Rule(predicate="biolink:applied_to_treat", category="biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation",
                                     knowledge_level="knowledge_assertion", agent_type="manual_agent")
     problems = m.validate()
     if problems:
@@ -205,6 +212,28 @@ def drug_frames(drugs: pd.DataFrame, dt: pd.DataFrame, di: pd.DataFrame, names: 
         ex.add({"type": DRUG_TARGET, "subject": r.drug_id, "object": r.target, "action": r.action, "moa": r.moa, "activity": r.activity, "source": r.source})
     for r in di.itertuples(index=False):
         ex.add({"type": DRUG_INDICATION, "subject": r.drug_id, "object": r.object})
+    n, e, g = ex.frames()
+    return n, e, g, ex.merged
+
+
+# ---- genes: the gene of each protein, which the assertions name -----------------------------------
+
+def gene_mapping() -> Mapping:
+    m = Mapping(prefix=PREFIX, knowledge_source=graph.AGGREGATOR)
+    # Pharos's protein table gives the gene from UniProt, or from HGNC where UniProt gives none, and does not say which
+    m.rules[GENE_PRODUCT_TYPE] = Rule(predicate="biolink:has_gene_product", category="biolink:GeneToGeneProductRelationship",
+                                      knowledge_level="knowledge_assertion", agent_type="not_provided")
+    problems = m.validate()
+    if problems:
+        raise SystemExit("REFUSED mapping: " + "; ".join(problems))
+    return m
+
+
+def gene_frames(gene_of: dict, names: dict) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int]:
+    """gene_of: protein -> its gene. One edge per protein, from its gene."""
+    ex = Exporter(mapping=gene_mapping(), resolver=lambda label: (label, ctxgraph.node_category(label), True, names.get(label, "")))
+    for protein, gene in sorted(gene_of.items()):
+        ex.add({"type": GENE_PRODUCT_TYPE, "subject": gene, "object": protein})
     n, e, g = ex.frames()
     return n, e, g, ex.merged
 
@@ -306,6 +335,8 @@ def build(release: str) -> dict:
     names.update({k: v[3] for k, v in known.items()})          # a trait or target named by the dated links keeps that name
     evt = evidence_text(pd.read_parquet(paths.context(release) / "disease_evidence.parquet").query("source not in @REMODELLED"))
     an, ae, ag, amerged = assertions(nine, names, evt)
+    gene_of, _ = ctxgraph.genes(release)
+    gn, ge, gg, gmerged = gene_frames(gene_of, names)
     # expression, drugs, target gaps
     xn, xe, xg, xmerged = expression(T["expression"], names)
     drugs, dt, di, counts = drug_tables(T["activity"], T["indications"])
@@ -318,10 +349,11 @@ def build(release: str) -> dict:
     traits = sorted(set(ev.object))
     pairs, undeclared = current_terms(traits, terms)
     on, oe, og = ontology_frames(pairs, names, terms)
-    parts = {"links": links, "assertions": (an, ae, ag), "expression": (xn, xe, xg), "drugs": (dn, de, dg), "ontology": (on, oe, og), "target_gaps": (tn, te, tg)}
+    parts = {"links": links, "assertions": (an, ae, ag), "genes": (gn, ge, gg), "expression": (xn, xe, xg), "drugs": (dn, de, dg), "ontology": (on, oe, og),
+             "target_gaps": (tn, te, tg)}
     nodes, edges, gaps = merge(parts)
-    n_rows = len(ev) + len(nine) + len(T["expression"]) + len(dt) + len(di) + len(gap_rows)
-    merged = ex.merged + amerged + xmerged + dmerged + tmerged
+    n_rows = len(ev) + len(nine) + len(gene_of) + len(T["expression"]) + len(dt) + len(di) + len(gap_rows)
+    merged = ex.merged + amerged + gmerged + xmerged + dmerged + tmerged
     rep = conformance.check(nodes, edges.drop(columns=[f"{PREFIX}:part"]), gaps.drop(columns=[f"{PREFIX}:part"]),
                             Mapping(prefix=PREFIX, knowledge_source=graph.AGGREGATOR), n_input_rows=n_rows, n_merged=merged)
     if not rep.passed or rep.n_skipped:
@@ -330,7 +362,9 @@ def build(release: str) -> dict:
     out = graph_dir(release)
     files = graph.write(out, nodes, edges, gaps)
     lo = lambda p: set(edges[edges[part] == p].object) | set(edges[edges[part] == p].subject)
-    conditions = set(nodes[~nodes.category.isin(["biolink:Protein", "biolink:Drug"])].id)
+    conditions = set(nodes[~nodes.category.isin(["biolink:Protein", "biolink:Drug", "biolink:Gene"])].id)
+    # a target is in the assertions through the protein the gene's edge names
+    product = lambda p: set(edges[edges[part] == p][GENE_PRODUCT]) | set(gaps[gaps[part] == p][GENE_PRODUCT]) if GENE_PRODUCT in edges else set()
     elsewhere = (lo("assertions") | lo("expression") | lo("drugs")) & conditions
     now = dict(pairs)
     by_id = {t for t in traits if t in elsewhere}
@@ -347,7 +381,11 @@ def build(release: str) -> dict:
            "edge_categories": {k: int(v) for k, v in edges.category.value_counts().items()},
            "knowledge_sources": {k: int(v) for k, v in edges.primary_knowledge_source.value_counts().items()},
            "links": {"rows": len(ev), "first_year": int(ev.first_year.min()), "latest_year": int(ev.first_year.max())},
-           "assertions": {"rows": len(nine), "edges": len(ae), "gaps": len(ag), "edges_by_source": {k: int(v) for k, v in ae[f"{PREFIX}:source_edge_type"].value_counts().items()},
+           "genes": {"gene_nodes": int((nodes.category == "biolink:Gene").sum()), "has_gene_product_edges": len(ge),
+                     "proteins_with_no_gene": int((nodes.category == "biolink:Protein").sum()) - len(ge)},
+           "assertions": {"rows": len(nine), "edges": len(ae), "gaps": len(ag),
+                          "on_a_protein_with_no_gene": int((~ae.subject.str.startswith("NCBIGene:")).sum() + (~ag.subject.str.startswith("NCBIGene:")).sum()),
+                          "edges_by_source": {k: int(v) for k, v in ae[f"{PREFIX}:source_edge_type"].value_counts().items()},
                           "gaps_by_source": {k: int(v) for k, v in ag[f"{PREFIX}:source_edge_type"].value_counts().items()},
                           "gaps_by_rule": {k: int(v) for k, v in ag[f"{PREFIX}:rule"].value_counts().items()},
                           "edges_with_the_source's_own_evidence": int((ae[EVIDENCE] != "").sum())},
@@ -360,7 +398,8 @@ def build(release: str) -> dict:
            "conditions": len(conditions),
            "traits_that_reach_another_part": {"under_their_own_id": len(by_id), "through_their_current_term": len(by_term), "by_a_cross_reference_only_and_not_joined": len(by_xref),
                                               "joined": len(by_id) + len(by_term)},
-           "targets_in_more_than_one_part": int(sum(len({p for p in parts if t in sets[p]}) > 1 for sets in [{p: lo(p) | set(gaps[gaps[part] == p].subject) for p in parts}]
+           "targets_in_more_than_one_part": int(sum(len({p for p in sets if t in sets[p]}) > 1 for sets in [{p: lo(p) | set(gaps[gaps[part] == p].subject) | product(p)
+                                                                                                             for p in parts if p != "genes"}]
                                                     for t in set(nodes[nodes.category == "biolink:Protein"].id))),
            "conformance": "10 of 10 checks passed", "files": {k: graph.file_sha(p) for k, p in files.items()}}
     (out / "graph.json").write_text(json.dumps(man, indent=1) + "\n")
@@ -376,16 +415,25 @@ def _selftest() -> int:
         ok &= bool(cond)
         print(f"  {'PASS' if cond else 'FAIL'}  {name}")
 
-    names = {"UniProtKB:A": "AAA", "UniProtKB:B": "BBB", "MONDO:1": "a disease", "MONDO:2": "another"}
-    # assertions carry the source's own evidence; a withheld row is a gap
+    names = {"UniProtKB:A": "AAA", "UniProtKB:B": "BBB", "NCBIGene:1": "AAA", "NCBIGene:2": "BBB", "MONDO:1": "a disease", "MONDO:2": "another"}
+    gene_of = {"UniProtKB:A": "NCBIGene:1", "UniProtKB:B": "NCBIGene:2"}
+    # assertions carry the source's own evidence; a withheld row is a gap; the subject is the gene, the edge names the protein
     rows = pd.DataFrame([("UniProtKB:A", "MONDO:1", "DisGeNET", False, None, None, None, None), ("UniProtKB:A", "MONDO:1", "CTD", False, None, None, None, None),
-                         ("UniProtKB:B", "MONDO:2", "CTD", True, "literature_lift", 3, 1.2, 2.6)], columns=["subject", "object", "type", "withheld", "rules", "papers", "lift", "cut"])
+                         ("UniProtKB:B", "MONDO:2", "CTD", True, "literature_lift", 3, 1.2, 2.6)], columns=["gene_product", "object", "type", "withheld", "rules", "papers", "lift", "cut"])
+    rows["subject"] = rows.gene_product.map(gene_of)
     ev = pd.DataFrame([("UniProtKB:A", "MONDO:1", "DisGeNET", "score", 0.3), ("UniProtKB:A", "MONDO:1", "DisGeNET", "pubmed_ids", 4.0), ("UniProtKB:A", "MONDO:1", "CTD", "therapeutic", 0.0)],
                       columns=["target", "disease", "source", "field", "value"])
     an, ae, ag, _ = assertions(rows, names, evidence_text(ev))
     ck("the condition a withheld row names is a node, though the gap's edge runs to the kind of gap", "MONDO:2" in set(an.id) and "MONDO:2" not in set(ag.object))
     ck("an assertion carries the source's own evidence, and a withheld row is a gap with what was counted",
        sorted(ae[EVIDENCE]) == ["pubmed_ids=4; score=0.3", "therapeutic=0"] and len(ag) == 1 and ag[ctxgraph.LIFT].tolist() == ["1.2"])
+    ck("an assertion runs from the gene, a Biolink Gene, and names the protein; so does a withheld row's gap",
+       set(ae.subject) == {"NCBIGene:1"} and set(ae[GENE_PRODUCT]) == {"UniProtKB:A"} and an.set_index("id").category["NCBIGene:1"] == "biolink:Gene"
+       and ag.subject.tolist() == ["NCBIGene:2"] and ag[GENE_PRODUCT].tolist() == ["UniProtKB:B"])
+    gn, ge, gg, gm = gene_frames(gene_of, names)
+    ck("each protein is the product of its gene", sorted(zip(ge.subject, ge.predicate, ge.object)) == [("NCBIGene:1", "biolink:has_gene_product", "UniProtKB:A"),
+                                                                                                    ("NCBIGene:2", "biolink:has_gene_product", "UniProtKB:B")]
+       and set(ge.category) == {"biolink:GeneToGeneProductRelationship"} and not len(gg))
     try:
         assertions(rows.assign(type=EXPRESSION), names, {})
         ck("a remodelled source is refused as an assertion", False)
@@ -397,6 +445,7 @@ def _selftest() -> int:
     xn, xe, xg, xm = expression(x, names)
     ck("an expression row is an observation with a direction, a size above its floor and a p-value",
        len(xe) == 3 and not len(xg) and xe[DIRECTION].tolist() == ["increased", "decreased", "increased"] and set(xe.subject_aspect_qualifier) == {"expression"}
+       and set(xe.category) == {"biolink:CorrelatedGeneToDiseaseAssociation"}
        and xe[f"{PREFIX}:effect_size"].astype(float).tolist() == [1.0, -2.5, 3.0] and set(xe[f"{PREFIX}:detection_floor"].astype(float)) == {FLOOR} and set(xe[f"{PREFIX}:detected"]) == {"true"}
        and xe[P].astype(float).tolist() == [0.04, 0.001, 0.01])
     ck("two rows of one pair and condition are two edges, told apart by the release's row", xe.id.is_unique and xe[f"{PREFIX}:context"].tolist()[:2] == ["active disease"] * 2)
@@ -414,9 +463,9 @@ def _selftest() -> int:
     ck("an indication with no identifier is one node under the local prefix, however its name is spaced or cased",
        c["indications"] == 2 and c["indications_not_grounded"] == 1 and di[~di.grounded].object.tolist() == [indication_id("Pain after surgery")] and indication_id("pain  after SURGERY") == indication_id("Pain after surgery"))
     dn, de, dg, dm = drug_frames(drugs, dt, di, names)
-    ck("a drug is a node with its ChEMBL id; it acts on targets and treats indications",
+    ck("a drug is a node with its ChEMBL id; it acts on targets and is applied to treat indications",
        dn.set_index("id").loc["DrugCentral:7"].tolist()[:2] == ["biolink:Drug", "druga"] and dn.set_index("id").xref["DrugCentral:7"] == "CHEMBL.COMPOUND:CHEMBL1"
-       and de.predicate.value_counts().to_dict() == {"biolink:directly_physically_interacts_with": 3, "biolink:treats": 2}
+       and de.predicate.value_counts().to_dict() == {"biolink:directly_physically_interacts_with": 3, "biolink:applied_to_treat": 2}
        and de[de.predicate == "biolink:directly_physically_interacts_with"][MOA].tolist() == ["true", "false", "true"])
     ck("the indication with no identifier is flagged as not grounded", dn.set_index("id").id_grounded[indication_id("Pain after surgery")] == "false")
     try:
@@ -455,12 +504,12 @@ name: an attribute
        pairs == [("EFO:1", "MONDO:1")] and undeclared == {"OBA": 1} and oe.predicate.tolist() == ["biolink:same_as"] and (oe.subject[0], oe.object[0]) == ("EFO:1", "MONDO:1")
        and set(oe[f"{PREFIX}:source_edge_type"]) == {""} and on.set_index("id").name.to_dict() == {"EFO:1": "old name", "MONDO:1": "a disease"})
     # the merged graph passes conformance, every row accounted for, one node per id
-    nodes, edges, gaps = merge({"assertions": (an, ae, ag), "expression": (xn, xe, xg), "drugs": (dn, de, dg), "ontology": (on, oe, og)})
+    nodes, edges, gaps = merge({"assertions": (an, ae, ag), "genes": (gn, ge, gg), "expression": (xn, xe, xg), "drugs": (dn, de, dg), "ontology": (on, oe, og)})
     part = f"{PREFIX}:part"
     rep = conformance.check(nodes, edges.drop(columns=[part]), gaps.drop(columns=[part]), Mapping(prefix=PREFIX, knowledge_source=graph.AGGREGATOR),
-                            n_input_rows=len(rows) + len(x) + len(dt) + len(di), n_merged=0)
+                            n_input_rows=len(rows) + len(gene_of) + len(x) + len(dt) + len(di), n_merged=0)
     ck("the parts join on shared ids into one graph that passes all ten checks", rep.passed and not rep.n_skipped and nodes.id.is_unique and edges.id.is_unique
-       and set(edges[part]) == {"assertions", "expression", "drugs", "ontology"} and nodes.set_index("id").name["MONDO:1"] == "a disease")
+       and set(edges[part]) == {"assertions", "genes", "expression", "drugs", "ontology"} and nodes.set_index("id").name["MONDO:1"] == "a disease")
     ck("a whole-number column stays a whole number", edges[edges[part] == "expression"][ROW].tolist() == ["11", "12", "13"])
     return 0 if ok else 1
 

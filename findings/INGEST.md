@@ -109,3 +109,10 @@ had made gaps; Haiku's `tiga` card, refused for that alone, was set aside and as
   numbers its rows name. A person reads each accepted mapping before it joins.
 - That the knowledge sources exist: the infores registry is not checked offline.
 - How the models do on another release or another source.
+
+Added 19 Oct 2026, after the remodel of the graph for Biolink 4.4.3 (`findings/GRAPH.md`). The figures
+for the whole graph above are of the graph before the remodel, and their record is now
+`docs/data/biolink_checks_pharos319_before_fix.json`; after it, all 640,321 edges pass
+(`findings/STANDARDS.md`). The models were compared with the hand mappings as they were before the
+remodel, so regenerating that comparison needs commit 054853a. The graph's own mappings, now on genes,
+pass the validator on 5 of the 9 scored cards.

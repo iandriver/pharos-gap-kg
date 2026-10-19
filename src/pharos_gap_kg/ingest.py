@@ -298,11 +298,15 @@ def is_a_line(c: str) -> list[str]:
 
 
 def pred_line(p: str) -> list[str]:
+    """p, then its ancestors through is_a and its mixins, nearest first, as Biolink counts them."""
     P = biolink()["predicates"]
-    out = []
-    while p and p in P:
-        out.append(p)
-        p = P[p]["is_a"]
+    out, todo = [], [p]
+    while todo:
+        x = todo.pop(0)
+        if x in out or x not in P:
+            continue
+        out.append(x)
+        todo += [m for m in [P[x]["is_a"]] + P[x].get("mixins", []) if m]
     return out
 
 
@@ -793,21 +797,24 @@ def build_export(proposal: dict, rows: pd.DataFrame, rules: list[dict], refs: Re
 # ---- the hand mappings, in the same form -----------------------------------------------------------
 
 def hand(view: str) -> dict:
-    """The mapping the graph's own code applies to this view, written as a proposal."""
+    """The mapping the graph's own code applies to this view, written as a proposal. Since 19 Oct the
+    disease sources run from the gene; the report of that day compared the models with the mappings as
+    they were before (commit 054853a)."""
     from pharos_gap_kg import ctxgraph, kg
     protein = {"columns": ["protein_id"], "resolver": "pharos_protein", "category": "biolink:Protein"}
+    gene = {"columns": ["protein_id"], "resolver": "pharos_protein_gene", "category": "biolink:Gene"}
     disease = {"columns": ["mondoid", "did"], "resolver": "curie", "category": "biolink:Disease", "name_column": "name"}
 
     def source(s: str) -> dict:
         ks, pred, level, agent = ctxgraph.SOURCES[s]
-        return {"predicate": pred, "association_category": ctxgraph.ASSOC, "knowledge_level": level, "agent_type": agent, "primary_knowledge_source": ks}
-    base = {"map": True, "subject": protein, "object": disease, "qualifiers": {}, "edge_properties": [], "keep_if": None, "split_by": None}
+        return {"predicate": pred, "association_category": ctxgraph.CATEGORY.get(s, ctxgraph.ASSOC), "knowledge_level": level, "agent_type": agent,
+                "primary_knowledge_source": ks}
+    base = {"map": True, "subject": gene, "object": disease, "qualifiers": {}, "edge_properties": [], "keep_if": None, "split_by": None}
     if view == "disease.Expression_Atlas":
         r = kg.expression_mapping().rules[kg.EXPRESSION]
-        return {**base, "predicate": r.predicate, "association_category": r.category, "knowledge_level": r.knowledge_level,
+        return {**base, "subject": protein, "predicate": r.predicate, "association_category": r.category, "knowledge_level": r.knowledge_level,
                 "agent_type": r.agent_type, "primary_knowledge_source": kg.expression_mapping().knowledge_source,
-                "qualifiers": {"subject_aspect_qualifier": r.subject_aspect_qualifier, kg.DIRECTION: {"sign_of": "log2foldchange"}},
-                "edge_properties": ["pvalue"]}
+                "qualifiers": {"subject_aspect_qualifier": r.subject_aspect_qualifier}, "edge_properties": ["pvalue"]}
     if view == "disease.JensenLab":
         vals = ["JensenLab Knowledge AmyCo", "JensenLab Knowledge MedlinePlus", "JensenLab Knowledge UniProtKB-KW", "JensenLab Text Mining"]
         return {**base, **source(vals[0]), "split_by": "dtype",
@@ -817,7 +824,7 @@ def hand(view: str) -> dict:
     if view == "tiga":
         m = graph.mapping()
         r = m.rules["gwas_condition"]
-        return {**base, "object": {"columns": ["efoid"], "resolver": "curie", "category": graph.TRAIT_CATEGORY["EFO"]},
+        return {**base, "subject": protein, "object": {"columns": ["efoid"], "resolver": "curie", "category": graph.TRAIT_CATEGORY["EFO"]},
                 "predicate": r.predicate, "association_category": r.category, "knowledge_level": r.knowledge_level,
                 "agent_type": r.agent_type, "primary_knowledge_source": m.knowledge_source}
     if view == "drug_activity":
@@ -1063,12 +1070,13 @@ def set_aside(release: str, items: list[dict], why: str) -> None:
         src.unlink()
 
 
-def graph_check(release: str) -> dict:
+def graph_check(release: str, name: str | None = None) -> dict:
     """Checks 2 to 6 on every kind of edge in the graph's export: each distinct predicate, association
     category, subject and object category and qualifiers, with how many edges are of that kind. The
     reference KGX validator checks none of these."""
-    g = paths.GRAPH / release
-    quals = ["subject_aspect_qualifier", "object_direction_qualifier", "subject_direction_qualifier"]
+    g = paths.GRAPH / (name or release)
+    header = pd.read_csv(g / "edges.tsv", sep="\t", nrows=0).columns
+    quals = [c for c in header if c in biolink()["qualifiers"]]
     e = pd.read_csv(g / "edges.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=["subject", "predicate", "object", "category"] + quals)
     n = pd.read_csv(g / "nodes.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=["id", "category"])
     cat = dict(zip(n.id, n.category))
@@ -1085,10 +1093,12 @@ def graph_check(release: str) -> dict:
             by_problem[x] += int(r.edges)
         rows.append({"predicate": r.predicate, "category": r.category, "subject_category": r.sc, "object_category": r.oc,
                      "qualifiers": dict(r.q), "edges": int(r.edges), "problems": bad})
-    out = {"release": release, "biolink": biolink()["version"], "checks": "2 to 6 of docs/PROTOCOL.md, Ingest", "edges": int(len(e)),
+    out = {"release": release, "graph": name or release, "biolink": biolink()["version"], "checks": "2 to 6 of docs/PROTOCOL.md, Ingest", "edges": int(len(e)),
            "kinds": len(rows), "edges_of_kinds_that_pass": sum(r["edges"] for r in rows if not r["problems"]),
-           "edges_by_problem": dict(by_problem.most_common()), "by_kind": sorted(rows, key=lambda r: -r["edges"])}
-    write_json(paths.ROOT / "docs" / "data" / f"biolink_checks_{release}.json", out)
+           "edges_by_problem": dict(by_problem.most_common()), "by_kind": sorted(rows, key=lambda r: -r["edges"]),
+           "graph_mappings_through_the_validator": ({v: {"accepted": c["accepted"], "problems": c["problems"]} for v, c in control(release).items()}
+                                                    if name is None else None)}
+    write_json(paths.ROOT / "docs" / "data" / f"biolink_checks_{name or release}.json", out)
     return out
 
 
@@ -1295,6 +1305,11 @@ def _selftest() -> int:
     ck("a predicate the association class lists passes check 5", not check_rule(w, {"g", "d"})["5_association"])
     w = {**r, "predicate": "biolink:treats"}
     ck("a predicate outside the association class's list is refused at check 5", bool(check_rule(w, {"g", "d"})["5_association"]))
+    ck("a predicate's ancestors include those it reaches through its mixins",
+       "biolink:treats_or_applied_or_studied_to_treat" in pred_line("biolink:applied_to_treat") and "biolink:treats" in pred_line("biolink:ameliorates_condition"))
+    ind = {**r, "subject": {**r["subject"], "category": "biolink:Drug"}, "predicate": "biolink:applied_to_treat",
+           "association_category": "biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation"}
+    ck("a predicate below the class's parent through a mixin passes check 5", not any(check_rule(ind, {"g", "d"}).values()))
     ck("resolvers: curie reads EFO_ as EFO:, a pattern takes its group, a name is local and not grounded",
        resolve_one("EFO_0004584", "curie", None) == ("EFO:0004584", True)
        and resolve_one("MIM Number: 613898; Phenotype: HMG-CoA lyase deficiency, 246450 (3)", r"pattern:OMIM:,\s*(\d{6})\s*\(\d\)", None) == ("OMIM:246450", True)
@@ -1334,6 +1349,7 @@ def main(argv: list[str] | None = None) -> int:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("what", choices=["cards", "control", "propose", "stale", "report", "export", "graphcheck"])
+    ap.add_argument("--graph", help="with graphcheck: another graph directory under data/graph, such as pharos319_context_disease")
     ap.add_argument("--set-aside", help="with stale: move the stale records to discarded_<release> with this reason")
     ap.add_argument("release")
     ap.add_argument("--model", default=LOCAL)
@@ -1360,7 +1376,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{len(items)} set aside")
         print(f"{len(items)} stale")
     elif a.what == "graphcheck":
-        out = graph_check(a.release)
+        out = graph_check(a.release, a.graph)
         print(f"{out['edges']:,} edges of {out['kinds']} kinds; {out['edges_of_kinds_that_pass']:,} are of kinds that pass checks 2 to 6")
         for k, v in out["edges_by_problem"].items():
             print(f"  {v:>8,}  {k}")

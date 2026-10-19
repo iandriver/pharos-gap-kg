@@ -32,7 +32,7 @@ def test_who_qualified_and_the_table_of_models():
 
 
 def test_the_control_and_the_whole_graph():
-    r, g = J("ingest_pharos319.json"), J("biolink_checks_pharos319.json")
+    r, g = J("ingest_pharos319.json"), J("biolink_checks_pharos319_before_fix.json")
     assert [v for v, c in r["control"].items() if c["accepted"]] == ["drug_activity"]
     has("pass the validator on 1 of the 9 scored cards, `drug_activity`")
     assert all(all(v for k, v in x.items() if k != "edges") for x in r["hand_values_in_export"].values()), "the hand values are what the export carries"
@@ -65,3 +65,10 @@ def test_the_spend_is_within_the_cap_and_every_record_is_current():
     r = J("ingest_pharos319.json")
     assert r["spend_usd"] <= r["cap_usd"] == 1.75
     has(f"${r['spend_usd']:.3f} against the cap of $1.75")
+
+
+def test_after_the_remodel_every_kind_of_edge_passes():
+    g = J("biolink_checks_pharos319.json")
+    assert g["edges"] == g["edges_of_kinds_that_pass"] == J("graph_pharos319.json")["edges"] and not g["edges_by_problem"]
+    has("now `docs/data/biolink_checks_pharos319_before_fix.json`; after it, all " + f"{g['edges']:,} edges pass",
+        f"pass the validator on {sum(c['accepted'] for c in g['graph_mappings_through_the_validator'].values())} of the 9 scored cards")

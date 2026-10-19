@@ -56,14 +56,16 @@ def context_tables(nodes: pd.DataFrame, edges: pd.DataFrame, gaps: pd.DataFrame,
     part, src = f"{P}:part", f"{P}:source_edge_type"
     num = lambda s: pd.to_numeric(s, errors="coerce")
     a, w = edges[edges[part] == "assertions"], gaps[gaps[part] == "assertions"]
-    kept = pd.DataFrame({"target": a.subject, "condition": a.object, "source": a[src], "edge": a.id, "withheld": False, "rule": "",
+    # An assertion runs from the gene; the questions read it by the protein it was for, which the edge names.
+    gp = f"{P}:gene_product"
+    kept = pd.DataFrame({"target": a[gp], "gene": a.subject, "condition": a.object, "source": a[src], "edge": a.id, "withheld": False, "rule": "",
                          "papers": np.nan, "lift": np.nan, "cut": np.nan, "evidence": a[f"{P}:source_evidence"]})
-    held = pd.DataFrame({"target": w.subject, "condition": w[f"{P}:withheld_object"], "source": w[src], "edge": w.id, "withheld": True, "rule": w[f"{P}:rule"],
+    held = pd.DataFrame({"target": w[gp], "gene": w.subject, "condition": w[f"{P}:withheld_object"], "source": w[src], "edge": w.id, "withheld": True, "rule": w[f"{P}:rule"],
                          "papers": num(w[f"{P}:papers_mentioning_both"]), "lift": num(w[f"{P}:lift"]), "cut": num(w[f"{P}:lift_cut"]), "evidence": ""})
     x = edges[edges[part] == "expression"]
     d = edges[edges[part] == "drugs"]
     dt, di = d[d[src] == "drug_target"], d[d[src] == "drug_indication"]
-    other = nodes[~nodes.category.isin(["biolink:Protein", f"{P}:KnowledgeGap"]) & ~nodes.id.isin(traits)]
+    other = nodes[~nodes.category.isin(["biolink:Protein", "biolink:Gene", f"{P}:KnowledgeGap"]) & ~nodes.id.isin(traits)]
     return {
         "context_nodes": pd.DataFrame({"id": other.id, "kind": np.where(other.category == "biolink:Drug", "drug", "condition"), "category": other.category, "name": other.name,
                                        "grounded": other.id_grounded.astype(str).str.lower() == "true", "xref": other.xref}).sort_values("id"),

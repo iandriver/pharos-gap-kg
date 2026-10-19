@@ -116,39 +116,39 @@ python -m pharos_gap_kg.ask why APOE "Alzheimer disease" --as-of 2010
   "asserted_by": [
    {
     "source": "CTD",
-    "edge": "pharosgapkg:e2bae52301900",
+    "edge": "pharosgapkg:e65eda039a02f",
     "source_evidence": "therapeutic=0"
    },
    {
     "source": "DisGeNET",
-    "edge": "pharosgapkg:e04f2e15211d0",
+    "edge": "pharosgapkg:e4bd3c8d4920c",
     "source_evidence": "pubmed_ids=5; score=0.7; upstream_sources=1"
    },
    {
     "source": "JensenLab Knowledge AmyCo",
-    "edge": "pharosgapkg:edaab3a9ce745"
+    "edge": "pharosgapkg:e368408d871fe"
    },
    {
     "source": "JensenLab Knowledge MedlinePlus",
-    "edge": "pharosgapkg:e605e680ff0c9"
+    "edge": "pharosgapkg:e3951382a1d4b"
    },
    {
     "source": "JensenLab Knowledge UniProtKB-KW",
-    "edge": "pharosgapkg:e2995d392f898"
+    "edge": "pharosgapkg:eee4a17c27c61"
    },
    {
     "source": "JensenLab Text Mining",
-    "edge": "pharosgapkg:e405a625801bd",
+    "edge": "pharosgapkg:e2d62b048b8de",
     "source_evidence": "zscore=8.483"
    },
    {
     "source": "Monarch",
-    "edge": "pharosgapkg:ef0400fde8121",
+    "edge": "pharosgapkg:e2250f2aecb8e",
     "source_evidence": "s2o=48.68"
    },
    {
     "source": "eRAM",
-    "edge": "pharosgapkg:ea1469ed2fc2a",
+    "edge": "pharosgapkg:ee1d51be716a7",
     "source_evidence": "upstream_sources=3"
    }
   ],
@@ -419,7 +419,7 @@ Each path names both of its edges:
  "target_is_the_drugs_mechanism": true,
  "edges": [
   "pharosgapkg:e500c7efb5cdf",
-  "pharosgapkg:eb42774729f80"
+  "pharosgapkg:e14465e7870f1"
  ]
 }
 ```
@@ -449,7 +449,7 @@ python -m pharos_gap_kg.ask why MT-RNR1 Tinnitus
 ```json
 {
  "source": "CTD",
- "gap": "pharosgapkg:g5f698fc1434d",
+ "gap": "pharosgapkg:g64ff2fd4c55c",
  "rule": "literature_lift",
  "why": "PubMed mentions this gene with this disease no more often than the cut for its source",
  "restored_by": "a lift above the cut for its source, or a second source",
@@ -769,7 +769,9 @@ python -m pharos_gap_kg.subgraph gaps --disease "Parkinson disease" --out parkin
 ```
 
 It holds every edge and gap the answer cites, every edge and gap between two nodes the answer names,
-and the nodes at their ends. A GWAS link enters only if it was first reported by the year the answer
+and the nodes at their ends. A disease source's assertion runs from the gene of the protein it names,
+so the subgraph also holds the gene of each target it names and of each assertion it holds, joined to
+the protein by `biolink:has_gene_product`. A GWAS link enters only if it was first reported by the year the answer
 is as of; the other sources' edges are undated and enter as of the release, as the answer reads them.
 An edge row is the release's: a link's publications run to the release whatever year was asked. Gaps
 (rows a pruning rule withheld, and what a target lacks for its next level) are under `gaps`, the
@@ -778,7 +780,7 @@ digest, what was included and the counts.
 
 It is built from the bundle, so it needs no graph files, and its rows are the export's.
 `python -m pharos_gap_kg.subgraph --check pharos319` compares every edge and gap the bundle can give
-with the merged graph's files: 619,774 edges (all but the ontology's 394 `same_as` edges, which no
+with the merged graph's files: 639,927 edges (all but the ontology's 394 `same_as` edges, which no
 answer cites) and 30,484 gaps, with no difference in id, subject, predicate, object, category,
 knowledge source, knowledge level or agent type (`docs/data/subgraph_check_pharos319.json`). The
 reference KGX validator, run on the subgraphs of ten answers, reports only what it reports for the

@@ -19,8 +19,7 @@
   "biolink:PhenotypicFeature": 28
  },
  "edge_categories": {
-  "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation": 99015,
-  "biolink:Association": 420
+  "biolink:Association": 99435
  },
  "predicates": {
   "biolink:genetically_associated_with": 99435
@@ -57,7 +56,7 @@
  ],
  "files": {
   "nodes": "ae7c8b4fe43ef9e5b15e8df3565b444d9b93f46e13d5e9f942f4961e7e21906d",
-  "edges": "089dcc879c6658cb5394063762110eeb2e5117c8db69bdb88843dc87345c4723",
+  "edges": "142d7b38f27556f88f6c7d640fbf2843d188b6d826e4d4c7a755e1a096fd3e8c",
   "gaps": "ad65d70627b5bbdeaeda3291e411ccdbca612abcae667ff4f3584a0c426ae9f7"
  }
 }

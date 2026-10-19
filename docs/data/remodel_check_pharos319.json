@@ -1,0 +1,171 @@
+{
+ "before_manifest_sha256": "e0e55a12920491c3978790d2e1c71c0c941f91d4091f3ec9caaa911b1236a051",
+ "after_manifest_sha256": "c45842cc4aaacdfd706ed62ab69a72c4a1702f2557fe4b2d32e4aae7976899c2",
+ "tables": {
+  "assertions": {
+   "rows": [
+    161611,
+    161611
+   ],
+   "columns_added": [
+    "gene"
+   ],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {
+    "edge": 161611
+   },
+   "equal_but_for_ids": true
+  },
+  "context_nodes": {
+   "rows": [
+    16398,
+    16398
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "drug_indications": {
+   "rows": [
+    5943,
+    5943
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {
+    "edge": 5943
+   },
+   "equal_but_for_ids": true
+  },
+  "drug_targets": {
+   "rows": [
+    4295,
+    4295
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "evidence": {
+   "rows": [
+    651950,
+    651950
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "expression": {
+   "rows": [
+    159846,
+    159846
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "lineage": {
+   "rows": [
+    5872,
+    5872
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "links": {
+   "rows": [
+    295327,
+    295327
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "neighbours": {
+   "rows": [
+    349142,
+    349142
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "nodes": {
+   "rows": [
+    22659,
+    22659
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  },
+  "study_sizes": {
+   "rows": [
+    11952,
+    11952
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "equal": true
+  },
+  "target_gaps": {
+   "rows": [
+    17737,
+    17737
+   ],
+   "columns_added": [],
+   "columns_removed": [],
+   "rows_only_before": 0,
+   "rows_only_after": 0,
+   "values_that_differ": {},
+   "equal_but_for_ids": true
+  }
+ },
+ "answers": {
+  "why|APOE|Alzheimer disease": "same but for edge ids",
+  "why|ACHE|Alzheimer disease": "same but for edge ids",
+  "why|HMGCR|hypercholesterolemia": "same but for edge ids",
+  "why|MT-RNR1|tinnitus": "same but for edge ids",
+  "known|PCSK9": "same",
+  "known|atorvastatin": "same but for edge ids",
+  "known|Alzheimer disease": "same but for edge ids",
+  "connect|LDLR|PCSK9": "same",
+  "connect|atorvastatin|hypercholesterolemia": "same but for edge ids",
+  "predict|Parkinson disease": "same",
+  "gaps|None|Parkinson disease": "same",
+  "gaps|POLR3E": "same",
+  "whats_new|type 2 diabetes mellitus|2020": "same",
+  "status": "same"
+ },
+ "every_table_equal_but_for_ids": true,
+ "every_answer_equal_but_for_ids": true
+}

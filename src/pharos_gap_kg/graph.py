@@ -79,7 +79,9 @@ def mapping() -> Mapping:
     m = Mapping(prefix=PREFIX, knowledge_source=SOURCE)
     common = dict(predicate="biolink:genetically_associated_with", knowledge_level="statistical_association",
                   agent_type="data_analysis_pipeline")
-    m.rules["gwas_condition"] = Rule(category="biolink:GeneToDiseaseOrPhenotypicFeatureAssociation", **common)
+    # Biolink 4.4.3 has no gene-to-disease-or-phenotype class, and most traits are DiseaseOrPhenotypicFeature;
+    # the two types are kept apart because the type is part of an edge's id (docs/PROTOCOL.md, 19 Oct).
+    m.rules["gwas_condition"] = Rule(category="biolink:Association", **common)
     m.rules["gwas_other"] = Rule(category="biolink:Association", **common)   # a process or a quality, not a condition
     problems = m.validate()
     if problems:
@@ -288,8 +290,9 @@ def _selftest() -> int:
     ck("a small graph passes every conformance check with none skipped", rep.passed and not rep.n_skipped)
     ck("a target with no link is still a node", "UniProtKB:P3" in set(n.id) and "UniProtKB:P3" not in set(e.subject))
     ck("a node is named by its symbol and keeps its cross-reference", n.set_index("id").loc["UniProtKB:P1", ["name", "xref"]].tolist() == ["AAA", "NCBIGene:1"])
-    ck("a link to a process is not typed as a gene-to-condition association",
-       e.set_index("object").loc["GO:2", "category"] == "biolink:Association" and (e[e.object == "MONDO:1"].category == "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation").all())
+    ck("a link is a Biolink 4.4.3 Association, and a link to a process keeps a type of its own",
+       set(e.category) == {"biolink:Association"} and e.set_index("object").loc["GO:2", f"{PREFIX}:source_edge_type"] == "gwas_other"
+       and (e[e.object == "MONDO:1"][f"{PREFIX}:source_edge_type"] == "gwas_condition").all())
     one = e[(e.subject == "UniProtKB:P1") & (e.object == "MONDO:1")].iloc[0]
     ck("an edge carries its studies, papers, first year and aggregator",
        [str(one[c]) for c in ("publications", f"{PREFIX}:studies", f"{PREFIX}:first_year", f"{PREFIX}:n_studies", "aggregator_knowledge_source")]

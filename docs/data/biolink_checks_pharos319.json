@@ -1,78 +1,59 @@
 {
  "release": "pharos319",
+ "graph": "pharos319",
  "biolink": "4.4.3",
  "checks": "2 to 6 of docs/PROTOCOL.md, Ingest",
- "edges": 620168,
- "kinds": 18,
- "edges_of_kinds_that_pass": 5768,
- "edges_by_problem": {
-  "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class": 294248,
-  "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier": 159846,
-  "biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein": 154363,
-  "biolink:treats is abstract, a mixin or deprecated": 5943,
-  "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class": 5943
- },
+ "edges": 640321,
+ "kinds": 19,
+ "edges_of_kinds_that_pass": 640321,
+ "edges_by_problem": {},
  "by_kind": [
   {
    "predicate": "biolink:genetically_associated_with",
-   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "category": "biolink:Association",
    "subject_category": "biolink:Protein",
    "object_category": "biolink:DiseaseOrPhenotypicFeature",
    "qualifiers": {},
    "edges": 278883,
-   "problems": [
-    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
-   ]
+   "problems": []
+  },
+  {
+   "predicate": "biolink:correlated_with",
+   "category": "biolink:CorrelatedGeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {
+    "subject_aspect_qualifier": "expression"
+   },
+   "edges": 159846,
+   "problems": []
   },
   {
    "predicate": "biolink:gene_associated_with_condition",
    "category": "biolink:GeneToDiseaseAssociation",
-   "subject_category": "biolink:Protein",
+   "subject_category": "biolink:Gene",
    "object_category": "biolink:Disease",
    "qualifiers": {},
-   "edges": 154363,
-   "problems": [
-    "biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
-   ]
+   "edges": 154359,
+   "problems": []
   },
   {
-   "predicate": "biolink:correlated_with",
-   "category": "biolink:GeneToDiseaseAssociation",
-   "subject_category": "biolink:Protein",
-   "object_category": "biolink:Disease",
-   "qualifiers": {
-    "subject_aspect_qualifier": "expression",
-    "subject_direction_qualifier": "decreased"
-   },
-   "edges": 80150,
-   "problems": [
-    "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier"
-   ]
-  },
-  {
-   "predicate": "biolink:correlated_with",
-   "category": "biolink:GeneToDiseaseAssociation",
-   "subject_category": "biolink:Protein",
-   "object_category": "biolink:Disease",
-   "qualifiers": {
-    "subject_aspect_qualifier": "expression",
-    "subject_direction_qualifier": "increased"
-   },
-   "edges": 79696,
-   "problems": [
-    "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier"
-   ]
+   "predicate": "biolink:has_gene_product",
+   "category": "biolink:GeneToGeneProductRelationship",
+   "subject_category": "biolink:Gene",
+   "object_category": "biolink:Protein",
+   "qualifiers": {},
+   "edges": 20153,
+   "problems": []
   },
   {
    "predicate": "biolink:genetically_associated_with",
-   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "category": "biolink:Association",
    "subject_category": "biolink:Protein",
    "object_category": "biolink:Disease",
    "qualifiers": {},
    "edges": 13015,
-   "problems": [
-    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
-   ]
+   "problems": []
   },
   {
    "predicate": "biolink:directly_physically_interacts_with",
@@ -84,39 +65,31 @@
    "problems": []
   },
   {
-   "predicate": "biolink:treats",
-   "category": "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation",
+   "predicate": "biolink:applied_to_treat",
+   "category": "biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation",
    "subject_category": "biolink:Drug",
    "object_category": "biolink:DiseaseOrPhenotypicFeature",
    "qualifiers": {},
    "edges": 3206,
-   "problems": [
-    "biolink:treats is abstract, a mixin or deprecated",
-    "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
-   ]
+   "problems": []
   },
   {
-   "predicate": "biolink:treats",
-   "category": "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation",
+   "predicate": "biolink:applied_to_treat",
+   "category": "biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation",
    "subject_category": "biolink:Drug",
    "object_category": "biolink:Disease",
    "qualifiers": {},
    "edges": 2737,
-   "problems": [
-    "biolink:treats is abstract, a mixin or deprecated",
-    "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
-   ]
+   "problems": []
   },
   {
    "predicate": "biolink:genetically_associated_with",
-   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "category": "biolink:Association",
    "subject_category": "biolink:Protein",
    "object_category": "biolink:PhenotypicFeature",
    "qualifiers": {},
    "edges": 2350,
-   "problems": [
-    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
-   ]
+   "problems": []
   },
   {
    "predicate": "biolink:genetically_associated_with",
@@ -173,6 +146,15 @@
    "problems": []
   },
   {
+   "predicate": "biolink:associated_with",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 4,
+   "problems": []
+  },
+  {
    "predicate": "biolink:same_as",
    "category": "biolink:Association",
    "subject_category": "biolink:BiologicalProcess",
@@ -199,5 +181,54 @@
    "edges": 1,
    "problems": []
   }
- ]
+ ],
+ "graph_mappings_through_the_validator": {
+  "disease.CTD": {
+   "accepted": true,
+   "problems": []
+  },
+  "disease.DisGeNET": {
+   "accepted": true,
+   "problems": []
+  },
+  "disease.eRAM": {
+   "accepted": false,
+   "problems": [
+    "8_identifiers: object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+   ]
+  },
+  "disease.Monarch": {
+   "accepted": false,
+   "problems": [
+    "8_identifiers: object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+   ]
+  },
+  "disease.UniProt_Disease": {
+   "accepted": true,
+   "problems": []
+  },
+  "disease.Expression_Atlas": {
+   "accepted": true,
+   "problems": []
+  },
+  "disease.JensenLab": {
+   "accepted": false,
+   "problems": [
+    "8_identifiers [JensenLab Knowledge AmyCo]: object: 23 of 75 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+    "8_identifiers [JensenLab Knowledge MedlinePlus]: object: 1 of 72 DOID identifiers are in the release's DOID list; at least 90% must",
+    "8_identifiers [JensenLab Knowledge UniProtKB-KW]: object: 0 of 1 DOID identifiers are in the release's DOID list; at least 90% must",
+    "8_identifiers [JensenLab Text Mining]: object: 6 of 75 DOID identifiers are in the release's DOID list; at least 90% must"
+   ]
+  },
+  "tiga": {
+   "accepted": false,
+   "problems": [
+    "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+   ]
+  },
+  "drug_activity": {
+   "accepted": true,
+   "problems": []
+  }
+ }
 }

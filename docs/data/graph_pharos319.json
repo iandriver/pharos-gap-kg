@@ -2,13 +2,14 @@
  "release": "pharos319",
  "source_sha256": "86ebfffdd5fd03bcc23ef43a31251d40572ccd7feec62dadd3215f276f8b0953",
  "target_gaps_summary_sha256": "f327cb58088d99e2270a9448e5d0ffe7aa89d313f6baaa163119916f158e41d3",
- "rows": 650258,
+ "rows": 670411,
  "merged": 0,
- "nodes": 39060,
- "edges": 620168,
+ "nodes": 59071,
+ "edges": 640321,
  "gaps": 30484,
  "node_categories": {
   "biolink:Protein": 20412,
+  "biolink:Gene": 20011,
   "biolink:Disease": 13708,
   "biolink:DiseaseOrPhenotypicFeature": 3043,
   "biolink:Drug": 1782,
@@ -22,6 +23,7 @@
   "links": 295327,
   "expression": 159846,
   "assertions": 154363,
+  "genes": 20153,
   "drugs": 10238,
   "ontology": 394
  },
@@ -32,23 +34,27 @@
  "predicates": {
   "biolink:genetically_associated_with": 295327,
   "biolink:correlated_with": 159846,
-  "biolink:gene_associated_with_condition": 154363,
-  "biolink:treats": 5943,
+  "biolink:gene_associated_with_condition": 154359,
+  "biolink:has_gene_product": 20153,
+  "biolink:applied_to_treat": 5943,
   "biolink:directly_physically_interacts_with": 4295,
-  "biolink:same_as": 394
+  "biolink:same_as": 394,
+  "biolink:associated_with": 4
  },
  "edge_categories": {
-  "biolink:GeneToDiseaseAssociation": 314209,
-  "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation": 294248,
-  "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation": 5943,
-  "biolink:ChemicalGeneInteractionAssociation": 4295,
-  "biolink:Association": 1473
+  "biolink:Association": 295721,
+  "biolink:CorrelatedGeneToDiseaseAssociation": 159846,
+  "biolink:GeneToDiseaseAssociation": 154363,
+  "biolink:GeneToGeneProductRelationship": 20153,
+  "biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation": 5943,
+  "biolink:ChemicalGeneInteractionAssociation": 4295
  },
  "knowledge_sources": {
   "infores:tiga": 295327,
   "infores:expression-atlas": 159846,
   "infores:disgenet": 82453,
   "infores:ctd": 28815,
+  "infores:pharos": 20153,
   "infores:diseases": 14749,
   "infores:eram": 14263,
   "infores:drugcentral": 10238,
@@ -61,10 +67,16 @@
   "first_year": 2005,
   "latest_year": 2023
  },
+ "genes": {
+  "gene_nodes": 20011,
+  "has_gene_product_edges": 20153,
+  "proteins_with_no_gene": 259
+ },
  "assertions": {
   "rows": 161611,
   "edges": 154363,
   "gaps": 7248,
+  "on_a_protein_with_no_gene": 4,
   "edges_by_source": {
    "DisGeNET": 82453,
    "CTD": 28815,
@@ -144,8 +156,8 @@
  "targets_in_more_than_one_part": 19271,
  "conformance": "10 of 10 checks passed",
  "files": {
-  "nodes": "f628e11d71b59b8e16b5084a75036cc0c3ed5f638bc343fa9bbcc348659f24a4",
-  "edges": "b5d39e6c75d5a14f91555ea93c63f68c8f4f0c1e4bd7389ca3123c48283daebc",
-  "gaps": "64f783d3d4e0b03eff286a1cbd32d46ce3a395db0996ab6406b1225818c8ded6"
+  "nodes": "ebd608e99c5efb32d3745d4714ec1797bd5fe49eaefc1e9cae8c85287a34bb6f",
+  "edges": "c9a79f572d97e448d51c07a58a9379010a0aa2d0419e19eb49fd25b71e75fede",
+  "gaps": "000382759174a2fb403585ff3f584c8ee0c64c263237afddbc169c5784c20e14"
  }
 }

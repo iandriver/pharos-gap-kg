@@ -4,10 +4,10 @@
  "biolink_model": "4.4.3",
  "bmt": "1.4.8",
  "checked": {
-  "nodes": 39060,
-  "edges": 620168
+  "nodes": 59071,
+  "edges": 640321
  },
- "seconds": 46.7,
+ "seconds": 29.2,
  "checks": [
   "required properties",
   "property types",

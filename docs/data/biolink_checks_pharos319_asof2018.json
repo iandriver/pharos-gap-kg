@@ -1,0 +1,49 @@
+{
+ "release": "pharos319",
+ "graph": "pharos319_asof2018",
+ "biolink": "4.4.3",
+ "checks": "2 to 6 of docs/PROTOCOL.md, Ingest",
+ "edges": 99435,
+ "kinds": 4,
+ "edges_of_kinds_that_pass": 99435,
+ "edges_by_problem": {},
+ "by_kind": [
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 92557,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 5557,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:PhenotypicFeature",
+   "qualifiers": {},
+   "edges": 901,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:BiologicalProcess",
+   "qualifiers": {},
+   "edges": 420,
+   "problems": []
+  }
+ ],
+ "graph_mappings_through_the_validator": null
+}

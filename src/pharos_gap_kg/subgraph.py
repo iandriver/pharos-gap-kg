@@ -6,6 +6,10 @@ between two nodes the answer names, and the nodes at their ends. A dated GWAS li
 was first reported by the year the answer is as of; the other sources' edges are undated and enter as
 of the release, as the answer reads them.
 
+GENES. A disease source's assertion runs from the gene of the protein it names, and a gene has the
+protein as its product. A subgraph holds the gene of every target it names and of every assertion it
+holds, joined to those targets and to the proteins the assertions name.
+
 WHAT IT IS BUILT FROM. The bundle, so it works from the release archive with no graph files. Each row's
 predicate, category, knowledge level, agent type and knowledge source come from the same mapping
 objects that write the graph's own export, and the ids are the export's: a check compares every row
@@ -43,7 +47,7 @@ GAP_PREDICATE = f"{PREFIX}:evidence_missing_for"
 GAP_ASSOC = f"{PREFIX}:KnowledgeGapAssociation"
 LIMIT = 500
 # The columns compared with the export, for edges and for gaps.
-EMPTY = {"assertions": ["target", "condition", "source", "edge", "withheld", "rule", "papers", "lift", "cut", "evidence"],
+EMPTY = {"assertions": ["target", "gene", "condition", "source", "edge", "withheld", "rule", "papers", "lift", "cut", "evidence"],
          "expression": ["target", "condition", "label", "log2fc", "p", "edge"],
          "drug_targets": ["drug", "target", "action", "mechanism", "activity", "source", "edge"],
          "drug_indications": ["drug", "condition", "edge"], "context_nodes": ["id", "kind", "category", "name", "grounded", "xref"],
@@ -55,7 +59,7 @@ class Tables:
     """The bundle's tables that hold edges, and the mapping objects that say what each edge is."""
 
     def __init__(self, bundle_dir: Path):
-        from pharos_gap_kg import ctxgraph, kg, tgapgraph
+        from pharos_gap_kg import ctxgraph, kg, tgapgraph  # noqa: F401
         def rd(n: str) -> pd.DataFrame:
             # A bundle built without the other sources holds only the dated links; their tables are then empty here.
             f = bundle_dir / f"{n}.parquet"
@@ -72,6 +76,14 @@ class Tables:
         self.link_source = g.knowledge_source
         self.sources = ctxgraph.SOURCES
         self.assoc = ctxgraph.ASSOC
+        self.category, self.no_gene, self.gene_only, self.GENE_PRODUCT = ctxgraph.CATEGORY, ctxgraph.NO_GENE, ctxgraph.GENE_ONLY, ctxgraph.GENE_PRODUCT
+        if "gene" not in self.assertions:          # a bundle built before the assertions moved to genes
+            self.assertions["gene"] = self.assertions.target
+        t = nodes[nodes.kind == "target"].sort_values("id")
+        t = t[t.xref.astype(str).str.startswith("NCBIGene:")]
+        self.gene_of = dict(zip(t.id, t.xref))
+        self.gene_names = dict(zip(t.drop_duplicates("xref").xref, t.drop_duplicates("xref").name))
+        self.gene_frames, self.gene_rule = kg.gene_frames, kg.gene_mapping().rules[kg.GENE_PRODUCT_TYPE]
         self.rules = ctxgraph.RULES
         em = kg.expression_mapping()
         self.expr_rule, self.expr_source = em.rules[kg.EXPRESSION], em.knowledge_source
@@ -132,16 +144,18 @@ def assertion_rows(T: Tables, A: pd.DataFrame) -> tuple[list[dict], list[dict]]:
     edges, gaps = [], []
     for r in A.itertuples(index=False):
         ks, pred, level, agent = T.sources[r.source]
+        fell = pred in T.gene_only and not str(r.gene).startswith("NCBIGene:")
+        pred = T.no_gene if fell else pred
         if not r.withheld:
-            edges.append(_edge(id=r.edge, subject=r.target, predicate=pred, object=r.condition, category=[T.assoc], primary_knowledge_source=ks,
+            edges.append(_edge(id=r.edge, subject=r.gene, predicate=pred, object=r.condition, category=[T.assoc if fell else T.category.get(r.source, T.assoc)], primary_knowledge_source=ks,
                                aggregator_knowledge_source=[graph.AGGREGATOR], knowledge_level=level, agent_type=agent,
-                               **{f"{PREFIX}:source_edge_type": r.source, f"{PREFIX}:source_evidence": r.evidence or None}))
+                               **{T.GENE_PRODUCT: r.target, f"{PREFIX}:source_edge_type": r.source, f"{PREFIX}:source_evidence": r.evidence or None}))
         else:
             rules = str(r.rule).split("|") if r.rule else ["uncorroborated"]
             counted = "literature_lift" in rules
-            gaps.append(_edge(id=r.edge, subject=r.target, predicate=GAP_PREDICATE, object=f"{GAP_NODE}precondition_unmet", category=[GAP_ASSOC],
+            gaps.append(_edge(id=r.edge, subject=r.gene, predicate=GAP_PREDICATE, object=f"{GAP_NODE}precondition_unmet", category=[GAP_ASSOC],
                               primary_knowledge_source=ks, aggregator_knowledge_source=[graph.AGGREGATOR], knowledge_level="logical_entailment",
-                              agent_type="data_analysis_pipeline", **{f"{PREFIX}:withheld_from": pred, f"{PREFIX}:withheld_object": r.condition,
+                              agent_type="data_analysis_pipeline", **{f"{PREFIX}:withheld_from": pred, f"{PREFIX}:withheld_object": r.condition, T.GENE_PRODUCT: r.target,
                                                                        f"{PREFIX}:source_edge_type": r.source, f"{PREFIX}:rule": "|".join(rules),
                                                                        f"{PREFIX}:gap_reason": "; ".join(T.rules[x][0] for x in rules),
                                                                        f"{PREFIX}:restored_by": "; or ".join(T.rules[x][1] for x in rules),
@@ -171,6 +185,15 @@ def drug_rows(T: Tables, D: pd.DataFrame, I: pd.DataFrame) -> list[dict]:
                   aggregator_knowledge_source=[graph.AGGREGATOR], knowledge_level=i.knowledge_level, agent_type=i.agent_type)
             for r in I.itertuples(index=False)]
     return out
+
+
+def gene_rows(T: Tables, pairs: dict) -> list[dict]:
+    """pairs: protein -> its gene. The edges that make each protein its gene's product, as the export writes them."""
+    if not pairs:
+        return []
+    _, e, _, _ = T.gene_frames(pairs, T.gene_names)
+    keep = ["id", "subject", "predicate", "object", "primary_knowledge_source", "knowledge_level", "agent_type", f"{PREFIX}:source_edge_type"]
+    return [_edge(**{k: x[k] for k in keep}, category=[x["category"]]) for x in e.to_dict("records")]
 
 
 def target_gap_rows(T: Tables, G: pd.DataFrame, cited: set[str]) -> list[dict]:
@@ -206,7 +229,11 @@ def of(answer: dict, bundle_dir: Path | None = None, limit: int | None = LIMIT, 
     G = T.target_gaps
     Gm = G[G.dark_gap_id.isin(cited) | G.ligand_gap_id.isin(cited)]
     a_edges, a_gaps = assertion_rows(T, Am)
-    edges = link_rows(T, Lm) + a_edges + expression_rows(T, Xm) + drug_rows(T, Dm, Im)
+    # a gene joins the targets the answer names, and the proteins its assertions name
+    genes = {T.gene_of[t] for t in named if t in T.gene_of} | {e["subject"] for e in a_edges + a_gaps if str(e["subject"]).startswith("NCBIGene:")}
+    products = {t for t in named if t in T.gene_of} | set(Am.target)
+    g_edges = gene_rows(T, {p: T.gene_of[p] for p in sorted(products) if p in T.gene_of and T.gene_of[p] in genes})
+    edges = link_rows(T, Lm) + a_edges + g_edges + expression_rows(T, Xm) + drug_rows(T, Dm, Im)
     gaps = a_gaps + target_gap_rows(T, Gm, cited)
     order = lambda rows: sorted(rows, key=lambda e: (e["id"] not in cited, e["id"]))
     edges, gaps = order(edges), order(gaps)
@@ -220,6 +247,8 @@ def of(answer: dict, bundle_dir: Path | None = None, limit: int | None = LIMIT, 
         if n in T.nodes.index:
             row = T.nodes.loc[n]
             nodes.append(_edge(id=n, category=[row.category], name=row["name"] or None))
+        elif n.startswith("NCBIGene:") and n in T.gene_names:
+            nodes.append(_edge(id=n, category=["biolink:Gene"], name=T.gene_names[n]))
         elif n.startswith(GAP_NODE):
             nodes.append(_edge(id=n, category=[GAP_CATEGORY], name=T.gap_names.get(n[len(GAP_NODE):], n[len(GAP_NODE):].replace("_", " "))))
     m = T.manifest
@@ -227,7 +256,7 @@ def of(answer: dict, bundle_dir: Path | None = None, limit: int | None = LIMIT, 
             "question": question, "rule": ("every edge and gap the answer cites, every edge and gap between two nodes it names (a GWAS link only "
                                            "if first reported by as_of; the other sources as of the release), and the nodes at their ends"),
             "counts": {"nodes": len(nodes), "edges": len(edges), "gaps": len(gaps), "edges_in_full": n_edges, "gaps_in_full": n_gaps,
-                       "cited_ids": len(cited), "cited_ids_not_found": sorted(cited - {e["id"] for e in order(link_rows(T, Lm) + a_edges + expression_rows(T, Xm)
+                       "cited_ids": len(cited), "cited_ids_not_found": sorted(cited - {e["id"] for e in order(link_rows(T, Lm) + a_edges + g_edges + expression_rows(T, Xm)
                                                                                                              + drug_rows(T, Dm, Im) + a_gaps + target_gap_rows(T, Gm, cited))})},
             "omitted": (n_edges + n_gaps) - (len(edges) + len(gaps))}
     return {"graph": meta, "nodes": nodes, "edges": edges, "gaps": gaps}
@@ -302,7 +331,7 @@ def every_row(release: str, bundle_dir: Path | None, E: pd.DataFrame, Gp: pd.Dat
     T = tables(str(bundle_dir or ask.default_bundle()))
     a_edges, a_gaps = assertion_rows(T, T.assertions)
     cited = set(T.target_gaps.dark_gap_id.dropna()) | set(T.target_gaps.ligand_gap_id.dropna())
-    rows = {"edges": link_rows(T, T.links) + a_edges + expression_rows(T, T.expression) + drug_rows(T, T.drug_targets, T.drug_indications),
+    rows = {"edges": link_rows(T, T.links) + a_edges + gene_rows(T, T.gene_of) + expression_rows(T, T.expression) + drug_rows(T, T.drug_targets, T.drug_indications),
             "gaps": a_gaps + target_gap_rows(T, T.target_gaps, cited)}
     bad, counts = [], {}
     for kind, ref in (("edges", E), ("gaps", Gp)):

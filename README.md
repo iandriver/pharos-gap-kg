@@ -37,10 +37,11 @@ server to an MCP client. To build the bundle from the published files instead, s
 
 Started 6 Oct 2026. What exists, by the challenge's criteria. The progress report, [`docs/PROGRESS_20261027.md`](docs/PROGRESS_20261027.md), gives the detail, and `make check` compares each of its figures with the records:
 
-- **The graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). One KGX export of 620,168 edges and 30,484
-  gaps over 39,060 nodes, with every input row an edge or a gap: 295,327 GWAS links between targets
-  and traits, each dated by its first study; 154,363 assertions of a target with a condition from
-  nine disease sources, and the 7,248 rows a pruning rule withheld, as gaps; 159,846 expression
+- **The graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). One KGX export of 640,321 edges and 30,484
+  gaps over 59,071 nodes, with every input row an edge or a gap: 295,327 GWAS links between targets
+  and traits, each dated by its first study; 154,363 assertions of a gene with a condition from nine
+  disease sources, each naming the protein it was for, and the 7,248 rows a pruning rule withheld, as
+  gaps; 20,153 edges that make each protein the product of its gene; 159,846 expression
   observations, kept apart from the assertions; 1,782 drugs with their targets and indications; and
   23,236 target-level gaps. Pharos's disease table has twelve sources: one, TIGA, repeats the GWAS
   data and is left out; eleven were tested for pruning; and two of those, DrugCentral Indication and
@@ -78,10 +79,10 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
 - **Standards** ([`findings/STANDARDS.md`](findings/STANDARDS.md)). BioLink categories and predicates,
   with a knowledge level and agent type on every edge. The export passes this entry's own `kgx-gaps`
   conformance suite (10 of 10). The reference KGX validator (kgx 2.7.0, Biolink 4.4.3) finds no
-  unknown predicate and no missing property, and flags the identifiers of 1,044 of 39,060 nodes for
-  four stated reasons. It does not check Biolink's own constraints, and against those 614,400 of the
-  620,168 edges fail, for four causes not yet fixed: two association classes 4.4.3 does not have, a
-  gene-only predicate with proteins as subjects, and a qualifier the class does not carry.
+  unknown predicate and no missing property, and flags the identifiers of 1,044 of 59,071 nodes for
+  four stated reasons. It does not check Biolink's own constraints on classes, domains and
+  qualifiers; against those all 640,321 edges pass, after a remodel on 19 Oct that put the disease
+  sources' assertions on gene nodes (614,400 of 620,168 edges failed before it).
 - **Ingest by an agent** ([`findings/INGEST.md`](findings/INGEST.md)). A model proposes how a Pharos
   table the graph does not hold becomes Biolink edges, and a validator in code accepts or refuses it.
   Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5 qualify on the nine tables the graph already maps; a local
