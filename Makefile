@@ -37,6 +37,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.recorded --selftest
 	$(PY) -m pharos_gap_kg.release --selftest
 	$(PY) -m pharos_gap_kg.persontest --selftest
+	$(PY) -m pharos_gap_kg.maintain --selftest
 	$(PY) -m pharos_gap_kg.tgaps --selftest
 	$(PY) -m pharos_gap_kg.tgapgraph --selftest
 	$(PY) -m pharos_gap_kg.kg --selftest

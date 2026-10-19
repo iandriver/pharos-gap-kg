@@ -175,3 +175,8 @@ def test_release_selftest():
 def test_persontest_selftest():
     from pharos_gap_kg import persontest
     assert persontest._selftest() == 0
+
+
+def test_maintain_selftest():
+    from pharos_gap_kg import maintain
+    assert maintain._selftest() == 0
