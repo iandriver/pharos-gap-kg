@@ -1,0 +1,27 @@
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd_ceiling": 0.00339, "at": "2026-10-19T10:41:55"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd": 0.0012368, "in": 5238, "out": 1426, "provider": "Google", "error": null, "at": "2026-10-19T10:42:03"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd_ceiling": 0.003463, "at": "2026-10-19T10:42:03"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd": 0.001163, "in": 6100, "out": 1106, "provider": "Google", "error": null, "at": "2026-10-19T10:42:07"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd_ceiling": 0.003402, "at": "2026-10-19T10:42:07"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd": 0.0011438, "in": 5558, "out": 1176, "provider": "Google", "error": null, "at": "2026-10-19T10:42:14"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd_ceiling": 0.003473, "at": "2026-10-19T10:42:14"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd": 0.0011504, "in": 6409, "out": 1019, "provider": "Google", "error": null, "at": "2026-10-19T10:42:18"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd_ceiling": 0.003385, "at": "2026-10-19T10:42:18"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd": 0.0011768, "in": 5183, "out": 1317, "provider": "Google", "error": null, "at": "2026-10-19T10:42:24"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd_ceiling": 0.003462, "at": "2026-10-19T10:42:24"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd": 0.001073, "in": 6095, "out": 927, "provider": "Google", "error": null, "at": "2026-10-19T10:42:28"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd_ceiling": 0.003429, "at": "2026-10-19T10:42:28"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd": 0.0012237, "in": 5637, "out": 1320, "provider": "Google", "error": null, "at": "2026-10-19T10:42:34"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd_ceiling": 0.003506, "at": "2026-10-19T10:42:34"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd": 0.0015289, "in": 6534, "out": 1751, "provider": "Google", "error": null, "at": "2026-10-19T10:42:42"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.00344, "at": "2026-10-19T10:42:42"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd": 0.0012564, "in": 5774, "out": 1358, "provider": "Google", "error": null, "at": "2026-10-19T10:42:48"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.003517, "at": "2026-10-19T10:42:48"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd": 0.0013612, "in": 6687, "out": 1385, "provider": "Google", "error": null, "at": "2026-10-19T10:42:55"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.003392, "at": "2026-10-19T10:42:55"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd": 0.0012438, "in": 5213, "out": 1445, "provider": "Google", "error": null, "at": "2026-10-19T10:43:01"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.003469, "at": "2026-10-19T10:43:01"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd": 0.001211, "in": 6090, "out": 1204, "provider": "Google", "error": null, "at": "2026-10-19T10:43:07"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003407, "at": "2026-10-19T10:43:07"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd": 0.0016533, "in": 5508, "out": 2205, "provider": "Google", "error": null, "at": "2026-10-19T10:43:16"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003504, "at": "2026-10-19T10:43:16"}

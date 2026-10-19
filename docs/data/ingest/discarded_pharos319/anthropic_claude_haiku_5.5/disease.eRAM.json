@@ -1,0 +1,128 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.eRAM",
+ "release": "pharos319",
+ "card_sha256": "4b5fefa70550595d894df2900e3848837a8fe228d34936a677e4f8f279cf7ec7",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:pharos\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\", \"did\"],\n  \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:[0-9]+$\", \"reason\": \"No MONDO identifier was supplied for this disease, so the object cannot be grounded; the row is kept as a gap for its protein.\"},\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row links a protein (Pharos protein row) to a disease with an association source; the protein resolves to its gene, and the disease is the MONDO id. Rows without a mondoid (about 161 of 14660) fail keep_if and are recorded as gaps. The DOID in did is kept only as an edge property. The predicate is the general gene-condition association because eRAM gives no direction, mechanism or effect. The source column lists the upstream databases (CTD, ClinVar, GHR, UniProt, Orphanet, OMIM and others) that eRAM aggregated, so the claim is an aggregated assertion. infores:pharos is used because no infores entry for eRAM is known; this is a judgement to check.\"\n}",
+   "usage": {
+    "in": 5183,
+    "out": 1317,
+    "usd": 0.0011768
+   },
+   "provider": "Google",
+   "seconds": 6.1,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:pharos\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\", \"did\"],\n  \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:[0-9]+$\", \"reason\": \"No MONDO identifier was supplied for this disease, so the object cannot be grounded; the row is kept as a gap for its protein.\"},\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row links a protein (Pharos protein row) to a disease with an association source; the protein resolves to its gene, and the disease is the MONDO id. Rows without a mondoid (about 161 of 14660) fail keep_if and are recorded as gaps. The DOID in did is kept only as an edge property. The predicate is the general gene-condition association because eRAM gives no direction, mechanism or effect. The source column lists the upstream databases (CTD, ClinVar, GHR, UniProt, Orphanet, OMIM and others) that eRAM aggregated, so the claim is an aggregated assertion. infores:pharos is used because no infores entry for eRAM is known; this is a judgement to check.\"\n}",
+   "usage": {
+    "in": 6095,
+    "out": 927,
+    "usd": 0.001073
+   },
+   "provider": "Google",
+   "seconds": 3.7,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "final": {},
+ "accepted": false,
+ "accepted_first": false
+}

@@ -1,0 +1,128 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.Expression_Atlas",
+ "release": "pharos319",
+ "card_sha256": "e675c755a82db5bae3787985029d8f67a216d66cd6a0464e22532bdbda6d548f",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\", \"name_column\": null}, \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"statistical_association\", \"agent_type\": \"data_analysis_pipeline\", \"primary_knowledge_source\": \"infores:pharos\", \"qualifiers\": {}, \"edge_properties\": [\"log2foldchange\", \"pvalue\"], \"keep_if\": null, \"split_by\": null, \"by_value\": {}, \"notes\": \"Each row is a differential-expression result: a protein's log2 fold change and p-value in a disease versus control tissue. The protein is resolved to its gene, and the disease uses the MONDO id, which covers all rows. The claim is statistical, so knowledge_level is statistical_association and agent_type is data_analysis_pipeline. The predicate is the general gene_associated_with_condition because Biolink 4.4.3 has no clearly matching expression-change predicate for gene-to-disease. Direction is kept in log2foldchange rather than a direction qualifier, since the card gives no mapping from sign to a Biolink qualifier value. The source is recorded as infores:pharos, since the card names UNM IDG-KMC and the EBI Expression Atlas origin but gives no infores for either. No p-value cutoff is applied, so all rows are kept with their values.\"}",
+   "usage": {
+    "in": 5213,
+    "out": 1445,
+    "usd": 0.0012438
+   },
+   "provider": "Google",
+   "seconds": 6.4,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 159846,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"statistical_association\", \"agent_type\": \"data_analysis_pipeline\", \"primary_knowledge_source\": \"infores:pharos\", \"qualifiers\": {}, \"edge_properties\": [\"log2foldchange\", \"pvalue\"], \"keep_if\": null, \"split_by\": null, \"notes\": \"Each row is a differential-expression result: a protein's log2 fold change and p-value in a disease versus control tissue. The protein resolves to its gene, and the disease uses the MONDO id, which covers all rows; DOID is the fallback. The claim is statistical, so knowledge_level is statistical_association and agent_type is data_analysis_pipeline. The predicate is the general gene_associated_with_condition because no Biolink 4.4.3 predicate clearly expresses expression change for gene to disease. Direction stays in log2foldchange, since the card gives no sign-to-qualifier mapping. The source is infores:pharos because the card gives no infores for UNM IDG-KMC or the EBI Expression Atlas. No p-value cutoff is applied, so all rows are kept with their values.\"}",
+   "usage": {
+    "in": 6090,
+    "out": 1204,
+    "usd": 0.001211
+   },
+   "provider": "Google",
+   "seconds": 5.7,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 159846,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "final": {},
+ "accepted": false,
+ "accepted_first": false
+}

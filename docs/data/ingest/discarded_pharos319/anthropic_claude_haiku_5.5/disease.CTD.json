@@ -1,0 +1,128 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.CTD",
+ "release": "pharos319",
+ "card_sha256": "a516e1bb5647658368eb00db2a1b609b64475aa1bd3f4c5880957eca8541777e",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:ctd\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row links a Pharos protein (mapped to its gene) to a disease from CTD gene-disease curation. Disease identifier uses mondoid first, then did (DOID or MESH, both compact CURIEs); the name column labels the disease. The predicate is the generic gene-condition association because CTD does not state a direction or causal type. Evidence is kept as an edge property: 'marker/mechanism' rows reflect a gene marker or mechanism, while 'therapeutic' rows reflect a gene as a treatment target, which is a weaker and different claim. All rows are kept, so a reader can filter by evidence. Rows with no mondoid still map through did. The dataset is manually curated by CTD, so the agent is manual_agent.\"\n}",
+   "usage": {
+    "in": 5238,
+    "out": 1426,
+    "usd": 0.0012368
+   },
+   "provider": "Google",
+   "seconds": 7.3,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 35187,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:ctd\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row links a Pharos protein, resolved to its gene, to a disease from CTD gene-disease curation. The disease identifier uses mondoid first, then did (DOID or MESH, both compact CURIEs). The disease name column is not carried because subject and object specs take only columns, resolver and category. The predicate is the generic gene-condition association because CTD states no direction or causal type. Evidence is kept as an edge property: 'marker/mechanism' reflects a gene marker or mechanism, and 'therapeutic' reflects a gene as a treatment target, a different claim. All rows are kept so a reader can filter by evidence. Rows with no mondoid map through did. CTD curates these by hand, so the agent is manual_agent.\"\n}",
+   "usage": {
+    "in": 6100,
+    "out": 1106,
+    "usd": 0.001163
+   },
+   "provider": "Google",
+   "seconds": 4.8,
+   "parsed": {},
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: subject: needs columns, resolver and category, and no other keys",
+     "1_parses: object: needs columns, resolver and category, and no other keys",
+     "2_predicate: None is not a Biolink 4.4.3 predicate",
+     "3_categories: association category None is not a Biolink 4.4.3 class",
+     "3_categories: subject category None is not a Biolink 4.4.3 class",
+     "3_categories: object category None is not a Biolink 4.4.3 class",
+     "7_provenance: knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: agent type None is not in both Biolink's and kgx-gaps' enumerations",
+     "7_provenance: knowledge source None is not written infores:<lower-case name>",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 35187,
+      "checks": {
+       "1_parses": [
+        "subject: needs columns, resolver and category, and no other keys",
+        "object: needs columns, resolver and category, and no other keys"
+       ],
+       "2_predicate": [
+        "None is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category None is not a Biolink 4.4.3 class",
+        "subject category None is not a Biolink 4.4.3 class",
+        "object category None is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [
+        "knowledge level None is not in both Biolink's and kgx-gaps' enumerations",
+        "agent type None is not in both Biolink's and kgx-gaps' enumerations",
+        "knowledge source None is not written infores:<lower-case name>"
+       ],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "final": {},
+ "accepted": false,
+ "accepted_first": false
+}

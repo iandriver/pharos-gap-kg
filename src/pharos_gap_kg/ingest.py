@@ -343,35 +343,23 @@ def prefixes_for(category: str) -> set[str]:
 # ---- proposals -------------------------------------------------------------------------------------
 
 def parse(text: str) -> dict | None:
-    """The proposal: the last JSON object in the reply that parses."""
+    """The proposal: the last top-level JSON object in the reply that parses. An object nested in
+    another is never taken for the proposal."""
     t = re.sub(r"```(?:json)?", "", text or "")
-    best = None
-    for i, ch in enumerate(t):
-        if ch != "{":
+    dec = json.JSONDecoder()
+    best, i = None, 0
+    while True:
+        i = t.find("{", i)
+        if i < 0:
+            return best
+        try:
+            obj, end = dec.raw_decode(t, i)
+        except json.JSONDecodeError:
+            i += 1
             continue
-        depth, instr, esc = 0, False, False
-        for j in range(i, len(t)):
-            c = t[j]
-            if instr:
-                esc = (c == "\\") and not esc
-                if c == '"' and not esc:
-                    instr = False
-                continue
-            if c == '"':
-                instr = True
-            elif c == "{":
-                depth += 1
-            elif c == "}":
-                depth -= 1
-                if depth == 0:
-                    try:
-                        obj = json.loads(t[i:j + 1])
-                        if isinstance(obj, dict):
-                            best = obj
-                    except json.JSONDecodeError:
-                        pass
-                    break
-    return best
+        if isinstance(obj, dict):
+            best = obj
+        i = end
 
 
 def rules_of(p: dict) -> list[tuple[str | None, dict | None, str | None]]:
@@ -1164,6 +1152,9 @@ def _selftest() -> int:
             bad.append(name)
     ck("parse takes the last JSON object, through fences and prose",
        parse('Here:\n```json\n{"a": {"b": 1}}\n```\nor rather {"map": false, "reason": "x {y}"}') == {"map": False, "reason": "x {y}"})
+    ck("parse never takes an object nested in the proposal for the proposal",
+       parse('{"map": true, "subject": {"columns": ["a"]}, "qualifiers": {}, "by_value": {}}') == {"map": True, "subject": {"columns": ["a"]}, "qualifiers": {}, "by_value": {}}
+       and parse('{"a": 1} then {"b": {"c": {}}}') == {"b": {"c": {}}})
     ck("a predicate inherits its domain from the nearest ancestor that declares one",
        declared("biolink:gene_associated_with_condition", "domain") == "biolink:Gene" and declared("biolink:same_as", "domain") == "biolink:NamedThing")
     ck("a protein is a gene or gene product through its mixins, and not a gene",
