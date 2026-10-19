@@ -17,6 +17,7 @@ Run:  python -m pharos_gap_kg.ingest cards pharos319            # write the card
       python -m pharos_gap_kg.ingest control pharos319          # the hand mappings through the validator
       python -m pharos_gap_kg.ingest propose pharos319 --model local:qwen3.6:35b-a3b --set scored
       python -m pharos_gap_kg.ingest propose pharos319 --model anthropic/claude-sonnet-5.5 --set scored
+      python -m pharos_gap_kg.ingest stale pharos319           # records whose verdicts the current validator would not give
       python -m pharos_gap_kg.ingest report pharos319
       python -m pharos_gap_kg.ingest export pharos319           # the accepted new views, as KGX parts
       python -m pharos_gap_kg.ingest --selftest
@@ -659,12 +660,14 @@ def validate(proposal: dict, rows: pd.DataFrame, refs: Refs, export: bool = True
         res = {"value": value, "rows": int(len(mine)), "checks": check_rule(r, cols)}
         if not any(res["checks"]["1_parses"]):
             sides = {}
-            for side in ("subject", "object"):
-                ids, grounded = resolve(mine, r[side], refs)
-                sides[side] = {**identifiers(ids, r[side]["category"], refs), "category": r[side]["category"]}
-                sides[side + "_ids"], sides[side + "_grounded"] = ids, grounded
             k = r.get("keep_if")
             kept = [keeps(k, v) for v in mine[k["column"]]] if k else [True] * len(mine)
+            for side in ("subject", "object"):
+                ids, grounded = resolve(mine, r[side], refs)
+                # An object becomes a node only on a kept row: a row the condition makes a gap names its object as a property.
+                judged = ids if side == "subject" else [i for i, ok in zip(ids, kept) if ok]
+                sides[side] = {**identifiers(judged, r[side]["category"], refs), "category": r[side]["category"]}
+                sides[side + "_ids"], sides[side + "_grounded"] = ids, grounded
             sides["_both"] = sum(bool(a and (b or not ok)) for a, b, ok in zip(sides["subject_ids"], sides["object_ids"], kept))
             res["checks"]["8_identifiers"] = check_ids(sides)
             res["identifiers"] = {s: {k2: v for k2, v in sides[s].items()} for s in ("subject", "object")}
@@ -1027,6 +1030,38 @@ def propose(release: str, model: str, views: list[str], refs: Refs | None = None
     return done
 
 
+def stale(release: str, refs: Refs | None = None) -> list[dict]:
+    """Every recorded card whose verdicts the current validator would not give, attempt by attempt. A card
+    refused for a reason the validator no longer gives was sent back with wrong reasons, so it is asked again."""
+    refs = refs or Refs(release)
+    root = data_dir(release) / f"proposals_{release}"
+    out = []
+    for d in sorted(root.iterdir()) if root.exists() else []:
+        for f in sorted(d.glob("*.json")):
+            rec = json.loads(f.read_text())
+            rows, _ = view_rows(release, rec["view"])
+            for i, a in enumerate(rec["attempts"]):
+                if a.get("validation") is None:
+                    continue
+                now = validate(a["parsed"], rows, refs, view=rec["view"]) if a["parsed"] is not None else a["validation"]
+                if now["accepted"] != a["validation"]["accepted"] or sorted(now["problems"]) != sorted(a["validation"]["problems"]):
+                    out.append({"model": rec["model"], "view": rec["view"], "file": str(f.relative_to(paths.ROOT)), "attempt": i + 1,
+                                "recorded": a["validation"]["problems"], "now": now["problems"]})
+                    break
+    return out
+
+
+def set_aside(release: str, items: list[dict], why: str) -> None:
+    """Move stale records to discarded_<release>, with the reason, so they are asked again."""
+    for it in items:
+        src = paths.ROOT / it["file"]
+        dest = data_dir(release) / f"discarded_{release}" / src.parent.name / src.name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        rec = json.loads(src.read_text())
+        write_json(dest, {**rec, "set_aside": why, "set_aside_detail": it})
+        src.unlink()
+
+
 # ---- control, report, export -----------------------------------------------------------------------
 
 def control(release: str, refs: Refs | None = None) -> dict:
@@ -1198,6 +1233,17 @@ def _selftest() -> int:
        not agree({**r, "object": {**r["object"], "columns": ["x", "d"]}}, r)["object_column"])
     ck("every hand rule names a field the agreement reads", all(set(fields(x)) == set(FIELDS) for _, _, x in hand_rules()))
     ck("twelve hand rules over nine scored cards", len(hand_rules()) == 12 and len(SCORED) == 9)
+
+    class _Refs:
+        vocab = {**{p: set() for p in VOCAB_PREFIXES}, "NCBIGene": {f"NCBIGene:{i}" for i in range(1, 5)}, "MONDO": {"MONDO:1", "MONDO:2"}}
+        xref = set()
+    rows = pd.DataFrame({"g": ["1", "2", "3", "4"], "d": ["MONDO_1", "MONDO_2", "GO_3", "PATO_4"]})
+    kept = {**r, "object": {"columns": ["d"], "resolver": "curie", "category": "biolink:Disease"},
+            "keep_if": {"column": "d", "matches": "^MONDO_", "reason": "not a disease"}}
+    v = validate(kept, rows, _Refs(), export=False)
+    ck("the objects of rows the condition makes gaps are not judged against the category's prefixes",
+       not v["problems"] and v["rules"][0]["identifiers"]["object"]["distinct"] == 2 and v["rules"][0]["made_gaps_by_condition"] == 2)
+    ck("without the condition the same objects are refused", bool(validate({**kept, "keep_if": None}, rows, _Refs(), export=False)["problems"]))
     print(f"\n{len(bad)} failed" if bad else "\nall passed")
     return 1 if bad else 0
 
@@ -1207,7 +1253,8 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("what", choices=["cards", "control", "propose", "report", "export"])
+    ap.add_argument("what", choices=["cards", "control", "propose", "stale", "report", "export"])
+    ap.add_argument("--set-aside", help="with stale: move the stale records to discarded_<release> with this reason")
     ap.add_argument("release")
     ap.add_argument("--model", default=LOCAL)
     ap.add_argument("--set", choices=["scored", "new", "all"], default="scored")
@@ -1224,6 +1271,14 @@ def main(argv: list[str] | None = None) -> int:
     elif a.what == "propose":
         views = a.views or {"scored": SCORED, "new": NEW, "all": SCORED + NEW}[a.set]
         propose(a.release, a.model, views)
+    elif a.what == "stale":
+        items = stale(a.release)
+        for it in items:
+            print(f"{it['model']} {it['view']} attempt {it['attempt']}:\n    recorded {it['recorded']}\n    now      {it['now']}")
+        if a.set_aside and items:
+            set_aside(a.release, items, a.set_aside)
+            print(f"{len(items)} set aside")
+        print(f"{len(items)} stale")
     elif a.what == "report":
         out = report(a.release)
         print(json.dumps({m: v["qualification"] for m, v in out["models"].items()}, indent=1))
