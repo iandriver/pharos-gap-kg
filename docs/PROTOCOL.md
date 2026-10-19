@@ -1111,6 +1111,29 @@ participants.
 answer is the graph's alone: the client's model chooses the questions and words the reply, so a wrong
 answer may be the model's. The model is recorded.
 
+## Keeping the graph current
+
+Written on 18 Oct 2026, before the demonstration was run.
+
+**What it shows.** That when one input changes, the build can say which outputs that makes stale,
+re-derive only those, and arrive at what a full rebuild from the same inputs gives.
+
+**How.** Each stage of the README's build block is run once with every file it opens recorded, which
+gives the map of what each stage reads and writes, and the digest of every file as each stage saw it.
+A stage is stale when a file it read has changed since, or when a stage before it that writes one of
+its inputs is stale. A rebuild runs the stale stages in build order and skips a stage whose inputs,
+once the stages before it have run, are unchanged.
+
+**The change.** PubMed asked again: for the 20 CTD one-source pairs outside the sample with the
+smallest lift above CTD's cut, one fewer paper mentions both, with the lift and the cut's verdict
+recomputed as `applycut search` would. Everything else is as built.
+
+**What counts.** In one clone the change is made and the stale stages are rebuilt; in a second clone
+the same change is made before a full build. The demonstration succeeds if every file the build
+writes is byte for byte the same in the two, and if every file outside the outputs of the stages
+that ran is byte for byte what it was before the change. The stages listed stale, the stages that
+ran and the time each took are recorded.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
