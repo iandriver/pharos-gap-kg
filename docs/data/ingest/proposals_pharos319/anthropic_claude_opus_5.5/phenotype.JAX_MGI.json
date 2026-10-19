@@ -1,0 +1,147 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "phenotype.JAX_MGI",
+ "release": "pharos319",
+ "card_sha256": "2c6858a720863786f670d7685ce272bd44981567ac157ed3ef6d6630db73be0c",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"term_id\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:PhenotypicFeature\",\n    \"name_column\": \"term_name\"\n  },\n  \"predicate\": \"biolink:has_phenotype\",\n  \"association_category\": \"biolink:GeneToPhenotypicFeatureAssociation\",\n  \"knowledge_level\": \"logical_entailment\",\n  \"agent_type\": \"automated_agent\",\n  \"primary_knowledge_source\": \"infores:mgi\",\n  \"qualifiers\": {},\n  \"edge_properties\": [],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Rows come from MGI's HMD_HumanPhenotype.rpt. MGI curates phenotypes of mouse genotypes and projects them onto the human ortholog. The human gene is reached via the Pharos protein's NCBIGene id. Because the phenotype is carried over by orthology rather than observed in humans, the knowledge level is logical_entailment and the agent is automated. Only 27 top-level MP system terms occur, so the phenotypes are coarse. All the stats columns are empty, so the edges carry no properties.\"\n}\n```",
+   "usage": {
+    "in": 4812,
+    "out": 922,
+    "usd": 0.037688
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 10.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "term_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:PhenotypicFeature",
+     "name_column": "term_name"
+    },
+    "predicate": "biolink:has_phenotype",
+    "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+    "knowledge_level": "logical_entailment",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:mgi",
+    "qualifiers": {},
+    "edge_properties": [],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Rows come from MGI's HMD_HumanPhenotype.rpt. MGI curates phenotypes of mouse genotypes and projects them onto the human ortholog. The human gene is reached via the Pharos protein's NCBIGene id. Because the phenotype is carried over by orthology rather than observed in humans, the knowledge level is logical_entailment and the agent is automated. Only 27 top-level MP system terms occur, so the phenotypes are coarse. All the stats columns are empty, so the edges carry no properties."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 58398,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 58398,
+        "resolved": 58397,
+        "distinct": 10162,
+        "prefixes": {
+         "NCBIGene": 10162
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 10162,
+          "in_release": 10162
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 58398,
+        "resolved": 58398,
+        "distinct": 27,
+        "prefixes": {
+         "MP": 27
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:PhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 58397,
+      "kept": 58398,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 57873,
+     "n_nodes": 10189,
+     "n_edges": 57873,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:has_phenotype": 57873
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "term_id"
+   ],
+   "resolver": "curie",
+   "category": "biolink:PhenotypicFeature",
+   "name_column": "term_name"
+  },
+  "predicate": "biolink:has_phenotype",
+  "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+  "knowledge_level": "logical_entailment",
+  "agent_type": "automated_agent",
+  "primary_knowledge_source": "infores:mgi",
+  "qualifiers": {},
+  "edge_properties": [],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": null,
+  "notes": "Rows come from MGI's HMD_HumanPhenotype.rpt. MGI curates phenotypes of mouse genotypes and projects them onto the human ortholog. The human gene is reached via the Pharos protein's NCBIGene id. Because the phenotype is carried over by orthology rather than observed in humans, the knowledge level is logical_entailment and the agent is automated. Only 27 top-level MP system terms occur, so the phenotypes are coarse. All the stats columns are empty, so the edges carry no properties."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

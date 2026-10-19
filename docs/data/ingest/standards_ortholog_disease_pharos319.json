@@ -1,0 +1,22 @@
+{
+ "dir": "data/graph/pharos319/ingested/ortholog_disease",
+ "validator": "kgx 2.7.0",
+ "biolink_model": "4.4.3",
+ "bmt": "1.4.8",
+ "checked": {
+  "nodes": 9468,
+  "edges": 37847
+ },
+ "seconds": 1.5,
+ "checks": [
+  "required properties",
+  "property types",
+  "property values, including CURIE prefixes",
+  "node categories",
+  "edge predicates"
+ ],
+ "not_checked_here": "the gaps file (kgx-gaps' extension), and whether edges point at nodes; kgx-gaps' conformance suite checks both",
+ "nodes_with_an_error": 0,
+ "subject_object_pairs_with_an_error": 0,
+ "errors": []
+}

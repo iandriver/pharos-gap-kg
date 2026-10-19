@@ -1158,7 +1158,56 @@ def report(release: str) -> dict:
            "control": {v: {"accepted": c["accepted"], "problems": c["problems"],
                            "export": c.get("export")} for v, c in ctrl.items()},
            "hand_values_in_export": hand_in_export, "models": models, "spend_usd": round(spent(release), 6), "cap_usd": CAP_USD}
+    out["new_views"] = new_views(release, out)
     write_json(report_path(release), out)
+    return out
+
+
+def describe(p: dict | None) -> dict:
+    """A proposal's rules, field by field, with the resolvers and conditions, for comparing two models."""
+    if not p or p.get("map") is False:
+        return {"map": False}
+    out = {}
+    for value, r, skip in rules_of(p):
+        key = "all" if value is None else str(value)
+        if r is None:
+            out[key] = {"skip": skip}
+            continue
+        f = fields(r)
+        out[key] = {**{k: (v[0] if isinstance(v, list) and k.endswith("_column") else v) for k, v in f.items()},
+                    "subject_resolver": (r.get("subject") or {}).get("resolver"), "object_resolver": (r.get("object") or {}).get("resolver"),
+                    "qualifiers": r.get("qualifiers") or {}, "condition": (r.get("keep_if") or {}).get("column") and
+                    {k: v for k, v in r["keep_if"].items() if k != "reason"}}
+    return out
+
+
+def new_views(release: str, rep: dict) -> dict:
+    """For each new view: each qualifying model's verdict and proposal, the one used, and where the others differ from it."""
+    pick = chosen(release, rep)
+    qual = [m for m in MODELS if (rep["models"].get(m) or {}).get("qualification") and rep["models"][m]["qualification"]["qualifies"]]
+    out = {}
+    for view in NEW:
+        recs = {}
+        for m in qual:
+            f = proposals_dir(release, m) / f"{view}.json"
+            if f.exists():
+                rec = json.loads(f.read_text())
+                v = (rec["attempts"][-1].get("validation") or {}) if rec["attempts"] else {}
+                recs[m] = {"accepted": rec["accepted"], "accepted_first": rec["accepted_first"], "rules": describe(rec["final"]),
+                           "problems": v.get("problems"), "export": v.get("export")}
+        used = pick.get(view)
+        diffs = {}
+        if used:
+            base = recs[used]["rules"]
+            for m, r in recs.items():
+                if m == used:
+                    continue
+                d = {}
+                for key in sorted(set(base) | set(r["rules"])):
+                    a, b = base.get(key) or {}, r["rules"].get(key) or {}
+                    d.update({f"{key}.{k}": [a.get(k), b.get(k)] for k in sorted(set(a) | set(b)) if a.get(k) != b.get(k)})
+                diffs[m] = d
+        out[view] = {"used": used, "models": recs, "differences_from_used": diffs}
     return out
 
 
@@ -1203,6 +1252,7 @@ def export_new(release: str) -> dict:
             files[name] = hashlib.sha256(p.read_bytes()).hexdigest()
         out[view] = {"exported": True, "model": model, "dir": str(d.relative_to(paths.ROOT)), "nodes": ex["n_nodes"], "edges": ex["n_edges"],
                      "gaps": ex["n_gaps"], "predicates": ex["predicates"], "sha256": files}
+    write_json(data_dir(release) / f"exported_{release}.json", {"release": release, "joined_to_the_graph": False, "views": out})
     return out
 
 

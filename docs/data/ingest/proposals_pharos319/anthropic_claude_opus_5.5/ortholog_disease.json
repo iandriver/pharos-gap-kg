@@ -1,0 +1,164 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "ortholog_disease",
+ "release": "pharos319",
+ "card_sha256": "29f2a02f6aba85c463fed7cef605f27e16d8df984cde6e72e8130e319771b529",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"prediction\",\n  \"agent_type\": \"computational_model\",\n  \"primary_knowledge_source\": \"infores:monarchinitiative\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"score\", \"ortholog_id\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Monarch links a human gene to a disease because a model-organism ortholog has phenotypes similar to the disease. The score is a phenotype-similarity score. This is a computed inference, not a causal or genetic finding, so the predicate is the generic associated_with and the knowledge level is prediction. The human gene is the subject. No resolver exists for ortholog ids, so ortholog_id is carried as an edge property. No score cutoff is applied because the card documents no threshold.\"\n}\n```",
+   "usage": {
+    "in": 2959,
+    "out": 916,
+    "usd": 0.030156
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 9.7,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "prediction",
+    "agent_type": "computational_model",
+    "primary_knowledge_source": "infores:monarchinitiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "score",
+     "ortholog_id"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Monarch links a human gene to a disease because a model-organism ortholog has phenotypes similar to the disease. The score is a phenotype-similarity score. This is a computed inference, not a causal or genetic finding, so the predicate is the generic associated_with and the knowledge level is prediction. The human gene is the subject. No resolver exists for ortholog ids, so ortholog_id is carried as an edge property. No score cutoff is applied because the card documents no threshold."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 37852,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 37852,
+        "resolved": 37852,
+        "distinct": 3827,
+        "prefixes": {
+         "NCBIGene": 3827
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3827,
+          "in_release": 3827
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 37852,
+        "resolved": 37852,
+        "distinct": 5641,
+        "prefixes": {
+         "OMIM": 4124,
+         "DOID": 1517
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "DOID": {
+          "distinct": 1517,
+          "in_release": 1509
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 4124,
+          "among_mondo_xrefs": 4099
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 37852,
+      "kept": 37852,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 37847,
+     "n_nodes": 9468,
+     "n_edges": 37847,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:associated_with": 37847
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "prediction",
+  "agent_type": "computational_model",
+  "primary_knowledge_source": "infores:monarchinitiative",
+  "qualifiers": {},
+  "edge_properties": [
+   "score",
+   "ortholog_id"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": null,
+  "notes": "Monarch links a human gene to a disease because a model-organism ortholog has phenotypes similar to the disease. The score is a phenotype-similarity score. This is a computed inference, not a causal or genetic finding, so the predicate is the generic associated_with and the knowledge level is prediction. The human gene is the subject. No resolver exists for ortholog ids, so ortholog_id is carried as an edge property. No score cutoff is applied because the card documents no threshold."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

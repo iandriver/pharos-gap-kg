@@ -1,0 +1,58 @@
+{
+ "release": "pharos319",
+ "joined_to_the_graph": false,
+ "views": {
+  "ortholog_disease": {
+   "exported": true,
+   "model": "anthropic/claude-haiku-5.5",
+   "dir": "data/graph/pharos319/ingested/ortholog_disease",
+   "nodes": 9468,
+   "edges": 37847,
+   "gaps": 0,
+   "predicates": {
+    "biolink:gene_associated_with_condition": 37847
+   },
+   "sha256": {
+    "nodes": "2cc9ee0d096cee62fb417439801357fde1c4014cafc4219bc5ed48635bcf4feb",
+    "edges": "7c0bd9130f725efb0baa9cbfbbe835300deb67dbfc2d50f86bb77e822681b6db",
+    "gaps": "de34ff3e67c4277cac2922c02941082fe4e2a590267977ec4005924bd3f07a8b"
+   }
+  },
+  "phenotype.OMIM": {
+   "exported": true,
+   "model": "anthropic/claude-haiku-5.5",
+   "dir": "data/graph/pharos319/ingested/phenotype.OMIM",
+   "nodes": 17057,
+   "edges": 3710,
+   "gaps": 10083,
+   "predicates": {
+    "biolink:gene_associated_with_condition": 3710
+   },
+   "sha256": {
+    "nodes": "a6d20bc1401f40c658689290fe63f99461eabb4b607502eaae8c5d8dce53236c",
+    "edges": "b7bb4840801203f4b9b2195441d05e727995cc97c9b5f9db2ed50ed4ab1e2e52",
+    "gaps": "36787af0726451a24bcdf705bd8562a1c49fbff0d1660c51a67fc9363723e889"
+   }
+  },
+  "phenotype.JAX_MGI": {
+   "exported": true,
+   "model": "anthropic/claude-haiku-5.5",
+   "dir": "data/graph/pharos319/ingested/phenotype.JAX_MGI",
+   "nodes": 10189,
+   "edges": 57873,
+   "gaps": 0,
+   "predicates": {
+    "biolink:has_phenotype": 57873
+   },
+   "sha256": {
+    "nodes": "4115e7bca8ab937e762a57dc7f28fb3853d825a9da1589d884d07ae896ed3801",
+    "edges": "53b0f902f376295882c4f700a3c6984a2a2ae3fbce2d4929892458d0dd406727",
+    "gaps": "de34ff3e67c4277cac2922c02941082fe4e2a590267977ec4005924bd3f07a8b"
+   }
+  },
+  "goa": {
+   "exported": false,
+   "why": "no qualifying model's proposal was accepted"
+  }
+ }
+}

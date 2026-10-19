@@ -1,0 +1,576 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "goa",
+ "release": "pharos319",
+ "card_sha256": "86001945717e998cea29905b11d3333414579ef9d284363a4855274d654915bc",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein\", \"category\": \"biolink:Protein\"},\n  \"object\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:BiologicalProcess\", \"name_column\": \"go_term_text\"},\n  \"predicate\": \"biolink:participates_in\",\n  \"association_category\": \"biolink:MacromolecularMachineToBiologicalProcessAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:goa\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"goeco\", \"assigned_by\"],\n  \"keep_if\": null,\n  \"split_by\": \"go_type\",\n  \"by_value\": {\n    \"Process\": {},\n    \"Function\": {\n      \"object\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:MolecularActivity\", \"name_column\": \"go_term_text\"},\n      \"predicate\": \"biolink:enables\",\n      \"association_category\": \"biolink:MacromolecularMachineToMolecularActivityAssociation\"\n    },\n    \"Component\": {\n      \"object\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:CellularComponent\", \"name_column\": \"go_term_text\"},\n      \"predicate\": \"biolink:located_in\",\n      \"association_category\": \"biolink:MacromolecularMachineToCellularComponentAssociation\"\n    }\n  },\n  \"notes\": \"These are GO annotations of human UniProt proteins, taken from the UniProt XML. Each GO aspect gets the conventional relation: Process \u2192 participates_in, Function \u2192 enables, Component \u2192 located_in. Evidence varies by row: IEA rows are automated predictions, while IDA, TAS and similar rows are curated. Because of this mix, the knowledge level is given as knowledge_assertion and the agent type as not_provided. The evidence code, the ECO code and assigned_by are kept on each edge so that consumers can filter, for example to exclude IEA. Qualifiers such as NOT or contributes_to are not present in the table.\"\n}\n```",
+   "usage": {
+    "in": 4110,
+    "out": 1142,
+    "usd": 0.03928
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 11.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:BiologicalProcess",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:participates_in",
+    "association_category": "biolink:MacromolecularMachineToBiologicalProcessAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:goa",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "goeco",
+     "assigned_by"
+    ],
+    "keep_if": null,
+    "split_by": "go_type",
+    "by_value": {
+     "Process": {},
+     "Function": {
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:MolecularActivity",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:enables",
+      "association_category": "biolink:MacromolecularMachineToMolecularActivityAssociation"
+     },
+     "Component": {
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:CellularComponent",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:located_in",
+      "association_category": "biolink:MacromolecularMachineToCellularComponentAssociation"
+     }
+    },
+    "notes": "These are GO annotations of human UniProt proteins, taken from the UniProt XML. Each GO aspect gets the conventional relation: Process \u2192 participates_in, Function \u2192 enables, Component \u2192 located_in. Evidence varies by row: IEA rows are automated predictions, while IDA, TAS and similar rows are curated. Because of this mix, the knowledge level is given as knowledge_assertion and the agent type as not_provided. The evidence code, the ECO code and assigned_by are kept on each edge so that consumers can filter, for example to exclude IEA. Qualifiers such as NOT or contributes_to are not present in the table."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Protein",
+     "4_domain_range [Process]: biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Protein"
+    ],
+    "rules": [
+     {
+      "value": "Component",
+      "rows": 77707,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 18459,
+        "prefixes": {
+         "UniProtKB": 18459
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 18459,
+          "in_release": 18459
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 1721,
+        "prefixes": {
+         "GO": 1721
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 1721,
+          "in_release": 1628
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:CellularComponent"
+       }
+      },
+      "resolved_as_needed": 77707,
+      "kept": 77707,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Function",
+      "rows": 54547,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Protein"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 15773,
+        "prefixes": {
+         "UniProtKB": 15773
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 15773,
+          "in_release": 15773
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 4186,
+        "prefixes": {
+         "GO": 4186
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 4186,
+          "in_release": 3982
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:MolecularActivity"
+       }
+      },
+      "resolved_as_needed": 54547,
+      "kept": 54547,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Process",
+      "rows": 126465,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Protein"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 16360,
+        "prefixes": {
+         "UniProtKB": 16360
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 16360,
+          "in_release": 16360
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 11996,
+        "prefixes": {
+         "GO": 11996
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 11996,
+          "in_release": 11409
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:BiologicalProcess"
+       }
+      },
+      "resolved_as_needed": 126465,
+      "kept": 126465,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:BiologicalProcess\", \"name_column\": \"go_term_text\"},\n  \"object\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein\", \"category\": \"biolink:Protein\"},\n  \"predicate\": \"biolink:has_participant\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:goa\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"goeco\", \"assigned_by\"],\n  \"keep_if\": null,\n  \"split_by\": \"go_type\",\n  \"by_value\": {\n    \"Process\": {},\n    \"Function\": {\n      \"subject\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:MolecularActivity\", \"name_column\": \"go_term_text\"}\n    },\n    \"Component\": {\n      \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein\", \"category\": \"biolink:Protein\"},\n      \"object\": {\"columns\": [\"go_id\"], \"resolver\": \"curie\", \"category\": \"biolink:CellularComponent\", \"name_column\": \"go_term_text\"},\n      \"predicate\": \"biolink:located_in\",\n      \"association_category\": \"biolink:MacromolecularMachineToCellularComponentAssociation\"\n    }\n  },\n  \"notes\": \"These are GO annotations of human UniProt proteins. Biolink 4.4.3 does not let a Protein be the subject of participates_in or enables. Process and Function rows are therefore inverted to GO term has_participant protein; has_participant takes an Occurrent as subject. This is less specific than enables, but it is valid. Component rows keep protein located_in cellular component. Evidence is mixed: IEA rows are automated and IDA, TAS and similar rows are curated, so agent_type is not_provided. The evidence code, ECO code and assigned_by are kept on each edge for filtering.\"\n}\n```",
+   "usage": {
+    "in": 4995,
+    "out": 1731,
+    "usd": 0.0546
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 17.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:BiologicalProcess",
+     "name_column": "go_term_text"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:has_participant",
+    "association_category": "biolink:Association",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:goa",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "goeco",
+     "assigned_by"
+    ],
+    "keep_if": null,
+    "split_by": "go_type",
+    "by_value": {
+     "Process": {},
+     "Function": {
+      "subject": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:MolecularActivity",
+       "name_column": "go_term_text"
+      }
+     },
+     "Component": {
+      "subject": {
+       "columns": [
+        "protein_id"
+       ],
+       "resolver": "pharos_protein",
+       "category": "biolink:Protein"
+      },
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:CellularComponent",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:located_in",
+      "association_category": "biolink:MacromolecularMachineToCellularComponentAssociation"
+     }
+    },
+    "notes": "These are GO annotations of human UniProt proteins. Biolink 4.4.3 does not let a Protein be the subject of participates_in or enables. Process and Function rows are therefore inverted to GO term has_participant protein; has_participant takes an Occurrent as subject. This is less specific than enables, but it is valid. Component rows keep protein located_in cellular component. Evidence is mixed: IEA rows are automated and IDA, TAS and similar rows are curated, so agent_type is not_provided. The evidence code, ECO code and assigned_by are kept on each edge for filtering."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "4_domain_range [Function]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein",
+     "4_domain_range [Process]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein"
+    ],
+    "rules": [
+     {
+      "value": "Component",
+      "rows": 77707,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 18459,
+        "prefixes": {
+         "UniProtKB": 18459
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 18459,
+          "in_release": 18459
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 1721,
+        "prefixes": {
+         "GO": 1721
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 1721,
+          "in_release": 1628
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:CellularComponent"
+       }
+      },
+      "resolved_as_needed": 77707,
+      "kept": 77707,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Function",
+      "rows": 54547,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 4186,
+        "prefixes": {
+         "GO": 4186
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 4186,
+          "in_release": 3982
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:MolecularActivity"
+       },
+       "object": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 15773,
+        "prefixes": {
+         "UniProtKB": 15773
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 15773,
+          "in_release": 15773
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 54547,
+      "kept": 54547,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Process",
+      "rows": 126465,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 11996,
+        "prefixes": {
+         "GO": 11996
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 11996,
+          "in_release": 11409
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:BiologicalProcess"
+       },
+       "object": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 16360,
+        "prefixes": {
+         "UniProtKB": 16360
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 16360,
+          "in_release": 16360
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 126465,
+      "kept": 126465,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "go_id"
+   ],
+   "resolver": "curie",
+   "category": "biolink:BiologicalProcess",
+   "name_column": "go_term_text"
+  },
+  "object": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:has_participant",
+  "association_category": "biolink:Association",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "not_provided",
+  "primary_knowledge_source": "infores:goa",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "goeco",
+   "assigned_by"
+  ],
+  "keep_if": null,
+  "split_by": "go_type",
+  "by_value": {
+   "Process": {},
+   "Function": {
+    "subject": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:MolecularActivity",
+     "name_column": "go_term_text"
+    }
+   },
+   "Component": {
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:CellularComponent",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:located_in",
+    "association_category": "biolink:MacromolecularMachineToCellularComponentAssociation"
+   }
+  },
+  "notes": "These are GO annotations of human UniProt proteins. Biolink 4.4.3 does not let a Protein be the subject of participates_in or enables. Process and Function rows are therefore inverted to GO term has_participant protein; has_participant takes an Occurrent as subject. This is less specific than enables, but it is valid. Component rows keep protein located_in cellular component. Evidence is mixed: IEA rows are automated and IDA, TAS and similar rows are curated, so agent_type is not_provided. The evidence code, ECO code and assigned_by are kept on each edge for filtering."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

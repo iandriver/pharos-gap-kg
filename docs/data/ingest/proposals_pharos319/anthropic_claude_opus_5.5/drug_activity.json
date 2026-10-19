@@ -1,0 +1,2505 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "drug_activity",
+ "release": "pharos319",
+ "card_sha256": "0eeb91f95e7b264f5b878450c8e6b752a075571c38cbd9300dcae8801138eed0",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"dcid\"], \"resolver\": \"prefix:DrugCentral\", \"category\": \"biolink:ChemicalEntity\", \"name_column\": \"drug\"},\n  \"object\": {\"columns\": [\"target_id\"], \"resolver\": \"pharos_target\", \"category\": \"biolink:Protein\"},\n  \"predicate\": \"biolink:interacts_with\",\n  \"association_category\": \"biolink:ChemicalGeneInteractionAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:drugcentral\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"act_value\", \"act_type\", \"action_type\", \"has_moa\", \"source\", \"reference\"],\n  \"keep_if\": null,\n  \"split_by\": \"action_type\",\n  \"by_value\": {\n    \"INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"inhibition\"}},\n    \"ANTAGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"antagonism\"}},\n    \"ALLOSTERIC ANTAGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"antagonism\"}},\n    \"BLOCKER\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"molecular_channel_blockage\"}},\n    \"INVERSE AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"inverse_agonism\"}},\n    \"NEGATIVE ALLOSTERIC MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"negative_allosteric_modulation\"}},\n    \"GATING INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\"}},\n    \"ANTISENSE INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\"}},\n    \"AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"agonism\"}},\n    \"PARTIAL AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"partial_agonism\"}},\n    \"POSITIVE ALLOSTERIC MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"positive_allosteric_modulation\"}},\n    \"POSITIVE MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\"}},\n    \"ACTIVATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"activation\"}},\n    \"OPENER\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"molecular_channel_opening\"}},\n    \"ANTIBODY BINDING\": {\"predicate\": \"biolink:directly_physically_interacts_with\"},\n    \"BINDING AGENT\": {\"predicate\": \"biolink:directly_physically_interacts_with\"}\n  },\n  \"notes\": \"Drug node is the DrugCentral id (dcid, always present), named by drug; ChemicalEntity because the drugs include antibodies and antisense agents. Each DrugCentral action_type that states a direction becomes affects, with the activity aspect, a direction and, where clear, a causal mechanism. Direct binders (antibody, binding agent) use directly_physically_interacts_with. Rows with a null action (bioactivity only, has_moa=0) and the vague values (MODULATOR, SUBSTRATE, RELEASING AGENT, CHAPERONE, OTHER) fall back to interacts_with. Potency and reference are kept on the edge.\"\n}\n```",
+   "usage": {
+    "in": 6792,
+    "out": 4224,
+    "usd": 0.111648
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 33.9,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "dcid"
+     ],
+     "resolver": "prefix:DrugCentral",
+     "category": "biolink:ChemicalEntity",
+     "name_column": "drug"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:interacts_with",
+    "association_category": "biolink:ChemicalGeneInteractionAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "act_value",
+     "act_type",
+     "action_type",
+     "has_moa",
+     "source",
+     "reference"
+    ],
+    "keep_if": null,
+    "split_by": "action_type",
+    "by_value": {
+     "INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "inhibition"
+      }
+     },
+     "ANTAGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "antagonism"
+      }
+     },
+     "ALLOSTERIC ANTAGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "antagonism"
+      }
+     },
+     "BLOCKER": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "molecular_channel_blockage"
+      }
+     },
+     "INVERSE AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "inverse_agonism"
+      }
+     },
+     "NEGATIVE ALLOSTERIC MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "negative_allosteric_modulation"
+      }
+     },
+     "GATING INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased"
+      }
+     },
+     "ANTISENSE INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased"
+      }
+     },
+     "AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "agonism"
+      }
+     },
+     "PARTIAL AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "partial_agonism"
+      }
+     },
+     "POSITIVE ALLOSTERIC MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "positive_allosteric_modulation"
+      }
+     },
+     "POSITIVE MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased"
+      }
+     },
+     "ACTIVATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "activation"
+      }
+     },
+     "OPENER": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "molecular_channel_opening"
+      }
+     },
+     "ANTIBODY BINDING": {
+      "predicate": "biolink:directly_physically_interacts_with"
+     },
+     "BINDING AGENT": {
+      "predicate": "biolink:directly_physically_interacts_with"
+     }
+    },
+    "notes": "Drug node is the DrugCentral id (dcid, always present), named by drug; ChemicalEntity because the drugs include antibodies and antisense agents. Each DrugCentral action_type that states a direction becomes affects, with the activity aspect, a direction and, where clear, a causal mechanism. Direct binders (antibody, binding agent) use directly_physically_interacts_with. Rows with a null action (bioactivity only, has_moa=0) and the vague values (MODULATOR, SUBSTRATE, RELEASING AGENT, CHAPERONE, OTHER) fall back to interacts_with. Potency and reference are kept on the edge."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: the view's value 'ALLOSTERIC MODULATOR' has no mapping and no skip",
+     "1_parses: the view's value 'MODULATOR' has no mapping and no skip",
+     "1_parses: the view's value 'OTHER' has no mapping and no skip",
+     "1_parses: the view's value 'PHARMACOLOGICAL CHAPERONE' has no mapping and no skip",
+     "1_parses: the view's value 'RELEASING AGENT' has no mapping and no skip",
+     "1_parses: the view's value 'SUBSTRATE' has no mapping and no skip"
+    ],
+    "rules": [
+     {
+      "value": "ACTIVATOR",
+      "rows": 58,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 58,
+        "resolved": 58,
+        "distinct": 32,
+        "prefixes": {
+         "DrugCentral": 32
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 58,
+        "resolved": 58,
+        "distinct": 31,
+        "prefixes": {
+         "UniProtKB": 31
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 31,
+          "in_release": 31
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 58,
+      "kept": 58,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "AGONIST",
+      "rows": 614,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 614,
+        "resolved": 614,
+        "distinct": 428,
+        "prefixes": {
+         "DrugCentral": 428
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 614,
+        "resolved": 614,
+        "distinct": 160,
+        "prefixes": {
+         "UniProtKB": 160
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 160,
+          "in_release": 160
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 614,
+      "kept": 614,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ALLOSTERIC ANTAGONIST",
+      "rows": 16,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 16,
+        "resolved": 16,
+        "distinct": 1,
+        "prefixes": {
+         "DrugCentral": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 16,
+        "resolved": 16,
+        "distinct": 8,
+        "prefixes": {
+         "UniProtKB": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 8,
+          "in_release": 8
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 16,
+      "kept": 16,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTAGONIST",
+      "rows": 532,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 532,
+        "resolved": 532,
+        "distinct": 338,
+        "prefixes": {
+         "DrugCentral": 338
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 532,
+        "resolved": 532,
+        "distinct": 112,
+        "prefixes": {
+         "UniProtKB": 112
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 112,
+          "in_release": 112
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 532,
+      "kept": 532,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTIBODY BINDING",
+      "rows": 105,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 105,
+        "resolved": 105,
+        "distinct": 80,
+        "prefixes": {
+         "DrugCentral": 80
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 105,
+        "resolved": 105,
+        "distinct": 62,
+        "prefixes": {
+         "UniProtKB": 62
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 62,
+          "in_release": 62
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 105,
+      "kept": 105,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTISENSE INHIBITOR",
+      "rows": 8,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 8,
+        "resolved": 8,
+        "distinct": 8,
+        "prefixes": {
+         "DrugCentral": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 8,
+        "resolved": 8,
+        "distinct": 6,
+        "prefixes": {
+         "UniProtKB": 6
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 6,
+          "in_release": 6
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 8,
+      "kept": 8,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "BINDING AGENT",
+      "rows": 59,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 59,
+        "resolved": 59,
+        "distinct": 28,
+        "prefixes": {
+         "DrugCentral": 28
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 59,
+        "resolved": 59,
+        "distinct": 48,
+        "prefixes": {
+         "UniProtKB": 48
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 48,
+          "in_release": 48
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 59,
+      "kept": 59,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "BLOCKER",
+      "rows": 454,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 454,
+        "resolved": 454,
+        "distinct": 124,
+        "prefixes": {
+         "DrugCentral": 124
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 454,
+        "resolved": 454,
+        "distinct": 93,
+        "prefixes": {
+         "UniProtKB": 93
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 93,
+          "in_release": 93
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 454,
+      "kept": 454,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "GATING INHIBITOR",
+      "rows": 9,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9,
+        "resolved": 9,
+        "distinct": 6,
+        "prefixes": {
+         "DrugCentral": 6
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 9,
+        "resolved": 9,
+        "distinct": 3,
+        "prefixes": {
+         "UniProtKB": 3
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 3,
+          "in_release": 3
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 9,
+      "kept": 9,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "INHIBITOR",
+      "rows": 1169,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 1169,
+        "resolved": 1169,
+        "distinct": 557,
+        "prefixes": {
+         "DrugCentral": 557
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 1169,
+        "resolved": 1169,
+        "distinct": 391,
+        "prefixes": {
+         "UniProtKB": 391
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 391,
+          "in_release": 391
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 1169,
+      "kept": 1169,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "INVERSE AGONIST",
+      "rows": 11,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 11,
+        "resolved": 11,
+        "distinct": 8,
+        "prefixes": {
+         "DrugCentral": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 11,
+        "resolved": 11,
+        "distinct": 9,
+        "prefixes": {
+         "UniProtKB": 9
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 9,
+          "in_release": 9
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 11,
+      "kept": 11,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "NEGATIVE ALLOSTERIC MODULATOR",
+      "rows": 10,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 10,
+        "resolved": 10,
+        "distinct": 4,
+        "prefixes": {
+         "DrugCentral": 4
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 10,
+        "resolved": 10,
+        "distinct": 8,
+        "prefixes": {
+         "UniProtKB": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 8,
+          "in_release": 8
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 10,
+      "kept": 10,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "OPENER",
+      "rows": 41,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 41,
+        "resolved": 41,
+        "distinct": 15,
+        "prefixes": {
+         "DrugCentral": 15
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 41,
+        "resolved": 41,
+        "distinct": 16,
+        "prefixes": {
+         "UniProtKB": 16
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 16,
+          "in_release": 16
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 41,
+      "kept": 41,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "PARTIAL AGONIST",
+      "rows": 22,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 22,
+        "resolved": 22,
+        "distinct": 13,
+        "prefixes": {
+         "DrugCentral": 13
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 22,
+        "resolved": 22,
+        "distinct": 14,
+        "prefixes": {
+         "UniProtKB": 14
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 14,
+          "in_release": 14
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 22,
+      "kept": 22,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "POSITIVE ALLOSTERIC MODULATOR",
+      "rows": 387,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 387,
+        "resolved": 387,
+        "distinct": 41,
+        "prefixes": {
+         "DrugCentral": 41
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 387,
+        "resolved": 387,
+        "distinct": 19,
+        "prefixes": {
+         "UniProtKB": 19
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 19,
+          "in_release": 19
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 387,
+      "kept": 387,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "POSITIVE MODULATOR",
+      "rows": 76,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 76,
+        "resolved": 76,
+        "distinct": 14,
+        "prefixes": {
+         "DrugCentral": 14
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 76,
+        "resolved": 76,
+        "distinct": 19,
+        "prefixes": {
+         "UniProtKB": 19
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 19,
+          "in_release": 19
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 76,
+      "kept": 76,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"dcid\"], \"resolver\": \"prefix:DrugCentral\", \"category\": \"biolink:ChemicalEntity\", \"name_column\": \"drug\"},\n  \"object\": {\"columns\": [\"target_id\"], \"resolver\": \"pharos_target\", \"category\": \"biolink:Protein\"},\n  \"predicate\": \"biolink:interacts_with\",\n  \"association_category\": \"biolink:ChemicalGeneInteractionAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:drugcentral\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"act_value\", \"act_type\", \"action_type\", \"has_moa\", \"source\", \"reference\"],\n  \"keep_if\": null,\n  \"split_by\": \"action_type\",\n  \"by_value\": {\n    \"INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"inhibition\"}},\n    \"ANTAGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"antagonism\"}},\n    \"ALLOSTERIC ANTAGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"antagonism\"}},\n    \"BLOCKER\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"molecular_channel_blockage\"}},\n    \"INVERSE AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"inverse_agonism\"}},\n    \"NEGATIVE ALLOSTERIC MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\", \"causal_mechanism_qualifier\": \"negative_allosteric_modulation\"}},\n    \"GATING INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\"}},\n    \"ANTISENSE INHIBITOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"decreased\"}},\n    \"AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"agonism\"}},\n    \"PARTIAL AGONIST\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"partial_agonism\"}},\n    \"POSITIVE ALLOSTERIC MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"positive_allosteric_modulation\"}},\n    \"POSITIVE MODULATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\"}},\n    \"ACTIVATOR\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"activation\"}},\n    \"OPENER\": {\"predicate\": \"biolink:affects\", \"association_category\": \"biolink:ChemicalAffectsGeneAssociation\", \"qualifiers\": {\"object_aspect_qualifier\": \"activity\", \"object_direction_qualifier\": \"increased\", \"causal_mechanism_qualifier\": \"molecular_channel_opening\"}},\n    \"ANTIBODY BINDING\": {\"predicate\": \"biolink:directly_physically_interacts_with\"},\n    \"BINDING AGENT\": {\"predicate\": \"biolink:directly_physically_interacts_with\"},\n    \"MODULATOR\": {\"predicate\": \"biolink:interacts_with\"},\n    \"ALLOSTERIC MODULATOR\": {\"predicate\": \"biolink:interacts_with\"},\n    \"SUBSTRATE\": {\"predicate\": \"biolink:interacts_with\"},\n    \"RELEASING AGENT\": {\"predicate\": \"biolink:interacts_with\"},\n    \"PHARMACOLOGICAL CHAPERONE\": {\"predicate\": \"biolink:interacts_with\"},\n    \"OTHER\": {\"predicate\": \"biolink:interacts_with\"}\n  },\n  \"notes\": \"The drug node is the DrugCentral id (dcid, always present), named by drug. It is a ChemicalEntity because the drugs include antibodies and antisense agents. Each action_type that states a direction becomes affects, with the activity aspect, a direction and, where clear, a causal mechanism. Direct binders use directly_physically_interacts_with. Rows with a null action (bioactivity only) and the vague values (modulator, substrate, releasing agent, chaperone, other) fall back to interacts_with. Potency and reference are kept on the edge.\"\n}\n```",
+   "usage": {
+    "in": 9264,
+    "out": 2502,
+    "usd": 0.087096
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 18.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "dcid"
+     ],
+     "resolver": "prefix:DrugCentral",
+     "category": "biolink:ChemicalEntity",
+     "name_column": "drug"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:interacts_with",
+    "association_category": "biolink:ChemicalGeneInteractionAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "act_value",
+     "act_type",
+     "action_type",
+     "has_moa",
+     "source",
+     "reference"
+    ],
+    "keep_if": null,
+    "split_by": "action_type",
+    "by_value": {
+     "INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "inhibition"
+      }
+     },
+     "ANTAGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "antagonism"
+      }
+     },
+     "ALLOSTERIC ANTAGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "antagonism"
+      }
+     },
+     "BLOCKER": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "molecular_channel_blockage"
+      }
+     },
+     "INVERSE AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "inverse_agonism"
+      }
+     },
+     "NEGATIVE ALLOSTERIC MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased",
+       "causal_mechanism_qualifier": "negative_allosteric_modulation"
+      }
+     },
+     "GATING INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased"
+      }
+     },
+     "ANTISENSE INHIBITOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "decreased"
+      }
+     },
+     "AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "agonism"
+      }
+     },
+     "PARTIAL AGONIST": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "partial_agonism"
+      }
+     },
+     "POSITIVE ALLOSTERIC MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "positive_allosteric_modulation"
+      }
+     },
+     "POSITIVE MODULATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased"
+      }
+     },
+     "ACTIVATOR": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "activation"
+      }
+     },
+     "OPENER": {
+      "predicate": "biolink:affects",
+      "association_category": "biolink:ChemicalAffectsGeneAssociation",
+      "qualifiers": {
+       "object_aspect_qualifier": "activity",
+       "object_direction_qualifier": "increased",
+       "causal_mechanism_qualifier": "molecular_channel_opening"
+      }
+     },
+     "ANTIBODY BINDING": {
+      "predicate": "biolink:directly_physically_interacts_with"
+     },
+     "BINDING AGENT": {
+      "predicate": "biolink:directly_physically_interacts_with"
+     },
+     "MODULATOR": {
+      "predicate": "biolink:interacts_with"
+     },
+     "ALLOSTERIC MODULATOR": {
+      "predicate": "biolink:interacts_with"
+     },
+     "SUBSTRATE": {
+      "predicate": "biolink:interacts_with"
+     },
+     "RELEASING AGENT": {
+      "predicate": "biolink:interacts_with"
+     },
+     "PHARMACOLOGICAL CHAPERONE": {
+      "predicate": "biolink:interacts_with"
+     },
+     "OTHER": {
+      "predicate": "biolink:interacts_with"
+     }
+    },
+    "notes": "The drug node is the DrugCentral id (dcid, always present), named by drug. It is a ChemicalEntity because the drugs include antibodies and antisense agents. Each action_type that states a direction becomes affects, with the activity aspect, a direction and, where clear, a causal mechanism. Direct binders use directly_physically_interacts_with. Rows with a null action (bioactivity only) and the vague values (modulator, substrate, releasing agent, chaperone, other) fall back to interacts_with. Potency and reference are kept on the edge."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "2_predicate [ALLOSTERIC MODULATOR]: biolink:interacts_with is abstract, a mixin or deprecated",
+     "2_predicate [MODULATOR]: biolink:interacts_with is abstract, a mixin or deprecated",
+     "2_predicate [OTHER]: biolink:interacts_with is abstract, a mixin or deprecated",
+     "2_predicate [PHARMACOLOGICAL CHAPERONE]: biolink:interacts_with is abstract, a mixin or deprecated",
+     "2_predicate [RELEASING AGENT]: biolink:interacts_with is abstract, a mixin or deprecated",
+     "2_predicate [SUBSTRATE]: biolink:interacts_with is abstract, a mixin or deprecated"
+    ],
+    "rules": [
+     {
+      "value": "ACTIVATOR",
+      "rows": 58,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 58,
+        "resolved": 58,
+        "distinct": 32,
+        "prefixes": {
+         "DrugCentral": 32
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 58,
+        "resolved": 58,
+        "distinct": 31,
+        "prefixes": {
+         "UniProtKB": 31
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 31,
+          "in_release": 31
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 58,
+      "kept": 58,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "AGONIST",
+      "rows": 614,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 614,
+        "resolved": 614,
+        "distinct": 428,
+        "prefixes": {
+         "DrugCentral": 428
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 614,
+        "resolved": 614,
+        "distinct": 160,
+        "prefixes": {
+         "UniProtKB": 160
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 160,
+          "in_release": 160
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 614,
+      "kept": 614,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ALLOSTERIC ANTAGONIST",
+      "rows": 16,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 16,
+        "resolved": 16,
+        "distinct": 1,
+        "prefixes": {
+         "DrugCentral": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 16,
+        "resolved": 16,
+        "distinct": 8,
+        "prefixes": {
+         "UniProtKB": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 8,
+          "in_release": 8
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 16,
+      "kept": 16,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ALLOSTERIC MODULATOR",
+      "rows": 6,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 6,
+        "resolved": 6,
+        "distinct": 3,
+        "prefixes": {
+         "DrugCentral": 3
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 6,
+        "resolved": 6,
+        "distinct": 5,
+        "prefixes": {
+         "UniProtKB": 5
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 5,
+          "in_release": 5
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 6,
+      "kept": 6,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTAGONIST",
+      "rows": 532,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 532,
+        "resolved": 532,
+        "distinct": 338,
+        "prefixes": {
+         "DrugCentral": 338
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 532,
+        "resolved": 532,
+        "distinct": 112,
+        "prefixes": {
+         "UniProtKB": 112
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 112,
+          "in_release": 112
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 532,
+      "kept": 532,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTIBODY BINDING",
+      "rows": 105,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 105,
+        "resolved": 105,
+        "distinct": 80,
+        "prefixes": {
+         "DrugCentral": 80
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 105,
+        "resolved": 105,
+        "distinct": 62,
+        "prefixes": {
+         "UniProtKB": 62
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 62,
+          "in_release": 62
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 105,
+      "kept": 105,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "ANTISENSE INHIBITOR",
+      "rows": 8,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 8,
+        "resolved": 8,
+        "distinct": 8,
+        "prefixes": {
+         "DrugCentral": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 8,
+        "resolved": 8,
+        "distinct": 6,
+        "prefixes": {
+         "UniProtKB": 6
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 6,
+          "in_release": 6
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 8,
+      "kept": 8,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "BINDING AGENT",
+      "rows": 59,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 59,
+        "resolved": 59,
+        "distinct": 28,
+        "prefixes": {
+         "DrugCentral": 28
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 59,
+        "resolved": 59,
+        "distinct": 48,
+        "prefixes": {
+         "UniProtKB": 48
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 48,
+          "in_release": 48
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 59,
+      "kept": 59,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "BLOCKER",
+      "rows": 454,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 454,
+        "resolved": 454,
+        "distinct": 124,
+        "prefixes": {
+         "DrugCentral": 124
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 454,
+        "resolved": 454,
+        "distinct": 93,
+        "prefixes": {
+         "UniProtKB": 93
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 93,
+          "in_release": 93
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 454,
+      "kept": 454,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "GATING INHIBITOR",
+      "rows": 9,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9,
+        "resolved": 9,
+        "distinct": 6,
+        "prefixes": {
+         "DrugCentral": 6
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 9,
+        "resolved": 9,
+        "distinct": 3,
+        "prefixes": {
+         "UniProtKB": 3
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 3,
+          "in_release": 3
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 9,
+      "kept": 9,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "INHIBITOR",
+      "rows": 1169,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 1169,
+        "resolved": 1169,
+        "distinct": 557,
+        "prefixes": {
+         "DrugCentral": 557
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 1169,
+        "resolved": 1169,
+        "distinct": 391,
+        "prefixes": {
+         "UniProtKB": 391
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 391,
+          "in_release": 391
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 1169,
+      "kept": 1169,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "INVERSE AGONIST",
+      "rows": 11,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 11,
+        "resolved": 11,
+        "distinct": 8,
+        "prefixes": {
+         "DrugCentral": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 11,
+        "resolved": 11,
+        "distinct": 9,
+        "prefixes": {
+         "UniProtKB": 9
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 9,
+          "in_release": 9
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 11,
+      "kept": 11,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "MODULATOR",
+      "rows": 35,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 35,
+        "resolved": 35,
+        "distinct": 23,
+        "prefixes": {
+         "DrugCentral": 23
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 35,
+        "resolved": 35,
+        "distinct": 18,
+        "prefixes": {
+         "UniProtKB": 18
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 18,
+          "in_release": 18
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 35,
+      "kept": 35,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "NEGATIVE ALLOSTERIC MODULATOR",
+      "rows": 10,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 10,
+        "resolved": 10,
+        "distinct": 4,
+        "prefixes": {
+         "DrugCentral": 4
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 10,
+        "resolved": 10,
+        "distinct": 8,
+        "prefixes": {
+         "UniProtKB": 8
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 8,
+          "in_release": 8
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 10,
+      "kept": 10,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "OPENER",
+      "rows": 41,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 41,
+        "resolved": 41,
+        "distinct": 15,
+        "prefixes": {
+         "DrugCentral": 15
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 41,
+        "resolved": 41,
+        "distinct": 16,
+        "prefixes": {
+         "UniProtKB": 16
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 16,
+          "in_release": 16
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 41,
+      "kept": 41,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "OTHER",
+      "rows": 1,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 1,
+        "resolved": 1,
+        "distinct": 1,
+        "prefixes": {
+         "DrugCentral": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 1,
+        "resolved": 1,
+        "distinct": 1,
+        "prefixes": {
+         "UniProtKB": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 1,
+          "in_release": 1
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 1,
+      "kept": 1,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "PARTIAL AGONIST",
+      "rows": 22,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 22,
+        "resolved": 22,
+        "distinct": 13,
+        "prefixes": {
+         "DrugCentral": 13
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 22,
+        "resolved": 22,
+        "distinct": 14,
+        "prefixes": {
+         "UniProtKB": 14
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 14,
+          "in_release": 14
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 22,
+      "kept": 22,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "PHARMACOLOGICAL CHAPERONE",
+      "rows": 3,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 3,
+        "resolved": 3,
+        "distinct": 3,
+        "prefixes": {
+         "DrugCentral": 3
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 3,
+        "resolved": 3,
+        "distinct": 2,
+        "prefixes": {
+         "UniProtKB": 2
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 2,
+          "in_release": 2
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 3,
+      "kept": 3,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "POSITIVE ALLOSTERIC MODULATOR",
+      "rows": 387,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 387,
+        "resolved": 387,
+        "distinct": 41,
+        "prefixes": {
+         "DrugCentral": 41
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 387,
+        "resolved": 387,
+        "distinct": 19,
+        "prefixes": {
+         "UniProtKB": 19
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 19,
+          "in_release": 19
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 387,
+      "kept": 387,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "POSITIVE MODULATOR",
+      "rows": 76,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 76,
+        "resolved": 76,
+        "distinct": 14,
+        "prefixes": {
+         "DrugCentral": 14
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 76,
+        "resolved": 76,
+        "distinct": 19,
+        "prefixes": {
+         "UniProtKB": 19
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 19,
+          "in_release": 19
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 76,
+      "kept": 76,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "RELEASING AGENT",
+      "rows": 7,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 7,
+        "resolved": 7,
+        "distinct": 5,
+        "prefixes": {
+         "DrugCentral": 5
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 7,
+        "resolved": 7,
+        "distinct": 2,
+        "prefixes": {
+         "UniProtKB": 2
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 2,
+          "in_release": 2
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 7,
+      "kept": 7,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "SUBSTRATE",
+      "rows": 6,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 6,
+        "resolved": 6,
+        "distinct": 6,
+        "prefixes": {
+         "DrugCentral": 6
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 6,
+        "resolved": 6,
+        "distinct": 2,
+        "prefixes": {
+         "UniProtKB": 2
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 2,
+          "in_release": 2
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 6,
+      "kept": 6,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "dcid"
+   ],
+   "resolver": "prefix:DrugCentral",
+   "category": "biolink:ChemicalEntity",
+   "name_column": "drug"
+  },
+  "object": {
+   "columns": [
+    "target_id"
+   ],
+   "resolver": "pharos_target",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:interacts_with",
+  "association_category": "biolink:ChemicalGeneInteractionAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:drugcentral",
+  "qualifiers": {},
+  "edge_properties": [
+   "act_value",
+   "act_type",
+   "action_type",
+   "has_moa",
+   "source",
+   "reference"
+  ],
+  "keep_if": null,
+  "split_by": "action_type",
+  "by_value": {
+   "INHIBITOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "inhibition"
+    }
+   },
+   "ANTAGONIST": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "antagonism"
+    }
+   },
+   "ALLOSTERIC ANTAGONIST": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "antagonism"
+    }
+   },
+   "BLOCKER": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "molecular_channel_blockage"
+    }
+   },
+   "INVERSE AGONIST": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "inverse_agonism"
+    }
+   },
+   "NEGATIVE ALLOSTERIC MODULATOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased",
+     "causal_mechanism_qualifier": "negative_allosteric_modulation"
+    }
+   },
+   "GATING INHIBITOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased"
+    }
+   },
+   "ANTISENSE INHIBITOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "decreased"
+    }
+   },
+   "AGONIST": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased",
+     "causal_mechanism_qualifier": "agonism"
+    }
+   },
+   "PARTIAL AGONIST": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased",
+     "causal_mechanism_qualifier": "partial_agonism"
+    }
+   },
+   "POSITIVE ALLOSTERIC MODULATOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased",
+     "causal_mechanism_qualifier": "positive_allosteric_modulation"
+    }
+   },
+   "POSITIVE MODULATOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased"
+    }
+   },
+   "ACTIVATOR": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased",
+     "causal_mechanism_qualifier": "activation"
+    }
+   },
+   "OPENER": {
+    "predicate": "biolink:affects",
+    "association_category": "biolink:ChemicalAffectsGeneAssociation",
+    "qualifiers": {
+     "object_aspect_qualifier": "activity",
+     "object_direction_qualifier": "increased",
+     "causal_mechanism_qualifier": "molecular_channel_opening"
+    }
+   },
+   "ANTIBODY BINDING": {
+    "predicate": "biolink:directly_physically_interacts_with"
+   },
+   "BINDING AGENT": {
+    "predicate": "biolink:directly_physically_interacts_with"
+   },
+   "MODULATOR": {
+    "predicate": "biolink:interacts_with"
+   },
+   "ALLOSTERIC MODULATOR": {
+    "predicate": "biolink:interacts_with"
+   },
+   "SUBSTRATE": {
+    "predicate": "biolink:interacts_with"
+   },
+   "RELEASING AGENT": {
+    "predicate": "biolink:interacts_with"
+   },
+   "PHARMACOLOGICAL CHAPERONE": {
+    "predicate": "biolink:interacts_with"
+   },
+   "OTHER": {
+    "predicate": "biolink:interacts_with"
+   }
+  },
+  "notes": "The drug node is the DrugCentral id (dcid, always present), named by drug. It is a ChemicalEntity because the drugs include antibodies and antisense agents. Each action_type that states a direction becomes affects, with the activity aspect, a direction and, where clear, a causal mechanism. Direct binders use directly_physically_interacts_with. Rows with a null action (bioactivity only) and the vague values (modulator, substrate, releasing agent, chaperone, other) fall back to interacts_with. Potency and reference are kept on the edge."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

@@ -1,0 +1,2200 @@
+{
+ "release": "pharos319",
+ "protocol": "docs/PROTOCOL.md, Ingest",
+ "biolink": "4.4.3",
+ "biolink_schema_sha256": "10ce4b983c1720b8bfa2466e094820da013f5ff7dfa9528f6c7b63fb1b6848f4",
+ "cards_sha256": "cadc63e16e46ce480a76fb4f4c8a237887761991593e8b7e47c9d5365ad3670e",
+ "brief_sha256": "e530324a327c1579f6629b2e2e8ae14a812f1d5b77c8a0fc19b5780023146d80",
+ "control": {
+  "disease.CTD": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+   ],
+   "export": null
+  },
+  "disease.DisGeNET": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+   ],
+   "export": null
+  },
+  "disease.eRAM": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers: object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+   ],
+   "export": null
+  },
+  "disease.Monarch": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers: object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+   ],
+   "export": null
+  },
+  "disease.UniProt_Disease": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+   ],
+   "export": null
+  },
+  "disease.Expression_Atlas": {
+   "accepted": false,
+   "problems": [
+    "6_qualifiers: biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier"
+   ],
+   "export": null
+  },
+  "disease.JensenLab": {
+   "accepted": false,
+   "problems": [
+    "4_domain_range [JensenLab Knowledge AmyCo]: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers [JensenLab Knowledge AmyCo]: object: 23 of 75 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+    "4_domain_range [JensenLab Knowledge MedlinePlus]: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers [JensenLab Knowledge MedlinePlus]: object: 1 of 72 DOID identifiers are in the release's DOID list; at least 90% must",
+    "4_domain_range [JensenLab Knowledge UniProtKB-KW]: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers [JensenLab Knowledge UniProtKB-KW]: object: 0 of 1 DOID identifiers are in the release's DOID list; at least 90% must",
+    "4_domain_range [JensenLab Text Mining]: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+    "8_identifiers [JensenLab Text Mining]: object: 6 of 75 DOID identifiers are in the release's DOID list; at least 90% must"
+   ],
+   "export": null
+  },
+  "tiga": {
+   "accepted": false,
+   "problems": [
+    "3_categories: association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class",
+    "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+   ],
+   "export": null
+  },
+  "drug_activity": {
+   "accepted": true,
+   "problems": [],
+   "export": {
+    "passed": true,
+    "failed": null,
+    "groups": 4295,
+    "n_nodes": 2960,
+    "n_edges": 4295,
+    "n_gaps": 0,
+    "predicates": {
+     "biolink:directly_physically_interacts_with": 4295
+    }
+   }
+  }
+ },
+ "hand_values_in_export": {
+  "disease.CTD|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 28815
+  },
+  "disease.DisGeNET|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 82453
+  },
+  "disease.eRAM|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 14263
+  },
+  "disease.Monarch|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 8628
+  },
+  "disease.UniProt_Disease|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 5455
+  },
+  "disease.Expression_Atlas|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 159846
+  },
+  "disease.JensenLab|JensenLab Knowledge AmyCo": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 260
+  },
+  "disease.JensenLab|JensenLab Knowledge MedlinePlus": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 4004
+  },
+  "disease.JensenLab|JensenLab Knowledge UniProtKB-KW": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 3091
+  },
+  "disease.JensenLab|JensenLab Text Mining": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 7394
+  },
+  "tiga|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 294248
+  },
+  "drug_activity|": {
+   "predicate": true,
+   "association_category": true,
+   "primary_knowledge_source": true,
+   "knowledge_level": true,
+   "agent_type": true,
+   "subject_category": true,
+   "object_category": true,
+   "edges": 4295
+  }
+ },
+ "models": {
+  "local:qwen3.6:35b-a3b": {
+   "cards": [
+    {
+     "view": "disease.CTD",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 59.4,
+     "usd": 0,
+     "tokens_out": 4401,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": true,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.DisGeNET",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 100.9,
+     "usd": 0,
+     "tokens_out": 7325,
+     "problems": [
+      "3_categories: association category 'biolink:gene_to_disease_association' is not a Biolink 4.4.3 class"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.eRAM",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 103.1,
+     "usd": 0,
+     "tokens_out": 7396,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Monarch",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 107.0,
+     "usd": 0,
+     "tokens_out": 7677,
+     "problems": [
+      "2_predicate: 'biolink:disease_associated_gene_or_gene_product' is not a Biolink 4.4.3 predicate",
+      "3_categories: association category 'biolink:DiseaseToGeneOrGeneProductAssociation' is not a Biolink 4.4.3 class"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.UniProt_Disease",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 90.3,
+     "usd": 0,
+     "tokens_out": 6710,
+     "problems": [
+      "3_categories: association category 'biolink:DiseaseToGeneOrGeneProductAssociation' is not a Biolink 4.4.3 class"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Expression_Atlas",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 67.2,
+     "usd": 0,
+     "tokens_out": 4849,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.JensenLab",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 100.2,
+     "usd": 0,
+     "tokens_out": 7483,
+     "problems": [
+      "8_identifiers: subject: 23 of 1,995 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+      "8_identifiers: subject: 1,686 of 1,972 DOID identifiers are in the release's DOID list; at least 90% must"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": "JensenLab Knowledge AmyCo",
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge MedlinePlus",
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge UniProtKB-KW",
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Text Mining",
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": true,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "tiga",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 391.0,
+     "usd": 0,
+     "tokens_out": 28520,
+     "problems": [
+      "1_parses: no JSON object in the reply"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": false,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "drug_activity",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 122.7,
+     "usd": 0,
+     "tokens_out": 9088,
+     "problems": [
+      "2_predicate: 'biolink:binds_to' is not a Biolink 4.4.3 predicate",
+      "3_categories: association category 'biolink:chemical_gene_association' is not a Biolink 4.4.3 class"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    }
+   ],
+   "qualification": {
+    "accepted_cards": 3,
+    "of_cards": 9,
+    "columns_agree": 2,
+    "predicate_exact_or_close": 9,
+    "predicate_exact": 0,
+    "of_rules": 12,
+    "qualifies": false
+   },
+   "usd": 0,
+   "seconds": 1141.8
+  },
+  "anthropic/claude-haiku-5.5": {
+   "cards": [
+    {
+     "view": "disease.CTD",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 6.4,
+     "usd": 0.001221,
+     "tokens_out": 1395,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.DisGeNET",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 6.2,
+     "usd": 0.001189,
+     "tokens_out": 1266,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.eRAM",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 11.7,
+     "usd": 0.002348,
+     "tokens_out": 2506,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Monarch",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 10.9,
+     "usd": 0.002374,
+     "tokens_out": 2375,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.UniProt_Disease",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 7.9,
+     "usd": 0.001375,
+     "tokens_out": 1596,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Expression_Atlas",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 7.2,
+     "usd": 0.001253,
+     "tokens_out": 1464,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.JensenLab",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 18.1,
+     "usd": 0.00333,
+     "tokens_out": 4197,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": "JensenLab Knowledge AmyCo",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge MedlinePlus",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge UniProtKB-KW",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Text Mining",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "tiga",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 14.6,
+     "usd": 0.002913,
+     "tokens_out": 3243,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "drug_activity",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 25.7,
+     "usd": 0.004126,
+     "tokens_out": 5390,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": true,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "ortholog_disease",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 6.5,
+     "usd": 0.00096,
+     "tokens_out": 1328,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.OMIM",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 8.7,
+     "usd": 0.001386,
+     "tokens_out": 1841,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.JAX_MGI",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 5.1,
+     "usd": 0.001018,
+     "tokens_out": 1074,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "goa",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 14.2,
+     "usd": 0.002663,
+     "tokens_out": 3437,
+     "problems": [
+      "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene",
+      "4_domain_range [Process]: biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Gene"
+     ],
+     "error": null
+    }
+   ],
+   "qualification": {
+    "accepted_cards": 9,
+    "of_cards": 9,
+    "columns_agree": 12,
+    "predicate_exact_or_close": 11,
+    "predicate_exact": 9,
+    "of_rules": 12,
+    "qualifies": true
+   },
+   "usd": 0.026156,
+   "seconds": 143.2
+  },
+  "anthropic/claude-sonnet-5.5": {
+   "cards": [
+    {
+     "view": "disease.CTD",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 7.0,
+     "usd": 0.020096,
+     "tokens_out": 962,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.DisGeNET",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 3.4,
+     "usd": 0.015216,
+     "tokens_out": 410,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.eRAM",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 9.7,
+     "usd": 0.034816,
+     "tokens_out": 1308,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Monarch",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 12.1,
+     "usd": 0.04,
+     "tokens_out": 1660,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.UniProt_Disease",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 3.0,
+     "usd": 0.015418,
+     "tokens_out": 387,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Expression_Atlas",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 6.9,
+     "usd": 0.019856,
+     "tokens_out": 943,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.JensenLab",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 23.6,
+     "usd": 0.054584,
+     "tokens_out": 3043,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": "JensenLab Knowledge AmyCo",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge MedlinePlus",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge UniProtKB-KW",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Text Mining",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "tiga",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 16.0,
+     "usd": 0.046856,
+     "tokens_out": 2137,
+     "problems": [
+      "3_categories: object category biolink:BiologicalEntity is not a concrete class below biolink:NamedThing",
+      "8_identifiers: object: 32 of 2,247 distinct identifiers are under prefixes ['Orphanet', 'PATO'] that biolink:BiologicalEntity's id_prefixes do not list"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": false,
+        "predicate": true,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "drug_activity",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 29.1,
+     "usd": 0.081098,
+     "tokens_out": 5080,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": true,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "ortholog_disease",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 3.4,
+     "usd": 0.009558,
+     "tokens_out": 364,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.OMIM",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 18.0,
+     "usd": 0.04442,
+     "tokens_out": 2457,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.JAX_MGI",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 3.2,
+     "usd": 0.013634,
+     "tokens_out": 401,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "goa",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 22.2,
+     "usd": 0.049874,
+     "tokens_out": 3208,
+     "problems": [
+      "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene"
+     ],
+     "error": null
+    }
+   ],
+   "qualification": {
+    "accepted_cards": 8,
+    "of_cards": 9,
+    "columns_agree": 12,
+    "predicate_exact_or_close": 10,
+    "predicate_exact": 10,
+    "of_rules": 12,
+    "qualifies": true
+   },
+   "usd": 0.445426,
+   "seconds": 157.6
+  },
+  "anthropic/claude-opus-5.5": {
+   "cards": [
+    {
+     "view": "disease.CTD",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 11.3,
+     "usd": 0.043172,
+     "tokens_out": 1111,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.DisGeNET",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 10.5,
+     "usd": 0.044572,
+     "tokens_out": 1117,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.eRAM",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 14.9,
+     "usd": 0.073748,
+     "tokens_out": 1493,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": false,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Monarch",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 19.0,
+     "usd": 0.08576,
+     "tokens_out": 1916,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": false,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.UniProt_Disease",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 16.4,
+     "usd": 0.082608,
+     "tokens_out": 1689,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.Expression_Atlas",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 22.2,
+     "usd": 0.089308,
+     "tokens_out": 2271,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": false,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "disease.JensenLab",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 22.9,
+     "usd": 0.099852,
+     "tokens_out": 2567,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": "JensenLab Knowledge AmyCo",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge MedlinePlus",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Knowledge UniProtKB-KW",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": true,
+        "association_category": true,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      },
+      {
+       "value": "JensenLab Text Mining",
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "tiga",
+     "accepted": true,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 24.5,
+     "usd": 0.099764,
+     "tokens_out": 2405,
+     "problems": [],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": false,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": true
+       }
+      }
+     ]
+    },
+    {
+     "view": "drug_activity",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 52.3,
+     "usd": 0.198744,
+     "tokens_out": 6726,
+     "problems": [
+      "2_predicate [ALLOSTERIC MODULATOR]: biolink:interacts_with is abstract, a mixin or deprecated",
+      "2_predicate [MODULATOR]: biolink:interacts_with is abstract, a mixin or deprecated",
+      "2_predicate [OTHER]: biolink:interacts_with is abstract, a mixin or deprecated",
+      "2_predicate [PHARMACOLOGICAL CHAPERONE]: biolink:interacts_with is abstract, a mixin or deprecated",
+      "2_predicate [RELEASING AGENT]: biolink:interacts_with is abstract, a mixin or deprecated",
+      "2_predicate [SUBSTRATE]: biolink:interacts_with is abstract, a mixin or deprecated"
+     ],
+     "error": null,
+     "agreement": [
+      {
+       "value": null,
+       "agree": {
+        "subject_column": true,
+        "object_column": true,
+        "subject_category": false,
+        "object_category": true,
+        "predicate": false,
+        "association_category": false,
+        "knowledge_level": true,
+        "agent_type": true,
+        "primary_knowledge_source": true,
+        "predicate_close": false
+       }
+      }
+     ]
+    },
+    {
+     "view": "ortholog_disease",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 9.7,
+     "usd": 0.030156,
+     "tokens_out": 916,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.OMIM",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 12.8,
+     "usd": 0.043204,
+     "tokens_out": 1230,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "phenotype.JAX_MGI",
+     "accepted": true,
+     "accepted_first": true,
+     "attempts": 1,
+     "seconds": 10.0,
+     "usd": 0.037688,
+     "tokens_out": 922,
+     "problems": [],
+     "error": null
+    },
+    {
+     "view": "goa",
+     "accepted": false,
+     "accepted_first": false,
+     "attempts": 2,
+     "seconds": 28.2,
+     "usd": 0.09388,
+     "tokens_out": 2873,
+     "problems": [
+      "4_domain_range [Function]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein",
+      "4_domain_range [Process]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein"
+     ],
+     "error": null
+    }
+   ],
+   "qualification": {
+    "accepted_cards": 8,
+    "of_cards": 9,
+    "columns_agree": 11,
+    "predicate_exact_or_close": 10,
+    "predicate_exact": 8,
+    "of_rules": 12,
+    "qualifies": true
+   },
+   "usd": 1.022456,
+   "seconds": 254.7
+  }
+ },
+ "spend_usd": 1.516625,
+ "cap_usd": 1.75,
+ "new_views": {
+  "ortholog_disease": {
+   "used": "anthropic/claude-haiku-5.5",
+   "models": {
+    "anthropic/claude-haiku-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "did",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "prediction",
+       "agent_type": "computational_model",
+       "primary_knowledge_source": "infores:monarchinitiative",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 37847,
+      "n_nodes": 9468,
+      "n_edges": 37847,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:gene_associated_with_condition": 37847
+      }
+     }
+    },
+    "anthropic/claude-sonnet-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "did",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "prediction",
+       "agent_type": "automated_agent",
+       "primary_knowledge_source": "infores:monarch-initiative",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 37847,
+      "n_nodes": 9468,
+      "n_edges": 37847,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:gene_associated_with_condition": 37847
+      }
+     }
+    },
+    "anthropic/claude-opus-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "did",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:associated_with",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "prediction",
+       "agent_type": "computational_model",
+       "primary_knowledge_source": "infores:monarchinitiative",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 37847,
+      "n_nodes": 9468,
+      "n_edges": 37847,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:associated_with": 37847
+      }
+     }
+    }
+   },
+   "differences_from_used": {
+    "anthropic/claude-sonnet-5.5": {
+     "all.agent_type": [
+      "computational_model",
+      "automated_agent"
+     ],
+     "all.primary_knowledge_source": [
+      "infores:monarchinitiative",
+      "infores:monarch-initiative"
+     ]
+    },
+    "anthropic/claude-opus-5.5": {
+     "all.predicate": [
+      "biolink:gene_associated_with_condition",
+      "biolink:associated_with"
+     ]
+    }
+   }
+  },
+  "phenotype.OMIM": {
+   "used": "anthropic/claude-haiku-5.5",
+   "models": {
+    "anthropic/claude-haiku-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "trait",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:omim",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "pattern:OMIM:Phenotype: .*?(\\d{6}) \\([1-4]\\)",
+       "qualifiers": {},
+       "condition": {
+        "column": "trait",
+        "matches": "Phenotype: "
+       }
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 13793,
+      "n_nodes": 17057,
+      "n_edges": 3710,
+      "n_gaps": 10083,
+      "predicates": {
+       "biolink:gene_associated_with_condition": 3710
+      }
+     }
+    },
+    "anthropic/claude-sonnet-5.5": {
+     "accepted": true,
+     "accepted_first": false,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "trait",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:genetically_associated_with",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:omim",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "pattern:OMIM:(\\d{6}) \\(\\d\\)\\s*$",
+       "qualifiers": {},
+       "condition": {
+        "column": "trait",
+        "matches": "Phenotype: .*\\b\\d{6} \\(\\d\\)\\s*$"
+       }
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 13861,
+      "n_nodes": 17085,
+      "n_edges": 3683,
+      "n_gaps": 10178,
+      "predicates": {
+       "biolink:genetically_associated_with": 3683
+      }
+     }
+    },
+    "anthropic/claude-opus-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "trait",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:Disease",
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:omim",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "pattern:OMIM:Phenotype: .*?(\\d{6}) \\(\\d\\)",
+       "qualifiers": {},
+       "condition": {
+        "column": "trait",
+        "matches": "Phenotype: .*\\d{6} \\(\\d\\)"
+       }
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 13862,
+      "n_nodes": 17124,
+      "n_edges": 3710,
+      "n_gaps": 10152,
+      "predicates": {
+       "biolink:gene_associated_with_condition": 3710
+      }
+     }
+    }
+   },
+   "differences_from_used": {
+    "anthropic/claude-sonnet-5.5": {
+     "all.condition": [
+      {
+       "column": "trait",
+       "matches": "Phenotype: "
+      },
+      {
+       "column": "trait",
+       "matches": "Phenotype: .*\\b\\d{6} \\(\\d\\)\\s*$"
+      }
+     ],
+     "all.object_resolver": [
+      "pattern:OMIM:Phenotype: .*?(\\d{6}) \\([1-4]\\)",
+      "pattern:OMIM:(\\d{6}) \\(\\d\\)\\s*$"
+     ],
+     "all.predicate": [
+      "biolink:gene_associated_with_condition",
+      "biolink:genetically_associated_with"
+     ]
+    },
+    "anthropic/claude-opus-5.5": {
+     "all.condition": [
+      {
+       "column": "trait",
+       "matches": "Phenotype: "
+      },
+      {
+       "column": "trait",
+       "matches": "Phenotype: .*\\d{6} \\(\\d\\)"
+      }
+     ],
+     "all.object_resolver": [
+      "pattern:OMIM:Phenotype: .*?(\\d{6}) \\([1-4]\\)",
+      "pattern:OMIM:Phenotype: .*?(\\d{6}) \\(\\d\\)"
+     ]
+    }
+   }
+  },
+  "phenotype.JAX_MGI": {
+   "used": "anthropic/claude-haiku-5.5",
+   "models": {
+    "anthropic/claude-haiku-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "term_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:PhenotypicFeature",
+       "predicate": "biolink:has_phenotype",
+       "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:mgi",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 57873,
+      "n_nodes": 10189,
+      "n_edges": 57873,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:has_phenotype": 57873
+      }
+     }
+    },
+    "anthropic/claude-sonnet-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "term_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:PhenotypicFeature",
+       "predicate": "biolink:has_phenotype",
+       "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_validation_of_automated_agent",
+       "primary_knowledge_source": "infores:mgi",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 57873,
+      "n_nodes": 10189,
+      "n_edges": 57873,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:has_phenotype": 57873
+      }
+     }
+    },
+    "anthropic/claude-opus-5.5": {
+     "accepted": true,
+     "accepted_first": true,
+     "rules": {
+      "all": {
+       "subject_column": "protein_id",
+       "object_column": "term_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:PhenotypicFeature",
+       "predicate": "biolink:has_phenotype",
+       "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+       "knowledge_level": "logical_entailment",
+       "agent_type": "automated_agent",
+       "primary_knowledge_source": "infores:mgi",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [],
+     "export": {
+      "passed": true,
+      "failed": null,
+      "groups": 57873,
+      "n_nodes": 10189,
+      "n_edges": 57873,
+      "n_gaps": 0,
+      "predicates": {
+       "biolink:has_phenotype": 57873
+      }
+     }
+    }
+   },
+   "differences_from_used": {
+    "anthropic/claude-sonnet-5.5": {
+     "all.agent_type": [
+      "manual_agent",
+      "manual_validation_of_automated_agent"
+     ]
+    },
+    "anthropic/claude-opus-5.5": {
+     "all.agent_type": [
+      "manual_agent",
+      "automated_agent"
+     ],
+     "all.knowledge_level": [
+      "knowledge_assertion",
+      "logical_entailment"
+     ]
+    }
+   }
+  },
+  "goa": {
+   "used": null,
+   "models": {
+    "anthropic/claude-haiku-5.5": {
+     "accepted": false,
+     "accepted_first": false,
+     "rules": {
+      "Component": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:CellularComponent",
+       "predicate": "biolink:located_in",
+       "association_category": "biolink:GeneToGoTermAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Function": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:MolecularActivity",
+       "predicate": "biolink:enables",
+       "association_category": "biolink:GeneToGoTermAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Process": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:BiologicalProcess",
+       "predicate": "biolink:participates_in",
+       "association_category": "biolink:GeneToGoTermAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [
+      "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene",
+      "4_domain_range [Process]: biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Gene"
+     ],
+     "export": null
+    },
+    "anthropic/claude-sonnet-5.5": {
+     "accepted": false,
+     "accepted_first": false,
+     "rules": {
+      "Component": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Protein",
+       "object_category": "biolink:CellularComponent",
+       "predicate": "biolink:located_in",
+       "association_category": "biolink:MacromolecularMachineToCellularComponentAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Function": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Gene",
+       "object_category": "biolink:MolecularActivity",
+       "predicate": "biolink:enables",
+       "association_category": "biolink:MacromolecularMachineToMolecularActivityAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein_gene",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Process": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Protein",
+       "object_category": "biolink:BiologicalProcess",
+       "predicate": "biolink:actively_involved_in",
+       "association_category": "biolink:MacromolecularMachineToBiologicalProcessAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "manual_agent",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [
+      "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene"
+     ],
+     "export": null
+    },
+    "anthropic/claude-opus-5.5": {
+     "accepted": false,
+     "accepted_first": false,
+     "rules": {
+      "Component": {
+       "subject_column": "protein_id",
+       "object_column": "go_id",
+       "subject_category": "biolink:Protein",
+       "object_category": "biolink:CellularComponent",
+       "predicate": "biolink:located_in",
+       "association_category": "biolink:MacromolecularMachineToCellularComponentAssociation",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "pharos_protein",
+       "object_resolver": "curie",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Function": {
+       "subject_column": "go_id",
+       "object_column": "protein_id",
+       "subject_category": "biolink:MolecularActivity",
+       "object_category": "biolink:Protein",
+       "predicate": "biolink:has_participant",
+       "association_category": "biolink:Association",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "curie",
+       "object_resolver": "pharos_protein",
+       "qualifiers": {},
+       "condition": null
+      },
+      "Process": {
+       "subject_column": "go_id",
+       "object_column": "protein_id",
+       "subject_category": "biolink:BiologicalProcess",
+       "object_category": "biolink:Protein",
+       "predicate": "biolink:has_participant",
+       "association_category": "biolink:Association",
+       "knowledge_level": "knowledge_assertion",
+       "agent_type": "not_provided",
+       "primary_knowledge_source": "infores:goa",
+       "subject_resolver": "curie",
+       "object_resolver": "pharos_protein",
+       "qualifiers": {},
+       "condition": null
+      }
+     },
+     "problems": [
+      "4_domain_range [Function]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein",
+      "4_domain_range [Process]: biolink:has_participant's range is biolink:Occurrent, which does not admit biolink:Protein"
+     ],
+     "export": null
+    }
+   },
+   "differences_from_used": {}
+  }
+ }
+}

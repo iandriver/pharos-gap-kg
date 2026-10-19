@@ -1,0 +1,326 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "tiga",
+ "release": "pharos319",
+ "card_sha256": "98db20d8166e32bb877434d8c22456809daeabe8c9c3c2f487a585af16aff1d2",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true,\n\"subject\": {\"columns\": [\"ensg\", \"protein_id\"], \"resolver\": \"prefix:ENSEMBL\", \"category\": \"biolink:Gene\"},\n\"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:DiseaseOrPhenotypicFeature\", \"name_column\": \"trait\"},\n\"predicate\": \"biolink:gene_associated_with_condition\",\n\"association_category\": \"biolink:GeneToDiseaseOrPhenotypicFeatureAssociation\",\n\"knowledge_level\": \"statistical_association\",\n\"agent_type\": \"data_analysis_pipeline\",\n\"primary_knowledge_source\": \"infores:tiga\",\n\"qualifiers\": {},\n\"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\"],\n\"keep_if\": null,\n\"split_by\": null,\n\"by_value\": null,\n\"notes\": \"TIGA aggregates GWAS Catalog associations into gene-trait scores, so these are statistical associations made by a pipeline. The gene comes from the ensg column so that several Pharos protein rows for one gene collapse onto the same gene node. The listed protein_id fallback would also be read with the ENSEMBL prefix, which is wrong for those integer row ids, but it should never fire because ensg is filled in every row. The objects are EFO traits; a few are measurements or GO processes, and all are typed as DiseaseOrPhenotypicFeature. Effect direction is not given, so no qualifiers are set.\"}",
+   "usage": {
+    "in": 6080,
+    "out": 1214,
+    "usd": 0.0486
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 13.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "ensg",
+      "protein_id"
+     ],
+     "resolver": "prefix:ENSEMBL",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:DiseaseOrPhenotypicFeature",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "TIGA aggregates GWAS Catalog associations into gene-trait scores, so these are statistical associations made by a pipeline. The gene comes from the ensg column so that several Pharos protein rows for one gene collapse onto the same gene node. The listed protein_id fallback would also be read with the ENSEMBL prefix, which is wrong for those integer row ids, but it should never fire because ensg is filled in every row. The objects are EFO traits; a few are measurements or GO processes, and all are typed as DiseaseOrPhenotypicFeature. Effect direction is not given, so no qualifiers are set."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories: association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class",
+     "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 19351,
+        "prefixes": {
+         "ENSEMBL": 19351
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0294,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:DiseaseOrPhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 745611,
+      "kept": 745611,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true,\n\"subject\": {\"columns\": [\"ensg\"], \"resolver\": \"prefix:ENSEMBL\", \"category\": \"biolink:Gene\"},\n\"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:DiseaseOrPhenotypicFeature\", \"name_column\": \"trait\"},\n\"predicate\": \"biolink:gene_associated_with_condition\",\n\"association_category\": \"biolink:Association\",\n\"knowledge_level\": \"statistical_association\",\n\"agent_type\": \"data_analysis_pipeline\",\n\"primary_knowledge_source\": \"infores:tiga\",\n\"qualifiers\": {},\n\"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\"],\n\"keep_if\": {\"column\": \"efoid\", \"matches\": \"^(?!GO_|Orphanet_|PATO_)\", \"reason\": \"Traits under GO, Orphanet or PATO identifiers are not in DiseaseOrPhenotypicFeature's identifier prefixes. Those rows are kept as recorded gaps of the gene rather than mistyped.\"},\n\"split_by\": null,\n\"by_value\": null,\n\"notes\": \"TIGA aggregates GWAS Catalog associations into gene-trait scores, so these are statistical associations made by a pipeline. The gene comes from ensg, which is filled in every row, so several Pharos protein rows for one gene collapse onto one gene node. The generic Association class is used because no gene-to-disease-or-phenotype association class exists in Biolink 4.4.3. Gene-to-disease and gene-to-phenotype classes would each fit only part of the mixed traits. The 66 traits under GO, Orphanet or PATO are kept as gaps. Effect direction is not given, so no qualifiers are set.\"}",
+   "usage": {
+    "in": 6836,
+    "out": 1191,
+    "usd": 0.051164
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 11.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "ensg"
+     ],
+     "resolver": "prefix:ENSEMBL",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:DiseaseOrPhenotypicFeature",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore"
+    ],
+    "keep_if": {
+     "column": "efoid",
+     "matches": "^(?!GO_|Orphanet_|PATO_)",
+     "reason": "Traits under GO, Orphanet or PATO identifiers are not in DiseaseOrPhenotypicFeature's identifier prefixes. Those rows are kept as recorded gaps of the gene rather than mistyped."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "TIGA aggregates GWAS Catalog associations into gene-trait scores, so these are statistical associations made by a pipeline. The gene comes from ensg, which is filled in every row, so several Pharos protein rows for one gene collapse onto one gene node. The generic Association class is used because no gene-to-disease-or-phenotype association class exists in Biolink 4.4.3. Gene-to-disease and gene-to-phenotype classes would each fit only part of the mixed traits. The 66 traits under GO, Orphanet or PATO are kept as gaps. Effect direction is not given, so no qualifiers are set."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 19351,
+        "prefixes": {
+         "ENSEMBL": 19351
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 735106,
+        "resolved": 735106,
+        "distinct": 2181,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "NCIT": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         }
+        },
+        "mondo_xrefs": {
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:DiseaseOrPhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 745611,
+      "kept": 735106,
+      "made_gaps_by_condition": 10505
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 345685,
+     "n_nodes": 21533,
+     "n_edges": 343514,
+     "n_gaps": 2171,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 343514
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "ensg"
+   ],
+   "resolver": "prefix:ENSEMBL",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "efoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:DiseaseOrPhenotypicFeature",
+   "name_column": "trait"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:tiga",
+  "qualifiers": {},
+  "edge_properties": [
+   "n_study",
+   "n_snp",
+   "n_snpw",
+   "pvalue_mlog_median",
+   "pvalue_mlog_max",
+   "or_median",
+   "n_beta",
+   "study_N_mean",
+   "rcras",
+   "meanRank",
+   "meanRankScore"
+  ],
+  "keep_if": {
+   "column": "efoid",
+   "matches": "^(?!GO_|Orphanet_|PATO_)",
+   "reason": "Traits under GO, Orphanet or PATO identifiers are not in DiseaseOrPhenotypicFeature's identifier prefixes. Those rows are kept as recorded gaps of the gene rather than mistyped."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "TIGA aggregates GWAS Catalog associations into gene-trait scores, so these are statistical associations made by a pipeline. The gene comes from ensg, which is filled in every row, so several Pharos protein rows for one gene collapse onto one gene node. The generic Association class is used because no gene-to-disease-or-phenotype association class exists in Biolink 4.4.3. Gene-to-disease and gene-to-phenotype classes would each fit only part of the mixed traits. The 66 traits under GO, Orphanet or PATO are kept as gaps. Effect direction is not given, so no qualifiers are set."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

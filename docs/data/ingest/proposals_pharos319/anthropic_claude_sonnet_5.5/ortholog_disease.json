@@ -1,0 +1,164 @@
+{
+ "model": "anthropic/claude-sonnet-5.5",
+ "view": "ortholog_disease",
+ "release": "pharos319",
+ "card_sha256": "29f2a02f6aba85c463fed7cef605f27e16d8df984cde6e72e8130e319771b529",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\", \"name_column\": null},\n  \"object\": {\"columns\": [\"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"prediction\",\n  \"agent_type\": \"automated_agent\",\n  \"primary_knowledge_source\": \"infores:monarch-initiative\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"score\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Each row links a human protein (via its gene) to a disease through an ortholog's disease association in model organisms (Monarch). It is an inferred association, so it is a prediction, with the score kept on the edge. The disease ids are OMIM and DOID, and the name column names the disease node.\",\n  \"reason\": null\n}",
+   "usage": {
+    "in": 2959,
+    "out": 364,
+    "usd": 0.009558
+   },
+   "provider": "Google",
+   "seconds": 3.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": null
+    },
+    "object": {
+     "columns": [
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "prediction",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:monarch-initiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "score"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row links a human protein (via its gene) to a disease through an ortholog's disease association in model organisms (Monarch). It is an inferred association, so it is a prediction, with the score kept on the edge. The disease ids are OMIM and DOID, and the name column names the disease node.",
+    "reason": null
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 37852,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 37852,
+        "resolved": 37852,
+        "distinct": 3827,
+        "prefixes": {
+         "NCBIGene": 3827
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3827,
+          "in_release": 3827
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 37852,
+        "resolved": 37852,
+        "distinct": 5641,
+        "prefixes": {
+         "OMIM": 4124,
+         "DOID": 1517
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "DOID": {
+          "distinct": 1517,
+          "in_release": 1509
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 4124,
+          "among_mondo_xrefs": 4099
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 37852,
+      "kept": 37852,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 37847,
+     "n_nodes": 9468,
+     "n_edges": 37847,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 37847
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene",
+   "name_column": null
+  },
+  "object": {
+   "columns": [
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "prediction",
+  "agent_type": "automated_agent",
+  "primary_knowledge_source": "infores:monarch-initiative",
+  "qualifiers": {},
+  "edge_properties": [
+   "score"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Each row links a human protein (via its gene) to a disease through an ortholog's disease association in model organisms (Monarch). It is an inferred association, so it is a prediction, with the score kept on the edge. The disease ids are OMIM and DOID, and the name column names the disease node.",
+  "reason": null
+ },
+ "accepted": true,
+ "accepted_first": true
+}
