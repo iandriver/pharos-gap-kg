@@ -8,7 +8,7 @@ import pytest
 mcp = pytest.importorskip("mcp")
 from pharos_gap_kg import ask_selftest  # noqa: E402
 
-NAMES = ["connect", "find", "gaps", "known", "predict", "status", "whats_new", "why"]
+NAMES = ["connect", "find", "gaps", "known", "predict", "status", "subgraph", "whats_new", "why"]
 
 
 async def _session(bundle, work):
@@ -39,9 +39,12 @@ def test_the_server_offers_the_eight_questions_and_answers_them(tmp_path):
         no_link = _payload(await s.call_tool("predict", {"node": "DDD"}))
         gaps = _payload(await s.call_tool("gaps", {"target": "DDD"}))
         nearest = _payload(await s.call_tool("gaps", {}))
-        return tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link
+        sub = _payload(await s.call_tool("subgraph", {"question": "why", "a": "AAA", "b": "MONDO:1", "as_of": 2015}))
+        return tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link, sub
 
-    tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link = asyncio.run(_session(tmp_path, work))
+    tools, init, status, why, unknown, ambiguous, predict, gaps, nearest, unlinked, no_link, sub = asyncio.run(_session(tmp_path, work))
+    assert [e["id"] for e in sub["edges"]] == [why["edge"]] and sub["edges"][0]["predicate"] == "biolink:genetically_associated_with"
+    assert {n["id"] for n in sub["nodes"]} == {sub["edges"][0]["subject"], "MONDO:1"} and sub["graph"]["as_of"] == 2015
     assert [c["symbol"] for c in unlinked["candidates"]] == ["DDD"] and "Nothing is fitted" in unlinked["method"]
     assert [c["name"] for c in no_link["candidates"]] == ["body height", "arrhythmia"] and "listed at ranks 1-5 for a target with no link" in no_link["candidates"][0]["how_often_this_held"]
     assert "unlinked=true" in (init.instructions or "") and "why, not predict" in (init.instructions or "")

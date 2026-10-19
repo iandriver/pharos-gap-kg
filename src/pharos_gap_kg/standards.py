@@ -6,6 +6,7 @@ package:
     uv venv .venv-standards
     uv pip install --python .venv-standards/bin/python kgx==2.7.0 biolink-model==4.4.3
     .venv-standards/bin/python -I src/pharos_gap_kg/standards.py pharos319
+    .venv-standards/bin/python -I src/pharos_gap_kg/standards.py --dir DIR OUT.json    # any KGX nodes.tsv and edges.tsv
 
 kgx checks every node and edge for its required properties, the types and values of its properties
 (a CURIE's prefix against Biolink's prefix map), and node categories and edge predicates against the
@@ -91,6 +92,15 @@ def check(graph_dir: Path) -> dict:
 
 
 def main(argv: list[str]) -> int:
+    if len(argv) == 3 and argv[0] == "--dir":
+        # Any directory of KGX nodes.tsv and edges.tsv, such as a subgraph or an ingested view; the record goes to the named file.
+        out = check(Path(argv[1]))
+        Path(argv[2]).write_text(json.dumps({"dir": argv[1], **out}, indent=1) + "\n")
+        print(f"  {out['checked']['nodes']:,} nodes and {out['checked']['edges']:,} edges; {out['nodes_with_an_error']:,} nodes and "
+              f"{out['subject_object_pairs_with_an_error']:,} subject-object pairs with an error")
+        for e in out["errors"]:
+            print(f"  {e['records']:>6,}  {e['type']}: {e['message'][:150]}")
+        return 0
     if len(argv) != 1:
         raise SystemExit(__doc__)
     release = argv[0]

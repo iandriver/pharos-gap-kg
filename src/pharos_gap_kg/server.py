@@ -1,4 +1,4 @@
-"""The eight questions as an MCP server, so any MCP client can put them to the graph.
+"""The eight questions as an MCP server, so any MCP client can put them to the graph, and the subgraph behind an answer as KGX.
 
 The server holds no model and makes no network call. It loads one bundle, checks each file against
 the manifest's digest, and answers from it. A client's language model chooses which question to ask
@@ -35,6 +35,7 @@ INSTRUCTIONS = """A graph of dated GWAS links between human protein targets (fro
 - "What is missing for X", "what would it take to characterise X", "which understudied targets are closest" -> gaps with target=X. Quote its how_often_this_closed text with any gap you pass on, and its reading.
 - "What is missing for disease Y", "where are the gaps in Y", "which targets for Y have no drug", "which Y loci are unresolved", "what would fill the gaps in Y" -> gaps with disease=Y. It lists the genes tied to Y and six kinds of gap, each with what would close it and how often that has been seen. Pass on its reading: a gap is evidence the graph does not hold, not a finding that the gene matters. When it gives the size of the largest study, pass that on with any "no GWAS link". "What study would close it", "how large a study is needed", "which gene of a locus to test first" -> gaps with disease=Y: it gives the cases a study needs to find a common variant at odds ratios of 1.05, 1.1 and 1.2 and for a rare-variant gene test, and lists each locus's genes in the order to test them; pass on that the order is where the graph's evidence points, not which gene is causal.
 - "What is this, where is it from, can I trust it" -> status.
+- "Give me the graph behind that answer", "export it as KGX", "which edges does that rest on" -> subgraph, with the same question and arguments.
 
 Rules for using the answers:
 - Every tool takes names or ids. If a tool returns found=false with candidates, show them and ask which was meant; do not choose.
@@ -126,6 +127,24 @@ def build(bundle_dir: Path):
                           "it passed, what it leaves out and why, what its candidates are ranked by, and how that ranking held on later links.")
     def status() -> dict:
         return G.status()
+
+    @app.tool(description="The nodes and edges an answer rests on, as KGX JSON, to load into another tool or check with a KGX validator. "
+                          "question is known, why, connect, predict, whats_new or gaps; a and b are that tool's first two arguments (the node; the "
+                          "target and the trait; the two things; the node and the year for whats_new; the target for gaps), disease is gaps' disease. "
+                          "It holds every edge and gap the answer cites, every edge and gap between two nodes the answer names (a GWAS link only if "
+                          "first reported by as_of), and their end nodes, with the graph's own ids, predicates and knowledge sources. Gaps are under "
+                          "'gaps'. limit caps the edges and gaps returned, cited ones first; graph.counts says how many there are in full.")
+    def subgraph(question: str, a: str | None = None, b: str | None = None, as_of: int | None = None, disease: str | None = None,
+                 limit: int = 200) -> dict:
+        from pharos_gap_kg import subgraph as sg
+        if question not in ("known", "why", "connect", "predict", "whats_new", "gaps"):
+            return {"error": "question must be one of known, why, connect, predict, whats_new, gaps"}
+        args = [x for x in (a, b) if x is not None]
+        if question == "whats_new" and len(args) == 2:
+            args[1] = int(args[1])
+        answer = sg.answer_for(G, question, args, as_of, disease=disease)
+        return sg.of(answer, bundle_dir, limit=max(1, min(int(limit), 2000)),
+                     question={"question": question, "args": args, "as_of": as_of, "disease": disease})
 
     return app
 

@@ -757,6 +757,34 @@ For a client configured by JSON:
                                     "args": ["-m", "pharos_gap_kg.server"]}}}
 ```
 
+## The subgraph behind an answer
+
+`python -m pharos_gap_kg.subgraph` takes the same question and arguments as `ask` and gives the nodes
+and edges the answer rests on as KGX JSON, to load into another tool or check with a KGX validator.
+Over MCP the same is the `subgraph` tool.
+
+```bash
+python -m pharos_gap_kg.subgraph why HMGCR hypercholesterolemia --out hmgcr.json
+python -m pharos_gap_kg.subgraph gaps --disease "Parkinson disease" --out parkinson_gaps.json
+```
+
+It holds every edge and gap the answer cites, every edge and gap between two nodes the answer names,
+and the nodes at their ends. A GWAS link enters only if it was first reported by the year the answer
+is as of; the other sources' edges are undated and enter as of the release, as the answer reads them.
+An edge row is the release's: a link's publications run to the release whatever year was asked. Gaps
+(rows a pruning rule withheld, and what a target lacks for its next level) are under `gaps`, the
+kgx-gaps extension, which a KGX reader ignores. `graph` records the question, the release and its
+digest, what was included and the counts.
+
+It is built from the bundle, so it needs no graph files, and its rows are the export's.
+`python -m pharos_gap_kg.subgraph --check pharos319` compares every edge and gap the bundle can give
+with the merged graph's files: 619,774 edges (all but the ontology's 394 `same_as` edges, which no
+answer cites) and 30,484 gaps, with no difference in id, subject, predicate, object, category,
+knowledge source, knowledge level or agent type (`docs/data/subgraph_check_pharos319.json`). The
+reference KGX validator, run on the subgraphs of ten answers, reports only what it reports for the
+whole graph: identifiers under the project's own prefix, and the node that names a kind of gap
+(`docs/data/subgraph_standards_pharos319.json`).
+
 ## What the bundle is
 
 `python -m pharos_gap_kg.bundle pharos319` writes `data/bundle/pharos319/`, about 20 MB in all: nodes,
