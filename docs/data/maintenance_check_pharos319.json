@@ -1,0 +1,6 @@
+{
+ "release": "pharos319",
+ "what": "the change rebuilt incrementally (clone A) against the change made before a full build (clone B), at 8d413c3",
+ "files_compared": 112,
+ "files_that_differ": []
+}

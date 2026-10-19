@@ -202,7 +202,10 @@ def test_findings_about_the_data(T):
 def test_standards(T):
     s, g = J("standards_pharos319.json"), J("graph_pharos319.json")
     assert s["checked"] == {"nodes": g["nodes"], "edges": g["edges"]}
-    has(T, f"flags the identifiers of {s['nodes_with_an_error']:,} of {s['checked']['nodes']:,} nodes", f"against Biolink {s['biolink_model']}",
+    by_prefix = sum(e["records"] for e in s["errors"] if e["type"] == "INVALID_NODE_PROPERTY_VALUE" and e["prefix"])
+    n = by_prefix + g["node_categories"]["pharosgapkg:KnowledgeGap"]
+    assert n == s["nodes_with_an_error"] + 2, "kgx reports the three nodes for kinds of gap once"
+    has(T, f"flags the identifiers of {n:,} of {s['checked']['nodes']:,} nodes", f"flags the identifiers of {n:,} nodes", f"against Biolink {s['biolink_model']}",
         f"read all {s['checked']['nodes']:,} nodes and {s['checked']['edges']:,}")
 
 
@@ -223,4 +226,8 @@ def test_the_models_with_the_context(T):
     assert b["high"] < 0 and m4["paired"]["model-B3"]["full"]["high"] < 0 and c["full"]["low"] > 0 and c["low"]["low"] > 0
     has(T, f"LightGCN scores {m3['results']['model']['full'][0]:.4f} against {m2['results']['model']['full'][0]:.4f}", f"without them, {iv(c['full'])}",
         f"and {iv(c['low'])} on links neither lineage nor position explains", f"It stays below the neighbour score, {iv(b)}",
-        f"Leaving out the pruned rows changes it by {iv(p['full'])}")
+        f"Leaving out the pruned rows changes it by {iv(p['full'])}",
+        f"| LightGCN with the context joined on | {m3['results']['model']['full'][0]:.4f} | {iv(b)} |",
+        f"| the same without the withheld disease rows | {m4['results']['model']['full'][0]:.4f} | {iv(m4['paired']['model-B3']['full'])} |")
+    s18 = J("split_gene_trait_2018.json")
+    has(T, f"{s18['unscored']['links']:,} more later links have a trait or a target with no earlier link")

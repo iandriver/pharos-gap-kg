@@ -40,3 +40,7 @@ error is an identifier or category Biolink does not hold, from four causes:
   not a KGX file. kgx-gaps' conformance suite checks both, and the graph passes its 10 checks.
 - Conformance to a declared Biolink version. The export declares none; 4.4.3 is the version of the
   installed package.
+
+Added 18 Oct 2026, a count. The nodes with a flagged identifier are 1,044: 979, 39 and 23 by prefix,
+and the three nodes for kinds of gap. kgx reports the errors of those three once each, so its own
+count, in the record, is 1,042.

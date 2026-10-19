@@ -15,8 +15,8 @@ Three properties are the point of it:
 
 ## Try it
 
-The questions read a bundle of files that each release carries as a 16 MB archive, so trying them
-needs neither the 2.5 GB of published files nor the build:
+The questions read a bundle of files that each release carries as a 16 MB archive (20 MB
+unpacked), so trying them needs neither the 2.5 GB of published files nor the build:
 
 ```bash
 git clone https://github.com/iandriver/pharos-gap-kg && cd pharos-gap-kg
@@ -25,7 +25,7 @@ uv pip install -e ".[server]" -c constraints.txt
 python -m pharos_gap_kg.release get pharos319          # downloads the bundle, checks every digest, unpacks it
 python -m pharos_gap_kg.ask gaps "Parkinson disease"   # the genes tied to a disease, what each lacks, the study that would close it
 python -m pharos_gap_kg.ask why TREM2 "Alzheimer disease" --as-of 2012
-python -m pharos_gap_kg.server                         # the same eight questions over MCP
+python -m pharos_gap_kg.server                         # the same eight questions over MCP, the Model Context Protocol
 ```
 
 `get` refuses an archive, or a file in it, whose digest is not the one committed in
@@ -35,148 +35,77 @@ server to an MCP client. To build the bundle from the published files instead, s
 
 ## Status
 
-Started 6 Oct 2026. No model has been fitted. What exists:
+Started 6 Oct 2026. What exists, by the challenge's criteria. The progress report, [`docs/PROGRESS_20261027.md`](docs/PROGRESS_20261027.md), gives the detail, and `make check` compares each of its figures with the records:
 
-- **The data, read without a database server.** A registry with pinned digests, a resumable fetcher,
-  and a streaming reader that turns a published MySQL dump into typed tables.
-- **What the snapshots can date** ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md)). The April 2023
-  and April 2024 databases hold identical link tables, so the archive cannot be split by publication
-  date. GWAS target and trait links carry their own dates (295,327 pairs, each dated by its first
-  study).
-- **A frozen split and a protocol** ([`docs/PROTOCOL.md`](docs/PROTOCOL.md)). Links first reported by
-  2018 train; 130,369 later links are scored. Each part is pinned by digest, and the protocol was
-  committed before any scorer ran.
-- **The graph as of 2018.** 20,412 targets, 1,404 traits, 99,435 edges carrying only the studies dated
-  2018 or earlier. It passes the `kgx-gaps` conformance suite, and `graph lineage` answers why one
-  edge exists, down to the papers and the digest of the file they were read from.
-- **One graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). Since 13 Oct 2026 everything is one KGX
-  export with one node file: 620,168 edges and 30,484 gaps over 39,060 nodes, passing 10 of 10
-  conformance checks with every input row an edge or a gap. It holds every dated GWAS link of the
-  release, what nine disease sources assert (154,363 edges, and the 7,248 withheld rows as gaps),
-  159,846 expression observations with direction, fold change and p-value, 1,782 drugs with their
-  targets and indications, and the 23,236 target-level gaps. A DrugCentral indication row is a path
-  through a drug, and 10,327 of the 13,919 run through the drug's mechanism target. 394 `same_as`
-  edges tie a retired GWAS trait id to its current term, which joins 346 traits to the other sources.
-- **Gaps for a disease** ([`findings/DGAPS.md`](findings/DGAPS.md)). `gaps` with a trait or a condition
-  lists the genes the graph ties to it (a GWAS link, two or more disease sources, or the mechanism
-  target of an indicated drug) and what they lack, in six lists, each with what would close the gap
-  and a rate where one was measured. Over the 513 disease traits, 92.8% of GWAS-linked genes share
-  their locus with another gene carrying the same link, and 77.3% of tied genes have no drug and no
-  compound at their family's cutoff. An absent GWAS link comes with the smallest effect the largest
-  study of the trait could have found (a median odds ratio of 1.26 where the study has cases and
-  controls), read from 11,952 of the release's 12,335 studies. A gap is evidence the graph does not
-  hold. It is not a finding that the gene matters in the disease.
-- **Baselines** ([`findings/BASELINES.md`](findings/BASELINES.md)). How well-studied a target was in
-  2018 ranks later links at four times chance; a parameter-free neighbour score adds to that. A fitted
-  model has to beat 0.0969.
-- **Controls** ([`findings/CONTROLS.md`](findings/CONTROLS.md)). A fifth of the later links follow from
-  an earlier link by trait lineage or by chromosomal position, and the ontology alone or the
-  chromosome alone ranks later links at two and a half times chance. On links neither explains, the
-  neighbour score is not shown to beat target degree. The 130,369 later links are 31,885 loci, and
-  counted by locus target degree is at twice chance, not four times.
-- **Context audit** ([`findings/CONTEXT.md`](findings/CONTEXT.md)). Nine tenths of the later links are
-  to measurements, not diseases. Of Pharos's twelve undated disease sources, one is the held-out GWAS
-  data under another name: used as context it would score 0.60 by reading the answers.
-
-- **Eight questions, and an MCP server** ([`docs/ASK.md`](docs/ASK.md)). `find`, `known`, `why`, `gaps`,
-  `connect`, `predict`, `whats_new`, `status`, answered from a 20 MB bundle whose files are checked
-  against a manifest of digests. `known`, `why` and `connect` read every part of the merged graph:
-  beside the dated links they say which sources assert a pair, which rows are withheld and on what
-  count, which drugs act on a target and treat the condition, and where expression differs, with
-  observations kept apart from assertions. A name that matches nothing is "not in the graph"; an absent link is
-  never reported as a negative; a prediction comes with the parts of its score and how often its rank
-  held on later links. Since 11 Oct 2026 candidates are ranked by the position combiner of the
-  prospective test below, and before that by the neighbour score alone.
-
-- **A usability test** ([`findings/USABILITY.md`](findings/USABILITY.md)). On a fresh set of 35
-  code-graded questions, three cheap hosted models each answered 35 through the typed questions, and
-  31, 33 and 35 with raw SQL over the same tables. None invented an answer for a gene that is not in
-  the graph. A first round failed both of its stated verdicts and exposed two faults in the test and
-  one in the tools; both rounds are recorded. No person has tested it yet.
-  The eighth question, `gaps`, was tested the same way on a fresh set: 35, 35 and 34 of 35 through the
-  typed questions and 33, 34 and 33 with SQL, a difference that does not clear zero.
-  The rankings were tested the same way on 12 Oct: 35, 35 and 34 of 35 through the typed questions,
-  34, 32 and 35 with SQL (+0.029 [-0.019, +0.086] of a question, not shown better) and 0 with no tool.
-  Its development round found that the server did not say which question gives one named target's
-  rank; that was fixed before the evaluation questions were written.
-  The other sources, the drugs and the gaps of a disease were tested the same way on 13 Oct: 34, 35
-  and 35 of 35 through the typed questions, 28, 34 and 35 with SQL (+0.067 [+0.019, +0.124], six of
-  the seven answers that differ being one model's) and 0, 0 and 1 with no tool. Every typed answer a
-  model gave was right; the one miss is a question a provider refused. Its development round found
-  that `find`, asked for a condition, did not look among diseases that are GWAS traits; that was
-  fixed before the evaluation questions were written.
-
-- **Context** ([`findings/ENRICH.md`](findings/ENRICH.md)). Interactions, pathways, GO terms, compounds
-  and eleven disease sources, each scored alone and blended with the neighbour score. Each carries
-  some signal alone; every blend is worse than the neighbour score, and with the blending weight
-  tuned on the test links the best weight is still none.
-- **Pruning** ([`findings/PRUNING.md`](findings/PRUNING.md)). 16,250 false pairs were planted in the
-  disease sources. The corroboration rule stated in advance withheld 39% of them and cleared its bar
-  on one source of eleven; the criterion that fails is "an interaction partner has the same disease",
-  which is true of most random pairs. The 508 pairs it did withhold are in the graph as typed gaps.
-- **Pruning, second round** ([`findings/PRUNING2.md`](findings/PRUNING2.md)). Evidence from outside
-  the graph, on 2,200 planted and 2,200 real pairs. A cut on how much more often than chance PubMed
-  mentions a gene with a disease clears the bar on five sources of eleven and needs no model. A model
-  that reads the abstracts and must copy the passage it relies on clears it on three, and at the same
-  cost in real pairs it withholds fewer planted ones than the cut does. No source's own confidence
-  field orders its pairs the way the literature does. Three sources are out of reach of every rule.
-  The cut is applied to the five sources: 7,248 of 324,882 rows are withheld, each a typed gap that
-  carries the papers counted, the lift and the cut. 5,982 of them are CTD's, where the cut costs 46.5%
-  of one-source pairs against a bar of 50%. On 400 more planted CTD pairs, searched after the check was
-  written down, it withholds 82.2% [78.2%, 85.7%] against the bar's 80%, so it stands.
-- **Target-level gaps** ([`findings/TGAPS.md`](findings/TGAPS.md)). Pharos grades targets by explicit
-  evidence, so what a target lacks for the next level is on record, and so is how far it is from having
-  it. For each of 5,499 Tdark targets the gap names the nearest criterion and a distance. That distance
-  ranks the targets Pharos 4.0.0 promoted above the rest 85.9% of the time, better than how much a
-  target is studied (+0.066 [+0.055, +0.077]). Of targets one criterion short and close to it, 53.6%
-  were promoted, against 5.9% that the pipeline alone moves at that distance. Where a target was
-  promoted through the counts, the gap had named the criterion that cleared 85.3% of the time.
-  The gaps are in the graph as 23,236 gap edges, each with what would close it and what would retire it.
-- **Fitted models** ([`findings/MODELS.md`](findings/MODELS.md)). Four declared models, tuned inside
-  the training years and each scored on the test links once ([`docs/PROTOCOL.md`](docs/PROTOCOL.md),
-  "Fitted models"). The two on Pharos links alone are scored, and neither beats the neighbour baseline's
-  0.0969: matrix factorisation scores 0.0906 (-0.0063 [-0.0155, +0.0025]) and LightGCN 0.0825 (-0.0144
-  [-0.0232, -0.0064]). On links that lineage and position do not explain both are worse than it. Counted
-  by locus, matrix factorisation is ahead of it (0.0662 against 0.0512). The two that join the context
-  on (interactions, pathways, GO terms, compounds and the disease sources), scored on 16 Oct, do not beat
-  it either: 0.0866 with the withheld rows and 0.0864 without. The context adds to LightGCN (+0.0041
-  [+0.0006, +0.0085]), also on links neither lineage nor position explains, and pruning changes nothing
-  (-0.0002 [-0.0007, +0.0002]).
-- **Trait lineage and gene position as inputs** ([`findings/INPUTS.md`](findings/INPUTS.md)). Added
-  after the two models above were scored, and marked so. Four combiners of parameter-free scores with
-  fitted weights and two graph models with neighbour and lineage edges, fitted inside the training
-  years and each scored on the test links once. None is shown to beat the neighbours baseline: the
-  highest, the combiner that adds gene position, scores 0.1037 (+0.0067 [-0.0009, +0.0151]). Each
-  input does add to the model it is put into (position +0.0106 [+0.0031, +0.0189] and lineage +0.0080
-  [+0.0042, +0.0129] in the combiner), on links that follow from an earlier link at the same locus or
-  under a related trait name. Nothing here is a result about new links.
-- **Cold start** ([`findings/COLDSTART.md`](findings/COLDSTART.md)). A third of the later links were
-  never scored because their trait or target has no earlier link, and the neighbours baseline has no
-  score for them. With no fitted parameter, ranking targets for a new trait by its ontology relatives'
-  links, ties broken by degree, scores 0.1019 against 0.0610 for degree alone (+0.0408 [+0.0300,
-  +0.0519] over 829 new traits). Ranking new targets for a trait by their chromosome neighbours scores
-  0.0250 against 0.0102 (+0.0148 [+0.0074, +0.0243]). An earlier period agrees on both. The position
-  ranking held again on the prospective split and is served by the question layer since 12 Oct, for
-  the 2,407 targets with no link: a listed pair was linked within four years 2.8% of the time, 5.0% in
-  the first five for a trait.
-- **Rehearsal** ([`findings/REHEARSAL.md`](findings/REHEARSAL.md)). The tune, refit, score procedure
-  run one step back in time, inside the training years, over 28 arms. One small combiner (neighbours,
-  degree, position) carries, +0.0038 [+0.0008, +0.0077]; no graph or factorisation arm does, and
-  neither carrying the length of fitting by steps nor drawing links by trait helps. Rehearsed, each
-  scored model stands about where it stood on the test links.
-- **The prospective test** ([`findings/PROSPECTIVE.md`](findings/PROSPECTIVE.md)). 194,017 links first
-  reported from 2023 on, over 1,110 traits, built from the GWAS Catalog's release of 5 Oct 2026 by a
-  rule checked against Pharos's own links (on shared studies 95.1% of the rule's triples are Pharos's
-  and 92.8% of Pharos's are recovered), with all of Pharos 3.19 as training. What is scored was fixed
-  before any scorer read a link. A combiner of neighbours, degree and position, with two fitted
-  weights, beats the neighbours baseline: 0.1012 against 0.0947, +0.0066 [+0.0031, +0.0102]. It is the
-  arm that carried in rehearsal. The gain is on links at loci that training already holds and not on
-  new links. No graph model beats neighbours. For cold start, position transfer for new targets
-  repeats (+0.0250 [+0.0087, +0.0418]) and lineage transfer for new traits does not (-0.0026 [-0.0040,
-  -0.0011]). The question layer ranks by this combiner. Counted over every trait it ranks, 8.9% of
-  its ten highest candidates for a trait were reported in 2023 to 2026, against a base rate of 0.49%;
-  where no earlier link explains the candidate, 4.0%. (The 17.8% and 9.7% given here on 11 Oct were
-  counted only over traits that had a later link.)
+- **The graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). One KGX export of 620,168 edges and 30,484
+  gaps over 39,060 nodes, with every input row an edge or a gap: 295,327 GWAS links between targets
+  and traits, each dated by its first study; 154,363 assertions of a target with a condition from
+  nine disease sources, and the 7,248 rows a pruning rule withheld, as gaps; 159,846 expression
+  observations, kept apart from the assertions; 1,782 drugs with their targets and indications; and
+  23,236 target-level gaps. Pharos's disease table has twelve sources: one, TIGA, repeats the GWAS
+  data and is left out; eleven were tested for pruning; and two of those, DrugCentral Indication and
+  Expression Atlas, are exported as paths through a drug and as observations. Interactions, pathways,
+  GO terms and compound memberships are read as tables by the scorers and are not exported.
+- **Gaps for a disease** ([`findings/DGAPS.md`](findings/DGAPS.md)). `gaps` lists the genes the graph
+  ties to a disease and what each lacks, with what would close each gap: for a missing genetic
+  association, the size of study that would find one. Over 513 disease traits, 92.8% of GWAS-linked
+  genes share their locus with another gene carrying the same link, 77.3% of tied genes have no drug
+  and no compound at their family's potency cutoff, and for 270 of 457 traits the largest study
+  lacked the cases to find a common variant with an odds ratio of 1.2. For a Tdark target, Pharos's
+  least-studied level, the distance to the next level ranks the targets Pharos 4.0.0 promoted with a
+  ROC area of 0.859 ([`findings/TGAPS.md`](findings/TGAPS.md)).
+- **Usability** ([`findings/USABILITY.md`](findings/USABILITY.md)). Eight typed questions, from the
+  command line or an MCP client. On four frozen sets of 35 code-graded tasks, three small hosted
+  models (mercury-2.5, deepseek-v4-flash and glm-5.3-flash, in that order) answered 35, 35 and 35;
+  34, 35 and 35; 35, 35 and 34; and 34, 35 and 35 through the typed questions, against 31, 33 and 35;
+  33, 33 and 34; 32, 34 and 35; and 28, 34 and 35 with SQL over the same tables. Typed beat SQL on two
+  of the four sets. No model answered about an invented gene, drug or disease as if it were known. No
+  person has used it
+  yet; the test is written and frozen ([`docs/PERSON_TEST.md`](docs/PERSON_TEST.md)).
+- **Pruning** ([`findings/PRUNING.md`](findings/PRUNING.md), [`findings/PRUNING2.md`](findings/PRUNING2.md)).
+  Each rule is scored on planted false pairs against a bar stated in advance: at least 80% of planted
+  pairs withheld, at most 50% of one-source pairs. A cut on how much more often than chance PubMed
+  mentions a gene with a disease passes on five of the eleven sources and is applied: 7,248 rows are
+  withheld, 6,999 by the cut and 249 by in-graph rules on Monarch. On CTD, which holds 5,982 of them,
+  it withholds 82.2% [78.2%, 85.7%] of 400 further planted pairs. A model that reads the abstracts
+  does worse than the cut. Three sources are out of reach of every rule tried, full text included.
+- **Explainability** ([`docs/ASK.md`](docs/ASK.md)). An edge id is a digest of the claim, and each edge
+  resolves to the source row, the published file and its SHA-256. `why` gives the studies behind a
+  link; where there is none, what lies nearby, what the trait's largest study could have found and
+  the study that would close the gap; and for a withheld row, the rule, the count and what would
+  restore it.
+- **Standards** ([`findings/STANDARDS.md`](findings/STANDARDS.md)). BioLink categories and predicates,
+  with a knowledge level and agent type on every edge. The export passes this entry's own `kgx-gaps`
+  conformance suite (10 of 10). The reference KGX validator (kgx 2.7.0, Biolink 4.4.3) finds no
+  unknown predicate and no missing property, and flags the identifiers of 1,044 of 39,060 nodes for
+  four stated reasons.
+- **The key question: link prediction** ([`findings/BASELINES.md`](findings/BASELINES.md),
+  [`findings/MODELS.md`](findings/MODELS.md), [`findings/INPUTS.md`](findings/INPUTS.md),
+  [`findings/PROSPECTIVE.md`](findings/PROSPECTIVE.md)). Scored as mean average precision over traits,
+  on links reported after the training data. A neighbour score from Pharos links alone, which ranks a
+  target by how similar a trait is to the traits the target is already linked to and has no fitted
+  parameter, scores 0.0969 on links after 2018. No graph model beats it: matrix factorisation 0.0906,
+  LightGCN 0.0825, LightGCN with interactions, pathways, GO terms, compounds and disease sources
+  joined on 0.0866, and the same without the pruned rows 0.0864. The context adds to LightGCN
+  (+0.0041 [+0.0006, +0.0085]), also on links neither trait lineage nor gene position explains, but
+  it is undated, so that is an upper bound; pruning changes nothing (-0.0002 [-0.0007, +0.0002]).
+  Blended into the neighbour score, each kind of context lowers it. A small combiner of neighbours,
+  degree and gene position beats it on links first reported from 2023 (0.1012 against 0.0947, +0.0066
+  [+0.0031, +0.0102]), at loci the training links already hold, and the questions rank by it. Cold
+  start, rehearsal inside the training years and the controls are in
+  [`findings/COLDSTART.md`](findings/COLDSTART.md), [`findings/REHEARSAL.md`](findings/REHEARSAL.md)
+  and [`findings/CONTROLS.md`](findings/CONTROLS.md).
+- **Keeping it current** ([`findings/MAINTENANCE.md`](findings/MAINTENANCE.md)). A traced map of what
+  each build stage reads and writes. When the recorded PubMed answers for 20 pairs changed, 6 of the 20
+  stages were stale and rebuilt, in 72 seconds, and every file came out byte for byte as a full build
+  gives.
+- **Reproducible** ([`findings/REPRODUCE.md`](findings/REPRODUCE.md)). A clean clone following the
+  README rebuilds the files of the build block byte for byte as on record.
+- **For other teams** ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md),
+  [`findings/CONTEXT.md`](findings/CONTEXT.md)). The April 2023 and April 2024 Pharos databases hold
+  identical link tables, so no later links come from comparing them. One Pharos disease source,
+  JensenLab Experiment TIGA, is the GWAS data under another name, and used as context it reads the
+  answers to a GWAS test.
 
 The plan is [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -251,6 +180,11 @@ python -m pharos_gap_kg.diseasegaps census pharos319            # every disease 
 make check
 python -m pharos_gap_kg.release archive pharos319               # the bundle as the archive a release carries; its digest is committed
 ```
+
+To keep it current ([`findings/MAINTENANCE.md`](findings/MAINTENANCE.md)): `python -m
+pharos_gap_kg.maintain trace pharos319` runs the build block once more and maps what each stage reads
+and writes; after an input changes, `maintain stale pharos319` says which stages that makes stale and
+why, and `maintain rebuild pharos319` runs only those.
 
 Ask:
 

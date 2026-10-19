@@ -1,0 +1,539 @@
+{
+ "release": "pharos319",
+ "stages": [
+  {
+   "name": "split",
+   "args": [
+    "split",
+    "pharos319",
+    "--cutoff",
+    "2018"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pubmed_year.parquet",
+    "repo:docs/data/split_gene_trait_2018.json"
+   ],
+   "writes": [
+    "data:eval/gene_trait_2018/test.parquet",
+    "data:eval/gene_trait_2018/train.parquet",
+    "data:eval/gene_trait_2018/unscored.parquet"
+   ]
+  },
+  {
+   "name": "graph",
+   "args": [
+    "graph",
+    "build",
+    "pharos319",
+    "--cutoff",
+    "2018"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:eval/gene_trait_2018/test.parquet",
+    "data:eval/gene_trait_2018/train.parquet",
+    "data:eval/gene_trait_2018/unscored.parquet",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pubmed_year.parquet",
+    "repo:docs/data/split_gene_trait_2018.json"
+   ],
+   "writes": [
+    "data:graph/pharos319_asof2018/edges.tsv",
+    "data:graph/pharos319_asof2018/gaps.tsv",
+    "data:graph/pharos319_asof2018/graph.json",
+    "data:graph/pharos319_asof2018/nodes.tsv",
+    "repo:docs/data/graph_pharos319_asof2018.json"
+   ]
+  },
+  {
+   "name": "ctxtables",
+   "args": [
+    "ctxtables",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/goa.parquet",
+    "data:tables/pharos319/ncats_ligand_activity.parquet",
+    "data:tables/pharos319/ncats_ppi.parquet",
+    "data:tables/pharos319/pathway.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/t2tc.parquet"
+   ],
+   "writes": [
+    "data:context/pharos319/compounds.parquet",
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/go_terms.parquet",
+    "data:context/pharos319/manifest.json",
+    "data:context/pharos319/partners.parquet",
+    "data:context/pharos319/pathways.parquet",
+    "repo:docs/data/context_tables_pharos319.json"
+   ]
+  },
+  {
+   "name": "bundle_links",
+   "args": [
+    "bundle",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:graph/pharos319_asof2018/edges.tsv",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/t2tc.parquet",
+    "data:tables/pharos319/target.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pharos319/xref.parquet",
+    "data:tables/pubmed_year.parquet",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz.lineage.json",
+    "raw:efo.obo",
+    "raw:efo.obo.lineage.json",
+    "repo:docs/data/baselines_gene_trait_2018.json",
+    "repo:docs/data/calibration_gene_trait_2018.json",
+    "repo:docs/data/calibration_prospect_2022.json",
+    "repo:docs/data/coldstart_gene_trait_2018.json",
+    "repo:docs/data/context_gene_trait_2018.json",
+    "repo:docs/data/controls_gene_trait_2018.json",
+    "repo:docs/data/prospect_coldstart_2022.json",
+    "repo:docs/data/prospect_gene_trait_2022.json"
+   ],
+   "writes": [
+    "data:bundle/pharos319/backtest.json",
+    "data:bundle/pharos319/evidence.parquet",
+    "data:bundle/pharos319/lineage.parquet",
+    "data:bundle/pharos319/links.parquet",
+    "data:bundle/pharos319/manifest.json",
+    "data:bundle/pharos319/neighbours.parquet",
+    "data:bundle/pharos319/nodes.parquet",
+    "repo:docs/data/bundle_pharos319.json"
+   ]
+  },
+  {
+   "name": "planted",
+   "args": [
+    "planted",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:bundle/pharos319/links.parquet",
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/manifest.json",
+    "data:context/pharos319/partners.parquet",
+    "raw:efo.obo"
+   ],
+   "writes": [
+    "data:context/pharos319/disease_links_pruned.parquet",
+    "data:context/pharos319/disease_links_withheld.parquet",
+    "repo:docs/data/planted_pharos319.json"
+   ]
+  },
+  {
+   "name": "evidence",
+   "args": [
+    "evidence",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/manifest.json",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/protein.parquet"
+   ],
+   "writes": [
+    "data:context/pharos319/disease_evidence.parquet",
+    "repo:docs/data/evidence_fields_pharos319.json"
+   ]
+  },
+  {
+   "name": "prune2_freeze",
+   "args": [
+    "prune2",
+    "freeze",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/manifest.json",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/protein.parquet"
+   ],
+   "writes": [
+    "data:eval/pruning2/pharos319/planted.parquet",
+    "data:eval/pruning2/pharos319/sample.parquet",
+    "repo:docs/data/pruning2_sample_pharos319.json"
+   ]
+  },
+  {
+   "name": "prune2_ingraph",
+   "args": [
+    "prune2",
+    "ingraph",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:bundle/pharos319/links.parquet",
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/partners.parquet",
+    "data:eval/pruning2/pharos319/planted.parquet",
+    "data:eval/pruning2/pharos319/sample.parquet",
+    "raw:efo.obo",
+    "repo:docs/data/pruning2_sample_pharos319.json"
+   ],
+   "writes": [
+    "data:eval/pruning2/pharos319/ingraph.json",
+    "data:eval/pruning2/pharos319/ingraph_detail.parquet"
+   ]
+  },
+  {
+   "name": "applycut",
+   "args": [
+    "applycut",
+    "write",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:bundle/pharos319/links.parquet",
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/manifest.json",
+    "data:context/pharos319/partners.parquet",
+    "data:eval/pruning2/pharos319/applied.json",
+    "data:eval/pruning2/pharos319/applied.parquet",
+    "data:eval/pruning2/pharos319/ingraph_detail.parquet",
+    "data:eval/pruning2/pharos319/search.parquet",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "raw:efo.obo",
+    "repo:docs/data/pruning2_pharos319.json"
+   ],
+   "writes": [
+    "data:context/pharos319/disease_links_pruned.parquet",
+    "data:context/pharos319/disease_links_withheld.parquet",
+    "repo:docs/data/pruning2_applied_pharos319.json"
+   ]
+  },
+  {
+   "name": "tgaps",
+   "args": [
+    "tgaps",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/partners.parquet",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/generif.parquet",
+    "data:tables/pharos319/ncats_ligand_activity.parquet",
+    "data:tables/pharos319/pmscore.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/t2tc.parquet",
+    "data:tables/pharos319/target.parquet",
+    "data:tables/pharos319/tdl_info.parquet",
+    "raw:pharos400_tdls_canonicals.csv",
+    "raw:pharos400_tdls_canonicals.csv.lineage.json",
+    "repo:docs/data/levels_pharos319_pharos400.json"
+   ],
+   "writes": [
+    "data:context/pharos319/target_gaps_dark.parquet",
+    "data:context/pharos319/target_gaps_ligand.parquet",
+    "repo:docs/data/target_gaps_pharos319.json"
+   ]
+  },
+  {
+   "name": "tgapgraph",
+   "args": [
+    "tgapgraph",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/target_gaps_dark.parquet",
+    "data:context/pharos319/target_gaps_ligand.parquet",
+    "repo:docs/data/target_gaps_pharos319.json"
+   ],
+   "writes": [
+    "data:graph/pharos319_target_gaps/edges.tsv",
+    "data:graph/pharos319_target_gaps/gaps.tsv",
+    "data:graph/pharos319_target_gaps/graph.json",
+    "data:graph/pharos319_target_gaps/nodes.tsv",
+    "repo:docs/data/graph_pharos319_target_gaps.json"
+   ]
+  },
+  {
+   "name": "ctxgraph",
+   "args": [
+    "ctxgraph",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/disease_links_withheld.parquet",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/protein.parquet"
+   ],
+   "writes": [
+    "data:graph/pharos319_context_disease/edges.tsv",
+    "data:graph/pharos319_context_disease/gaps.tsv",
+    "data:graph/pharos319_context_disease/graph.json",
+    "data:graph/pharos319_context_disease/nodes.tsv",
+    "repo:docs/data/graph_pharos319_context_disease.json"
+   ]
+  },
+  {
+   "name": "kg",
+   "args": [
+    "kg",
+    "build",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/disease_evidence.parquet",
+    "data:context/pharos319/disease_links.parquet",
+    "data:context/pharos319/disease_links_withheld.parquet",
+    "data:context/pharos319/target_gaps_dark.parquet",
+    "data:context/pharos319/target_gaps_ligand.parquet",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/disease.parquet",
+    "data:tables/pharos319/drug_activity.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/t2tc.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pubmed_year.parquet",
+    "raw:efo.obo",
+    "repo:docs/data/target_gaps_pharos319.json"
+   ],
+   "writes": [
+    "data:graph/pharos319/edges.tsv",
+    "data:graph/pharos319/gaps.tsv",
+    "data:graph/pharos319/graph.json",
+    "data:graph/pharos319/nodes.tsv",
+    "repo:docs/data/graph_pharos319.json"
+   ]
+  },
+  {
+   "name": "gwascat_extract",
+   "args": [
+    "gwascat",
+    "extract"
+   ],
+   "isolated": true,
+   "reads": [
+    "raw:gwas-catalog-associations_ontology-annotated-full.zip",
+    "raw:gwas-catalog-associations_ontology-annotated-full.zip.lineage.json"
+   ],
+   "writes": [
+    "data:tables/gwas_catalog_20261005/_manifest.json",
+    "data:tables/gwas_catalog_20261005/associations.parquet"
+   ]
+  },
+  {
+   "name": "gwascat_rule",
+   "args": [
+    "gwascat",
+    "rule",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:tables/gwas_catalog_20261005/_manifest.json",
+    "data:tables/gwas_catalog_20261005/associations.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pharos319/xref.parquet",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz",
+    "raw:efo.obo"
+   ],
+   "writes": [
+    "repo:docs/data/gwascat_rule_pharos319.json"
+   ]
+  },
+  {
+   "name": "gwascat_build",
+   "args": [
+    "gwascat",
+    "build",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:eval/gene_trait_2018/test.parquet",
+    "data:eval/gene_trait_2018/train.parquet",
+    "data:eval/gene_trait_2018/unscored.parquet",
+    "data:tables/gwas_catalog_20261005/_manifest.json",
+    "data:tables/gwas_catalog_20261005/associations.parquet",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/xref.parquet",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz",
+    "raw:efo.obo",
+    "repo:docs/data/split_gene_trait_2018.json",
+    "repo:docs/data/split_gene_trait_2022.json"
+   ],
+   "writes": [
+    "data:eval/gene_trait_2022/aside.parquet",
+    "data:eval/gene_trait_2022/test.parquet",
+    "data:eval/gene_trait_2022/train.parquet",
+    "data:eval/gene_trait_2022/unscored.parquet"
+   ]
+  },
+  {
+   "name": "studysize",
+   "args": [
+    "studysize",
+    "build",
+    "pharos319"
+   ],
+   "isolated": true,
+   "reads": [
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "raw:gwas-catalog-associations_ontology-annotated-full.zip",
+    "raw:gwas-catalog-associations_ontology-annotated-full.zip.lineage.json"
+   ],
+   "writes": [
+    "data:tables/gwas_catalog_20261005/study_sizes.parquet",
+    "repo:docs/data/study_sizes_pharos319.json"
+   ]
+  },
+  {
+   "name": "bundle",
+   "args": [
+    "bundle",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:context/pharos319/target_gaps_dark.parquet",
+    "data:context/pharos319/target_gaps_ligand.parquet",
+    "data:graph/pharos319/edges.tsv",
+    "data:graph/pharos319/gaps.tsv",
+    "data:graph/pharos319/graph.json",
+    "data:graph/pharos319/nodes.tsv",
+    "data:graph/pharos319_asof2018/edges.tsv",
+    "data:graph/pharos319_target_gaps/gaps.tsv",
+    "data:tables/gwas_catalog_20261005/study_sizes.parquet",
+    "data:tables/pharos319/_manifest.json",
+    "data:tables/pharos319/protein.parquet",
+    "data:tables/pharos319/t2tc.parquet",
+    "data:tables/pharos319/target.parquet",
+    "data:tables/pharos319/tiga.parquet",
+    "data:tables/pharos319/tiga_provenance.parquet",
+    "data:tables/pharos319/xref.parquet",
+    "data:tables/pubmed_year.parquet",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz",
+    "raw:Homo_sapiens.GRCh38.113.gtf.gz.lineage.json",
+    "raw:efo.obo",
+    "raw:efo.obo.lineage.json",
+    "repo:docs/data/baselines_gene_trait_2018.json",
+    "repo:docs/data/calibration_gene_trait_2018.json",
+    "repo:docs/data/calibration_prospect_2022.json",
+    "repo:docs/data/coldstart_gene_trait_2018.json",
+    "repo:docs/data/context_gene_trait_2018.json",
+    "repo:docs/data/controls_gene_trait_2018.json",
+    "repo:docs/data/graph_pharos319_target_gaps.json",
+    "repo:docs/data/prospect_coldstart_2022.json",
+    "repo:docs/data/prospect_gene_trait_2022.json",
+    "repo:docs/data/study_sizes_pharos319.json",
+    "repo:docs/data/target_gaps_pharos319.json"
+   ],
+   "writes": [
+    "data:bundle/pharos319/assertions.parquet",
+    "data:bundle/pharos319/backtest.json",
+    "data:bundle/pharos319/context_nodes.parquet",
+    "data:bundle/pharos319/drug_indications.parquet",
+    "data:bundle/pharos319/drug_targets.parquet",
+    "data:bundle/pharos319/evidence.parquet",
+    "data:bundle/pharos319/expression.parquet",
+    "data:bundle/pharos319/lineage.parquet",
+    "data:bundle/pharos319/links.parquet",
+    "data:bundle/pharos319/manifest.json",
+    "data:bundle/pharos319/neighbours.parquet",
+    "data:bundle/pharos319/nodes.parquet",
+    "data:bundle/pharos319/study_sizes.parquet",
+    "data:bundle/pharos319/target_gaps.json",
+    "data:bundle/pharos319/target_gaps.parquet",
+    "repo:docs/data/bundle_pharos319.json"
+   ]
+  },
+  {
+   "name": "census",
+   "args": [
+    "diseasegaps",
+    "census",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:bundle/pharos319/assertions.parquet",
+    "data:bundle/pharos319/backtest.json",
+    "data:bundle/pharos319/context_nodes.parquet",
+    "data:bundle/pharos319/drug_indications.parquet",
+    "data:bundle/pharos319/drug_targets.parquet",
+    "data:bundle/pharos319/evidence.parquet",
+    "data:bundle/pharos319/expression.parquet",
+    "data:bundle/pharos319/lineage.parquet",
+    "data:bundle/pharos319/links.parquet",
+    "data:bundle/pharos319/manifest.json",
+    "data:bundle/pharos319/neighbours.parquet",
+    "data:bundle/pharos319/nodes.parquet",
+    "data:bundle/pharos319/study_sizes.parquet",
+    "data:bundle/pharos319/target_gaps.json",
+    "data:bundle/pharos319/target_gaps.parquet"
+   ],
+   "writes": [
+    "repo:docs/data/disease_gaps_pharos319.json"
+   ]
+  },
+  {
+   "name": "archive",
+   "args": [
+    "release",
+    "archive",
+    "pharos319"
+   ],
+   "isolated": false,
+   "reads": [
+    "data:bundle/pharos319/assertions.parquet",
+    "data:bundle/pharos319/backtest.json",
+    "data:bundle/pharos319/context_nodes.parquet",
+    "data:bundle/pharos319/drug_indications.parquet",
+    "data:bundle/pharos319/drug_targets.parquet",
+    "data:bundle/pharos319/evidence.parquet",
+    "data:bundle/pharos319/expression.parquet",
+    "data:bundle/pharos319/lineage.parquet",
+    "data:bundle/pharos319/links.parquet",
+    "data:bundle/pharos319/manifest.json",
+    "data:bundle/pharos319/neighbours.parquet",
+    "data:bundle/pharos319/nodes.parquet",
+    "data:bundle/pharos319/study_sizes.parquet",
+    "data:bundle/pharos319/target_gaps.json",
+    "data:bundle/pharos319/target_gaps.parquet"
+   ],
+   "writes": [
+    "data:release/pharos-gap-kg-bundle-pharos319.tar.gz",
+    "repo:docs/data/bundle_archive_pharos319.json"
+   ]
+  }
+ ]
+}

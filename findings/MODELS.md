@@ -223,3 +223,9 @@ On the test links, the score of the mean of five seeds:
 interactions, pathways, GO terms, compounds and disease sources predicts better than the same model
 given Pharos's links alone, and worse than a neighbour score with no fitted parameter. The declared
 fitted models are all scored, and none beats that score.
+
+Added 18 Oct 2026, a caveat the section above leaves out. The context joined on in M3 and M4 is
+undated and as of 2022 at the latest (`docs/PROTOCOL.md`, "What a scorer may see"), so it can hold
+what was learned after 2018. M3's gain over M2, +0.0041 on all links and +0.0033 on the links neither
+lineage nor position explains, is an upper bound on what context known in 2018 would add. That M3
+stays below the neighbours baseline holds all the more.

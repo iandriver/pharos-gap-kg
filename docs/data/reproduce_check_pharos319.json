@@ -1,0 +1,8 @@
+{
+ "release": "pharos319",
+ "what": "a clean clone of 8d413c3 built by the README's build block (clone C) against the author's checkout",
+ "files_compared": 112,
+ "files_that_differ": [
+  "data:tables/pharos319/_manifest.json"
+ ]
+}

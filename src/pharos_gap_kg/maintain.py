@@ -15,6 +15,7 @@ Run, in a built checkout:
       python -m pharos_gap_kg.maintain whatif pharos319 data:eval/pruning2/pharos319/applied.parquet
       python -m pharos_gap_kg.maintain rebuild pharos319    # only the stale stages, in order
       python -m pharos_gap_kg.maintain digests pharos319 OUT.json   # every mapped file's digest, to compare two checkouts
+      python -m pharos_gap_kg.maintain compare pharos319 A.json B.json OUT.json "what is compared"
 The demonstration:
       python -m pharos_gap_kg.maintain change pharos319     # PubMed asked again: 20 pairs lose one paper
       python -m pharos_gap_kg.maintain demo pharos319       # change, stale, rebuild, and the record of it
@@ -348,6 +349,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {len(rebuild(release))} stage(s) ran")
     elif cmd == "digests":
         Path(argv[2]).write_text(json.dumps(digests(release), indent=1) + "\n")
+    elif cmd == "compare":
+        a, b = json.loads(Path(argv[2]).read_text()), json.loads(Path(argv[3]).read_text())
+        diff = sorted(f for f in set(a) | set(b) if a.get(f) != b.get(f))
+        rec = {"release": release, "what": argv[5] if len(argv) > 5 else "", "files_compared": len(set(a) | set(b)), "files_that_differ": diff}
+        Path(argv[4]).write_text(json.dumps(rec, indent=1) + "\n")
+        print(f"  {rec['files_compared']} files compared, {len(diff)} differ")
     elif cmd == "change":
         print(change(release))
     elif cmd == "demo":
