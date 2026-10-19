@@ -1134,6 +1134,108 @@ writes is byte for byte the same in the two, and if every file outside the outpu
 that ran is byte for byte what it was before the change. The stages listed stale, the stages that
 ran and the time each took are recorded.
 
+## Ingest: a model proposes the mapping for a table
+
+Written on 19 Oct 2026, before any card was made and before any model read a table.
+
+**What it asks.** Whether a language model, given a Pharos table it has not been told how to map,
+proposes a Biolink mapping that code accepts, and how closely it agrees with the mappings this
+project wrote by hand for the tables already in the graph.
+
+**The stage.** The model proposes and code decides. The model reads a card and returns one proposal
+in a fixed JSON form. A validator in code accepts the proposal or refuses it with its reasons. A
+refused proposal goes back to the model once with those reasons, and the second proposal is final.
+No model judges another's proposal.
+
+**The card.** One Pharos provenance view: a table, restricted by the where-clause of its row in
+Pharos's `provenance` table. Two clauses match no row as written: `dtype = 'uniprot'` (the rows are
+`dtype = 'UniProt Disease'`) and `ptype = 'JAX/MGI Human Ortholog Phenotyp'` (cut short; the rows are
+`'JAX/MGI Human Ortholog Phenotype'`), and those two cards read the rows the dataset names. A card
+holds the table's name; the dataset Pharos names for the view, with its source, URL and comment; each
+column with its declared type, how many rows hold a value, and its number of distinct values, with
+the values and their counts where there are at most 25, and otherwise six examples, each cut to 80
+characters; eight rows drawn with seed 20261019; the menu of identifier resolvers; and Biolink's
+knowledge levels and agent types. All cards are written and committed before any model reads one.
+
+**The proposal.** For the subject and for the object: the column, or columns tried in order, a
+resolver from the menu, a Biolink category, and optionally a column that names the node. Then the
+predicate, the association's category, the knowledge level, the agent type, the primary knowledge
+source as an infores identifier, qualifiers (each a constant, or for a direction qualifier the sign
+of a column), the columns carried as edge properties, and optionally a condition a row must meet
+(a column at least a value, or in a list of values) with the reason a row that fails it becomes a
+gap. A proposal may split the view by the values of one column, with fields that differ for a value
+and values left out with a reason. Or it may say the view should not become edges, and why.
+
+**The resolvers.** The model chooses; it writes no code. `pharos_protein` (a Pharos protein row to
+UniProtKB), `pharos_protein_gene` (a Pharos protein row to NCBIGene), `pharos_target` (a Pharos
+target row to UniProtKB), `curie` (the value as written, `EFO_0004584` read as `EFO:0004584`),
+`prefix:P` (the value under prefix P), `pattern:P:regex` (the regular expression's first group,
+under prefix P), `name:kind` (a local identifier made from the text, marked not grounded).
+
+**The validator** refuses a proposal when any of these fails:
+
+1. It parses, and every column and split value it names is in the view.
+2. The predicate is a Biolink 4.4.3 predicate that is not abstract, a mixin or deprecated.
+3. The association's category is Association or a class below it, and each node category is a
+   class below NamedThing; none is abstract, a mixin or deprecated.
+4. The predicate's domain and range (its own, or the nearest an ancestor declares) admit the subject's
+   and object's categories, through is_a and mixins.
+5. The association class's constraints (its own slot usage, or the nearest an ancestor or mixin
+   declares) admit the subject's and object's categories, and admit the predicate: where the class
+   lists predicates, the predicate or an ancestor of it is listed; where it names a parent
+   predicate, the predicate is that one or below it.
+6. Each qualifier is a Biolink qualifier that the association class or one of its ancestors or
+   mixins carries, with a value in its enumeration where its range is one.
+7. The knowledge level and agent type are in Biolink's enumerations and in kgx-gaps'. The knowledge
+   source is written `infores:` and a lower-case name. The infores registry is not checked offline.
+8. At least 95% of the view's rows resolve to an identifier on both sides; at most 1% of the distinct
+   identifiers on a side are under a prefix the category's Biolink `id_prefixes` do not list (a
+   category with none is checked against those of the classes below it); and where the release
+   holds the vocabulary (UniProtKB and NCBIGene in `protein`, MONDO, DOID, UBERON and GO in their
+   tables), at least 90% of the distinct identifiers are in it. For OMIM, Orphanet, MESH, UMLS and
+   EFO, the share found among MONDO's cross-references is reported and refuses nothing.
+9. The export of the view passes kgx-gaps' ten conformance checks.
+
+The reference KGX validator (kgx 2.7.0, offline, as in "Standards") is run on each accepted export,
+and what it reports is recorded. It refuses nothing here.
+
+**Control.** The hand mappings of the scored cards, written in the same form, go through the same
+validator. A check a hand mapping fails is reported as a defect of the graph.
+
+**Scored cards.** The nine provenance views behind the graph's assertions, links and drug targets:
+`disease` for CTD, DisGeNET, eRAM, Monarch, UniProt Disease, Expression Atlas and the JensenLab
+sources; `tiga`; and `drug_activity`. The JensenLab view holds four sources the graph maps and one,
+JensenLab Experiment TIGA, that it leaves out as the GWAS data again. DrugCentral Indication is not
+scored: the graph makes it a path through two edges. That makes twelve hand rules.
+
+**Agreement.** Field by field, for each hand rule: the subject's and the object's column (the
+proposal's first column is one the hand mapping reads), the subject's and the object's category, the
+predicate, the association's category, the knowledge level, the agent type and the knowledge source.
+The predicate is also counted as close when one is a Biolink ancestor of the other. A proposal that
+does not split the JensenLab view is compared with each of its four hand rules. The hand values are
+taken from the code that writes the graph, and a check confirms that the exported graph carries them.
+
+**Models.** qwen3.6 35B, local, thinking on, temperature 0.6, top-p 0.95, seed 20261019; and Claude
+Haiku 5.5, Claude Sonnet 5.5 and Claude Opus 5.5 through OpenRouter, temperature 0. Each gets the same
+brief and cards. Hosted spend for this stage is capped at $1.00, written to a ledger before each call.
+
+**Qualifying for new tables.** A model qualifies if the validator accepts its final proposal for at
+least 8 of the 9 scored cards, and over the twelve hand rules it agrees on the subject's and the
+object's column for at least 11 and on the predicate, exactly or close, for at least 9.
+
+**New tables.** Four provenance views the graph does not hold: `ortholog_disease`, `phenotype` for
+OMIM, `phenotype` for JAX/MGI Human Ortholog Phenotype, and `goa`. Every qualifying model proposes a
+mapping for each. The proposal used is that of the cheapest qualifying model whose proposal the
+validator accepts (the local model counts as free). The other qualifying models' proposals are
+compared with it field by field and the differences listed. An accepted view is exported as its own
+KGX part under `data/graph/<release>/ingested/`, and nothing reads it (the graph's own files, the
+bundle, a score or a question) until Ian decides that it joins.
+
+**Not claimed.** That agreement with the hand mappings is correctness: they are this project's
+choices, and the control runs them through the same validator. That an accepted mapping is right: a
+predicate can be valid, fit its domain and range and still say more than the source does. Every
+accepted mapping is listed field by field for a person to read.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
