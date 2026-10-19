@@ -1814,3 +1814,33 @@ or, for a row the condition makes a gap, when its subject does.
 **19 Oct 2026, ingest spend, on Ian's word, after the cap stopped Opus at 7 of its 9 scored cards.** The
 hosted cap for this stage is raised from $1.00 to $1.75, so that Opus finishes the scored cards and
 every qualifying model proposes the four new views. Nothing else changes.
+
+**19 Oct 2026, Biolink 4.4.3 constraints, on Ian's word ("fix the four Biolink failures with gene
+nodes"), before any change to the build.** The export is remodelled so that every kind of edge passes
+the ingest validator's checks 2 to 6. Nothing scored is rescored; the GWAS links and the split are
+untouched.
+
+- *Disease-source assertions.* The subject becomes the gene (`NCBIGene`, `biolink:Gene`) of the Pharos
+  protein the row names, and the protein is kept on the edge (and on a withheld row's gap) as
+  `pharosgapkg:gene_product`, part of the edge's identity, so that two proteins of one gene keep two
+  edges. A gene node is added for every protein with a gene id, joined to the protein by
+  `biolink:has_gene_product` (`biolink:GeneToGeneProductRelationship`). The 4 assertion rows whose
+  protein has no gene id in the release stay on the protein under `biolink:associated_with`. The
+  bundle's tables keep the protein as the target, so the questions read what they read before.
+- *Expression observations.* The class becomes `biolink:CorrelatedGeneToDiseaseAssociation`. Biolink
+  has no gene-to-disease class that carries a subject direction, so the direction becomes a property,
+  `pharosgapkg:expression_direction`, in the same place in the edge's identity; the ids do not change.
+- *Drug indications.* The predicate becomes `biolink:applied_to_treat` and the class
+  `biolink:ChemicalOrDrugOrTreatmentToDiseaseOrPhenotypicFeatureAssociation`. 4.4.3 makes `treats` a
+  mixin; of the concrete predicates under the class's parent, `applied_to_treat` claims no more than a
+  DrugCentral indication does (it includes anaesthesia and prevention).
+- *GWAS links to a condition.* The class becomes `biolink:Association`: 278,883 of their 294,248 objects
+  are DiseaseOrPhenotypicFeature, which no more specific class takes. The ids do not change.
+- *The validator.* A predicate's ancestors are those of Biolink, through is_a and its mixins (checks 5
+  and the agreement's "close" read them); until now only is_a was followed. `ingest stale` is run on
+  every recorded proposal after the change and what it finds is reported.
+
+**What counts as done.** `ingest graphcheck` finds every kind of edge passing; the merged graph passes
+kgx-gaps' ten checks with every input row an edge or a gap; the reference validator is run again; the
+subgraph check finds no difference from the export; the census of disease gaps and every typed answer
+other than an assertion's edge id are what they were.
