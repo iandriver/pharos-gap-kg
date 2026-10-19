@@ -1,0 +1,274 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "drug_activity",
+ "release": "pharos319",
+ "card_sha256": "0eeb91f95e7b264f5b878450c8e6b752a075571c38cbd9300dcae8801138eed0",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"cmpd_chemblid\"], \"resolver\": \"prefix:CHEMBL.COMPOUND\", \"category\": \"biolink:Drug\", \"name_column\": \"drug\"}, \"object\": {\"columns\": [\"target_id\"], \"resolver\": \"pharos_target\", \"category\": \"biolink:Protein\"}, \"predicate\": \"biolink:physically_interacts_with\", \"association_category\": \"biolink:Association\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"manual_agent\", \"primary_knowledge_source\": \"infores:drugcentral\", \"qualifiers\": {}, \"edge_properties\": [\"act_type\", \"act_value\", \"action_type\", \"has_moa\", \"source\", \"reference\"], \"keep_if\": {\"column\": \"cmpd_chemblid\", \"matches\": \"^CHEMBL[0-9]+$\", \"reason\": \"No ChEMBL compound id, so the drug cannot be grounded as a subject; the row is kept as a gap of its drug.\"}, \"split_by\": null, \"by_value\": {}, \"notes\": \"Each row is a drug-target activity record from DrugCentral (ChEMBL, IUPHAR, drug labels, literature), so it becomes one drug-protein edge. The target_id is a Pharos target row, resolved to a UniProt accession. The predicate is generic because the source gives mechanism (action_type) and potency (act_type/act_value) rather than a directional, grounded gene-level claim; action_type is kept as an edge property rather than a direction qualifier. Rows lacking a ChEMBL compound id (about 950) cannot be grounded by the CHEMBL resolver and fall to the keep_if gap; cmpd_pubchem_cid could ground some of them under a separate PubChem prefix if needed. The source column is an edge property, not the primary knowledge source.\"}",
+   "usage": {
+    "in": 6792,
+    "out": 3405,
+    "usd": 0.0023817
+   },
+   "provider": "Google",
+   "seconds": 16.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "cmpd_chemblid"
+     ],
+     "resolver": "prefix:CHEMBL.COMPOUND",
+     "category": "biolink:Drug",
+     "name_column": "drug"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:physically_interacts_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "act_type",
+     "act_value",
+     "action_type",
+     "has_moa",
+     "source",
+     "reference"
+    ],
+    "keep_if": {
+     "column": "cmpd_chemblid",
+     "matches": "^CHEMBL[0-9]+$",
+     "reason": "No ChEMBL compound id, so the drug cannot be grounded as a subject; the row is kept as a gap of its drug."
+    },
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row is a drug-target activity record from DrugCentral (ChEMBL, IUPHAR, drug labels, literature), so it becomes one drug-protein edge. The target_id is a Pharos target row, resolved to a UniProt accession. The predicate is generic because the source gives mechanism (action_type) and potency (act_type/act_value) rather than a directional, grounded gene-level claim; action_type is kept as an edge property rather than a direction qualifier. Rows lacking a ChEMBL compound id (about 950) cannot be grounded by the CHEMBL resolver and fall to the keep_if gap; cmpd_pubchem_cid could ground some of them under a separate PubChem prefix if needed. The source column is an edge property, not the primary knowledge source."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: 3,487 of 4,436 rows (78.6%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 4436,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "3,487 of 4,436 rows (78.6%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4436,
+        "resolved": 3487,
+        "distinct": 1634,
+        "prefixes": {
+         "CHEMBL.COMPOUND": 1634
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:Drug"
+       },
+       "object": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1178,
+        "prefixes": {
+         "UniProtKB": 1178
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 1178,
+          "in_release": 1178
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 3487,
+      "kept": 3487,
+      "made_gaps_by_condition": 949
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"dcid\"], \"resolver\": \"prefix:DrugCentral\", \"category\": \"biolink:Drug\", \"name_column\": \"drug\"}, \"object\": {\"columns\": [\"target_id\"], \"resolver\": \"pharos_target\", \"category\": \"biolink:Protein\"}, \"predicate\": \"biolink:physically_interacts_with\", \"association_category\": \"biolink:Association\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"manual_agent\", \"primary_knowledge_source\": \"infores:drugcentral\", \"qualifiers\": {}, \"edge_properties\": [\"cmpd_chemblid\", \"act_type\", \"act_value\", \"action_type\", \"has_moa\", \"source\", \"reference\"], \"keep_if\": null, \"split_by\": null, \"by_value\": {}, \"notes\": \"The subject is the DrugCentral drug id (dcid), which is present on all 4,436 rows, so every row has a grounded subject. The earlier ChEMBL compound column is missing on about 950 rows, so it is kept as an edge property rather than the identifier. The object is the Pharos target row resolved to a UniProt accession, present on every row. The predicate is generic because the source gives mechanism (action_type) and potency (act_type/act_value), not a directional gene-level claim; action_type stays an edge property rather than a direction qualifier. The source column is an edge property, and infores:drugcentral is the primary knowledge source.\"}",
+   "usage": {
+    "in": 7514,
+    "out": 1985,
+    "usd": 0.0017439
+   },
+   "provider": "Google",
+   "seconds": 9.3,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "dcid"
+     ],
+     "resolver": "prefix:DrugCentral",
+     "category": "biolink:Drug",
+     "name_column": "drug"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:physically_interacts_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "cmpd_chemblid",
+     "act_type",
+     "act_value",
+     "action_type",
+     "has_moa",
+     "source",
+     "reference"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": {},
+    "notes": "The subject is the DrugCentral drug id (dcid), which is present on all 4,436 rows, so every row has a grounded subject. The earlier ChEMBL compound column is missing on about 950 rows, so it is kept as an edge property rather than the identifier. The object is the Pharos target row resolved to a UniProt accession, present on every row. The predicate is generic because the source gives mechanism (action_type) and potency (act_type/act_value), not a directional gene-level claim; action_type stays an edge property rather than a direction qualifier. The source column is an edge property, and infores:drugcentral is the primary knowledge source."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 4436,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1782,
+        "prefixes": {
+         "DrugCentral": 1782
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:Drug"
+       },
+       "object": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1178,
+        "prefixes": {
+         "UniProtKB": 1178
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 1178,
+          "in_release": 1178
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 4436,
+      "kept": 4436,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 4295,
+     "n_nodes": 2960,
+     "n_edges": 4295,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:physically_interacts_with": 4295
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "dcid"
+   ],
+   "resolver": "prefix:DrugCentral",
+   "category": "biolink:Drug",
+   "name_column": "drug"
+  },
+  "object": {
+   "columns": [
+    "target_id"
+   ],
+   "resolver": "pharos_target",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:physically_interacts_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:drugcentral",
+  "qualifiers": {},
+  "edge_properties": [
+   "cmpd_chemblid",
+   "act_type",
+   "act_value",
+   "action_type",
+   "has_moa",
+   "source",
+   "reference"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": {},
+  "notes": "The subject is the DrugCentral drug id (dcid), which is present on all 4,436 rows, so every row has a grounded subject. The earlier ChEMBL compound column is missing on about 950 rows, so it is kept as an edge property rather than the identifier. The object is the Pharos target row resolved to a UniProt accession, present on every row. The predicate is generic because the source gives mechanism (action_type) and potency (act_type/act_value), not a directional gene-level claim; action_type stays an edge property rather than a direction qualifier. The source column is an edge property, and infores:drugcentral is the primary knowledge source."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

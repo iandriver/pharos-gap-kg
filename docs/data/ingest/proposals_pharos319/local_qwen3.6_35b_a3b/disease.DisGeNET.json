@@ -1,0 +1,280 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "disease.DisGeNET",
+ "release": "pharos319",
+ "card_sha256": "12116d40898b44bbf0bf93d0e0c9000574981da0488ad6fea76c1e2e3af1fda1",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\",\n    \"name_column\": null\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": null\n  },\n  \"predicate\": \"biolink:gene_associated_with_disease\",\n  \"association_category\": \"biolink:GeneDiseaseAssociation\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:disgenet\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"score\", \"source\", \"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Maps aggregated gene-disease associations from DisGeNET. Uses MONDO identifiers when available, falling back to UMLS IDs. The score reflects aggregate evidence strength across curated sources.\"\n}",
+   "thinking_chars": 12596,
+   "usage": {
+    "in": 4621,
+    "out": 3735,
+    "usd": 0.0
+   },
+   "seconds": 53.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": null
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": null
+    },
+    "predicate": "biolink:gene_associated_with_disease",
+    "association_category": "biolink:GeneDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:disgenet",
+    "qualifiers": {},
+    "edge_properties": [
+     "score",
+     "source",
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Maps aggregated gene-disease associations from DisGeNET. Uses MONDO identifiers when available, falling back to UMLS IDs. The score reflects aggregate evidence strength across curated sources."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "2_predicate: 'biolink:gene_associated_with_disease' is not a Biolink 4.4.3 predicate",
+     "3_categories: association category 'biolink:GeneDiseaseAssociation' is not a Biolink 4.4.3 class"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 82875,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "'biolink:gene_associated_with_disease' is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category 'biolink:GeneDiseaseAssociation' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 82875,
+        "resolved": 82872,
+        "distinct": 8913,
+        "prefixes": {
+         "NCBIGene": 8913
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 8913,
+          "in_release": 8913
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 82875,
+        "resolved": 82875,
+        "distinct": 10193,
+        "prefixes": {
+         "MONDO": 5732,
+         "UMLS": 4461
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 5732,
+          "in_release": 5732
+         }
+        },
+        "mondo_xrefs": {
+         "UMLS": {
+          "distinct": 4461,
+          "among_mondo_xrefs": 17
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 82872,
+      "kept": 82875,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\",\n    \"name_column\": null\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": null\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:gene_to_disease_association\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:disgenet\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"score\", \"source\", \"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Maps aggregated gene-disease associations from DisGeNET. Uses MONDO identifiers when available, falling back to UMLS IDs. The score reflects aggregate evidence strength across curated sources.\"\n}",
+   "thinking_chars": 11844,
+   "usage": {
+    "in": 4977,
+    "out": 3590,
+    "usd": 0.0
+   },
+   "seconds": 47.9,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": null
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": null
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:gene_to_disease_association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:disgenet",
+    "qualifiers": {},
+    "edge_properties": [
+     "score",
+     "source",
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Maps aggregated gene-disease associations from DisGeNET. Uses MONDO identifiers when available, falling back to UMLS IDs. The score reflects aggregate evidence strength across curated sources."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories: association category 'biolink:gene_to_disease_association' is not a Biolink 4.4.3 class"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 82875,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:gene_to_disease_association' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 82875,
+        "resolved": 82872,
+        "distinct": 8913,
+        "prefixes": {
+         "NCBIGene": 8913
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 8913,
+          "in_release": 8913
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 82875,
+        "resolved": 82875,
+        "distinct": 10193,
+        "prefixes": {
+         "MONDO": 5732,
+         "UMLS": 4461
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 5732,
+          "in_release": 5732
+         }
+        },
+        "mondo_xrefs": {
+         "UMLS": {
+          "distinct": 4461,
+          "among_mondo_xrefs": 17
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 82872,
+      "kept": 82875,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene",
+   "name_column": null
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": null
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:gene_to_disease_association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:disgenet",
+  "qualifiers": {},
+  "edge_properties": [
+   "score",
+   "source",
+   "evidence"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Maps aggregated gene-disease associations from DisGeNET. Uses MONDO identifiers when available, falling back to UMLS IDs. The score reflects aggregate evidence strength across curated sources."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

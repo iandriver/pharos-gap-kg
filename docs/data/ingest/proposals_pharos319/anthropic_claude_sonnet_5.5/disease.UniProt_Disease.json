@@ -1,0 +1,161 @@
+{
+ "model": "anthropic/claude-sonnet-5.5",
+ "view": "disease.UniProt_Disease",
+ "release": "pharos319",
+ "card_sha256": "c922d311c5a8c8d7a6f5f3d4d8d79c5bb2c35555f4b7e9db99f797b2976c7f17",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\", \"name_column\": null},\n  \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"ncats_name\"},\n  \"predicate\": \"biolink:causes\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:uniprot\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"UniProt 'involvement in disease' annotations are curated by UniProt staff from literature, linking a protein's gene to an OMIM disease. I used the gene as subject (via the protein's gene id) and the MONDO id with MIM as fallback. The predicate is biolink:causes, though the source text varies (variants cause or contribute to disease). The evidence column holds literature reference indices.\"\n}",
+   "usage": {
+    "in": 5774,
+    "out": 387,
+    "usd": 0.015418
+   },
+   "provider": "Google",
+   "seconds": 3.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": null
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:causes",
+    "association_category": "biolink:Association",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "UniProt 'involvement in disease' annotations are curated by UniProt staff from literature, linking a protein's gene to an OMIM disease. I used the gene as subject (via the protein's gene id) and the MONDO id with MIM as fallback. The predicate is biolink:causes, though the source text varies (variants cause or contribute to disease). The evidence column holds literature reference indices."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 3760,
+        "prefixes": {
+         "NCBIGene": 3760
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3760,
+          "in_release": 3760
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 4972,
+        "prefixes": {
+         "MONDO": 4948,
+         "MIM": 24
+        },
+        "off_prefix": {
+         "MIM": 24
+        },
+        "off_prefix_share": 0.0048,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4948,
+          "in_release": 4948
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 5651,
+      "kept": 5651,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 5538,
+     "n_nodes": 8732,
+     "n_edges": 5538,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:causes": 5538
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene",
+   "name_column": null
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:causes",
+  "association_category": "biolink:Association",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:uniprot",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "UniProt 'involvement in disease' annotations are curated by UniProt staff from literature, linking a protein's gene to an OMIM disease. I used the gene as subject (via the protein's gene id) and the MONDO id with MIM as fallback. The predicate is biolink:causes, though the source text varies (variants cause or contribute to disease). The evidence column holds literature reference indices."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

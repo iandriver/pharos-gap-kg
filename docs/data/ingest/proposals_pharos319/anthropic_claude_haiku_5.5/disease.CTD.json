@@ -1,0 +1,184 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.CTD",
+ "release": "pharos319",
+ "card_sha256": "a516e1bb5647658368eb00db2a1b609b64475aa1bd3f4c5880957eca8541777e",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\",\n    \"name_column\": \"name\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:ctd\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\"],\n  \"keep_if\": {\n    \"column\": \"evidence\",\n    \"matches\": \"marker/mechanism\",\n    \"reason\": \"Rows whose only evidence is 'therapeutic' link a chemical treatment to the disease, not a gene-disease association, so they are kept as gaps and not asserted as gene-condition edges.\"\n  },\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row links a Pharos protein (resolved to its gene) to a disease. The object uses MONDO ids from mondoid where present (28,778 of 35,187 rows); otherwise the CTD did (DOID or MESH) is used via the curie resolver. The MESH-only disease rows will carry MESH CURIEs. Rows with 'marker/mechanism' evidence (alone or with 'therapeutic') are asserted as direct gene-disease associations, matching the CTD direct-evidence loading note. Rows with only 'therapeutic' evidence are recorded as gaps. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate that fits this source; it is not causal, so no causal qualifiers are added.\"\n}",
+   "usage": {
+    "in": 5238,
+    "out": 1395,
+    "usd": 0.0012213
+   },
+   "provider": "Google",
+   "seconds": 6.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": "name"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:ctd",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence"
+    ],
+    "keep_if": {
+     "column": "evidence",
+     "matches": "marker/mechanism",
+     "reason": "Rows whose only evidence is 'therapeutic' link a chemical treatment to the disease, not a gene-disease association, so they are kept as gaps and not asserted as gene-condition edges."
+    },
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row links a Pharos protein (resolved to its gene) to a disease. The object uses MONDO ids from mondoid where present (28,778 of 35,187 rows); otherwise the CTD did (DOID or MESH) is used via the curie resolver. The MESH-only disease rows will carry MESH CURIEs. Rows with 'marker/mechanism' evidence (alone or with 'therapeutic') are asserted as direct gene-disease associations, matching the CTD direct-evidence loading note. Rows with only 'therapeutic' evidence are recorded as gaps. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate that fits this source; it is not causal, so no causal qualifiers are added."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 35187,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 35187,
+        "resolved": 35187,
+        "distinct": 7734,
+        "prefixes": {
+         "NCBIGene": 7734
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 7734,
+          "in_release": 7734
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 35187,
+        "resolved": 35187,
+        "distinct": 5748,
+        "prefixes": {
+         "MONDO": 4956,
+         "MESH": 757,
+         "OMIM": 20,
+         "DOID": 15
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4956,
+          "in_release": 4956
+         },
+         "DOID": {
+          "distinct": 15,
+          "in_release": 15
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 20,
+          "among_mondo_xrefs": 0
+         },
+         "MESH": {
+          "distinct": 757,
+          "among_mondo_xrefs": 7
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 35187,
+      "kept": 33495,
+      "made_gaps_by_condition": 1692
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 33228,
+     "n_nodes": 13396,
+     "n_edges": 31553,
+     "n_gaps": 1675,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 31553
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene",
+   "name_column": "name"
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:ctd",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence"
+  ],
+  "keep_if": {
+   "column": "evidence",
+   "matches": "marker/mechanism",
+   "reason": "Rows whose only evidence is 'therapeutic' link a chemical treatment to the disease, not a gene-disease association, so they are kept as gaps and not asserted as gene-condition edges."
+  },
+  "split_by": null,
+  "by_value": {},
+  "notes": "Each row links a Pharos protein (resolved to its gene) to a disease. The object uses MONDO ids from mondoid where present (28,778 of 35,187 rows); otherwise the CTD did (DOID or MESH) is used via the curie resolver. The MESH-only disease rows will carry MESH CURIEs. Rows with 'marker/mechanism' evidence (alone or with 'therapeutic') are asserted as direct gene-disease associations, matching the CTD direct-evidence loading note. Rows with only 'therapeutic' evidence are recorded as gaps. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate that fits this source; it is not causal, so no causal qualifiers are added."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

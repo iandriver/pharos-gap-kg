@@ -1,0 +1,364 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "tiga",
+ "release": "pharos319",
+ "card_sha256": "98db20d8166e32bb877434d8c22456809daeabe8c9c3c2f487a585af16aff1d2",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"trait\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"statistical_association\", \"agent_type\": \"data_analysis_pipeline\", \"primary_knowledge_source\": \"infores:tiga\", \"qualifiers\": {}, \"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\", \"geneNtrait\", \"geneNstudy\", \"traitNgene\", \"traitNstudy\"], \"keep_if\": {\"column\": \"efoid\", \"matches\": \"^EFO_\", \"reason\": \"GO_ identifiers in efoid are biological processes, not diseases or traits, so the row is not a gene-disease association\"}, \"split_by\": null, \"notes\": \"TIGA ranks gene-trait links from GWAS summary statistics, so the claim is a statistical association computed by a pipeline, not a curated assertion. The protein_id is a Pharos protein row, resolved to its gene. Rows whose efoid is a GO term are kept as gaps rather than edges. The trait is a GWAS trait that may be a measurement rather than a disease; the Disease category follows the EFO ontology used here. Scores such as p-values and rank are edge properties, and no direction is asserted. ncats_disease_id is not used.\"}",
+   "usage": {
+    "in": 6080,
+    "out": 1444,
+    "usd": 0.00133
+   },
+   "provider": "Google",
+   "seconds": 6.8,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore",
+     "geneNtrait",
+     "geneNstudy",
+     "traitNgene",
+     "traitNstudy"
+    ],
+    "keep_if": {
+     "column": "efoid",
+     "matches": "^EFO_",
+     "reason": "GO_ identifiers in efoid are biological processes, not diseases or traits, so the row is not a gene-disease association"
+    },
+    "split_by": null,
+    "notes": "TIGA ranks gene-trait links from GWAS summary statistics, so the claim is a statistical association computed by a pipeline, not a curated assertion. The protein_id is a Pharos protein row, resolved to its gene. Rows whose efoid is a GO term are kept as gaps rather than edges. The trait is a GWAS trait that may be a measurement rather than a disease; the Disease category follows the EFO ontology used here. Scores such as p-values and rank are edge properties, and no direction is asserted. ncats_disease_id is not used."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:Disease's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:Disease's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0294,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 693948,
+      "made_gaps_by_condition": 51663
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"trait\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"statistical_association\", \"agent_type\": \"data_analysis_pipeline\", \"primary_knowledge_source\": \"infores:tiga\", \"qualifiers\": {}, \"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\", \"geneNtrait\", \"geneNstudy\", \"traitNgene\", \"traitNstudy\"], \"keep_if\": {\"column\": \"efoid\", \"matches\": \"^EFO_\", \"reason\": \"Only EFO-prefixed traits map to biolink:Disease; GO terms are biological processes, and the Orphanet and PATO identifiers are not in the Disease id prefixes, so these rows are kept as gaps of the gene rather than edges\"}, \"split_by\": null, \"notes\": \"TIGA ranks gene-trait links from GWAS summary statistics, so the claim is a statistical association computed by a pipeline, not a curated assertion. The protein_id is a Pharos protein row, resolved to its gene. The object is restricted to EFO identifiers, which is the only prefix set in the data that Biolink's Disease class accepts. The 66 identifiers under GO, Orphanet and PATO are recorded as gaps, not edges. The trait may be a measurement rather than a disease, but the Disease category follows the EFO ontology used here. P-values, odds ratios and rank scores are edge properties, and no direction is asserted. ncats_disease_id is not used.\"}",
+   "usage": {
+    "in": 6791,
+    "out": 1303,
+    "usd": 0.0013306
+   },
+   "provider": "Google",
+   "seconds": 5.8,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore",
+     "geneNtrait",
+     "geneNstudy",
+     "traitNgene",
+     "traitNstudy"
+    ],
+    "keep_if": {
+     "column": "efoid",
+     "matches": "^EFO_",
+     "reason": "Only EFO-prefixed traits map to biolink:Disease; GO terms are biological processes, and the Orphanet and PATO identifiers are not in the Disease id prefixes, so these rows are kept as gaps of the gene rather than edges"
+    },
+    "split_by": null,
+    "notes": "TIGA ranks gene-trait links from GWAS summary statistics, so the claim is a statistical association computed by a pipeline, not a curated assertion. The protein_id is a Pharos protein row, resolved to its gene. The object is restricted to EFO identifiers, which is the only prefix set in the data that Biolink's Disease class accepts. The 66 identifiers under GO, Orphanet and PATO are recorded as gaps, not edges. The trait may be a measurement rather than a disease, but the Disease category follows the EFO ontology used here. P-values, odds ratios and rank scores are edge properties, and no direction is asserted. ncats_disease_id is not used."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:Disease's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:Disease's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0294,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 693948,
+      "made_gaps_by_condition": 51663
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "efoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "trait"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:tiga",
+  "qualifiers": {},
+  "edge_properties": [
+   "n_study",
+   "n_snp",
+   "n_snpw",
+   "pvalue_mlog_median",
+   "pvalue_mlog_max",
+   "or_median",
+   "n_beta",
+   "study_N_mean",
+   "rcras",
+   "meanRank",
+   "meanRankScore",
+   "geneNtrait",
+   "geneNstudy",
+   "traitNgene",
+   "traitNstudy"
+  ],
+  "keep_if": {
+   "column": "efoid",
+   "matches": "^EFO_",
+   "reason": "Only EFO-prefixed traits map to biolink:Disease; GO terms are biological processes, and the Orphanet and PATO identifiers are not in the Disease id prefixes, so these rows are kept as gaps of the gene rather than edges"
+  },
+  "split_by": null,
+  "notes": "TIGA ranks gene-trait links from GWAS summary statistics, so the claim is a statistical association computed by a pipeline, not a curated assertion. The protein_id is a Pharos protein row, resolved to its gene. The object is restricted to EFO identifiers, which is the only prefix set in the data that Biolink's Disease class accepts. The 66 identifiers under GO, Orphanet and PATO are recorded as gaps, not edges. The trait may be a measurement rather than a disease, but the Disease category follows the EFO ontology used here. P-values, odds ratios and rank scores are edge properties, and no direction is asserted. ncats_disease_id is not used."
+ },
+ "accepted": false,
+ "accepted_first": false,
+ "set_aside": "refused at check 8 for the objects of rows its condition made gaps; the check was fixed in 3ee489b and the card is asked again",
+ "set_aside_detail": {
+  "model": "anthropic/claude-haiku-5.5",
+  "view": "tiga",
+  "file": "docs/data/ingest/proposals_pharos319/anthropic_claude_haiku_5.5/tiga.json",
+  "attempt": 1,
+  "recorded": [
+   "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:Disease's id_prefixes do not list"
+  ],
+  "now": []
+ }
+}

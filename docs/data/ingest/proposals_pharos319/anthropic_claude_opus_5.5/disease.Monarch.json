@@ -1,0 +1,304 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "disease.Monarch",
+ "release": "pharos319",
+ "card_sha256": "599104c9398e7bc780146d665c202df76df07397e174d10bb18de192a3c6e7cb",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:monarchinitiative\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"S2O\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Monarch gene\u2013disease links come from curated sources such as OMIM, Orphanet and ClinVar, carrying ECO codes that mix manual and automatic assertion. The rows do not separate causal from correlative links, so I used gene_associated_with_condition rather than a causal predicate. Agent type is not_provided because the evidence is mixed. The object uses mondoid first and falls back to the original did (DOID or OMIM) for the 160 rows that have no MONDO id. S2O is Monarch's similarity score and is kept as an edge property, not used as a filter.\"\n}\n```",
+   "usage": {
+    "in": 5637,
+    "out": 1229,
+    "usd": 0.047128
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 12.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:monarchinitiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "S2O"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Monarch gene\u2013disease links come from curated sources such as OMIM, Orphanet and ClinVar, carrying ECO codes that mix manual and automatic assertion. The rows do not separate causal from correlative links, so I used gene_associated_with_condition rather than a causal predicate. Agent type is not_provided because the evidence is mixed. The object uses mondoid first and falls back to the original did (DOID or OMIM) for the 160 rows that have no MONDO id. S2O is Monarch's similarity score and is kept as an edge property, not used as a filter."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 9509,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 3733,
+        "prefixes": {
+         "NCBIGene": 3733
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3733,
+          "in_release": 3733
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 5096,
+        "prefixes": {
+         "MONDO": 5012,
+         "OMIM": 37,
+         "MESH": 33,
+         "Orphanet": 9,
+         "NCBIGene": 3,
+         "DOID": 2
+        },
+        "off_prefix": {
+         "NCBIGene": 3,
+         "Orphanet": 9
+        },
+        "off_prefix_share": 0.0024,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3,
+          "in_release": 3
+         },
+         "MONDO": {
+          "distinct": 5012,
+          "in_release": 5012
+         },
+         "DOID": {
+          "distinct": 2,
+          "in_release": 1
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 37,
+          "among_mondo_xrefs": 17
+         },
+         "Orphanet": {
+          "distinct": 9,
+          "among_mondo_xrefs": 3
+         },
+         "MESH": {
+          "distinct": 33,
+          "among_mondo_xrefs": 0
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 9509,
+      "kept": 9509,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:monarchinitiative\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"S2O\"],\n  \"keep_if\": {\n    \"column\": \"mondoid\",\n    \"matches\": \"^MONDO:\\\\d+$\",\n    \"reason\": \"These rows have no MONDO id, and their original DOID ids are mostly not in the release's DOID list, so the disease cannot be grounded reliably.\"\n  },\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Monarch gene\u2013disease links come from curated sources such as OMIM, Orphanet and ClinVar, with mixed manual and automatic ECO evidence. The rows do not separate causal from correlative links, so the predicate is gene_associated_with_condition. The object uses mondoid only. Falling back to did gave DOID ids missing from the release, so the 160 rows without a MONDO id are kept as recorded gaps of their gene. S2O is Monarch's similarity score and is kept as an edge property.\"\n}\n```",
+   "usage": {
+    "in": 6223,
+    "out": 687,
+    "usd": 0.038632
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 7.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:monarchinitiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "S2O"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:\\d+$",
+     "reason": "These rows have no MONDO id, and their original DOID ids are mostly not in the release's DOID list, so the disease cannot be grounded reliably."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "Monarch gene\u2013disease links come from curated sources such as OMIM, Orphanet and ClinVar, with mixed manual and automatic ECO evidence. The rows do not separate causal from correlative links, so the predicate is gene_associated_with_condition. The object uses mondoid only. Falling back to did gave DOID ids missing from the release, so the 160 rows without a MONDO id are kept as recorded gaps of their gene. S2O is Monarch's similarity score and is kept as an edge property."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 9509,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 3733,
+        "prefixes": {
+         "NCBIGene": 3733
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3733,
+          "in_release": 3733
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 9509,
+        "resolved": 9349,
+        "distinct": 5012,
+        "prefixes": {
+         "MONDO": 5012
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 5012,
+          "in_release": 5012
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 9509,
+      "kept": 9349,
+      "made_gaps_by_condition": 160
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 8755,
+     "n_nodes": 8746,
+     "n_edges": 8616,
+     "n_gaps": 139,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 8616
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "not_provided",
+  "primary_knowledge_source": "infores:monarchinitiative",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "S2O"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:\\d+$",
+   "reason": "These rows have no MONDO id, and their original DOID ids are mostly not in the release's DOID list, so the disease cannot be grounded reliably."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "Monarch gene\u2013disease links come from curated sources such as OMIM, Orphanet and ClinVar, with mixed manual and automatic ECO evidence. The rows do not separate causal from correlative links, so the predicate is gene_associated_with_condition. The object uses mondoid only. Falling back to did gave DOID ids missing from the release, so the 160 rows without a MONDO id are kept as recorded gaps of their gene. S2O is Monarch's similarity score and is kept as an edge property."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

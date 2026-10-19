@@ -1,0 +1,203 @@
+{
+ "release": "pharos319",
+ "biolink": "4.4.3",
+ "checks": "2 to 6 of docs/PROTOCOL.md, Ingest",
+ "edges": 620168,
+ "kinds": 18,
+ "edges_of_kinds_that_pass": 5768,
+ "edges_by_problem": {
+  "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class": 294248,
+  "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier": 159846,
+  "biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein": 154363,
+  "biolink:treats is abstract, a mixin or deprecated": 5943,
+  "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class": 5943
+ },
+ "by_kind": [
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 278883,
+   "problems": [
+    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+   ]
+  },
+  {
+   "predicate": "biolink:gene_associated_with_condition",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 154363,
+   "problems": [
+    "biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+   ]
+  },
+  {
+   "predicate": "biolink:correlated_with",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {
+    "subject_aspect_qualifier": "expression",
+    "subject_direction_qualifier": "decreased"
+   },
+   "edges": 80150,
+   "problems": [
+    "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier"
+   ]
+  },
+  {
+   "predicate": "biolink:correlated_with",
+   "category": "biolink:GeneToDiseaseAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {
+    "subject_aspect_qualifier": "expression",
+    "subject_direction_qualifier": "increased"
+   },
+   "edges": 79696,
+   "problems": [
+    "biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier"
+   ]
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 13015,
+   "problems": [
+    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+   ]
+  },
+  {
+   "predicate": "biolink:directly_physically_interacts_with",
+   "category": "biolink:ChemicalGeneInteractionAssociation",
+   "subject_category": "biolink:Drug",
+   "object_category": "biolink:Protein",
+   "qualifiers": {},
+   "edges": 4295,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:treats",
+   "category": "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation",
+   "subject_category": "biolink:Drug",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 3206,
+   "problems": [
+    "biolink:treats is abstract, a mixin or deprecated",
+    "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+   ]
+  },
+  {
+   "predicate": "biolink:treats",
+   "category": "biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation",
+   "subject_category": "biolink:Drug",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 2737,
+   "problems": [
+    "biolink:treats is abstract, a mixin or deprecated",
+    "association category 'biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+   ]
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:PhenotypicFeature",
+   "qualifiers": {},
+   "edges": 2350,
+   "problems": [
+    "association category 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' is not a Biolink 4.4.3 class"
+   ]
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:BiologicalProcess",
+   "qualifiers": {},
+   "edges": 800,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:DiseaseOrPhenotypicFeature",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 353,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:genetically_associated_with",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Protein",
+   "object_category": "biolink:PhenotypicQuality",
+   "qualifiers": {},
+   "edges": 279,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Disease",
+   "object_category": "biolink:Disease",
+   "qualifiers": {},
+   "edges": 25,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:DiseaseOrPhenotypicFeature",
+   "object_category": "biolink:PhenotypicFeature",
+   "qualifiers": {},
+   "edges": 7,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:DiseaseOrPhenotypicFeature",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 6,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:BiologicalProcess",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 1,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:Disease",
+   "object_category": "biolink:DiseaseOrPhenotypicFeature",
+   "qualifiers": {},
+   "edges": 1,
+   "problems": []
+  },
+  {
+   "predicate": "biolink:same_as",
+   "category": "biolink:Association",
+   "subject_category": "biolink:DiseaseOrPhenotypicFeature",
+   "object_category": "biolink:BiologicalProcess",
+   "qualifiers": {},
+   "edges": 1,
+   "problems": []
+  }
+ ]
+}

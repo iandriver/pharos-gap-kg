@@ -25,3 +25,97 @@
 {"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003407, "at": "2026-10-19T10:43:07"}
 {"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd": 0.0016533, "in": 5508, "out": 2205, "provider": "Google", "error": null, "at": "2026-10-19T10:43:16"}
 {"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003504, "at": "2026-10-19T10:43:16"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd_ceiling": 0.00339, "at": "2026-10-19T10:43:57"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.CTD", "usd": 0.0012213, "in": 5238, "out": 1395, "provider": "Google", "error": null, "at": "2026-10-19T10:44:03"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd_ceiling": 0.003402, "at": "2026-10-19T10:44:04"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.DisGeNET", "usd": 0.0011888, "in": 5558, "out": 1266, "provider": "Google", "error": null, "at": "2026-10-19T10:44:10"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd_ceiling": 0.003385, "at": "2026-10-19T10:44:12"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd": 0.0012383, "in": 5183, "out": 1440, "provider": "Google", "error": null, "at": "2026-10-19T10:44:19"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd_ceiling": 0.003436, "at": "2026-10-19T10:44:19"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.eRAM", "usd": 0.0011099, "in": 5769, "out": 1066, "provider": "Google", "error": null, "at": "2026-10-19T10:44:24"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd_ceiling": 0.003429, "at": "2026-10-19T10:44:24"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd": 0.0012802, "in": 5637, "out": 1433, "provider": "Google", "error": null, "at": "2026-10-19T10:44:31"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd_ceiling": 0.00348, "at": "2026-10-19T10:44:31"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Monarch", "usd": 0.0010941, "in": 6231, "out": 942, "provider": "Google", "error": null, "at": "2026-10-19T10:44:35"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.00344, "at": "2026-10-19T10:44:35"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.UniProt_Disease", "usd": 0.0013754, "in": 5774, "out": 1596, "provider": "Google", "error": null, "at": "2026-10-19T10:44:43"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.003392, "at": "2026-10-19T10:44:43"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.Expression_Atlas", "usd": 0.0012533, "in": 5213, "out": 1464, "provider": "Google", "error": null, "at": "2026-10-19T10:44:50"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003407, "at": "2026-10-19T10:44:54"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd": 0.0017613, "in": 5508, "out": 2421, "provider": "Google", "error": null, "at": "2026-10-19T10:45:05"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.003509, "at": "2026-10-19T10:45:05"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "disease.JensenLab", "usd": 0.0015684, "in": 6804, "out": 1776, "provider": "Google", "error": null, "at": "2026-10-19T10:45:12"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd_ceiling": 0.003437, "at": "2026-10-19T10:45:13"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd": 0.00133, "in": 6080, "out": 1444, "provider": "Google", "error": null, "at": "2026-10-19T10:45:20"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd_ceiling": 0.003495, "at": "2026-10-19T10:45:21"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd": 0.0013306, "in": 6791, "out": 1303, "provider": "Google", "error": null, "at": "2026-10-19T10:45:27"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "drug_activity", "usd_ceiling": 0.003445, "at": "2026-10-19T10:45:29"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "drug_activity", "usd": 0.0023817, "in": 6792, "out": 3405, "provider": "Google", "error": null, "at": "2026-10-19T10:45:45"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "drug_activity", "usd_ceiling": 0.003505, "at": "2026-10-19T10:45:45"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "drug_activity", "usd": 0.0017439, "in": 7514, "out": 1985, "provider": "Google", "error": null, "at": "2026-10-19T10:45:54"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.CTD", "usd_ceiling": 0.067807, "at": "2026-10-19T10:45:55"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.CTD", "usd": 0.020096, "in": 5238, "out": 962, "provider": "Google", "error": null, "at": "2026-10-19T10:46:02"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.DisGeNET", "usd_ceiling": 0.068032, "at": "2026-10-19T10:46:03"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.DisGeNET", "usd": 0.015216, "in": 5558, "out": 410, "provider": "Google", "error": null, "at": "2026-10-19T10:46:06"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.eRAM", "usd_ceiling": 0.067701, "at": "2026-10-19T10:46:08"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.eRAM", "usd": 0.014316, "in": 5183, "out": 395, "provider": "Google", "error": null, "at": "2026-10-19T10:46:11"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.eRAM", "usd_ceiling": 0.068524, "at": "2026-10-19T10:46:12"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.eRAM", "usd": 0.0205, "in": 5685, "out": 913, "provider": "Google", "error": null, "at": "2026-10-19T10:46:18"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Monarch", "usd_ceiling": 0.068571, "at": "2026-10-19T10:46:18"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Monarch", "usd": 0.020074, "in": 5637, "out": 880, "provider": "Google", "error": null, "at": "2026-10-19T10:46:25"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Monarch", "usd_ceiling": 0.069274, "at": "2026-10-19T10:46:25"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Monarch", "usd": 0.019926, "in": 6063, "out": 780, "provider": "Google", "error": null, "at": "2026-10-19T10:46:30"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.068795, "at": "2026-10-19T10:46:30"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.UniProt_Disease", "usd": 0.015418, "in": 5774, "out": 387, "provider": "Google", "error": null, "at": "2026-10-19T10:46:33"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.067837, "at": "2026-10-19T10:46:33"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.Expression_Atlas", "usd": 0.019856, "in": 5213, "out": 943, "provider": "Google", "error": null, "at": "2026-10-19T10:46:40"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.068133, "at": "2026-10-19T10:46:44"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.JensenLab", "usd": 0.029486, "in": 5508, "out": 1847, "provider": "Google", "error": null, "at": "2026-10-19T10:46:56"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.06975, "at": "2026-10-19T10:46:56"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "disease.JensenLab", "usd": 0.025098, "in": 6569, "out": 1196, "provider": "Google", "error": null, "at": "2026-10-19T10:47:07"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "tiga", "usd_ceiling": 0.068739, "at": "2026-10-19T10:47:08"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "tiga", "usd": 0.02368, "in": 6080, "out": 1152, "provider": "Google", "error": null, "at": "2026-10-19T10:47:17"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "tiga", "usd_ceiling": 0.069643, "at": "2026-10-19T10:47:18"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "tiga", "usd": 0.023176, "in": 6663, "out": 985, "provider": "Google", "error": null, "at": "2026-10-19T10:47:25"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "drug_activity", "usd_ceiling": 0.068892, "at": "2026-10-19T10:47:27"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "drug_activity", "usd": 0.033794, "in": 6792, "out": 2021, "provider": "Google", "error": null, "at": "2026-10-19T10:47:40"}
+{"kind": "reserve", "model": "anthropic/claude-sonnet-5.5", "view": "drug_activity", "usd_ceiling": 0.071275, "at": "2026-10-19T10:47:40"}
+{"kind": "cost", "model": "anthropic/claude-sonnet-5.5", "view": "drug_activity", "usd": 0.047304, "in": 8357, "out": 3059, "provider": "Google", "error": null, "at": "2026-10-19T10:47:56"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.CTD", "usd_ceiling": 0.135615, "at": "2026-10-19T10:47:56"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.CTD", "usd": 0.043172, "in": 5238, "out": 1111, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:08"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.DisGeNET", "usd_ceiling": 0.136064, "at": "2026-10-19T10:48:08"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.DisGeNET", "usd": 0.044572, "in": 5558, "out": 1117, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:19"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.eRAM", "usd_ceiling": 0.135401, "at": "2026-10-19T10:48:21"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.eRAM", "usd": 0.036372, "in": 5183, "out": 782, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:29"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.eRAM", "usd_ceiling": 0.137393, "at": "2026-10-19T10:48:29"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.eRAM", "usd": 0.037376, "in": 5789, "out": 711, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:36"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.Monarch", "usd_ceiling": 0.137141, "at": "2026-10-19T10:48:36"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.Monarch", "usd": 0.047128, "in": 5637, "out": 1229, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:48"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.Monarch", "usd_ceiling": 0.139083, "at": "2026-10-19T10:48:48"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.Monarch", "usd": 0.038632, "in": 6223, "out": 687, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:48:55"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.137591, "at": "2026-10-19T10:48:55"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.UniProt_Disease", "usd": 0.041256, "in": 5774, "out": 908, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:49:04"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.UniProt_Disease", "usd_ceiling": 0.139703, "at": "2026-10-19T10:49:04"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.UniProt_Disease", "usd": 0.041352, "in": 6433, "out": 781, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:49:11"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.135675, "at": "2026-10-19T10:49:12"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.Expression_Atlas", "usd": 0.049012, "in": 5213, "out": 1408, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:49:26"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.Expression_Atlas", "usd_ceiling": 0.137563, "at": "2026-10-19T10:49:26"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.Expression_Atlas", "usd": 0.040296, "in": 5759, "out": 863, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:49:34"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.136267, "at": "2026-10-19T10:49:38"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.JensenLab", "usd": 0.053292, "in": 5508, "out": 1563, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:49:52"}
+{"kind": "reserve", "model": "anthropic/claude-opus-5.5", "view": "disease.JensenLab", "usd_ceiling": 0.139749, "at": "2026-10-19T10:49:52"}
+{"kind": "cost", "model": "anthropic/claude-opus-5.5", "view": "disease.JensenLab", "usd": 0.04656, "in": 6620, "out": 1004, "provider": "Amazon Bedrock", "error": null, "at": "2026-10-19T10:50:01"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd_ceiling": 0.003437, "at": "2026-10-19T10:53:22"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd": 0.0015885, "in": 6080, "out": 1961, "provider": "Google", "error": null, "at": "2026-10-19T10:53:31"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd_ceiling": 0.003496, "at": "2026-10-19T10:53:32"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "tiga", "usd": 0.0013248, "in": 6838, "out": 1282, "provider": "Google", "error": null, "at": "2026-10-19T10:53:38"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "ortholog_disease", "usd_ceiling": 0.003235, "at": "2026-10-19T10:54:22"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "ortholog_disease", "usd": 0.0009599, "in": 2959, "out": 1328, "provider": "Google", "error": null, "at": "2026-10-19T10:54:28"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "phenotype.OMIM", "usd_ceiling": 0.003361, "at": "2026-10-19T10:54:29"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "phenotype.OMIM", "usd": 0.0013856, "in": 4651, "out": 1841, "provider": "Google", "error": null, "at": "2026-10-19T10:54:38"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "phenotype.JAX_MGI", "usd_ceiling": 0.003374, "at": "2026-10-19T10:54:38"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "phenotype.JAX_MGI", "usd": 0.0010182, "in": 4812, "out": 1074, "provider": "Google", "error": null, "at": "2026-10-19T10:54:43"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "goa", "usd_ceiling": 0.003309, "at": "2026-10-19T10:54:44"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "goa", "usd": 0.001256, "in": 4110, "out": 1690, "provider": "Google", "error": null, "at": "2026-10-19T10:54:51"}
+{"kind": "reserve", "model": "anthropic/claude-haiku-5.5", "view": "goa", "usd_ceiling": 0.003406, "at": "2026-10-19T10:54:52"}
+{"kind": "cost", "model": "anthropic/claude-haiku-5.5", "view": "goa", "usd": 0.0014068, "in": 5333, "out": 1747, "provider": "Google", "error": null, "at": "2026-10-19T10:54:59"}

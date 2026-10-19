@@ -1,0 +1,285 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.eRAM",
+ "release": "pharos319",
+ "card_sha256": "4b5fefa70550595d894df2900e3848837a8fe228d34936a677e4f8f279cf7ec7",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"manual_agent\", \"primary_knowledge_source\": \"infores:pharos\", \"qualifiers\": {}, \"edge_properties\": [\"source\", \"name\", \"ncats_name\"], \"keep_if\": null, \"split_by\": null, \"by_value\": null, \"notes\": \"Each row links a Pharos protein (mapped to its gene) to a disease. The object uses mondoid when present and falls back to the DOID in did (about 161 rows lack a MONDO id). The predicate is the general gene-condition association, since eRAM gives no direction or effect. The source column lists the upstream databases (CTD, ClinVar, GWAS Catalog, UniProt, Orphanet, etc.) and is kept as an edge property. Knowledge level and agent type are a judgment: the claims are aggregated from curated resources, not computed here. The primary source is set to infores:pharos as the aggregator; no eRAM infores identifier is asserted. Score, evidence and other numeric columns are empty, so none are carried.\"}",
+   "usage": {
+    "in": 5183,
+    "out": 1440,
+    "usd": 0.0012383
+   },
+   "provider": "Google",
+   "seconds": 6.8,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:pharos",
+    "qualifiers": {},
+    "edge_properties": [
+     "source",
+     "name",
+     "ncats_name"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Each row links a Pharos protein (mapped to its gene) to a disease. The object uses mondoid when present and falls back to the DOID in did (about 161 rows lack a MONDO id). The predicate is the general gene-condition association, since eRAM gives no direction or effect. The source column lists the upstream databases (CTD, ClinVar, GWAS Catalog, UniProt, Orphanet, etc.) and is kept as an edge property. Knowledge level and agent type are a judgment: the claims are aggregated from curated resources, not computed here. The primary source is set to infores:pharos as the aggregator; no eRAM infores identifier is asserted. Score, evidence and other numeric columns are empty, so none are carried."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14660,
+        "distinct": 1361,
+        "prefixes": {
+         "MONDO": 1326,
+         "DOID": 35
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         },
+         "DOID": {
+          "distinct": 35,
+          "in_release": 12
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 14659,
+      "kept": 14660,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"manual_agent\", \"primary_knowledge_source\": \"infores:pharos\", \"qualifiers\": {}, \"edge_properties\": [\"source\", \"name\", \"ncats_name\", \"did\"], \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:[0-9]+$\", \"reason\": \"No MONDO id in the row, so the disease cannot be placed in the release's disease set. The row is kept as a gap of its gene.\"}, \"split_by\": null, \"by_value\": null, \"notes\": \"Each row links a Pharos protein, mapped to its gene, to a disease. The object is the MONDO id only. The DOID in did is not used as a fallback because most of those DOIDs are absent from the release's DOID list. About 161 rows lack a MONDO id; they are kept as gaps of their gene and need no object. The did column is carried as an edge property for reference. The predicate is the general gene-condition association, since eRAM gives no direction or effect. The source column lists the upstream databases and is kept as an edge property. Knowledge level and agent type are a judgment: the claims are aggregated from curated resources. The primary source is infores:pharos as the aggregator.\"}",
+   "usage": {
+    "in": 5769,
+    "out": 1066,
+    "usd": 0.0011099
+   },
+   "provider": "Google",
+   "seconds": 4.9,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:pharos",
+    "qualifiers": {},
+    "edge_properties": [
+     "source",
+     "name",
+     "ncats_name",
+     "did"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:[0-9]+$",
+     "reason": "No MONDO id in the row, so the disease cannot be placed in the release's disease set. The row is kept as a gap of its gene."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "Each row links a Pharos protein, mapped to its gene, to a disease. The object is the MONDO id only. The DOID in did is not used as a fallback because most of those DOIDs are absent from the release's DOID list. About 161 rows lack a MONDO id; they are kept as gaps of their gene and need no object. The did column is carried as an edge property for reference. The predicate is the general gene-condition association, since eRAM gives no direction or effect. The source column lists the upstream databases and is kept as an edge property. Knowledge level and agent type are a judgment: the claims are aggregated from curated resources. The primary source is infores:pharos as the aggregator."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14499,
+        "distinct": 1326,
+        "prefixes": {
+         "MONDO": 1326
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 14659,
+      "kept": 14499,
+      "made_gaps_by_condition": 161
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 13247,
+     "n_nodes": 6368,
+     "n_edges": 13115,
+     "n_gaps": 132,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 13115
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:pharos",
+  "qualifiers": {},
+  "edge_properties": [
+   "source",
+   "name",
+   "ncats_name",
+   "did"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:[0-9]+$",
+   "reason": "No MONDO id in the row, so the disease cannot be placed in the release's disease set. The row is kept as a gap of its gene."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "Each row links a Pharos protein, mapped to its gene, to a disease. The object is the MONDO id only. The DOID in did is not used as a fallback because most of those DOIDs are absent from the release's DOID list. About 161 rows lack a MONDO id; they are kept as gaps of their gene and need no object. The did column is carried as an edge property for reference. The predicate is the general gene-condition association, since eRAM gives no direction or effect. The source column lists the upstream databases and is kept as an edge property. Knowledge level and agent type are a judgment: the claims are aggregated from curated resources. The primary source is infores:pharos as the aggregator."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

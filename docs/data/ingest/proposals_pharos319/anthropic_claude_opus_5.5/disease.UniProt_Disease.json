@@ -1,0 +1,240 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "disease.UniProt_Disease",
+ "release": "pharos319",
+ "card_sha256": "c922d311c5a8c8d7a6f5f3d4d8d79c5bb2c35555f4b7e9db99f797b2976c7f17",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"pattern:MONDO|OMIM:^(?:MONDO|MIM):(\\\\d+)$\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:uniprot\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"did\", \"evidence\", \"name\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"UniProt curators state this gene-disease involvement by hand, so the edge is a knowledge assertion from a manual agent. The object is the MONDO id; when mondoid is empty the MIM accession is used. Most involvements are causal, but some rows are susceptibility entries (e.g. 'autism, susceptibility to'). So biolink:causes would overstate them, and gene_associated_with_condition is used instead. The subject is the protein's gene. The evidence column holds UniProt citation index numbers that only make sense inside the UniProt entry, so it is kept as a property and not as publications.\"\n}\n```",
+   "usage": {
+    "in": 5774,
+    "out": 908,
+    "usd": 0.041256
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 9.3,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "pattern:MONDO|OMIM:^(?:MONDO|MIM):(\\d+)$",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "did",
+     "evidence",
+     "name"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "UniProt curators state this gene-disease involvement by hand, so the edge is a knowledge assertion from a manual agent. The object is the MONDO id; when mondoid is empty the MIM accession is used. Most involvements are causal, but some rows are susceptibility entries (e.g. 'autism, susceptibility to'). So biolink:causes would overstate them, and gene_associated_with_condition is used instead. The subject is the protein's gene. The evidence column holds UniProt citation index numbers that only make sense inside the UniProt entry, so it is kept as a property and not as publications."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: object: resolver 'pattern:MONDO|OMIM:^(?:MONDO|MIM):(\\\\d+)$' is not on the menu",
+     "8_identifiers: not reached: the proposal does not parse"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [
+        "object: resolver 'pattern:MONDO|OMIM:^(?:MONDO|MIM):(\\\\d+)$' is not on the menu"
+       ],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "not reached: the proposal does not parse"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:uniprot\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"did\", \"evidence\", \"name\"],\n  \"keep_if\": {\n    \"column\": \"mondoid\",\n    \"matches\": \"^MONDO:\\\\d+$\",\n    \"reason\": \"About 37 rows have no MONDO mapping. Their 'MIM:' accession is not a Biolink prefix, so the row is kept as a gap and not given an ungrounded disease.\"\n  },\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"UniProt curators state this gene-disease involvement by hand, so the edge is a knowledge assertion from a manual agent. The object is the MONDO id. The OMIM accession is kept in the did property. Some rows are susceptibility entries (e.g. 'autism, susceptibility to'), so biolink:causes would overstate them; gene_associated_with_condition is used instead. The subject is the protein's gene. The evidence column holds UniProt citation index numbers that only make sense inside the UniProt entry, so they are kept as a property and not as publications.\"\n}\n```",
+   "usage": {
+    "in": 6433,
+    "out": 781,
+    "usd": 0.041352
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 7.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "did",
+     "evidence",
+     "name"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:\\d+$",
+     "reason": "About 37 rows have no MONDO mapping. Their 'MIM:' accession is not a Biolink prefix, so the row is kept as a gap and not given an ungrounded disease."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "UniProt curators state this gene-disease involvement by hand, so the edge is a knowledge assertion from a manual agent. The object is the MONDO id. The OMIM accession is kept in the did property. Some rows are susceptibility entries (e.g. 'autism, susceptibility to'), so biolink:causes would overstate them; gene_associated_with_condition is used instead. The subject is the protein's gene. The evidence column holds UniProt citation index numbers that only make sense inside the UniProt entry, so they are kept as a property and not as publications."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 3760,
+        "prefixes": {
+         "NCBIGene": 3760
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3760,
+          "in_release": 3760
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 5651,
+        "resolved": 5614,
+        "distinct": 4948,
+        "prefixes": {
+         "MONDO": 4948
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4948,
+          "in_release": 4948
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 5651,
+      "kept": 5614,
+      "made_gaps_by_condition": 37
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 5536,
+     "n_nodes": 8709,
+     "n_edges": 5504,
+     "n_gaps": 32,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 5504
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:uniprot",
+  "qualifiers": {},
+  "edge_properties": [
+   "did",
+   "evidence",
+   "name"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:\\d+$",
+   "reason": "About 37 rows have no MONDO mapping. Their 'MIM:' accession is not a Biolink prefix, so the row is kept as a gap and not given an ungrounded disease."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "UniProt curators state this gene-disease involvement by hand, so the edge is a knowledge assertion from a manual agent. The object is the MONDO id. The OMIM accession is kept in the did property. Some rows are susceptibility entries (e.g. 'autism, susceptibility to'), so biolink:causes would overstate them; gene_associated_with_condition is used instead. The subject is the protein's gene. The evidence column holds UniProt citation index numbers that only make sense inside the UniProt entry, so they are kept as a property and not as publications."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

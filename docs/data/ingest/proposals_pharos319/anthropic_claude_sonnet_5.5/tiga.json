@@ -1,0 +1,331 @@
+{
+ "model": "anthropic/claude-sonnet-5.5",
+ "view": "tiga",
+ "release": "pharos319",
+ "card_sha256": "98db20d8166e32bb877434d8c22456809daeabe8c9c3c2f487a585af16aff1d2",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n\"map\": true,\n\"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n\"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:DiseaseOrPhenotypicFeature\", \"name_column\": \"trait\"},\n\"predicate\": \"biolink:genetically_associated_with\",\n\"association_category\": \"biolink:Association\",\n\"knowledge_level\": \"statistical_association\",\n\"agent_type\": \"data_analysis_pipeline\",\n\"primary_knowledge_source\": \"infores:tiga\",\n\"qualifiers\": {},\n\"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\"],\n\"keep_if\": null,\n\"split_by\": null,\n\"notes\": \"Each row is a TIGA gene\u2013trait association aggregated from GWAS Catalog studies, so it is a statistical association, not a curated assertion. Traits include diseases and measurements, hence DiseaseOrPhenotypicFeature. The gene comes from the protein row id. The efoid column may carry GO_ and other prefixes, which the curie resolver keeps as given.\"\n}",
+   "usage": {
+    "in": 6080,
+    "out": 1152,
+    "usd": 0.02368
+   },
+   "provider": "Google",
+   "seconds": 8.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:DiseaseOrPhenotypicFeature",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row is a TIGA gene\u2013trait association aggregated from GWAS Catalog studies, so it is a statistical association, not a curated assertion. Traits include diseases and measurements, hence DiseaseOrPhenotypicFeature. The gene comes from the protein row id. The efoid column may carry GO_ and other prefixes, which the curie resolver keeps as given."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0294,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:DiseaseOrPhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 745611,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n\"map\": true,\n\"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n\"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:BiologicalEntity\", \"name_column\": \"trait\"},\n\"predicate\": \"biolink:genetically_associated_with\",\n\"association_category\": \"biolink:Association\",\n\"knowledge_level\": \"statistical_association\",\n\"agent_type\": \"data_analysis_pipeline\",\n\"primary_knowledge_source\": \"infores:tiga\",\n\"qualifiers\": {},\n\"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\"],\n\"keep_if\": null,\n\"split_by\": null,\n\"notes\": \"Each row is a TIGA gene-trait association aggregated from GWAS Catalog studies, so it is a statistical association rather than a curated assertion. The efoid column mixes EFO, MONDO, Orphanet, GO and PATO terms (diseases, phenotypes, measurements, processes). I use the broader biolink:BiologicalEntity so that all of these prefixes are valid for the object. The gene comes from the protein row id.\"\n}",
+   "usage": {
+    "in": 6663,
+    "out": 985,
+    "usd": 0.023176
+   },
+   "provider": "Google",
+   "seconds": 7.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:BiologicalEntity",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row is a TIGA gene-trait association aggregated from GWAS Catalog studies, so it is a statistical association rather than a curated assertion. The efoid column mixes EFO, MONDO, Orphanet, GO and PATO terms (diseases, phenotypes, measurements, processes). I use the broader biolink:BiologicalEntity so that all of these prefixes are valid for the object. The gene comes from the protein row id."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories: object category biolink:BiologicalEntity is not a concrete class below biolink:NamedThing",
+     "8_identifiers: object: 32 of 2,247 distinct identifiers are under prefixes ['Orphanet', 'PATO'] that biolink:BiologicalEntity's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "object category biolink:BiologicalEntity is not a concrete class below biolink:NamedThing"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 32 of 2,247 distinct identifiers are under prefixes ['Orphanet', 'PATO'] that biolink:BiologicalEntity's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0142,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:BiologicalEntity"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 745611,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "efoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:BiologicalEntity",
+   "name_column": "trait"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:tiga",
+  "qualifiers": {},
+  "edge_properties": [
+   "n_study",
+   "n_snp",
+   "n_snpw",
+   "pvalue_mlog_median",
+   "pvalue_mlog_max",
+   "or_median",
+   "n_beta",
+   "study_N_mean",
+   "rcras",
+   "meanRank",
+   "meanRankScore"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Each row is a TIGA gene-trait association aggregated from GWAS Catalog studies, so it is a statistical association rather than a curated assertion. The efoid column mixes EFO, MONDO, Orphanet, GO and PATO terms (diseases, phenotypes, measurements, processes). I use the broader biolink:BiologicalEntity so that all of these prefixes are valid for the object. The gene comes from the protein row id."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

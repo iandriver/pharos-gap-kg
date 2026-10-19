@@ -1,0 +1,820 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "disease.JensenLab",
+ "release": "pharos319",
+ "card_sha256": "cc1de72c149e4fc7c84b5e6f8480dee1aebb70605318f75b54ffea62901b1aa5",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:diseases\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"conf\", \"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": \"dtype\",\n  \"by_value\": {\n    \"JensenLab Experiment TIGA\": {\n      \"knowledge_level\": \"statistical_association\",\n      \"agent_type\": \"data_analysis_pipeline\",\n      \"edge_properties\": [\"conf\", \"evidence\"]\n    },\n    \"JensenLab Text Mining\": {\n      \"predicate\": \"biolink:occurs_together_in_literature_with\",\n      \"association_category\": \"biolink:Association\",\n      \"knowledge_level\": \"statistical_association\",\n      \"agent_type\": \"text_mining_agent\",\n      \"edge_properties\": [\"conf\", \"zscore\"]\n    },\n    \"JensenLab Knowledge MedlinePlus\": {},\n    \"JensenLab Knowledge UniProtKB-KW\": {},\n    \"JensenLab Knowledge AmyCo\": {}\n  },\n  \"notes\": \"The gene is resolved from the Pharos protein to its NCBIGene. Disease uses MONDO and falls back to DOID when mondoid is missing. The Knowledge channels are curated assertions. TIGA rows come from GWAS-derived gene-trait scores, so they are statistical associations from a pipeline. Text-mining rows are co-mention z-scores, so they get the weaker literature co-occurrence predicate rather than a gene-condition claim. JensenLab DISEASES is the primary source for all channels; the confidence score is carried on every edge.\"\n}\n```",
+   "usage": {
+    "in": 5508,
+    "out": 1563,
+    "usd": 0.053292
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 14.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:diseases",
+    "qualifiers": {},
+    "edge_properties": [
+     "conf",
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": "dtype",
+    "by_value": {
+     "JensenLab Experiment TIGA": {
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "edge_properties": [
+       "conf",
+       "evidence"
+      ]
+     },
+     "JensenLab Text Mining": {
+      "predicate": "biolink:occurs_together_in_literature_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "text_mining_agent",
+      "edge_properties": [
+       "conf",
+       "zscore"
+      ]
+     },
+     "JensenLab Knowledge MedlinePlus": {},
+     "JensenLab Knowledge UniProtKB-KW": {},
+     "JensenLab Knowledge AmyCo": {}
+    },
+    "notes": "The gene is resolved from the Pharos protein to its NCBIGene. Disease uses MONDO and falls back to DOID when mondoid is missing. The Knowledge channels are curated assertions. TIGA rows come from GWAS-derived gene-trait scores, so they are statistical associations from a pipeline. Text-mining rows are co-mention z-scores, so they get the weaker literature co-occurrence predicate rather than a gene-condition claim. JensenLab DISEASES is the primary source for all channels; the confidence score is carried on every edge."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers [JensenLab Experiment TIGA]: object: 2 of 7 DOID identifiers are in the release's DOID list; at least 90% must",
+     "8_identifiers [JensenLab Knowledge AmyCo]: object: 23 of 75 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+     "8_identifiers [JensenLab Knowledge MedlinePlus]: object: 1 of 72 DOID identifiers are in the release's DOID list; at least 90% must",
+     "8_identifiers [JensenLab Knowledge UniProtKB-KW]: object: 0 of 1 DOID identifiers are in the release's DOID list; at least 90% must",
+     "8_identifiers [JensenLab Text Mining]: object: 6 of 75 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": "JensenLab Experiment TIGA",
+      "rows": 26330,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 2 of 7 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 26330,
+        "resolved": 26322,
+        "distinct": 8569,
+        "prefixes": {
+         "NCBIGene": 8569
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 8569,
+          "in_release": 8569
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 26330,
+        "resolved": 26330,
+        "distinct": 286,
+        "prefixes": {
+         "MONDO": 279,
+         "DOID": 7
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 279,
+          "in_release": 279
+         },
+         "DOID": {
+          "distinct": 7,
+          "in_release": 2
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 26322,
+      "kept": 26330,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "JensenLab Knowledge AmyCo",
+      "rows": 260,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 23 of 75 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 260,
+        "resolved": 260,
+        "distinct": 76,
+        "prefixes": {
+         "NCBIGene": 76
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 76,
+          "in_release": 76
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 260,
+        "resolved": 260,
+        "distinct": 75,
+        "prefixes": {
+         "MONDO": 52,
+         "AmyCo": 23
+        },
+        "off_prefix": {
+         "AmyCo": 23
+        },
+        "off_prefix_share": 0.3067,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 52,
+          "in_release": 52
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 260,
+      "kept": 260,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "JensenLab Knowledge MedlinePlus",
+      "rows": 4113,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 1 of 72 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4113,
+        "resolved": 4113,
+        "distinct": 2426,
+        "prefixes": {
+         "NCBIGene": 2426
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2426,
+          "in_release": 2426
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 4113,
+        "resolved": 4113,
+        "distinct": 993,
+        "prefixes": {
+         "MONDO": 921,
+         "DOID": 72
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 921,
+          "in_release": 921
+         },
+         "DOID": {
+          "distinct": 72,
+          "in_release": 1
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 4113,
+      "kept": 4113,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "JensenLab Knowledge UniProtKB-KW",
+      "rows": 3380,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 0 of 1 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 3380,
+        "resolved": 3380,
+        "distinct": 2407,
+        "prefixes": {
+         "NCBIGene": 2407
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2407,
+          "in_release": 2407
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 3380,
+        "resolved": 3380,
+        "distinct": 118,
+        "prefixes": {
+         "MONDO": 117,
+         "DOID": 1
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 117,
+          "in_release": 117
+         },
+         "DOID": {
+          "distinct": 1,
+          "in_release": 0
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 3380,
+      "kept": 3380,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "JensenLab Text Mining",
+      "rows": 7404,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 6 of 75 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 7404,
+        "resolved": 7404,
+        "distinct": 2692,
+        "prefixes": {
+         "NCBIGene": 2692
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2692,
+          "in_release": 2692
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 7404,
+        "resolved": 7404,
+        "distinct": 1268,
+        "prefixes": {
+         "MONDO": 1192,
+         "DOID": 75,
+         "AmyCo": 1
+        },
+        "off_prefix": {
+         "AmyCo": 1
+        },
+        "off_prefix_share": 0.0008,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1192,
+          "in_release": 1192
+         },
+         "DOID": {
+          "distinct": 75,
+          "in_release": 6
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 7404,
+      "kept": 7404,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:diseases\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"conf\", \"evidence\"],\n  \"keep_if\": {\n    \"column\": \"mondoid\",\n    \"matches\": \"^MONDO:\",\n    \"reason\": \"Rows without a MONDO mapping carry only DOID or AmyCo ids that are absent from the release's ontology or not valid Disease prefixes, so no grounded disease node exists for them.\"\n  },\n  \"split_by\": \"dtype\",\n  \"by_value\": {\n    \"JensenLab Experiment TIGA\": {\n      \"knowledge_level\": \"statistical_association\",\n      \"agent_type\": \"data_analysis_pipeline\",\n      \"edge_properties\": [\"conf\", \"evidence\"]\n    },\n    \"JensenLab Text Mining\": {\n      \"predicate\": \"biolink:occurs_together_in_literature_with\",\n      \"association_category\": \"biolink:Association\",\n      \"knowledge_level\": \"statistical_association\",\n      \"agent_type\": \"text_mining_agent\",\n      \"edge_properties\": [\"conf\", \"zscore\"]\n    },\n    \"JensenLab Knowledge MedlinePlus\": {},\n    \"JensenLab Knowledge UniProtKB-KW\": {},\n    \"JensenLab Knowledge AmyCo\": {}\n  },\n  \"notes\": \"The gene is resolved from the Pharos protein to its NCBIGene. Disease is MONDO only. The DOID fallback was dropped because most of those DOIDs are not in the release's DOID list, and AmyCo ids are not valid Disease prefixes. Rows lacking MONDO (about 1.5%) are kept as recorded gaps. The Knowledge channels are curated assertions. TIGA rows are GWAS-derived statistical associations from a pipeline. Text-mining rows are co-mention z-scores, so they get the literature co-occurrence predicate.\"\n}\n```",
+   "usage": {
+    "in": 6620,
+    "out": 1004,
+    "usd": 0.04656
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 8.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:diseases",
+    "qualifiers": {},
+    "edge_properties": [
+     "conf",
+     "evidence"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:",
+     "reason": "Rows without a MONDO mapping carry only DOID or AmyCo ids that are absent from the release's ontology or not valid Disease prefixes, so no grounded disease node exists for them."
+    },
+    "split_by": "dtype",
+    "by_value": {
+     "JensenLab Experiment TIGA": {
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "edge_properties": [
+       "conf",
+       "evidence"
+      ]
+     },
+     "JensenLab Text Mining": {
+      "predicate": "biolink:occurs_together_in_literature_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "text_mining_agent",
+      "edge_properties": [
+       "conf",
+       "zscore"
+      ]
+     },
+     "JensenLab Knowledge MedlinePlus": {},
+     "JensenLab Knowledge UniProtKB-KW": {},
+     "JensenLab Knowledge AmyCo": {}
+    },
+    "notes": "The gene is resolved from the Pharos protein to its NCBIGene. Disease is MONDO only. The DOID fallback was dropped because most of those DOIDs are not in the release's DOID list, and AmyCo ids are not valid Disease prefixes. Rows lacking MONDO (about 1.5%) are kept as recorded gaps. The Knowledge channels are curated assertions. TIGA rows are GWAS-derived statistical associations from a pipeline. Text-mining rows are co-mention z-scores, so they get the literature co-occurrence predicate."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": "JensenLab Experiment TIGA",
+      "rows": 26330,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 26330,
+        "resolved": 26322,
+        "distinct": 8569,
+        "prefixes": {
+         "NCBIGene": 8569
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 8569,
+          "in_release": 8569
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 26330,
+        "resolved": 26270,
+        "distinct": 279,
+        "prefixes": {
+         "MONDO": 279
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 279,
+          "in_release": 279
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 26322,
+      "kept": 26270,
+      "made_gaps_by_condition": 60
+     },
+     {
+      "value": "JensenLab Knowledge AmyCo",
+      "rows": 260,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 260,
+        "resolved": 260,
+        "distinct": 76,
+        "prefixes": {
+         "NCBIGene": 76
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 76,
+          "in_release": 76
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 260,
+        "resolved": 187,
+        "distinct": 52,
+        "prefixes": {
+         "MONDO": 52
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 52,
+          "in_release": 52
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 260,
+      "kept": 187,
+      "made_gaps_by_condition": 73
+     },
+     {
+      "value": "JensenLab Knowledge MedlinePlus",
+      "rows": 4113,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4113,
+        "resolved": 4113,
+        "distinct": 2426,
+        "prefixes": {
+         "NCBIGene": 2426
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2426,
+          "in_release": 2426
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 4113,
+        "resolved": 3981,
+        "distinct": 921,
+        "prefixes": {
+         "MONDO": 921
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 921,
+          "in_release": 921
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 4113,
+      "kept": 3981,
+      "made_gaps_by_condition": 132
+     },
+     {
+      "value": "JensenLab Knowledge UniProtKB-KW",
+      "rows": 3380,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 3380,
+        "resolved": 3380,
+        "distinct": 2407,
+        "prefixes": {
+         "NCBIGene": 2407
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2407,
+          "in_release": 2407
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 3380,
+        "resolved": 3357,
+        "distinct": 117,
+        "prefixes": {
+         "MONDO": 117
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 117,
+          "in_release": 117
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 3380,
+      "kept": 3357,
+      "made_gaps_by_condition": 23
+     },
+     {
+      "value": "JensenLab Text Mining",
+      "rows": 7404,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 7404,
+        "resolved": 7404,
+        "distinct": 2692,
+        "prefixes": {
+         "NCBIGene": 2692
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 2692,
+          "in_release": 2692
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 7404,
+        "resolved": 7081,
+        "distinct": 1192,
+        "prefixes": {
+         "MONDO": 1192
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1192,
+          "in_release": 1192
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 7404,
+      "kept": 7081,
+      "made_gaps_by_condition": 323
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 37394,
+     "n_nodes": 12604,
+     "n_edges": 36898,
+     "n_gaps": 496,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 30066,
+      "biolink:occurs_together_in_literature_with": 6832
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:diseases",
+  "qualifiers": {},
+  "edge_properties": [
+   "conf",
+   "evidence"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:",
+   "reason": "Rows without a MONDO mapping carry only DOID or AmyCo ids that are absent from the release's ontology or not valid Disease prefixes, so no grounded disease node exists for them."
+  },
+  "split_by": "dtype",
+  "by_value": {
+   "JensenLab Experiment TIGA": {
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "edge_properties": [
+     "conf",
+     "evidence"
+    ]
+   },
+   "JensenLab Text Mining": {
+    "predicate": "biolink:occurs_together_in_literature_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "text_mining_agent",
+    "edge_properties": [
+     "conf",
+     "zscore"
+    ]
+   },
+   "JensenLab Knowledge MedlinePlus": {},
+   "JensenLab Knowledge UniProtKB-KW": {},
+   "JensenLab Knowledge AmyCo": {}
+  },
+  "notes": "The gene is resolved from the Pharos protein to its NCBIGene. Disease is MONDO only. The DOID fallback was dropped because most of those DOIDs are not in the release's DOID list, and AmyCo ids are not valid Disease prefixes. Rows lacking MONDO (about 1.5%) are kept as recorded gaps. The Knowledge channels are curated assertions. TIGA rows are GWAS-derived statistical associations from a pipeline. Text-mining rows are co-mention z-scores, so they get the literature co-occurrence predicate."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

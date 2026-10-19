@@ -1,0 +1,602 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "goa",
+ "release": "pharos319",
+ "card_sha256": "86001945717e998cea29905b11d3333414579ef9d284363a4855274d654915bc",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"go_id\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:GeneOntologyClass\",\n    \"name_column\": \"go_term_text\"\n  },\n  \"predicate\": \"biolink:involved_in\",\n  \"association_category\": \"biolink:GeneToGeneOntologyTermAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:goa\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"goeco\", \"assigned_by\", \"go_term_text\"],\n  \"keep_if\": null,\n  \"split_by\": \"go_type\",\n  \"by_value\": {\n    \"Process\": {\"predicate\": \"biolink:involved_in\"},\n    \"Function\": {\"predicate\": \"biolink:enables\"},\n    \"Component\": {\"predicate\": \"biolink:located_in\"}\n  },\n  \"notes\": \"Each row is one GO annotation of a human reviewed UniProt protein, mapped to its gene via pharos_protein_gene. The GO aspect (go_type) selects the predicate: Process to involved_in, Function to enables, Component to located_in. The evidence code (IEA, IDA, ISS and so on) is kept as an edge property, not used to pick the knowledge level, since the evidence mix spans automated and experimental claims. Agent type is not_provided for the same reason. Using knowledge_assertion is a choice a reader may question, since the IEA rows are electronic inferences. The source is infores:goa, the GO annotation resource. The go_id values are already compact GO CURIEs, so the curie resolver is used without transformation.\"\n}\n```",
+   "usage": {
+    "in": 4110,
+    "out": 1690,
+    "usd": 0.001256
+   },
+   "provider": "Google",
+   "seconds": 7.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:GeneOntologyClass",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:involved_in",
+    "association_category": "biolink:GeneToGeneOntologyTermAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:goa",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "goeco",
+     "assigned_by",
+     "go_term_text"
+    ],
+    "keep_if": null,
+    "split_by": "go_type",
+    "by_value": {
+     "Process": {
+      "predicate": "biolink:involved_in"
+     },
+     "Function": {
+      "predicate": "biolink:enables"
+     },
+     "Component": {
+      "predicate": "biolink:located_in"
+     }
+    },
+    "notes": "Each row is one GO annotation of a human reviewed UniProt protein, mapped to its gene via pharos_protein_gene. The GO aspect (go_type) selects the predicate: Process to involved_in, Function to enables, Component to located_in. The evidence code (IEA, IDA, ISS and so on) is kept as an edge property, not used to pick the knowledge level, since the evidence mix spans automated and experimental claims. Agent type is not_provided for the same reason. Using knowledge_assertion is a choice a reader may question, since the IEA rows are electronic inferences. The source is infores:goa, the GO annotation resource. The go_id values are already compact GO CURIEs, so the curie resolver is used without transformation."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories [Component]: association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+     "3_categories [Component]: object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class",
+     "8_identifiers [Component]: object: 1,721 of 1,721 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list",
+     "3_categories [Function]: association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+     "3_categories [Function]: object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class",
+     "8_identifiers [Function]: object: 4,186 of 4,186 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list",
+     "2_predicate [Process]: 'biolink:involved_in' is not a Biolink 4.4.3 predicate",
+     "3_categories [Process]: association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+     "3_categories [Process]: object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class",
+     "8_identifiers [Process]: object: 11,996 of 11,996 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": "Component",
+      "rows": 77707,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+        "object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 1,721 of 1,721 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 77707,
+        "resolved": 77545,
+        "distinct": 18235,
+        "prefixes": {
+         "NCBIGene": 18235
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 18235,
+          "in_release": 18235
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 1721,
+        "prefixes": {
+         "GO": 1721
+        },
+        "off_prefix": {
+         "GO": 1721
+        },
+        "off_prefix_share": 1.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 1721,
+          "in_release": 1628
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:GeneOntologyClass"
+       }
+      },
+      "resolved_as_needed": 77545,
+      "kept": 77707,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Function",
+      "rows": 54547,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+        "object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 4,186 of 4,186 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 54547,
+        "resolved": 54406,
+        "distinct": 15599,
+        "prefixes": {
+         "NCBIGene": 15599
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 15599,
+          "in_release": 15599
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 4186,
+        "prefixes": {
+         "GO": 4186
+        },
+        "off_prefix": {
+         "GO": 4186
+        },
+        "off_prefix_share": 1.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 4186,
+          "in_release": 3982
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:GeneOntologyClass"
+       }
+      },
+      "resolved_as_needed": 54406,
+      "kept": 54547,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Process",
+      "rows": 126465,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "'biolink:involved_in' is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category 'biolink:GeneToGeneOntologyTermAssociation' is not a Biolink 4.4.3 class",
+        "object category 'biolink:GeneOntologyClass' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 11,996 of 11,996 distinct identifiers are under prefixes ['GO'] that biolink:GeneOntologyClass's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 126465,
+        "resolved": 126342,
+        "distinct": 16199,
+        "prefixes": {
+         "NCBIGene": 16199
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 16199,
+          "in_release": 16199
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 11996,
+        "prefixes": {
+         "GO": 11996
+        },
+        "off_prefix": {
+         "GO": 11996
+        },
+        "off_prefix_share": 1.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 11996,
+          "in_release": 11409
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:GeneOntologyClass"
+       }
+      },
+      "resolved_as_needed": 126342,
+      "kept": 126465,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"go_id\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:BiologicalProcess\",\n    \"name_column\": \"go_term_text\"\n  },\n  \"predicate\": \"biolink:participates_in\",\n  \"association_category\": \"biolink:GeneToGoTermAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"not_provided\",\n  \"primary_knowledge_source\": \"infores:goa\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"goeco\", \"assigned_by\", \"go_term_text\"],\n  \"keep_if\": null,\n  \"split_by\": \"go_type\",\n  \"by_value\": {\n    \"Process\": {\n      \"object\": {\n        \"columns\": [\"go_id\"],\n        \"resolver\": \"curie\",\n        \"category\": \"biolink:BiologicalProcess\",\n        \"name_column\": \"go_term_text\"\n      },\n      \"predicate\": \"biolink:participates_in\",\n      \"association_category\": \"biolink:GeneToGoTermAssociation\"\n    },\n    \"Function\": {\n      \"object\": {\n        \"columns\": [\"go_id\"],\n        \"resolver\": \"curie\",\n        \"category\": \"biolink:MolecularActivity\",\n        \"name_column\": \"go_term_text\"\n      },\n      \"predicate\": \"biolink:enables\",\n      \"association_category\": \"biolink:GeneToGoTermAssociation\"\n    },\n    \"Component\": {\n      \"object\": {\n        \"columns\": [\"go_id\"],\n        \"resolver\": \"curie\",\n        \"category\": \"biolink:CellularComponent\",\n        \"name_column\": \"go_term_text\"\n      },\n      \"predicate\": \"biolink:located_in\",\n      \"association_category\": \"biolink:GeneToGoTermAssociation\"\n    }\n  },\n  \"notes\": \"Each row is one GO annotation of a human reviewed UniProt protein, mapped to its gene via pharos_protein_gene. The GO aspect (go_type) selects the node category and predicate: Process to BiologicalProcess with participates_in, Function to MolecularActivity with enables, Component to CellularComponent with located_in. involved_in is not in Biolink 4.4.3, so participates_in is used for Process. The association class is GeneToGoTermAssociation. The evidence code is kept as an edge property, not used to pick the knowledge level, since the evidence mix spans automated and experimental claims. Agent type is not_provided for the same reason. knowledge_assertion is a choice a reader may question, since IEA rows are electronic inferences. go_id values are compact GO CURIEs, so the curie resolver applies directly.\"\n}\n```",
+   "usage": {
+    "in": 5333,
+    "out": 1747,
+    "usd": 0.0014068
+   },
+   "provider": "Google",
+   "seconds": 6.7,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:BiologicalProcess",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:participates_in",
+    "association_category": "biolink:GeneToGoTermAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "not_provided",
+    "primary_knowledge_source": "infores:goa",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "goeco",
+     "assigned_by",
+     "go_term_text"
+    ],
+    "keep_if": null,
+    "split_by": "go_type",
+    "by_value": {
+     "Process": {
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:BiologicalProcess",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:participates_in",
+      "association_category": "biolink:GeneToGoTermAssociation"
+     },
+     "Function": {
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:MolecularActivity",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:enables",
+      "association_category": "biolink:GeneToGoTermAssociation"
+     },
+     "Component": {
+      "object": {
+       "columns": [
+        "go_id"
+       ],
+       "resolver": "curie",
+       "category": "biolink:CellularComponent",
+       "name_column": "go_term_text"
+      },
+      "predicate": "biolink:located_in",
+      "association_category": "biolink:GeneToGoTermAssociation"
+     }
+    },
+    "notes": "Each row is one GO annotation of a human reviewed UniProt protein, mapped to its gene via pharos_protein_gene. The GO aspect (go_type) selects the node category and predicate: Process to BiologicalProcess with participates_in, Function to MolecularActivity with enables, Component to CellularComponent with located_in. involved_in is not in Biolink 4.4.3, so participates_in is used for Process. The association class is GeneToGoTermAssociation. The evidence code is kept as an edge property, not used to pick the knowledge level, since the evidence mix spans automated and experimental claims. Agent type is not_provided for the same reason. knowledge_assertion is a choice a reader may question, since IEA rows are electronic inferences. go_id values are compact GO CURIEs, so the curie resolver applies directly."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "4_domain_range [Function]: biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene",
+     "4_domain_range [Process]: biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Gene"
+    ],
+    "rules": [
+     {
+      "value": "Component",
+      "rows": 77707,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 77707,
+        "resolved": 77545,
+        "distinct": 18235,
+        "prefixes": {
+         "NCBIGene": 18235
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 18235,
+          "in_release": 18235
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 77707,
+        "resolved": 77707,
+        "distinct": 1721,
+        "prefixes": {
+         "GO": 1721
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 1721,
+          "in_release": 1628
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:CellularComponent"
+       }
+      },
+      "resolved_as_needed": 77545,
+      "kept": 77707,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Function",
+      "rows": 54547,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:enables's domain is biolink:PhysicalEntity, which does not admit biolink:Gene"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 54547,
+        "resolved": 54406,
+        "distinct": 15599,
+        "prefixes": {
+         "NCBIGene": 15599
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 15599,
+          "in_release": 15599
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 54547,
+        "resolved": 54547,
+        "distinct": 4186,
+        "prefixes": {
+         "GO": 4186
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 4186,
+          "in_release": 3982
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:MolecularActivity"
+       }
+      },
+      "resolved_as_needed": 54406,
+      "kept": 54547,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "Process",
+      "rows": 126465,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [
+        "biolink:participates_in's domain is biolink:Occurrent, which does not admit biolink:Gene"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 126465,
+        "resolved": 126342,
+        "distinct": 16199,
+        "prefixes": {
+         "NCBIGene": 16199
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 16199,
+          "in_release": 16199
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 126465,
+        "resolved": 126465,
+        "distinct": 11996,
+        "prefixes": {
+         "GO": 11996
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "GO": {
+          "distinct": 11996,
+          "in_release": 11409
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:BiologicalProcess"
+       }
+      },
+      "resolved_as_needed": 126342,
+      "kept": 126465,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "go_id"
+   ],
+   "resolver": "curie",
+   "category": "biolink:BiologicalProcess",
+   "name_column": "go_term_text"
+  },
+  "predicate": "biolink:participates_in",
+  "association_category": "biolink:GeneToGoTermAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "not_provided",
+  "primary_knowledge_source": "infores:goa",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "goeco",
+   "assigned_by",
+   "go_term_text"
+  ],
+  "keep_if": null,
+  "split_by": "go_type",
+  "by_value": {
+   "Process": {
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:BiologicalProcess",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:participates_in",
+    "association_category": "biolink:GeneToGoTermAssociation"
+   },
+   "Function": {
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:MolecularActivity",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:enables",
+    "association_category": "biolink:GeneToGoTermAssociation"
+   },
+   "Component": {
+    "object": {
+     "columns": [
+      "go_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:CellularComponent",
+     "name_column": "go_term_text"
+    },
+    "predicate": "biolink:located_in",
+    "association_category": "biolink:GeneToGoTermAssociation"
+   }
+  },
+  "notes": "Each row is one GO annotation of a human reviewed UniProt protein, mapped to its gene via pharos_protein_gene. The GO aspect (go_type) selects the node category and predicate: Process to BiologicalProcess with participates_in, Function to MolecularActivity with enables, Component to CellularComponent with located_in. involved_in is not in Biolink 4.4.3, so participates_in is used for Process. The association class is GeneToGoTermAssociation. The evidence code is kept as an edge property, not used to pick the knowledge level, since the evidence mix spans automated and experimental claims. Agent type is not_provided for the same reason. knowledge_assertion is a choice a reader may question, since IEA rows are electronic inferences. go_id values are compact GO CURIEs, so the curie resolver applies directly."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

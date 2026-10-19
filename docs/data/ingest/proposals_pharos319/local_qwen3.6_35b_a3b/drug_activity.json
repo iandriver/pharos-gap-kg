@@ -1,0 +1,268 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "drug_activity",
+ "release": "pharos319",
+ "card_sha256": "0eeb91f95e7b264f5b878450c8e6b752a075571c38cbd9300dcae8801138eed0",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"drug\"],\n    \"resolver\": \"name:drug\",\n    \"category\": \"biolink:ChemicalEntity\"\n  },\n  \"object\": {\n    \"columns\": [\"target_id\"],\n    \"resolver\": \"pharos_target\",\n    \"category\": \"biolink:GeneOrGeneProduct\"\n  },\n  \"predicate\": \"biolink:interacts_with\",\n  \"association_category\": \"biolink:pharmacological_action\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:drugcentral\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\n    \"act_value\",\n    \"act_type\",\n    \"action_type\",\n    \"source\",\n    \"reference\"\n  ],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Subject uses name:drug resolver since only ~78% of rows have CHEMBL or PubChem IDs. Object maps Pharos target IDs to UniProtKB accessions. Pharmacological action (agonist, inhibitor, etc.) is stored in edge_properties as raw strings rather than CURIE-valued qualifiers due to vocabulary constraints. Knowledge level is observation reflecting experimental pharmacological data.\"\n}",
+   "thinking_chars": 16082,
+   "usage": {
+    "in": 5498,
+    "out": 4840,
+    "usd": 0.0
+   },
+   "seconds": 67.2,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "drug"
+     ],
+     "resolver": "name:drug",
+     "category": "biolink:ChemicalEntity"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:GeneOrGeneProduct"
+    },
+    "predicate": "biolink:interacts_with",
+    "association_category": "biolink:pharmacological_action",
+    "knowledge_level": "observation",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "act_value",
+     "act_type",
+     "action_type",
+     "source",
+     "reference"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Subject uses name:drug resolver since only ~78% of rows have CHEMBL or PubChem IDs. Object maps Pharos target IDs to UniProtKB accessions. Pharmacological action (agonist, inhibitor, etc.) is stored in edge_properties as raw strings rather than CURIE-valued qualifiers due to vocabulary constraints. Knowledge level is observation reflecting experimental pharmacological data."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "2_predicate: biolink:interacts_with is abstract, a mixin or deprecated",
+     "3_categories: association category 'biolink:pharmacological_action' is not a Biolink 4.4.3 class",
+     "3_categories: object category biolink:GeneOrGeneProduct is not a concrete class below biolink:NamedThing",
+     "4_domain_range: biolink:interacts_with's range is biolink:NamedThing, which does not admit biolink:GeneOrGeneProduct",
+     "8_identifiers: object: 1,178 of 1,178 distinct identifiers are under prefixes ['UniProtKB'] that biolink:GeneOrGeneProduct's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 4436,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "biolink:interacts_with is abstract, a mixin or deprecated"
+       ],
+       "3_categories": [
+        "association category 'biolink:pharmacological_action' is not a Biolink 4.4.3 class",
+        "object category biolink:GeneOrGeneProduct is not a concrete class below biolink:NamedThing"
+       ],
+       "4_domain_range": [
+        "biolink:interacts_with's range is biolink:NamedThing, which does not admit biolink:GeneOrGeneProduct"
+       ],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 1,178 of 1,178 distinct identifiers are under prefixes ['UniProtKB'] that biolink:GeneOrGeneProduct's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1782,
+        "prefixes": {
+         "pharosgapkg": 1782
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1178,
+        "prefixes": {
+         "UniProtKB": 1178
+        },
+        "off_prefix": {
+         "UniProtKB": 1178
+        },
+        "off_prefix_share": 1.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 1178,
+          "in_release": 1178
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:GeneOrGeneProduct"
+       }
+      },
+      "resolved_as_needed": 4436,
+      "kept": 4436,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"drug\"],\n    \"resolver\": \"name:drug\",\n    \"category\": \"biolink:ChemicalEntity\"\n  },\n  \"object\": {\n    \"columns\": [\"target_id\"],\n    \"resolver\": \"pharos_target\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:binds_to\",\n  \"association_category\": \"biolink:chemical_gene_association\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:drugcentral\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\n    \"act_value\",\n    \"act_type\",\n    \"action_type\",\n    \"source\",\n    \"reference\"\n  ],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Updated object category to concrete biolink:Protein to match UniProtKB identifiers and Biolink instantiation rules. Replaced deprecated abstract predicate with biolink:binds_to. Pharmacological action details retained in edge_properties as raw strings due to vocabulary constraints.\"\n}",
+   "thinking_chars": 14130,
+   "usage": {
+    "in": 5999,
+    "out": 4248,
+    "usd": 0.0
+   },
+   "seconds": 55.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "drug"
+     ],
+     "resolver": "name:drug",
+     "category": "biolink:ChemicalEntity"
+    },
+    "object": {
+     "columns": [
+      "target_id"
+     ],
+     "resolver": "pharos_target",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:binds_to",
+    "association_category": "biolink:chemical_gene_association",
+    "knowledge_level": "observation",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:drugcentral",
+    "qualifiers": {},
+    "edge_properties": [
+     "act_value",
+     "act_type",
+     "action_type",
+     "source",
+     "reference"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Updated object category to concrete biolink:Protein to match UniProtKB identifiers and Biolink instantiation rules. Replaced deprecated abstract predicate with biolink:binds_to. Pharmacological action details retained in edge_properties as raw strings due to vocabulary constraints."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "2_predicate: 'biolink:binds_to' is not a Biolink 4.4.3 predicate",
+     "3_categories: association category 'biolink:chemical_gene_association' is not a Biolink 4.4.3 class"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 4436,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "'biolink:binds_to' is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category 'biolink:chemical_gene_association' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1782,
+        "prefixes": {
+         "pharosgapkg": 1782
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:ChemicalEntity"
+       },
+       "object": {
+        "rows": 4436,
+        "resolved": 4436,
+        "distinct": 1178,
+        "prefixes": {
+         "UniProtKB": 1178
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 1178,
+          "in_release": 1178
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 4436,
+      "kept": 4436,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "drug"
+   ],
+   "resolver": "name:drug",
+   "category": "biolink:ChemicalEntity"
+  },
+  "object": {
+   "columns": [
+    "target_id"
+   ],
+   "resolver": "pharos_target",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:binds_to",
+  "association_category": "biolink:chemical_gene_association",
+  "knowledge_level": "observation",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:drugcentral",
+  "qualifiers": {},
+  "edge_properties": [
+   "act_value",
+   "act_type",
+   "action_type",
+   "source",
+   "reference"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Updated object category to concrete biolink:Protein to match UniProtKB identifiers and Biolink instantiation rules. Replaced deprecated abstract predicate with biolink:binds_to. Pharmacological action details retained in edge_properties as raw strings due to vocabulary constraints."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

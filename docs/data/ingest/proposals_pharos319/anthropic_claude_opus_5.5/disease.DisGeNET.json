@@ -1,0 +1,168 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "disease.DisGeNET",
+ "release": "pharos319",
+ "card_sha256": "12116d40898b44bbf0bf93d0e0c9000574981da0488ad6fea76c1e2e3af1fda1",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"object\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"ncats_name\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:disgenet\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"score\", \"evidence\", \"source\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"The rows come from DisGeNET's curated gene-disease file, which aggregates expert-curated sources (CTD_human, ClinGen, Orphanet, UniProt, Genomics England, PsyGeNET), so this is a manual knowledge assertion. DisGeNET is credited as the primary source, and the upstream sources are kept in the source column. The object uses MONDO when present and falls back to the UMLS CUI. Some UMLS concepts are phenotypes (for example seizures) but are typed as Disease. The predicate is generic association because DisGeNET does not state causality.\"\n}\n```",
+   "usage": {
+    "in": 5558,
+    "out": 1117,
+    "usd": 0.044572
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 10.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:disgenet",
+    "qualifiers": {},
+    "edge_properties": [
+     "score",
+     "evidence",
+     "source"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "The rows come from DisGeNET's curated gene-disease file, which aggregates expert-curated sources (CTD_human, ClinGen, Orphanet, UniProt, Genomics England, PsyGeNET), so this is a manual knowledge assertion. DisGeNET is credited as the primary source, and the upstream sources are kept in the source column. The object uses MONDO when present and falls back to the UMLS CUI. Some UMLS concepts are phenotypes (for example seizures) but are typed as Disease. The predicate is generic association because DisGeNET does not state causality."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 82875,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 82875,
+        "resolved": 82872,
+        "distinct": 8913,
+        "prefixes": {
+         "NCBIGene": 8913
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 8913,
+          "in_release": 8913
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 82875,
+        "resolved": 82875,
+        "distinct": 10193,
+        "prefixes": {
+         "MONDO": 5732,
+         "UMLS": 4461
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 5732,
+          "in_release": 5732
+         }
+        },
+        "mondo_xrefs": {
+         "UMLS": {
+          "distinct": 4461,
+          "among_mondo_xrefs": 17
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 82872,
+      "kept": 82875,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 78786,
+     "n_nodes": 19106,
+     "n_edges": 78786,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 78786
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:disgenet",
+  "qualifiers": {},
+  "edge_properties": [
+   "score",
+   "evidence",
+   "source"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": null,
+  "notes": "The rows come from DisGeNET's curated gene-disease file, which aggregates expert-curated sources (CTD_human, ClinGen, Orphanet, UniProt, Genomics England, PsyGeNET), so this is a manual knowledge assertion. DisGeNET is credited as the primary source, and the upstream sources are kept in the source column. The object uses MONDO when present and falls back to the UMLS CUI. Some UMLS concepts are phenotypes (for example seizures) but are typed as Disease. The predicate is generic association because DisGeNET does not state causality."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

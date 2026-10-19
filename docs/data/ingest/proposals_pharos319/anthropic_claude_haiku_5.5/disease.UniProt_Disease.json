@@ -1,0 +1,168 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.UniProt_Disease",
+ "release": "pharos319",
+ "card_sha256": "c922d311c5a8c8d7a6f5f3d4d8d79c5bb2c35555f4b7e9db99f797b2976c7f17",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n \"map\": true,\n \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n \"predicate\": \"biolink:gene_associated_with_condition\",\n \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n \"knowledge_level\": \"knowledge_assertion\",\n \"agent_type\": \"manual_agent\",\n \"primary_knowledge_source\": \"infores:uniprot\",\n \"qualifiers\": {},\n \"edge_properties\": [\"evidence\", \"did\", \"description\"],\n \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:[0-9]+$\", \"reason\": \"No MONDO disease term is mapped for this UniProt disease entry, so no disease node can be grounded; the row is kept as a gap on the gene.\"},\n \"split_by\": null,\n \"by_value\": null,\n \"notes\": \"Each row links a human gene (via its Pharos protein row, resolved to the gene) to a UniProt-curated disease. The object is the MONDO id in mondoid. The did column holds OMIM identifiers written as 'MIM:<number>', which is not a standard Biolink CURIE prefix, so it is not used as the object; rows lacking a mondoid (about 37) are recorded as gaps. The predicate is the general gene_associated_with_condition because UniProt records the gene-disease relation without a directional or causal qualifier. The name column of the disease is used as the node label. The evidence column holds UniProt evidence source numbers and is carried as an edge property.\"\n}",
+   "usage": {
+    "in": 5774,
+    "out": 1596,
+    "usd": 0.0013754
+   },
+   "provider": "Google",
+   "seconds": 7.9,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "did",
+     "description"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:[0-9]+$",
+     "reason": "No MONDO disease term is mapped for this UniProt disease entry, so no disease node can be grounded; the row is kept as a gap on the gene."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "Each row links a human gene (via its Pharos protein row, resolved to the gene) to a UniProt-curated disease. The object is the MONDO id in mondoid. The did column holds OMIM identifiers written as 'MIM:<number>', which is not a standard Biolink CURIE prefix, so it is not used as the object; rows lacking a mondoid (about 37) are recorded as gaps. The predicate is the general gene_associated_with_condition because UniProt records the gene-disease relation without a directional or causal qualifier. The name column of the disease is used as the node label. The evidence column holds UniProt evidence source numbers and is carried as an edge property."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 3760,
+        "prefixes": {
+         "NCBIGene": 3760
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3760,
+          "in_release": 3760
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 5651,
+        "resolved": 5614,
+        "distinct": 4948,
+        "prefixes": {
+         "MONDO": 4948
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4948,
+          "in_release": 4948
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 5651,
+      "kept": 5614,
+      "made_gaps_by_condition": 37
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 5536,
+     "n_nodes": 8709,
+     "n_edges": 5504,
+     "n_gaps": 32,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 5504
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:uniprot",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "did",
+   "description"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:[0-9]+$",
+   "reason": "No MONDO disease term is mapped for this UniProt disease entry, so no disease node can be grounded; the row is kept as a gap on the gene."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "Each row links a human gene (via its Pharos protein row, resolved to the gene) to a UniProt-curated disease. The object is the MONDO id in mondoid. The did column holds OMIM identifiers written as 'MIM:<number>', which is not a standard Biolink CURIE prefix, so it is not used as the object; rows lacking a mondoid (about 37) are recorded as gaps. The predicate is the general gene_associated_with_condition because UniProt records the gene-disease relation without a directional or causal qualifier. The name column of the disease is used as the node label. The evidence column holds UniProt evidence source numbers and is carried as an edge property."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

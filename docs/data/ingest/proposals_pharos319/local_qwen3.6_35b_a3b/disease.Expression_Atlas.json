@@ -1,0 +1,156 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "disease.Expression_Atlas",
+ "release": "pharos319",
+ "card_sha256": "e675c755a82db5bae3787985029d8f67a216d66cd6a0464e22532bdbda6d548f",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"did\", \"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:expression-atlas\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"log2foldchange\", \"pvalue\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Expression Atlas provides quantitative protein expression data across diseases. Mapped as statistical associations between diseases and proteins. log2foldchange and pvalue retained as edge properties to preserve quantitative context.\"\n}",
+   "thinking_chars": 16888,
+   "usage": {
+    "in": 4639,
+    "out": 4849,
+    "usd": 0.0
+   },
+   "seconds": 67.2,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "did",
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:expression-atlas",
+    "qualifiers": {},
+    "edge_properties": [
+     "log2foldchange",
+     "pvalue"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Expression Atlas provides quantitative protein expression data across diseases. Mapped as statistical associations between diseases and proteins. log2foldchange and pvalue retained as edge properties to preserve quantitative context."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 159846,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 159846,
+        "resolved": 159846,
+        "distinct": 107,
+        "prefixes": {
+         "DOID": 107
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "DOID": {
+          "distinct": 107,
+          "in_release": 107
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 159846,
+        "resolved": 159846,
+        "distinct": 16784,
+        "prefixes": {
+         "UniProtKB": 16784
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 16784,
+          "in_release": 16784
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 159846,
+      "kept": 159846,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 159748,
+     "n_nodes": 16891,
+     "n_edges": 159748,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:associated_with": 159748
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "did",
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease"
+  },
+  "object": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:expression-atlas",
+  "qualifiers": {},
+  "edge_properties": [
+   "log2foldchange",
+   "pvalue"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Expression Atlas provides quantitative protein expression data across diseases. Mapped as statistical associations between diseases and proteins. log2foldchange and pvalue retained as edge properties to preserve quantitative context."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

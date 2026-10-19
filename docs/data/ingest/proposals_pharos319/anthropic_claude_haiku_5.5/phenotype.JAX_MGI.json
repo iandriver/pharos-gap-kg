@@ -1,0 +1,151 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "phenotype.JAX_MGI",
+ "release": "pharos319",
+ "card_sha256": "2c6858a720863786f670d7685ce272bd44981567ac157ed3ef6d6630db73be0c",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"term_id\"], \"resolver\": \"curie\", \"category\": \"biolink:PhenotypicFeature\", \"name_column\": \"term_name\"}, \"predicate\": \"biolink:has_phenotype\", \"association_category\": \"biolink:GeneToPhenotypicFeatureAssociation\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"manual_agent\", \"primary_knowledge_source\": \"infores:mgi\", \"qualifiers\": {}, \"edge_properties\": [\"term_name\"], \"keep_if\": null, \"split_by\": null, \"by_value\": {}, \"notes\": \"Each row links a Pharos protein (human gene product) to a top-level Mammalian Phenotype (MP) term via a mouse ortholog. The phenotype was curated for the mouse gene in MGI and transferred to the human ortholog, so the claim is about the human gene by orthology, not direct human observation; this is why the source is infores:mgi with a manual agent. The MP terms are category-level (27 distinct, e.g. 'immune system phenotype'), so the object is a broad PhenotypicFeature. Qualifiers are empty because the table has no direction, frequency, or sex values. Rows are filtered to the one ptype, and protein_id resolves to the gene via the protein table.\" }",
+   "usage": {
+    "in": 4812,
+    "out": 1074,
+    "usd": 0.0010182
+   },
+   "provider": "Google",
+   "seconds": 5.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "term_id"
+     ],
+     "resolver": "curie",
+     "category": "biolink:PhenotypicFeature",
+     "name_column": "term_name"
+    },
+    "predicate": "biolink:has_phenotype",
+    "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:mgi",
+    "qualifiers": {},
+    "edge_properties": [
+     "term_name"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row links a Pharos protein (human gene product) to a top-level Mammalian Phenotype (MP) term via a mouse ortholog. The phenotype was curated for the mouse gene in MGI and transferred to the human ortholog, so the claim is about the human gene by orthology, not direct human observation; this is why the source is infores:mgi with a manual agent. The MP terms are category-level (27 distinct, e.g. 'immune system phenotype'), so the object is a broad PhenotypicFeature. Qualifiers are empty because the table has no direction, frequency, or sex values. Rows are filtered to the one ptype, and protein_id resolves to the gene via the protein table."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 58398,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 58398,
+        "resolved": 58397,
+        "distinct": 10162,
+        "prefixes": {
+         "NCBIGene": 10162
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 10162,
+          "in_release": 10162
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 58398,
+        "resolved": 58398,
+        "distinct": 27,
+        "prefixes": {
+         "MP": 27
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {},
+        "category": "biolink:PhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 58397,
+      "kept": 58398,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 57873,
+     "n_nodes": 10189,
+     "n_edges": 57873,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:has_phenotype": 57873
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "term_id"
+   ],
+   "resolver": "curie",
+   "category": "biolink:PhenotypicFeature",
+   "name_column": "term_name"
+  },
+  "predicate": "biolink:has_phenotype",
+  "association_category": "biolink:GeneToPhenotypicFeatureAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:mgi",
+  "qualifiers": {},
+  "edge_properties": [
+   "term_name"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": {},
+  "notes": "Each row links a Pharos protein (human gene product) to a top-level Mammalian Phenotype (MP) term via a mouse ortholog. The phenotype was curated for the mouse gene in MGI and transferred to the human ortholog, so the claim is about the human gene by orthology, not direct human observation; this is why the source is infores:mgi with a manual agent. The MP terms are category-level (27 distinct, e.g. 'immune system phenotype'), so the object is a broad PhenotypicFeature. Qualifiers are empty because the table has no direction, frequency, or sex values. Rows are filtered to the one ptype, and protein_id resolves to the gene via the protein table."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

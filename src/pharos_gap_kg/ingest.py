@@ -20,6 +20,7 @@ Run:  python -m pharos_gap_kg.ingest cards pharos319            # write the card
       python -m pharos_gap_kg.ingest stale pharos319           # records whose verdicts the current validator would not give
       python -m pharos_gap_kg.ingest report pharos319
       python -m pharos_gap_kg.ingest export pharos319           # the accepted new views, as KGX parts
+      python -m pharos_gap_kg.ingest graphcheck pharos319       # checks 2 to 6 on every kind of edge the graph exports
       python -m pharos_gap_kg.ingest --selftest
 
 A hosted model needs OPENROUTER_API_KEY; the local one needs `ollama serve`.
@@ -47,7 +48,7 @@ from pharos_gap_kg import graph, paths
 PREFIX = graph.PREFIX
 SEED = 20261019
 BIOLINK = paths.ROOT / "docs" / "data" / "biolink_4.4.3.json"
-CAP_USD = 1.00
+CAP_USD = 1.75                    # raised from 1.00 on Ian's word, 19 Oct (docs/PROTOCOL.md, Amendments)
 PRICES = {"anthropic/claude-haiku-5.5": (0.10, 0.50), "anthropic/claude-sonnet-5.5": (2.00, 10.00), "anthropic/claude-opus-5.5": (4.00, 20.00)}
 LOCAL = "local:qwen3.6:35b-a3b"
 MODELS = [LOCAL, "anthropic/claude-haiku-5.5", "anthropic/claude-sonnet-5.5", "anthropic/claude-opus-5.5"]
@@ -1062,6 +1063,35 @@ def set_aside(release: str, items: list[dict], why: str) -> None:
         src.unlink()
 
 
+def graph_check(release: str) -> dict:
+    """Checks 2 to 6 on every kind of edge in the graph's export: each distinct predicate, association
+    category, subject and object category and qualifiers, with how many edges are of that kind. The
+    reference KGX validator checks none of these."""
+    g = paths.GRAPH / release
+    quals = ["subject_aspect_qualifier", "object_direction_qualifier", "subject_direction_qualifier"]
+    e = pd.read_csv(g / "edges.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=["subject", "predicate", "object", "category"] + quals)
+    n = pd.read_csv(g / "nodes.tsv", sep="\t", dtype=str, keep_default_na=False, usecols=["id", "category"])
+    cat = dict(zip(n.id, n.category))
+    e["sc"], e["oc"] = e.subject.map(cat), e.object.map(cat)
+    e["q"] = [tuple((q, v) for q, v in zip(quals, row) if v) for row in e[quals].itertuples(index=False)]
+    kinds = e.groupby(["predicate", "category", "sc", "oc", "q"]).size().reset_index(name="edges")
+    rows, by_problem = [], Counter()
+    for r in kinds.itertuples(index=False):
+        rule = {"subject": {"columns": ["s"], "resolver": "curie", "category": r.sc}, "object": {"columns": ["o"], "resolver": "curie", "category": r.oc},
+                "predicate": r.predicate, "association_category": r.category, "qualifiers": dict(r.q)}
+        c = check_rule(rule, {"s", "o"})
+        bad = [x for k in ("2_predicate", "3_categories", "4_domain_range", "5_association", "6_qualifiers") for x in c[k]]
+        for x in bad:
+            by_problem[x] += int(r.edges)
+        rows.append({"predicate": r.predicate, "category": r.category, "subject_category": r.sc, "object_category": r.oc,
+                     "qualifiers": dict(r.q), "edges": int(r.edges), "problems": bad})
+    out = {"release": release, "biolink": biolink()["version"], "checks": "2 to 6 of docs/PROTOCOL.md, Ingest", "edges": int(len(e)),
+           "kinds": len(rows), "edges_of_kinds_that_pass": sum(r["edges"] for r in rows if not r["problems"]),
+           "edges_by_problem": dict(by_problem.most_common()), "by_kind": sorted(rows, key=lambda r: -r["edges"])}
+    write_json(paths.ROOT / "docs" / "data" / f"biolink_checks_{release}.json", out)
+    return out
+
+
 # ---- control, report, export -----------------------------------------------------------------------
 
 def control(release: str, refs: Refs | None = None) -> dict:
@@ -1253,7 +1283,7 @@ def main(argv: list[str] | None = None) -> int:
     if "--selftest" in argv:
         return _selftest()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("what", choices=["cards", "control", "propose", "stale", "report", "export"])
+    ap.add_argument("what", choices=["cards", "control", "propose", "stale", "report", "export", "graphcheck"])
     ap.add_argument("--set-aside", help="with stale: move the stale records to discarded_<release> with this reason")
     ap.add_argument("release")
     ap.add_argument("--model", default=LOCAL)
@@ -1279,6 +1309,11 @@ def main(argv: list[str] | None = None) -> int:
             set_aside(a.release, items, a.set_aside)
             print(f"{len(items)} set aside")
         print(f"{len(items)} stale")
+    elif a.what == "graphcheck":
+        out = graph_check(a.release)
+        print(f"{out['edges']:,} edges of {out['kinds']} kinds; {out['edges_of_kinds_that_pass']:,} are of kinds that pass checks 2 to 6")
+        for k, v in out["edges_by_problem"].items():
+            print(f"  {v:>8,}  {k}")
     elif a.what == "report":
         out = report(a.release)
         print(json.dumps({m: v["qualification"] for m, v in out["models"].items()}, indent=1))

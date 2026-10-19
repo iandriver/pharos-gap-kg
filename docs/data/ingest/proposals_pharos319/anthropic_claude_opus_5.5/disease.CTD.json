@@ -1,0 +1,316 @@
+{
+ "model": "anthropic/claude-opus-5.5",
+ "view": "disease.CTD",
+ "release": "pharos319",
+ "card_sha256": "a516e1bb5647658368eb00db2a1b609b64475aa1bd3f4c5880957eca8541777e",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "```json\n{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"ncats_name\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:ctd\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": \"evidence\",\n  \"by_value\": {\n    \"marker/mechanism\": {},\n    \"marker/mechanism|therapeutic\": {},\n    \"therapeutic\": {\n      \"predicate\": \"biolink:target_for\",\n      \"association_category\": \"biolink:Association\"\n    }\n  },\n  \"notes\": \"CTD direct-evidence gene\u2013disease curations are manual literature assertions. Rows marked 'marker/mechanism' mean the gene is a marker of the disease or takes part in its mechanism, so they map to gene_associated_with_condition. Rows marked 'therapeutic' mean the gene is a therapeutic target, so they map to target_for. Rows with both labels keep the general association, and the evidence column records both. MONDO is preferred for the disease, with the CTD DOID/MESH id as fallback. CTD curates at gene level, so the protein is resolved to its NCBIGene.\"\n}\n```",
+   "usage": {
+    "in": 5238,
+    "out": 1111,
+    "usd": 0.043172
+   },
+   "provider": "Amazon Bedrock",
+   "seconds": 11.3,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:ctd",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": "evidence",
+    "by_value": {
+     "marker/mechanism": {},
+     "marker/mechanism|therapeutic": {},
+     "therapeutic": {
+      "predicate": "biolink:target_for",
+      "association_category": "biolink:Association"
+     }
+    },
+    "notes": "CTD direct-evidence gene\u2013disease curations are manual literature assertions. Rows marked 'marker/mechanism' mean the gene is a marker of the disease or takes part in its mechanism, so they map to gene_associated_with_condition. Rows marked 'therapeutic' mean the gene is a therapeutic target, so they map to target_for. Rows with both labels keep the general association, and the evidence column records both. MONDO is preferred for the disease, with the CTD DOID/MESH id as fallback. CTD curates at gene level, so the protein is resolved to its NCBIGene."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": "marker/mechanism",
+      "rows": 33182,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 33182,
+        "resolved": 33182,
+        "distinct": 7671,
+        "prefixes": {
+         "NCBIGene": 7671
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 7671,
+          "in_release": 7671
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 33182,
+        "resolved": 33182,
+        "distinct": 5657,
+        "prefixes": {
+         "MONDO": 4905,
+         "MESH": 718,
+         "OMIM": 20,
+         "DOID": 14
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4905,
+          "in_release": 4905
+         },
+         "DOID": {
+          "distinct": 14,
+          "in_release": 14
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 20,
+          "among_mondo_xrefs": 0
+         },
+         "MESH": {
+          "distinct": 718,
+          "among_mondo_xrefs": 7
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 33182,
+      "kept": 33182,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "marker/mechanism|therapeutic",
+      "rows": 313,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 313,
+        "resolved": 313,
+        "distinct": 142,
+        "prefixes": {
+         "NCBIGene": 142
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 142,
+          "in_release": 142
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 313,
+        "resolved": 313,
+        "distinct": 148,
+        "prefixes": {
+         "MONDO": 115,
+         "MESH": 33
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 115,
+          "in_release": 115
+         }
+        },
+        "mondo_xrefs": {
+         "MESH": {
+          "distinct": 33,
+          "among_mondo_xrefs": 0
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 313,
+      "kept": 313,
+      "made_gaps_by_condition": 0
+     },
+     {
+      "value": "therapeutic",
+      "rows": 1692,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 1692,
+        "resolved": 1692,
+        "distinct": 554,
+        "prefixes": {
+         "NCBIGene": 554
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 554,
+          "in_release": 554
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 1692,
+        "resolved": 1692,
+        "distinct": 562,
+        "prefixes": {
+         "MONDO": 414,
+         "MESH": 146,
+         "DOID": 2
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 414,
+          "in_release": 414
+         },
+         "DOID": {
+          "distinct": 2,
+          "in_release": 2
+         }
+        },
+        "mondo_xrefs": {
+         "MESH": {
+          "distinct": 146,
+          "among_mondo_xrefs": 0
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 1692,
+      "kept": 1692,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 33232,
+     "n_nodes": 13482,
+     "n_edges": 33232,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 31557,
+      "biolink:target_for": 1675
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:ctd",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence"
+  ],
+  "keep_if": null,
+  "split_by": "evidence",
+  "by_value": {
+   "marker/mechanism": {},
+   "marker/mechanism|therapeutic": {},
+   "therapeutic": {
+    "predicate": "biolink:target_for",
+    "association_category": "biolink:Association"
+   }
+  },
+  "notes": "CTD direct-evidence gene\u2013disease curations are manual literature assertions. Rows marked 'marker/mechanism' mean the gene is a marker of the disease or takes part in its mechanism, so they map to gene_associated_with_condition. Rows marked 'therapeutic' mean the gene is a therapeutic target, so they map to target_for. Rows with both labels keep the general association, and the evidence column records both. MONDO is preferred for the disease, with the CTD DOID/MESH id as fallback. CTD curates at gene level, so the protein is resolved to its NCBIGene."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

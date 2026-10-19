@@ -1,0 +1,158 @@
+{
+ "model": "anthropic/claude-sonnet-5.5",
+ "view": "disease.Expression_Atlas",
+ "release": "pharos319",
+ "card_sha256": "e675c755a82db5bae3787985029d8f67a216d66cd6a0464e22532bdbda6d548f",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"ncats_name\"},\n  \"predicate\": \"biolink:correlated_with\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:expression-atlas\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"log2foldchange\", \"pvalue\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Each row is a differential expression result for a gene in a disease versus a control, from Expression Atlas, processed by IDG-KMC. It is a statistical association, so I used correlated_with rather than a causal or expression predicate. log2foldchange and pvalue stay on the edge as properties. pvalue is stored as a string, so I did not filter on it. The mondoid column is filled on every row; did (DOID) is the fallback.\"\n}",
+   "usage": {
+    "in": 5213,
+    "out": 943,
+    "usd": 0.019856
+   },
+   "provider": "Google",
+   "seconds": 6.9,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "ncats_name"
+    },
+    "predicate": "biolink:correlated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:expression-atlas",
+    "qualifiers": {},
+    "edge_properties": [
+     "log2foldchange",
+     "pvalue"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row is a differential expression result for a gene in a disease versus a control, from Expression Atlas, processed by IDG-KMC. It is a statistical association, so I used correlated_with rather than a causal or expression predicate. log2foldchange and pvalue stay on the edge as properties. pvalue is stored as a string, so I did not filter on it. The mondoid column is filled on every row; did (DOID) is the fallback."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 159846,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 159846,
+        "resolved": 159796,
+        "distinct": 16660,
+        "prefixes": {
+         "NCBIGene": 16660
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 16660,
+          "in_release": 16660
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 159846,
+        "resolved": 159846,
+        "distinct": 107,
+        "prefixes": {
+         "MONDO": 107
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 107,
+          "in_release": 107
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 159796,
+      "kept": 159846,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 158704,
+     "n_nodes": 16767,
+     "n_edges": 158704,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:correlated_with": 158704
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid",
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "ncats_name"
+  },
+  "predicate": "biolink:correlated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:expression-atlas",
+  "qualifiers": {},
+  "edge_properties": [
+   "log2foldchange",
+   "pvalue"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Each row is a differential expression result for a gene in a disease versus a control, from Expression Atlas, processed by IDG-KMC. It is a statistical association, so I used correlated_with rather than a causal or expression predicate. log2foldchange and pvalue stay on the edge as properties. pvalue is stored as a string, so I did not filter on it. The mondoid column is filled on every row; did (DOID) is the fallback."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

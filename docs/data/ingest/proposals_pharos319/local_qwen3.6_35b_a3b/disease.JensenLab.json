@@ -1,0 +1,264 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "disease.JensenLab",
+ "release": "pharos319",
+ "card_sha256": "cc1de72c149e4fc7c84b5e6f8480dee1aebb70605318f75b54ffea62901b1aa5",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"did\", \"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"text_mining_agent\",\n  \"primary_knowledge_source\": \"infores:jensenlab-diseases\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"conf\", \"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Maps diseases to associated proteins. Uses DOID or MONDO IDs for diseases and Pharos protein IDs (resolved to UniProtKB) for objects. Conf and evidence scores are preserved as edge properties. JensenLab DISEASES aggregates text mining, experimental, and curated data.\"\n}",
+   "thinking_chars": 15245,
+   "usage": {
+    "in": 4663,
+    "out": 4529,
+    "usd": 0.0
+   },
+   "seconds": 61.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "did",
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "observation",
+    "agent_type": "text_mining_agent",
+    "primary_knowledge_source": "infores:jensenlab-diseases",
+    "qualifiers": {},
+    "edge_properties": [
+     "conf",
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Maps diseases to associated proteins. Uses DOID or MONDO IDs for diseases and Pharos protein IDs (resolved to UniProtKB) for objects. Conf and evidence scores are preserved as edge properties. JensenLab DISEASES aggregates text mining, experimental, and curated data."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: subject: 23 of 1,995 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+     "8_identifiers: subject: 1,686 of 1,972 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 41487,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "subject: 23 of 1,995 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+        "subject: 1,686 of 1,972 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 41487,
+        "resolved": 41487,
+        "distinct": 1995,
+        "prefixes": {
+         "DOID": 1972,
+         "AmyCo": 23
+        },
+        "off_prefix": {
+         "AmyCo": 23
+        },
+        "off_prefix_share": 0.0115,
+        "vocabulary": {
+         "DOID": {
+          "distinct": 1972,
+          "in_release": 1686
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 41487,
+        "resolved": 41487,
+        "distinct": 10875,
+        "prefixes": {
+         "UniProtKB": 10875
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 10875,
+          "in_release": 10875
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 41487,
+      "kept": 41487,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"text_mining_agent\",\n  \"primary_knowledge_source\": \"infores:jensenlab-diseases\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"conf\", \"evidence\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Restricted subject to 'did' column (DOIDs) to exclude invalid prefixes like AmyCo. Maps disease-protein associations with confidence and evidence as edge properties.\"\n}",
+   "thinking_chars": 9666,
+   "usage": {
+    "in": 5038,
+    "out": 2954,
+    "usd": 0.0
+   },
+   "seconds": 38.8,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "observation",
+    "agent_type": "text_mining_agent",
+    "primary_knowledge_source": "infores:jensenlab-diseases",
+    "qualifiers": {},
+    "edge_properties": [
+     "conf",
+     "evidence"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Restricted subject to 'did' column (DOIDs) to exclude invalid prefixes like AmyCo. Maps disease-protein associations with confidence and evidence as edge properties."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: subject: 23 of 1,995 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+     "8_identifiers: subject: 1,686 of 1,972 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 41487,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "subject: 23 of 1,995 distinct identifiers are under prefixes ['AmyCo'] that biolink:Disease's id_prefixes do not list",
+        "subject: 1,686 of 1,972 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 41487,
+        "resolved": 41487,
+        "distinct": 1995,
+        "prefixes": {
+         "DOID": 1972,
+         "AmyCo": 23
+        },
+        "off_prefix": {
+         "AmyCo": 23
+        },
+        "off_prefix_share": 0.0115,
+        "vocabulary": {
+         "DOID": {
+          "distinct": 1972,
+          "in_release": 1686
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 41487,
+        "resolved": 41487,
+        "distinct": 10875,
+        "prefixes": {
+         "UniProtKB": 10875
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 10875,
+          "in_release": 10875
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 41487,
+      "kept": 41487,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "did"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease"
+  },
+  "object": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "observation",
+  "agent_type": "text_mining_agent",
+  "primary_knowledge_source": "infores:jensenlab-diseases",
+  "qualifiers": {},
+  "edge_properties": [
+   "conf",
+   "evidence"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Restricted subject to 'did' column (DOIDs) to exclude invalid prefixes like AmyCo. Maps disease-protein associations with confidence and evidence as edge properties."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

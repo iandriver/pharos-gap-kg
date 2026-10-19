@@ -1810,3 +1810,7 @@ condition a row must meet may also be that a column matches a regular expression
 condition becomes a gap of its subject, naming the object it withheld where it has one, and needs only
 its subject to resolve. Check 8's first figure counts a row as resolved when both its sides resolve,
 or, for a row the condition makes a gap, when its subject does.
+
+**19 Oct 2026, ingest spend, on Ian's word, after the cap stopped Opus at 7 of its 9 scored cards.** The
+hosted cap for this stage is raised from $1.00 to $1.75, so that Opus finishes the scored cards and
+every qualifying model proposes the four new views. Nothing else changes.

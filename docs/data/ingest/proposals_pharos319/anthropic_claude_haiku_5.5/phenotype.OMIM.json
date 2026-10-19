@@ -1,0 +1,164 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "phenotype.OMIM",
+ "release": "pharos319",
+ "card_sha256": "04a239254cd339f49cfed07234372ad984a799dd9592c53f001887b9715fd32b",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"trait\"], \"resolver\": \"pattern:OMIM:Phenotype: .*?(\\\\d{6}) \\\\([1-4]\\\\)\", \"category\": \"biolink:Disease\", \"name_column\": \"trait\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:omim\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"trait\"],\n  \"keep_if\": {\"column\": \"trait\", \"matches\": \"Phenotype: \", \"reason\": \"Trait holds only the gene's MIM Number with no phenotype named, so OMIM lists the gene entry without a disease; kept as a recorded gap for the gene, with no disease object.\"},\n  \"split_by\": null,\n  \"by_value\": {},\n  \"notes\": \"Each row is a gene MIM entry from genemap.txt. Only rows whose trait includes 'Phenotype: <name>, <6-digit MIM> (<key>)' name a disease; the object is that phenotype MIM, taken from the text after 'Phenotype:' rather than the leading gene MIM. The mapping key (1-4) is not kept as a qualifier; key 3 means a molecular basis is known, and the key is in the source text if a reader needs it. Some trait cells may be truncated in the export, so the pattern may miss a few. Gene-only rows are recorded as gaps. The predicate is gene_associated_with_condition, which is more specific than the generic gene-disease association.\"\n}",
+   "usage": {
+    "in": 4651,
+    "out": 1841,
+    "usd": 0.0013856
+   },
+   "provider": "Google",
+   "seconds": 8.7,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "trait"
+     ],
+     "resolver": "pattern:OMIM:Phenotype: .*?(\\d{6}) \\([1-4]\\)",
+     "category": "biolink:Disease",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:omim",
+    "qualifiers": {},
+    "edge_properties": [
+     "trait"
+    ],
+    "keep_if": {
+     "column": "trait",
+     "matches": "Phenotype: ",
+     "reason": "Trait holds only the gene's MIM Number with no phenotype named, so OMIM lists the gene entry without a disease; kept as a recorded gap for the gene, with no disease object."
+    },
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row is a gene MIM entry from genemap.txt. Only rows whose trait includes 'Phenotype: <name>, <6-digit MIM> (<key>)' name a disease; the object is that phenotype MIM, taken from the text after 'Phenotype:' rather than the leading gene MIM. The mapping key (1-4) is not kept as a qualifier; key 3 means a molecular basis is known, and the key is in the source text if a reader needs it. Some trait cells may be truncated in the export, so the pattern may miss a few. Gene-only rows are recorded as gaps. The predicate is gene_associated_with_condition, which is more specific than the generic gene-disease association."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14147,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14147,
+        "resolved": 14138,
+        "distinct": 13727,
+        "prefixes": {
+         "NCBIGene": 13727
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 13727,
+          "in_release": 13727
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 3887,
+        "resolved": 3808,
+        "distinct": 3396,
+        "prefixes": {
+         "OMIM": 3396
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 3396,
+          "among_mondo_xrefs": 3321
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 14059,
+      "kept": 3887,
+      "made_gaps_by_condition": 10260
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 13793,
+     "n_nodes": 17057,
+     "n_edges": 3710,
+     "n_gaps": 10083,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 3710
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "trait"
+   ],
+   "resolver": "pattern:OMIM:Phenotype: .*?(\\d{6}) \\([1-4]\\)",
+   "category": "biolink:Disease",
+   "name_column": "trait"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:omim",
+  "qualifiers": {},
+  "edge_properties": [
+   "trait"
+  ],
+  "keep_if": {
+   "column": "trait",
+   "matches": "Phenotype: ",
+   "reason": "Trait holds only the gene's MIM Number with no phenotype named, so OMIM lists the gene entry without a disease; kept as a recorded gap for the gene, with no disease object."
+  },
+  "split_by": null,
+  "by_value": {},
+  "notes": "Each row is a gene MIM entry from genemap.txt. Only rows whose trait includes 'Phenotype: <name>, <6-digit MIM> (<key>)' name a disease; the object is that phenotype MIM, taken from the text after 'Phenotype:' rather than the leading gene MIM. The mapping key (1-4) is not kept as a qualifier; key 3 means a molecular basis is known, and the key is in the source text if a reader needs it. Some trait cells may be truncated in the export, so the pattern may miss a few. Gene-only rows are recorded as gaps. The predicate is gene_associated_with_condition, which is more specific than the generic gene-disease association."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

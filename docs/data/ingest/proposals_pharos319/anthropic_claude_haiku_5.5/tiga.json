@@ -1,0 +1,339 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "tiga",
+ "release": "pharos319",
+ "card_sha256": "98db20d8166e32bb877434d8c22456809daeabe8c9c3c2f487a585af16aff1d2",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:DiseaseOrPhenotypicFeature\", \"name_column\": \"trait\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:tiga\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\", \"geneNtrait\", \"geneNstudy\", \"traitNgene\", \"traitNstudy\", \"ncats_disease_id\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"TIGA ranks gene-trait links from GWAS evidence (SNP-level p-values, study counts), so the claim is a statistical association computed by a pipeline, not a curated assertion. Subject is the Pharos protein row mapped to its NCBIGene. Object is the EFO trait; traits include non-disease measurements (e.g. 'eosinophil percentage of leukocytes'), so DiseaseOrPhenotypicFeature is used. Some efoid values carry a GO_ prefix (biological process terms), which fall outside that category; those rows are not separated here and a reviewer may want a split by prefix. Scores are kept as edge properties, not thresholded, so no keep_if filter is applied.\"\n}",
+   "usage": {
+    "in": 6080,
+    "out": 1961,
+    "usd": 0.0015885
+   },
+   "provider": "Google",
+   "seconds": 9.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:DiseaseOrPhenotypicFeature",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore",
+     "geneNtrait",
+     "geneNstudy",
+     "traitNgene",
+     "traitNstudy",
+     "ncats_disease_id"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "TIGA ranks gene-trait links from GWAS evidence (SNP-level p-values, study counts), so the claim is a statistical association computed by a pipeline, not a curated assertion. Subject is the Pharos protein row mapped to its NCBIGene. Object is the EFO trait; traits include non-disease measurements (e.g. 'eosinophil percentage of leukocytes'), so DiseaseOrPhenotypicFeature is used. Some efoid values carry a GO_ prefix (biological process terms), which fall outside that category; those rows are not separated here and a reviewer may want a split by prefix. Scores are kept as edge properties, not thresholded, so no keep_if filter is applied."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 66 of 2,247 distinct identifiers are under prefixes ['GO', 'Orphanet', 'PATO'] that biolink:DiseaseOrPhenotypicFeature's id_prefixes do not list"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 745611,
+        "resolved": 745611,
+        "distinct": 2247,
+        "prefixes": {
+         "EFO": 2056,
+         "HP": 68,
+         "MONDO": 56,
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2,
+         "NCIT": 1
+        },
+        "off_prefix": {
+         "GO": 34,
+         "Orphanet": 30,
+         "PATO": 2
+        },
+        "off_prefix_share": 0.0294,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 56,
+          "in_release": 55
+         },
+         "GO": {
+          "distinct": 34,
+          "in_release": 32
+         }
+        },
+        "mondo_xrefs": {
+         "Orphanet": {
+          "distinct": 30,
+          "among_mondo_xrefs": 27
+         },
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:DiseaseOrPhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 745611,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"efoid\"], \"resolver\": \"curie\", \"category\": \"biolink:DiseaseOrPhenotypicFeature\", \"name_column\": \"trait\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"statistical_association\",\n  \"agent_type\": \"data_analysis_pipeline\",\n  \"primary_knowledge_source\": \"infores:tiga\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"n_study\", \"n_snp\", \"n_snpw\", \"pvalue_mlog_median\", \"pvalue_mlog_max\", \"or_median\", \"n_beta\", \"study_N_mean\", \"rcras\", \"meanRank\", \"meanRankScore\", \"geneNtrait\", \"geneNstudy\", \"traitNgene\", \"traitNstudy\", \"ncats_disease_id\"],\n  \"keep_if\": {\"column\": \"efoid\", \"matches\": \"^EFO_\", \"reason\": \"Only EFO-identified traits are mapped to biolink:DiseaseOrPhenotypicFeature; rows whose efoid is a GO, Orphanet or PATO identifier are kept as gaps of the gene because those prefixes are not valid for this category.\"},\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"TIGA ranks gene-trait links from GWAS evidence (SNP-level p-values, study counts), so the claim is a statistical association computed by a pipeline, not a curated assertion. Subject is the Pharos protein row mapped to its NCBIGene. Object is the EFO trait; traits include non-disease measurements (e.g. 'eosinophil percentage of leukocytes'), so DiseaseOrPhenotypicFeature is used. The refusal found 66 of 2,247 identifiers under GO, Orphanet and PATO prefixes; a keep_if on the EFO_ prefix routes those rows to gene gaps instead of edges. Scores are kept as edge properties, not thresholded.\"\n}",
+   "usage": {
+    "in": 6838,
+    "out": 1282,
+    "usd": 0.0013248
+   },
+   "provider": "Google",
+   "seconds": 5.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "efoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:DiseaseOrPhenotypicFeature",
+     "name_column": "trait"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:tiga",
+    "qualifiers": {},
+    "edge_properties": [
+     "n_study",
+     "n_snp",
+     "n_snpw",
+     "pvalue_mlog_median",
+     "pvalue_mlog_max",
+     "or_median",
+     "n_beta",
+     "study_N_mean",
+     "rcras",
+     "meanRank",
+     "meanRankScore",
+     "geneNtrait",
+     "geneNstudy",
+     "traitNgene",
+     "traitNstudy",
+     "ncats_disease_id"
+    ],
+    "keep_if": {
+     "column": "efoid",
+     "matches": "^EFO_",
+     "reason": "Only EFO-identified traits are mapped to biolink:DiseaseOrPhenotypicFeature; rows whose efoid is a GO, Orphanet or PATO identifier are kept as gaps of the gene because those prefixes are not valid for this category."
+    },
+    "split_by": null,
+    "by_value": null,
+    "notes": "TIGA ranks gene-trait links from GWAS evidence (SNP-level p-values, study counts), so the claim is a statistical association computed by a pipeline, not a curated assertion. Subject is the Pharos protein row mapped to its NCBIGene. Object is the EFO trait; traits include non-disease measurements (e.g. 'eosinophil percentage of leukocytes'), so DiseaseOrPhenotypicFeature is used. The refusal found 66 of 2,247 identifiers under GO, Orphanet and PATO prefixes; a keep_if on the EFO_ prefix routes those rows to gene gaps instead of edges. Scores are kept as edge properties, not thresholded."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 745611,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 745611,
+        "resolved": 745056,
+        "distinct": 17864,
+        "prefixes": {
+         "NCBIGene": 17864
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 17864,
+          "in_release": 17864
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 693948,
+        "resolved": 693948,
+        "distinct": 2056,
+        "prefixes": {
+         "EFO": 2056
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {},
+        "mondo_xrefs": {
+         "EFO": {
+          "distinct": 2056,
+          "among_mondo_xrefs": 363
+         }
+        },
+        "category": "biolink:DiseaseOrPhenotypicFeature"
+       }
+      },
+      "resolved_as_needed": 745056,
+      "kept": 693948,
+      "made_gaps_by_condition": 51663
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 279150,
+     "n_nodes": 19921,
+     "n_edges": 263952,
+     "n_gaps": 15198,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 263952
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "efoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:DiseaseOrPhenotypicFeature",
+   "name_column": "trait"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:tiga",
+  "qualifiers": {},
+  "edge_properties": [
+   "n_study",
+   "n_snp",
+   "n_snpw",
+   "pvalue_mlog_median",
+   "pvalue_mlog_max",
+   "or_median",
+   "n_beta",
+   "study_N_mean",
+   "rcras",
+   "meanRank",
+   "meanRankScore",
+   "geneNtrait",
+   "geneNstudy",
+   "traitNgene",
+   "traitNstudy",
+   "ncats_disease_id"
+  ],
+  "keep_if": {
+   "column": "efoid",
+   "matches": "^EFO_",
+   "reason": "Only EFO-identified traits are mapped to biolink:DiseaseOrPhenotypicFeature; rows whose efoid is a GO, Orphanet or PATO identifier are kept as gaps of the gene because those prefixes are not valid for this category."
+  },
+  "split_by": null,
+  "by_value": null,
+  "notes": "TIGA ranks gene-trait links from GWAS evidence (SNP-level p-values, study counts), so the claim is a statistical association computed by a pipeline, not a curated assertion. Subject is the Pharos protein row mapped to its NCBIGene. Object is the EFO trait; traits include non-disease measurements (e.g. 'eosinophil percentage of leukocytes'), so DiseaseOrPhenotypicFeature is used. The refusal found 66 of 2,247 identifiers under GO, Orphanet and PATO prefixes; a keep_if on the EFO_ prefix routes those rows to gene gaps instead of edges. Scores are kept as edge properties, not thresholded."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

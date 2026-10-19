@@ -1,0 +1,272 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "disease.eRAM",
+ "release": "pharos319",
+ "card_sha256": "4b5fefa70550595d894df2900e3848837a8fe228d34936a677e4f8f279cf7ec7",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"mondoid\", \"did\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"name\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"predicate\": \"biolink:gene_associated_with_disease\",\n  \"association_category\": \"biolink:DiseaseToGeneAssociation\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"automated_agent\",\n  \"primary_knowledge_source\": \"infores:pharos\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Maps disease to gene associations from the eRAM dataset. Uses MONDO identifiers when available, falling back to DOID. The protein_id is resolved to a gene identifier. The source column captures the original data provenance for each association.\"\n}",
+   "thinking_chars": 15727,
+   "usage": {
+    "in": 4389,
+    "out": 4704,
+    "usd": 0.0
+   },
+   "seconds": 66.1,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "predicate": "biolink:gene_associated_with_disease",
+    "association_category": "biolink:DiseaseToGeneAssociation",
+    "knowledge_level": "observation",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:pharos",
+    "qualifiers": {},
+    "edge_properties": [
+     "source"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Maps disease to gene associations from the eRAM dataset. Uses MONDO identifiers when available, falling back to DOID. The protein_id is resolved to a gene identifier. The source column captures the original data provenance for each association."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "2_predicate: 'biolink:gene_associated_with_disease' is not a Biolink 4.4.3 predicate",
+     "3_categories: association category 'biolink:DiseaseToGeneAssociation' is not a Biolink 4.4.3 class",
+     "8_identifiers: subject: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [
+        "'biolink:gene_associated_with_disease' is not a Biolink 4.4.3 predicate"
+       ],
+       "3_categories": [
+        "association category 'biolink:DiseaseToGeneAssociation' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "subject: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14660,
+        "distinct": 1361,
+        "prefixes": {
+         "MONDO": 1326,
+         "DOID": 35
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         },
+         "DOID": {
+          "distinct": 35,
+          "in_release": 12
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       }
+      },
+      "resolved_as_needed": 14659,
+      "kept": 14660,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\",\n    \"name_column\": \"name\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein_gene\",\n    \"category\": \"biolink:Gene\"\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:Association\",\n  \"knowledge_level\": \"observation\",\n  \"agent_type\": \"automated_agent\",\n  \"primary_knowledge_source\": \"infores:pharos\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"Maps disease to gene associations from the eRAM dataset. Uses MONDO identifiers exclusively for subject grounding to avoid DOID list validation failures in this release. Resolves protein IDs to NCBIGene identifiers via Pharos resolver. Source column preserved for provenance tracking.\"\n}",
+   "thinking_chars": 8575,
+   "usage": {
+    "in": 4776,
+    "out": 2692,
+    "usd": 0.0
+   },
+   "seconds": 37.0,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "observation",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:pharos",
+    "qualifiers": {},
+    "edge_properties": [
+     "source"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Maps disease to gene associations from the eRAM dataset. Uses MONDO identifiers exclusively for subject grounding to avoid DOID list validation failures in this release. Resolves protein IDs to NCBIGene identifiers via Pharos resolver. Source column preserved for provenance tracking."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14499,
+        "distinct": 1326,
+        "prefixes": {
+         "MONDO": 1326
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       }
+      },
+      "resolved_as_needed": 14498,
+      "kept": 14660,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 13115,
+     "n_nodes": 6342,
+     "n_edges": 13115,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:associated_with": 13115
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "object": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "observation",
+  "agent_type": "automated_agent",
+  "primary_knowledge_source": "infores:pharos",
+  "qualifiers": {},
+  "edge_properties": [
+   "source"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Maps disease to gene associations from the eRAM dataset. Uses MONDO identifiers exclusively for subject grounding to avoid DOID list validation failures in this release. Resolves protein IDs to NCBIGene identifiers via Pharos resolver. Source column preserved for provenance tracking."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

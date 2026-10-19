@@ -1,0 +1,276 @@
+{
+ "model": "anthropic/claude-sonnet-5.5",
+ "view": "disease.eRAM",
+ "release": "pharos319",
+ "card_sha256": "4b5fefa70550595d894df2900e3848837a8fe228d34936a677e4f8f279cf7ec7",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:eram\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"notes\": \"eRAM scraped gene-disease associations, curated from sources such as CTD, ClinVar, GHR, Orphanet, OMIM and UniProt. The object uses mondoid when present and otherwise the DOID in did. The source column lists the upstream databases, so it is kept as an edge property. The predicate is a generic association because the direction of effect is not stated.\",\n  \"split_by_note\": null\n}",
+   "usage": {
+    "in": 5183,
+    "out": 395,
+    "usd": 0.014316
+   },
+   "provider": "Google",
+   "seconds": 3.4,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:eram",
+    "qualifiers": {},
+    "edge_properties": [
+     "source"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "eRAM scraped gene-disease associations, curated from sources such as CTD, ClinVar, GHR, Orphanet, OMIM and UniProt. The object uses mondoid when present and otherwise the DOID in did. The source column lists the upstream databases, so it is kept as an edge property. The predicate is a generic association because the direction of effect is not stated.",
+    "split_by_note": null
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "1_parses: unknown key 'split_by_note'",
+     "8_identifiers: object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 12 of 35 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14660,
+        "distinct": 1361,
+        "prefixes": {
+         "MONDO": 1326,
+         "DOID": 35
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         },
+         "DOID": {
+          "distinct": 35,
+          "in_release": 12
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 14659,
+      "kept": 14660,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"},\n  \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"},\n  \"predicate\": \"biolink:gene_associated_with_condition\",\n  \"association_category\": \"biolink:GeneToDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:eram\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"source\"],\n  \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:\\\\d+$\", \"reason\": \"Rows without a MONDO identifier have no disease identifier that resolves reliably. The DOID values in did often fall outside the release's DOID list, so these rows are recorded as gaps of the gene rather than asserted.\"},\n  \"split_by\": null,\n  \"notes\": \"eRAM scraped gene-disease associations, curated from upstream sources such as CTD, ClinVar, GHR, Orphanet, OMIM and UniProt. The object uses only mondoid, since the did fallback produced identifiers mostly missing from the DOID list. The source column lists the upstream databases and is kept as an edge property. The predicate is a generic gene-to-condition association because direction of effect is not stated.\"\n}",
+   "usage": {
+    "in": 5685,
+    "out": 913,
+    "usd": 0.0205
+   },
+   "provider": "Google",
+   "seconds": 6.3,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:eram",
+    "qualifiers": {},
+    "edge_properties": [
+     "source"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:\\d+$",
+     "reason": "Rows without a MONDO identifier have no disease identifier that resolves reliably. The DOID values in did often fall outside the release's DOID list, so these rows are recorded as gaps of the gene rather than asserted."
+    },
+    "split_by": null,
+    "notes": "eRAM scraped gene-disease associations, curated from upstream sources such as CTD, ClinVar, GHR, Orphanet, OMIM and UniProt. The object uses only mondoid, since the did fallback produced identifiers mostly missing from the DOID list. The source column lists the upstream databases and is kept as an edge property. The predicate is a generic gene-to-condition association because direction of effect is not stated."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 14660,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 14660,
+        "resolved": 14659,
+        "distinct": 5041,
+        "prefixes": {
+         "NCBIGene": 5041
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 5041,
+          "in_release": 5041
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 14660,
+        "resolved": 14499,
+        "distinct": 1326,
+        "prefixes": {
+         "MONDO": 1326
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 1326,
+          "in_release": 1326
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 14659,
+      "kept": 14499,
+      "made_gaps_by_condition": 161
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 13247,
+     "n_nodes": 6368,
+     "n_edges": 13115,
+     "n_gaps": 132,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 13115
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:eram",
+  "qualifiers": {},
+  "edge_properties": [
+   "source"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:\\d+$",
+   "reason": "Rows without a MONDO identifier have no disease identifier that resolves reliably. The DOID values in did often fall outside the release's DOID list, so these rows are recorded as gaps of the gene rather than asserted."
+  },
+  "split_by": null,
+  "notes": "eRAM scraped gene-disease associations, curated from upstream sources such as CTD, ClinVar, GHR, Orphanet, OMIM and UniProt. The object uses only mondoid, since the did fallback produced identifiers mostly missing from the DOID list. The source column lists the upstream databases and is kept as an edge property. The predicate is a generic gene-to-condition association because direction of effect is not stated."
+ },
+ "accepted": true,
+ "accepted_first": false
+}

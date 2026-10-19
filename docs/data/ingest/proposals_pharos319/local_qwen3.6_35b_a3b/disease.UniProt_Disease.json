@@ -1,0 +1,265 @@
+{
+ "model": "local:qwen3.6:35b-a3b",
+ "view": "disease.UniProt_Disease",
+ "release": "pharos319",
+ "card_sha256": "c922d311c5a8c8d7a6f5f3d4d8d79c5bb2c35555f4b7e9db99f797b2976c7f17",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:related_to\",\n  \"association_category\": \"biolink:ProteinDiseaseAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:uniprot\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"name\", \"ncats_name\", \"did\", \"description\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Maps UniProt-reviewed human protein-disease associations. Subject grounded via MONDO ID, object via Pharos protein ID to UniProtKB accession. Uses related_to as the most general applicable predicate for curated protein-disease links.\"\n}",
+   "thinking_chars": 12533,
+   "usage": {
+    "in": 4846,
+    "out": 3755,
+    "usd": 0.0
+   },
+   "seconds": 52.5,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:related_to",
+    "association_category": "biolink:ProteinDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "name",
+     "ncats_name",
+     "did",
+     "description"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Maps UniProt-reviewed human protein-disease associations. Subject grounded via MONDO ID, object via Pharos protein ID to UniProtKB accession. Uses related_to as the most general applicable predicate for curated protein-disease links."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories: association category 'biolink:ProteinDiseaseAssociation' is not a Biolink 4.4.3 class"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:ProteinDiseaseAssociation' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 5651,
+        "resolved": 5614,
+        "distinct": 4948,
+        "prefixes": {
+         "MONDO": 4948
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4948,
+          "in_release": 4948
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 3766,
+        "prefixes": {
+         "UniProtKB": 3766
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 3766,
+          "in_release": 3766
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 5614,
+      "kept": 5651,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\n  \"map\": true,\n  \"subject\": {\n    \"columns\": [\"mondoid\"],\n    \"resolver\": \"curie\",\n    \"category\": \"biolink:Disease\"\n  },\n  \"object\": {\n    \"columns\": [\"protein_id\"],\n    \"resolver\": \"pharos_protein\",\n    \"category\": \"biolink:Protein\"\n  },\n  \"predicate\": \"biolink:associated_with\",\n  \"association_category\": \"biolink:DiseaseToGeneOrGeneProductAssociation\",\n  \"knowledge_level\": \"knowledge_assertion\",\n  \"agent_type\": \"manual_agent\",\n  \"primary_knowledge_source\": \"infores:uniprot\",\n  \"qualifiers\": {},\n  \"edge_properties\": [\"evidence\", \"name\", \"ncats_name\", \"did\", \"description\"],\n  \"keep_if\": null,\n  \"split_by\": null,\n  \"by_value\": null,\n  \"notes\": \"Maps curated UniProt disease-protein links. Subject grounded via MONDO ID, object via Pharos protein ID to UniProtKB accession. Uses associated_with predicate and DiseaseToGeneOrGeneProductAssociation category per Biolink 4.4.3.\"\n}",
+   "thinking_chars": 9435,
+   "usage": {
+    "in": 5177,
+    "out": 2955,
+    "usd": 0.0
+   },
+   "seconds": 37.8,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease"
+    },
+    "object": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein",
+     "category": "biolink:Protein"
+    },
+    "predicate": "biolink:associated_with",
+    "association_category": "biolink:DiseaseToGeneOrGeneProductAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "manual_agent",
+    "primary_knowledge_source": "infores:uniprot",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "name",
+     "ncats_name",
+     "did",
+     "description"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": null,
+    "notes": "Maps curated UniProt disease-protein links. Subject grounded via MONDO ID, object via Pharos protein ID to UniProtKB accession. Uses associated_with predicate and DiseaseToGeneOrGeneProductAssociation category per Biolink 4.4.3."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "3_categories: association category 'biolink:DiseaseToGeneOrGeneProductAssociation' is not a Biolink 4.4.3 class"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 5651,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [
+        "association category 'biolink:DiseaseToGeneOrGeneProductAssociation' is not a Biolink 4.4.3 class"
+       ],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 5651,
+        "resolved": 5614,
+        "distinct": 4948,
+        "prefixes": {
+         "MONDO": 4948
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 4948,
+          "in_release": 4948
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       },
+       "object": {
+        "rows": 5651,
+        "resolved": 5651,
+        "distinct": 3766,
+        "prefixes": {
+         "UniProtKB": 3766
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "UniProtKB": {
+          "distinct": 3766,
+          "in_release": 3766
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Protein"
+       }
+      },
+      "resolved_as_needed": 5614,
+      "kept": 5651,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease"
+  },
+  "object": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein",
+   "category": "biolink:Protein"
+  },
+  "predicate": "biolink:associated_with",
+  "association_category": "biolink:DiseaseToGeneOrGeneProductAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "manual_agent",
+  "primary_knowledge_source": "infores:uniprot",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "name",
+   "ncats_name",
+   "did",
+   "description"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": null,
+  "notes": "Maps curated UniProt disease-protein links. Subject grounded via MONDO ID, object via Pharos protein ID to UniProtKB accession. Uses associated_with predicate and DiseaseToGeneOrGeneProductAssociation category per Biolink 4.4.3."
+ },
+ "accepted": false,
+ "accepted_first": false
+}

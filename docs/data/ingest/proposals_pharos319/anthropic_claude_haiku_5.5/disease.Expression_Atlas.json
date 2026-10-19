@@ -1,0 +1,162 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.Expression_Atlas",
+ "release": "pharos319",
+ "card_sha256": "e675c755a82db5bae3787985029d8f67a216d66cd6a0464e22532bdbda6d548f",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\", \"name_column\": null}, \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"statistical_association\", \"agent_type\": \"data_analysis_pipeline\", \"primary_knowledge_source\": \"infores:expression-atlas\", \"qualifiers\": {}, \"edge_properties\": [\"log2foldchange\", \"pvalue\", \"did\"], \"keep_if\": null, \"split_by\": null, \"by_value\": {}, \"notes\": \"Each row is a differential-expression result: a protein's gene versus a disease, with log2 fold change and p-value. The subject resolves protein_id to its gene (NCBIGene). The object is the MONDO id in mondoid, with name as the label; did (DOID) is kept as an edge property. The sign of log2foldchange is carried as a property rather than a direction qualifier, because gene_associated_with_condition has no clean direction slot. pvalue is stored as a string, so no significance threshold is applied in keep_if; filtering on it is left to downstream use. Primary source is set to Expression Atlas, the origin of the expression data; the Pharos/IDG-KMC analysis is the curator, so infores:pharos is the alternative if the provenance should name the loader. No columns were invented.\"}",
+   "usage": {
+    "in": 5213,
+    "out": 1464,
+    "usd": 0.0012533
+   },
+   "provider": "Google",
+   "seconds": 7.2,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene",
+     "name_column": null
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "primary_knowledge_source": "infores:expression-atlas",
+    "qualifiers": {},
+    "edge_properties": [
+     "log2foldchange",
+     "pvalue",
+     "did"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row is a differential-expression result: a protein's gene versus a disease, with log2 fold change and p-value. The subject resolves protein_id to its gene (NCBIGene). The object is the MONDO id in mondoid, with name as the label; did (DOID) is kept as an edge property. The sign of log2foldchange is carried as a property rather than a direction qualifier, because gene_associated_with_condition has no clean direction slot. pvalue is stored as a string, so no significance threshold is applied in keep_if; filtering on it is left to downstream use. Primary source is set to Expression Atlas, the origin of the expression data; the Pharos/IDG-KMC analysis is the curator, so infores:pharos is the alternative if the provenance should name the loader. No columns were invented."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 159846,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 159846,
+        "resolved": 159796,
+        "distinct": 16660,
+        "prefixes": {
+         "NCBIGene": 16660
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 16660,
+          "in_release": 16660
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 159846,
+        "resolved": 159846,
+        "distinct": 107,
+        "prefixes": {
+         "MONDO": 107
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 107,
+          "in_release": 107
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 159796,
+      "kept": 159846,
+      "made_gaps_by_condition": 0
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 158704,
+     "n_nodes": 16767,
+     "n_edges": 158704,
+     "n_gaps": 0,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 158704
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene",
+   "name_column": null
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "primary_knowledge_source": "infores:expression-atlas",
+  "qualifiers": {},
+  "edge_properties": [
+   "log2foldchange",
+   "pvalue",
+   "did"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "by_value": {},
+  "notes": "Each row is a differential-expression result: a protein's gene versus a disease, with log2 fold change and p-value. The subject resolves protein_id to its gene (NCBIGene). The object is the MONDO id in mondoid, with name as the label; did (DOID) is kept as an edge property. The sign of log2foldchange is carried as a property rather than a direction qualifier, because gene_associated_with_condition has no clean direction slot. pvalue is stored as a string, so no significance threshold is applied in keep_if; filtering on it is left to downstream use. Primary source is set to Expression Atlas, the origin of the expression data; the Pharos/IDG-KMC analysis is the curator, so infores:pharos is the alternative if the provenance should name the loader. No columns were invented."
+ },
+ "accepted": true,
+ "accepted_first": true
+}

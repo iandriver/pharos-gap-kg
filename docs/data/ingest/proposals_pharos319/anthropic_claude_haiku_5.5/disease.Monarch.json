@@ -1,0 +1,310 @@
+{
+ "model": "anthropic/claude-haiku-5.5",
+ "view": "disease.Monarch",
+ "release": "pharos319",
+ "card_sha256": "599104c9398e7bc780146d665c202df76df07397e174d10bb18de192a3c6e7cb",
+ "brief_sha256": "59d0c424696e8d83eeb58e496c91bfdc8b4115de709e5fb9ad4e3a813e916cd2",
+ "attempts": [
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"mondoid\", \"did\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"automated_agent\", \"primary_knowledge_source\": \"infores:monarchinitiative\", \"qualifiers\": {}, \"edge_properties\": [\"evidence\", \"S2O\", \"did\", \"ncats_name\"], \"keep_if\": null, \"split_by\": null, \"by_value\": {}, \"notes\": \"Each row links a protein's gene to a disease. The subject is the gene of the Pharos protein (protein_id), since biolink gene nodes are required. The object uses mondoid first, which is null for about 160 rows, and falls back to did (DOID or OMIM CURIE). The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate; no direction or qualifiers are supplied. Evidence is a mix of ECO codes, some stating 'imported manually asserted' and others 'used in automatic assertion', so the agent type is the closest single choice and may be debated. S2O is kept as an edge property without reinterpretation because its meaning is not documented in the card. Rows are not filtered.\"}",
+   "usage": {
+    "in": 5637,
+    "out": 1433,
+    "usd": 0.0012802
+   },
+   "provider": "Google",
+   "seconds": 6.7,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid",
+      "did"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:monarchinitiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "S2O",
+     "did",
+     "ncats_name"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": {},
+    "notes": "Each row links a protein's gene to a disease. The subject is the gene of the Pharos protein (protein_id), since biolink gene nodes are required. The object uses mondoid first, which is null for about 160 rows, and falls back to did (DOID or OMIM CURIE). The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate; no direction or qualifiers are supplied. Evidence is a mix of ECO codes, some stating 'imported manually asserted' and others 'used in automatic assertion', so the agent type is the closest single choice and may be debated. S2O is kept as an edge property without reinterpretation because its meaning is not documented in the card. Rows are not filtered."
+   },
+   "validation": {
+    "accepted": false,
+    "map": true,
+    "problems": [
+     "8_identifiers: object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+    ],
+    "rules": [
+     {
+      "value": null,
+      "rows": 9509,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": [
+        "object: 1 of 2 DOID identifiers are in the release's DOID list; at least 90% must"
+       ]
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 3733,
+        "prefixes": {
+         "NCBIGene": 3733
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3733,
+          "in_release": 3733
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 5096,
+        "prefixes": {
+         "MONDO": 5012,
+         "OMIM": 37,
+         "MESH": 33,
+         "Orphanet": 9,
+         "NCBIGene": 3,
+         "DOID": 2
+        },
+        "off_prefix": {
+         "NCBIGene": 3,
+         "Orphanet": 9
+        },
+        "off_prefix_share": 0.0024,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3,
+          "in_release": 3
+         },
+         "MONDO": {
+          "distinct": 5012,
+          "in_release": 5012
+         },
+         "DOID": {
+          "distinct": 2,
+          "in_release": 1
+         }
+        },
+        "mondo_xrefs": {
+         "OMIM": {
+          "distinct": 37,
+          "among_mondo_xrefs": 17
+         },
+         "Orphanet": {
+          "distinct": 9,
+          "among_mondo_xrefs": 3
+         },
+         "MESH": {
+          "distinct": 33,
+          "among_mondo_xrefs": 0
+         }
+        },
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 9509,
+      "kept": 9509,
+      "made_gaps_by_condition": 0
+     }
+    ]
+   }
+  },
+  {
+   "text": "{\"map\": true, \"subject\": {\"columns\": [\"protein_id\"], \"resolver\": \"pharos_protein_gene\", \"category\": \"biolink:Gene\"}, \"object\": {\"columns\": [\"mondoid\"], \"resolver\": \"curie\", \"category\": \"biolink:Disease\", \"name_column\": \"name\"}, \"predicate\": \"biolink:gene_associated_with_condition\", \"association_category\": \"biolink:GeneToDiseaseAssociation\", \"knowledge_level\": \"knowledge_assertion\", \"agent_type\": \"automated_agent\", \"primary_knowledge_source\": \"infores:monarchinitiative\", \"qualifiers\": {}, \"edge_properties\": [\"evidence\", \"S2O\", \"did\", \"ncats_name\"], \"keep_if\": {\"column\": \"mondoid\", \"matches\": \"^MONDO:[0-9]+$\", \"reason\": \"No MONDO identifier in the source row, so no disease node can be grounded; the row is kept as a gap of its gene.\"}, \"split_by\": null, \"by_value\": {}, \"notes\": \"The subject is the gene of the Pharos protein (protein_id), since Biolink gene nodes are required. The object is grounded only on mondoid, which is null for about 160 rows; those rows fail keep_if and become recorded gaps. The did column (DOID or OMIM) is not used as an object identifier because the DOID values are not all in the release's DOID list; it is carried as an edge property instead. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate; no direction or qualifiers are supplied. Evidence mixes ECO codes with 'imported manually asserted' and 'automatic assertion' wording, so the agent type is the closest single choice. S2O is kept without reinterpretation because the card does not document it.\"}",
+   "usage": {
+    "in": 6231,
+    "out": 942,
+    "usd": 0.0010941
+   },
+   "provider": "Google",
+   "seconds": 4.2,
+   "parsed": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "protein_id"
+     ],
+     "resolver": "pharos_protein_gene",
+     "category": "biolink:Gene"
+    },
+    "object": {
+     "columns": [
+      "mondoid"
+     ],
+     "resolver": "curie",
+     "category": "biolink:Disease",
+     "name_column": "name"
+    },
+    "predicate": "biolink:gene_associated_with_condition",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "knowledge_assertion",
+    "agent_type": "automated_agent",
+    "primary_knowledge_source": "infores:monarchinitiative",
+    "qualifiers": {},
+    "edge_properties": [
+     "evidence",
+     "S2O",
+     "did",
+     "ncats_name"
+    ],
+    "keep_if": {
+     "column": "mondoid",
+     "matches": "^MONDO:[0-9]+$",
+     "reason": "No MONDO identifier in the source row, so no disease node can be grounded; the row is kept as a gap of its gene."
+    },
+    "split_by": null,
+    "by_value": {},
+    "notes": "The subject is the gene of the Pharos protein (protein_id), since Biolink gene nodes are required. The object is grounded only on mondoid, which is null for about 160 rows; those rows fail keep_if and become recorded gaps. The did column (DOID or OMIM) is not used as an object identifier because the DOID values are not all in the release's DOID list; it is carried as an edge property instead. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate; no direction or qualifiers are supplied. Evidence mixes ECO codes with 'imported manually asserted' and 'automatic assertion' wording, so the agent type is the closest single choice. S2O is kept without reinterpretation because the card does not document it."
+   },
+   "validation": {
+    "accepted": true,
+    "map": true,
+    "problems": [],
+    "rules": [
+     {
+      "value": null,
+      "rows": 9509,
+      "checks": {
+       "1_parses": [],
+       "2_predicate": [],
+       "3_categories": [],
+       "4_domain_range": [],
+       "5_association": [],
+       "6_qualifiers": [],
+       "7_provenance": [],
+       "8_identifiers": []
+      },
+      "identifiers": {
+       "subject": {
+        "rows": 9509,
+        "resolved": 9509,
+        "distinct": 3733,
+        "prefixes": {
+         "NCBIGene": 3733
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "NCBIGene": {
+          "distinct": 3733,
+          "in_release": 3733
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "rows": 9509,
+        "resolved": 9349,
+        "distinct": 5012,
+        "prefixes": {
+         "MONDO": 5012
+        },
+        "off_prefix": {},
+        "off_prefix_share": 0.0,
+        "vocabulary": {
+         "MONDO": {
+          "distinct": 5012,
+          "in_release": 5012
+         }
+        },
+        "mondo_xrefs": {},
+        "category": "biolink:Disease"
+       }
+      },
+      "resolved_as_needed": 9509,
+      "kept": 9349,
+      "made_gaps_by_condition": 160
+     }
+    ],
+    "export": {
+     "passed": true,
+     "failed": null,
+     "groups": 8755,
+     "n_nodes": 8746,
+     "n_edges": 8616,
+     "n_gaps": 139,
+     "predicates": {
+      "biolink:gene_associated_with_condition": 8616
+     }
+    }
+   }
+  }
+ ],
+ "final": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "protein_id"
+   ],
+   "resolver": "pharos_protein_gene",
+   "category": "biolink:Gene"
+  },
+  "object": {
+   "columns": [
+    "mondoid"
+   ],
+   "resolver": "curie",
+   "category": "biolink:Disease",
+   "name_column": "name"
+  },
+  "predicate": "biolink:gene_associated_with_condition",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "knowledge_assertion",
+  "agent_type": "automated_agent",
+  "primary_knowledge_source": "infores:monarchinitiative",
+  "qualifiers": {},
+  "edge_properties": [
+   "evidence",
+   "S2O",
+   "did",
+   "ncats_name"
+  ],
+  "keep_if": {
+   "column": "mondoid",
+   "matches": "^MONDO:[0-9]+$",
+   "reason": "No MONDO identifier in the source row, so no disease node can be grounded; the row is kept as a gap of its gene."
+  },
+  "split_by": null,
+  "by_value": {},
+  "notes": "The subject is the gene of the Pharos protein (protein_id), since Biolink gene nodes are required. The object is grounded only on mondoid, which is null for about 160 rows; those rows fail keep_if and become recorded gaps. The did column (DOID or OMIM) is not used as an object identifier because the DOID values are not all in the release's DOID list; it is carried as an edge property instead. The predicate is gene_associated_with_condition, the most specific Biolink gene-disease predicate; no direction or qualifiers are supplied. Evidence mixes ECO codes with 'imported manually asserted' and 'automatic assertion' wording, so the agent type is the closest single choice. S2O is kept without reinterpretation because the card does not document it."
+ },
+ "accepted": true,
+ "accepted_first": false
+}
