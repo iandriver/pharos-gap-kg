@@ -44,3 +44,15 @@ error is an identifier or category Biolink does not hold, from four causes:
 Added 18 Oct 2026, a count. The nodes with a flagged identifier are 1,044: 979, 39 and 23 by prefix,
 and the three nodes for kinds of gap. kgx reports the errors of those three once each, so its own
 count, in the record, is 1,042.
+
+Added 19 Oct 2026, what kgx does not check. Biolink 4.4.3's own constraints, checked by the ingest
+stage's validator on every kind of edge in the export (`python -m pharos_gap_kg.ingest graphcheck
+pharos319`, `docs/data/biolink_checks_pharos319.json`, `findings/INGEST.md`): 5,768 of the 620,168
+edges are of a kind that passes, and 614,400 fail. The 294,248 GWAS links use
+`biolink:GeneToDiseaseOrPhenotypicFeatureAssociation` and the 5,943 drug indications
+`biolink:ChemicalToDiseaseOrPhenotypicFeatureAssociation`, neither of which is a 4.4.3 class, and 4.4.3
+makes `biolink:treats` a mixin. The 154,363 disease-source assertions use
+`biolink:gene_associated_with_condition`, whose domain is a gene, with a protein as the subject. The
+159,846 expression observations carry `subject_direction_qualifier`, which
+`biolink:GeneToDiseaseAssociation` does not carry. kgx 2.7.0 checks that a predicate and a node
+category exist, and none of these.

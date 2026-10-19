@@ -73,12 +73,21 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   resolves to the source row, the published file and its SHA-256. `why` gives the studies behind a
   link; where there is none, what lies nearby, what the trait's largest study could have found and
   the study that would close the gap; and for a withheld row, the rule, the count and what would
-  restore it.
+  restore it. `subgraph` returns the nodes and edges behind any answer as KGX, with the graph's own
+  ids, and every row it can give equals the export's.
 - **Standards** ([`findings/STANDARDS.md`](findings/STANDARDS.md)). BioLink categories and predicates,
   with a knowledge level and agent type on every edge. The export passes this entry's own `kgx-gaps`
   conformance suite (10 of 10). The reference KGX validator (kgx 2.7.0, Biolink 4.4.3) finds no
   unknown predicate and no missing property, and flags the identifiers of 1,044 of 39,060 nodes for
-  four stated reasons.
+  four stated reasons. It does not check Biolink's own constraints, and against those 614,400 of the
+  620,168 edges fail, for four causes not yet fixed: two association classes 4.4.3 does not have, a
+  gene-only predicate with proteins as subjects, and a qualifier the class does not carry.
+- **Ingest by an agent** ([`findings/INGEST.md`](findings/INGEST.md)). A model proposes how a Pharos
+  table the graph does not hold becomes Biolink edges, and a validator in code accepts or refuses it.
+  Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5 qualify on the nine tables the graph already maps; a local
+  qwen3.6 35B does not. All three map three of four new tables (orthologs' diseases, OMIM and JAX/MGI
+  phenotypes), which are exported apart and not yet joined; none maps the Gene Ontology annotations,
+  which Biolink 4.4.3's domains refuse for genes and proteins.
 - **The key question: link prediction** ([`findings/BASELINES.md`](findings/BASELINES.md),
   [`findings/MODELS.md`](findings/MODELS.md), [`findings/INPUTS.md`](findings/INPUTS.md),
   [`findings/PROSPECTIVE.md`](findings/PROSPECTIVE.md)). Scored as mean average precision over traits,
@@ -222,6 +231,19 @@ its own (`findings/STANDARDS.md`):
 ```bash
 uv venv .venv-standards && uv pip install --python .venv-standards/bin/python kgx==2.7.0 biolink-model==4.4.3
 .venv-standards/bin/python -I src/pharos_gap_kg/standards.py pharos319
+```
+
+The ingest stage (`findings/INGEST.md`). A hosted model needs `OPENROUTER_API_KEY`; the local one
+needs `ollama serve`:
+
+```bash
+.venv-standards/bin/python -I src/pharos_gap_kg/biolinkslice.py    # the Biolink 4.4.3 slice the validator reads
+python -m pharos_gap_kg.ingest cards pharos319                     # the cards, frozen before any model reads one
+python -m pharos_gap_kg.ingest control pharos319                   # the graph's own mappings through the validator
+python -m pharos_gap_kg.ingest propose pharos319 --model anthropic/claude-haiku-5.5 --set scored
+python -m pharos_gap_kg.ingest report pharos319                    # who qualifies; then --set new for those that do
+python -m pharos_gap_kg.ingest export pharos319                    # accepted new tables, under data/graph/pharos319/ingested
+python -m pharos_gap_kg.ingest graphcheck pharos319                # Biolink's constraints on every kind of edge exported
 ```
 
 To ask PubMed and NCBI again instead of restoring (about three hours at NCBI's rate; the counts will

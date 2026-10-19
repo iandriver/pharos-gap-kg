@@ -231,3 +231,28 @@ def test_the_models_with_the_context(T):
         f"| the same without the withheld disease rows | {m4['results']['model']['full'][0]:.4f} | {iv(m4['paired']['model-B3']['full'])} |")
     s18 = J("split_gene_trait_2018.json")
     has(T, f"{s18['unscored']['links']:,} more later links have a trait or a target with no earlier link")
+
+
+def test_ingest_subgraph_and_biolink_constraints(T):
+    g, sc, i = J("biolink_checks_pharos319.json"), J("subgraph_check_pharos319.json"), J("ingest_pharos319.json")
+    x = J("ingest/exported_pharos319.json")
+    p = g["edges_by_problem"]
+    fail = g["edges"] - g["edges_of_kinds_that_pass"]
+    has(T, f"against those {fail:,} of the {g['edges']:,} edges fail, for four causes", f"{g['edges_of_kinds_that_pass']:,} of the {g['edges']:,} edges pass",
+        f"The {p['association category ' + chr(39) + 'biolink:GeneToDiseaseOrPhenotypicFeatureAssociation' + chr(39) + ' is not a Biolink 4.4.3 class']:,} GWAS links and the "
+        f"{p['biolink:treats is abstract, a mixin or deprecated']:,} drug indications",
+        f"{p[next(k for k in p if 'domain is biolink:Gene' in k)]:,} disease-source assertions",
+        f"{p['biolink:GeneToDiseaseAssociation does not carry subject_direction_qualifier']:,} expression observations carry")
+    assert len(p) == 5 and p["biolink:treats is abstract, a mixin or deprecated"] == p[next(k for k in p if "ChemicalToDisease" in k)], "four causes: the indications fail two checks"
+    q = [m for m, v in i["models"].items() if v["qualification"]["qualifies"]]
+    assert len(q) == 3 and all(m.startswith("anthropic/claude-") for m in q)
+    has(T, "Three Claude models qualified on the nine tables the graph already maps")
+    assert sum(e["exported"] for e in x["views"].values()) == 3 and not x["joined_to_the_graph"]
+    has(T, "three new tables are exported apart, not yet joined", "Joining the three new tables it mapped")
+    assert sum(c["accepted"] for c in i["control"].values()) == 1 and len(i["control"]) == 9
+    has(T, "accepts 1 of the 9 that were scored")
+    assert sorted({i["models"][m]["qualification"]["accepted_cards"] for m in q}) == [8, 9]
+    has(T, "accepted on 8 or 9")
+    ev = sc["every_row"]["counts"]
+    assert sc["n_differences"] == 0
+    has(T, f"each of the {ev['edges']['here']:,} edges and {ev['gaps']['here']:,} gaps the bundle can give equals the export's row")
