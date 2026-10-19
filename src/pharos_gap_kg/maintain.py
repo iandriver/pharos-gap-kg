@@ -208,15 +208,19 @@ def rebuild(release: str) -> list[dict]:
     gmap = json.loads(map_path(release).read_text())["stages"]
     stamps = json.loads(stamps_path(release).read_text())
     logs, done = paths.DATA / "stamps" / "logs", []
-    for st in gmap:
+    last = {f: st["name"] for st in gmap for f in st["writes"]}           # the stage whose version of a file the build keeps
+    known = {f for st in gmap for f in st["reads"] + st["writes"]}
+    for i, st in enumerate(gmap):
         seen = stamps[st["name"]]["inputs"]
         now = {f: sha(f) for f in st["reads"]}
-        if now == seen and all(sha(f) == h for f, h in stamps[st["name"]]["outputs"].items()):
+        kept = {f: h for f, h in stamps[st["name"]]["outputs"].items() if last.get(f) == st["name"]}
+        if now == seen and all(sha(f) == h for f, h in kept.items()):
             continue
         prev = stamps[st["name"]]["outputs"]
         r = run_stage(st, logs / f"{st['name']}.json")
-        if set(r["reads"]) != set(st["reads"]) or set(r["writes"]) != set(st["writes"]):
-            raise SystemExit(f"REFUSED: {st['name']} read or wrote other files than the map says; trace the build again")
+        later = {f for s2 in gmap[i + 1:] for f in s2["writes"]}
+        if set(r["writes"]) != set(st["writes"]) or not set(r["reads"]) <= set(st["reads"]) | later or not set(r["reads"]) <= known:
+            raise SystemExit(f"REFUSED: {st['name']} read or wrote files the map does not give it; trace the build again")
         stamps[st["name"]] = {"inputs": now, "outputs": {f: sha(f) for f in r["writes"]}, "seconds": r["seconds"]}
         stamps_path(release).write_text(json.dumps(stamps, indent=1) + "\n")
         done.append({"stage": st["name"], "seconds": r["seconds"], "outputs_changed": sorted(f for f, h in stamps[st["name"]]["outputs"].items() if h != prev.get(f))})
