@@ -1802,3 +1802,11 @@ rows are CTD's. The planted side rests on 100 pairs, and its interval reaches be
   affected. The 100 pairs it was first scored on are reported beside, alone and pooled with these, and
   do not enter the decision.
 - *Recorded.* The answers are committed under `recorded/` with the others.
+
+**19 Oct 2026, ingest, before any model read a card.** In the OMIM view, 10,260 of the 14,147 rows name
+only the gene's own MIM entry and no phenotype. As written, check 8's 95% would refuse any mapping that
+reads the phenotype and accept one that reads the gene's MIM number as a disease. Changed: the
+condition a row must meet may also be that a column matches a regular expression; a row that fails the
+condition becomes a gap of its subject, naming the object it withheld where it has one, and needs only
+its subject to resolve. Check 8's first figure counts a row as resolved when both its sides resolve,
+or, for a row the condition makes a gap, when its subject does.

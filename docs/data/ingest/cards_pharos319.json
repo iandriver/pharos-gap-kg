@@ -1,0 +1,4847 @@
+{
+ "release": "pharos319",
+ "seed": 20261019,
+ "brief_sha256": "e530324a327c1579f6629b2e2e8ae14a812f1d5b77c8a0fc19b5780023146d80",
+ "cards": {
+  "disease.CTD": {
+   "view": "disease.CTD",
+   "table": "disease",
+   "where": "dtype = 'CTD'",
+   "where_in_release": "dtype = 'CTD'",
+   "dataset": {
+    "name": "CTD Disease Associations",
+    "source": "File CTD_genes_diseases.tsv.gz from http://ctdbase.org/reports/.",
+    "url": "http://ctdbase.org/",
+    "comments": "Only disease associations with direct evidence are loaded into TCRD."
+   },
+   "comment": null,
+   "rows": 35187,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 35187,
+     "distinct": 35187,
+     "examples": [
+      "362988",
+      "366667",
+      "369815",
+      "374020",
+      "379812",
+      "383756"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 35187,
+     "distinct": 1,
+     "values": {
+      "CTD": 35187
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 35187,
+     "distinct": 7837,
+     "examples": [
+      "19003",
+      "6230",
+      "17731",
+      "9190",
+      "3996",
+      "10912"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 35187,
+     "distinct": 5733,
+     "examples": [
+      "Leiomyoma",
+      "Hypoxia-Ischemia, Brain",
+      "AMELOGENESIS IMPERFECTA, TYPE IF",
+      "Mental retardation-hypotonic facies syndrome, x-linked, 1",
+      "AMYOTROPHIC LATERAL SCLEROSIS 16, JUVENILE",
+      "Pseudovaginal Perineoscrotal Hypospadias"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 35187,
+     "distinct": 5740,
+     "examples": [
+      "pyoderma gangrenosum",
+      "Sjogren-Larsson syndrome",
+      "Leber congenital amaurosis 10",
+      "atrial fibrillation, familial, 3",
+      "epidermolysis bullosa simplex with pyloric atresia",
+      "spermatogenic failure, X-linked, 2"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 35187,
+     "distinct": 5785,
+     "examples": [
+      "DOID:2316",
+      "MESH:C566381",
+      "MESH:C565129",
+      "MESH:C567699",
+      "DOID:0060693",
+      "MESH:C537393"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 35187,
+     "distinct": 3,
+     "values": {
+      "marker/mechanism": 33182,
+      "therapeutic": 1692,
+      "marker/mechanism|therapeutic": 313
+     }
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 28778,
+     "distinct": 4956,
+     "examples": [
+      "MONDO:0001341",
+      "MONDO:0013696",
+      "MONDO:0014954",
+      "MONDO:0009452",
+      "MONDO:0014636",
+      "MONDO:0014901"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "363949",
+     "dtype": "CTD",
+     "protein_id": "17280",
+     "nhprotein_id": null,
+     "name": "Peeling Skin Syndrome",
+     "ncats_name": "peeling skin syndrome",
+     "did": "MESH:C564818",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0019347",
+     "updated": null
+    },
+    {
+     "id": "372483",
+     "dtype": "CTD",
+     "protein_id": "15554",
+     "nhprotein_id": null,
+     "name": "HIV Infections",
+     "ncats_name": "HIV infectious disease",
+     "did": "DOID:526",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005109",
+     "updated": null
+    },
+    {
+     "id": "368716",
+     "dtype": "CTD",
+     "protein_id": "6518",
+     "nhprotein_id": null,
+     "name": "Carcinoma, Adenoid Cystic",
+     "ncats_name": "adenoid cystic carcinoma",
+     "did": "DOID:0080202",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0004971",
+     "updated": null
+    },
+    {
+     "id": "366934",
+     "dtype": "CTD",
+     "protein_id": "14143",
+     "nhprotein_id": null,
+     "name": "Cocaine-Related Disorders",
+     "ncats_name": "cocaine abuse",
+     "did": "DOID:809",
+     "evidence": "marker/mechanism|therapeutic",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0004456",
+     "updated": null
+    },
+    {
+     "id": "365133",
+     "dtype": "CTD",
+     "protein_id": "2890",
+     "nhprotein_id": null,
+     "name": "Leiomyosarcoma",
+     "ncats_name": "myxoid leiomyosarcoma",
+     "did": "DOID:5268",
+     "evidence": "therapeutic",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0003359",
+     "updated": null
+    },
+    {
+     "id": "363580",
+     "dtype": "CTD",
+     "protein_id": "2513",
+     "nhprotein_id": null,
+     "name": "Myoclonic Epilepsies, Progressive",
+     "ncats_name": "dentatorubral-pallidoluysian atrophy",
+     "did": "DOID:0060162",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0007435",
+     "updated": null
+    },
+    {
+     "id": "372932",
+     "dtype": "CTD",
+     "protein_id": "14121",
+     "nhprotein_id": null,
+     "name": "Multiple Sclerosis",
+     "ncats_name": "multiple sclerosis",
+     "did": "DOID:2377",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005301",
+     "updated": null
+    },
+    {
+     "id": "380177",
+     "dtype": "CTD",
+     "protein_id": "19106",
+     "nhprotein_id": null,
+     "name": "Nerve Sheath Neoplasms",
+     "ncats_name": "peripheral nervous system neoplasm",
+     "did": "DOID:1192",
+     "evidence": "marker/mechanism",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0001406",
+     "updated": null
+    }
+   ]
+  },
+  "disease.DisGeNET": {
+   "view": "disease.DisGeNET",
+   "table": "disease",
+   "where": "dtype = 'DisGeNET'",
+   "where_in_release": "dtype = 'DisGeNET'",
+   "dataset": {
+    "name": "DisGeNET Disease Associations",
+    "source": "File curated_gene_disease_associations.tsv.gz from http://www.disgenet.org/static/disgenet_ap1/files/downloads/.",
+    "url": "http://www.disgenet.org/web/DisGeNET/menu",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 82875,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 82875,
+     "distinct": 82875,
+     "examples": [
+      "419900",
+      "428567",
+      "435981",
+      "445883",
+      "459526",
+      "468817"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 1,
+     "values": {
+      "DisGeNET": 82875
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 82875,
+     "distinct": 9025,
+     "examples": [
+      "1118",
+      "363",
+      "9800",
+      "11374",
+      "16812",
+      "18635"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 10288,
+     "examples": [
+      "Dentatorubral-Pallidoluysian Atrophy",
+      "Gout",
+      "STOMATOCYTOSIS I",
+      "Cantu syndrome",
+      "Hairy cell leukemia variant",
+      "URIC ACID CONCENTRATION, SERUM, QUANTITATIVE TRAIT LOCUS 2"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 10164,
+     "examples": [
+      "Congenital coloboma of iris",
+      "Generalized Spasms",
+      "zebra body myopathy",
+      "Lateral meningocele",
+      "ADULT syndrome",
+      "Parkinson Disease 6, Autosomal Recessive Early-Onset"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 10315,
+     "examples": [
+      "UMLS:C2609414",
+      "UMLS:C0039101",
+      "UMLS:C2746068",
+      "UMLS:C0002986",
+      "UMLS:C2674665",
+      "UMLS:C0238461"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 908,
+     "examples": [
+      "4 PubMed IDs; 12 SNPs",
+      "10 PubMed IDs; 11 SNPs",
+      "19 PubMed IDs; 10 SNPs",
+      "31 PubMed IDs",
+      "15 PubMed IDs; 6 SNPs",
+      "5 PubMed IDs; 44 SNPs"
+     ]
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 82875,
+     "distinct": 83,
+     "examples": [
+      "0.6",
+      "0.8",
+      "0.52",
+      "0.53",
+      "0.63",
+      "0.78"
+     ]
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 82875,
+     "distinct": 43,
+     "examples": [
+      "PSYGENET",
+      "CTD_human;ORPHANET",
+      "CLINGEN",
+      "ORPHANET;UNIPROT",
+      "CLINGEN;CTD_human",
+      "GENOMICS_ENGLAND;ORPHANET;UNIPROT"
+     ]
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 37399,
+     "distinct": 5732,
+     "examples": [
+      "MONDO:0010968",
+      "MONDO:0008621",
+      "MONDO:0008830",
+      "MONDO:0010794",
+      "MONDO:0100213",
+      "MONDO:0010493"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "458702",
+     "dtype": "DisGeNET",
+     "protein_id": "8401",
+     "nhprotein_id": null,
+     "name": "Schizophrenia",
+     "ncats_name": "schizophrenia",
+     "did": "UMLS:C0036341",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.02",
+     "source": "PSYGENET",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005090",
+     "updated": null
+    },
+    {
+     "id": "442379",
+     "dtype": "DisGeNET",
+     "protein_id": "12022",
+     "nhprotein_id": null,
+     "name": "Congenital myopathy (disorder)",
+     "ncats_name": "Congenital myopathy (disorder)",
+     "did": "UMLS:C0270960",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.5",
+     "source": "GENOMICS_ENGLAND",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    },
+    {
+     "id": "476901",
+     "dtype": "DisGeNET",
+     "protein_id": "16777",
+     "nhprotein_id": null,
+     "name": "Drug Dependence",
+     "ncats_name": "drug dependence",
+     "did": "UMLS:C1510472",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.3",
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005303",
+     "updated": null
+    },
+    {
+     "id": "449832",
+     "dtype": "DisGeNET",
+     "protein_id": "12687",
+     "nhprotein_id": null,
+     "name": "Osteoarthrosis Deformans",
+     "ncats_name": "Osteoarthrosis Deformans",
+     "did": "UMLS:C0086743",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.3",
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    },
+    {
+     "id": "442315",
+     "dtype": "DisGeNET",
+     "protein_id": "12015",
+     "nhprotein_id": null,
+     "name": "Hypercholesterolemia, Familial",
+     "ncats_name": "Hypercholesterolemia, Familial",
+     "did": "UMLS:C0020445",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.52",
+     "source": "CTD_human;GENOMICS_ENGLAND",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    },
+    {
+     "id": "454647",
+     "dtype": "DisGeNET",
+     "protein_id": "3672",
+     "nhprotein_id": null,
+     "name": "Adenoma, Microcystic",
+     "ncats_name": "microcystic adenoma",
+     "did": "UMLS:C0205648",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.3",
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0003435",
+     "updated": null
+    },
+    {
+     "id": "431020",
+     "dtype": "DisGeNET",
+     "protein_id": "5993",
+     "nhprotein_id": null,
+     "name": "Lymphocyte Rich Classical Hodgkin Lymphoma",
+     "ncats_name": "Lymphocyte Rich Classical Hodgkin Lymphoma",
+     "did": "UMLS:C1266194",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.3",
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    },
+    {
+     "id": "409724",
+     "dtype": "DisGeNET",
+     "protein_id": "6009",
+     "nhprotein_id": null,
+     "name": "Tonic Seizures",
+     "ncats_name": "Tonic Seizures",
+     "did": "UMLS:C0270844",
+     "evidence": "1 PubMed IDs",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": "0.3",
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    }
+   ]
+  },
+  "disease.eRAM": {
+   "view": "disease.eRAM",
+   "table": "disease",
+   "where": "dtype = 'eRAM'",
+   "where_in_release": "dtype = 'eRAM'",
+   "dataset": {
+    "name": "eRAM Disease Associations",
+    "source": "Data scraped from eRAM web pages.",
+    "url": "http://www.unimd.org/eram/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 14660,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 14660,
+     "distinct": 14660,
+     "examples": [
+      "395134",
+      "396667",
+      "397978",
+      "399730",
+      "402142",
+      "403786"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 14660,
+     "distinct": 1,
+     "values": {
+      "eRAM": 14660
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 14660,
+     "distinct": 5139,
+     "examples": [
+      "13880",
+      "16221",
+      "10668",
+      "17092",
+      "19282",
+      "12672"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 14660,
+     "distinct": 1377,
+     "examples": [
+      "wilson disease",
+      "mantle cell lymphoma",
+      "schwannomatosis",
+      "bare lymphocyte syndrome, type i",
+      "generalized dystonia",
+      "bruck syndrome 2"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 14660,
+     "distinct": 1362,
+     "examples": [
+      "classic familial adenomatous polyposis",
+      "chromosome 1p36 deletion syndrome",
+      "Pallister-hall syndrome",
+      "Norum disease",
+      "hyperlysinemia",
+      "AGAT deficiency"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 14660,
+     "distinct": 1380,
+     "examples": [
+      "DOID:8577",
+      "DOID:4588",
+      "DOID:0060451",
+      "DOID:0050788",
+      "DOID:0050468",
+      "DOID:0080028"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 14660,
+     "distinct": 95,
+     "examples": [
+      "CTD_human|GHR",
+      "CTD_human|GHR|UNIPROT",
+      "CLINVAR|UNIPROT",
+      "CLINVAR|GHR|ORPHANET|UNIPROT",
+      "CTD_human|ORPHANET|UNIPROT|UniProtKB-KW",
+      "CLINVAR|CTD_human|OMIM|ORPHANET"
+     ]
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 14499,
+     "distinct": 1326,
+     "examples": [
+      "MONDO:0100309",
+      "MONDO:0017198",
+      "MONDO:0007761",
+      "MONDO:0019091",
+      "MONDO:0015526",
+      "MONDO:0008830"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "405861",
+     "dtype": "eRAM",
+     "protein_id": "19893",
+     "nhprotein_id": null,
+     "name": "adenoid cystic carcinoma",
+     "ncats_name": "salivary gland adenoid cystic carcinoma",
+     "did": "DOID:4866",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0003175",
+     "updated": null
+    },
+    {
+     "id": "393802",
+     "dtype": "eRAM",
+     "protein_id": "5836",
+     "nhprotein_id": null,
+     "name": "polycystic ovary syndrome",
+     "ncats_name": "polycystic ovary syndrome",
+     "did": "DOID:11612",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008487",
+     "updated": null
+    },
+    {
+     "id": "397356",
+     "dtype": "eRAM",
+     "protein_id": "5993",
+     "nhprotein_id": null,
+     "name": "hodgkin lymphoma",
+     "ncats_name": "Hodgkin's granuloma",
+     "did": "DOID:8651",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    },
+    {
+     "id": "399379",
+     "dtype": "eRAM",
+     "protein_id": "3939",
+     "nhprotein_id": null,
+     "name": "schistosomiasis",
+     "ncats_name": "intestinal schistosomiasis",
+     "did": "DOID:0050597",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008412",
+     "updated": null
+    },
+    {
+     "id": "399237",
+     "dtype": "eRAM",
+     "protein_id": "20001",
+     "nhprotein_id": null,
+     "name": "charcot-marie-tooth disease",
+     "ncats_name": "motor peripheral neuropathy",
+     "did": "DOID:2477",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "UniProtKB-KW|GHR",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0002316",
+     "updated": null
+    },
+    {
+     "id": "396592",
+     "dtype": "eRAM",
+     "protein_id": "2178",
+     "nhprotein_id": null,
+     "name": "rheumatoid arthritis",
+     "ncats_name": "rheumatoid arthritis",
+     "did": "DOID:7148",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human|GWASCAT|GHR",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008383",
+     "updated": null
+    },
+    {
+     "id": "393570",
+     "dtype": "eRAM",
+     "protein_id": "7563",
+     "nhprotein_id": null,
+     "name": "essential thrombocythemia",
+     "ncats_name": "essential thrombocythemia",
+     "did": "DOID:2224",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CLINVAR|CTD_human|GHR",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005029",
+     "updated": null
+    },
+    {
+     "id": "407376",
+     "dtype": "eRAM",
+     "protein_id": "285",
+     "nhprotein_id": null,
+     "name": "carcinoma, small cell",
+     "ncats_name": "lung oat cell carcinoma",
+     "did": "DOID:5411",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": "CTD_human",
+     "O2S": null,
+     "S2O": null,
+     "mondoid": null,
+     "updated": null
+    }
+   ]
+  },
+  "disease.Monarch": {
+   "view": "disease.Monarch",
+   "table": "disease",
+   "where": "dtype = 'Monarch'",
+   "where_in_release": "dtype = 'Monarch'",
+   "dataset": {
+    "name": "Monarch Disease Associations",
+    "source": "UMiami Monarch MySQL database on AWS server.",
+    "url": null,
+    "comments": "Monarch database contact: John Turner <jpt55@med.miami.edu>"
+   },
+   "comment": "",
+   "rows": 9509,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 9509,
+     "distinct": 9509,
+     "examples": [
+      "189829",
+      "190823",
+      "191673",
+      "192810",
+      "194374",
+      "195441"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 9509,
+     "distinct": 1,
+     "values": {
+      "Monarch": 9509
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 9509,
+     "distinct": 3825,
+     "examples": [
+      "15381",
+      "9542",
+      "3185",
+      "13566",
+      "16359",
+      "16781"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 9509,
+     "distinct": 5131,
+     "examples": [
+      "Gorlin syndrome",
+      "Weill-Marchesani Syndrome 1",
+      "Meier-Gorlin syndrome 5",
+      "Primary autosomal recessive microcephaly 12",
+      "Short stature, idiopathic, X-linked",
+      "Hyperimmunoglobulin E syndrome"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 9509,
+     "distinct": 5066,
+     "examples": [
+      "anterior segment dysgenesis 1",
+      "peeling skin syndrome type A",
+      "syndromic X-linked intellectual disability Najm type",
+      "blepharophimosis - intellectual disability syndrome, MKB type",
+      "Bruck syndrome 2",
+      "platelet-type bleeding disorder 14"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 9509,
+     "distinct": 5160,
+     "examples": [
+      "DOID:14330",
+      "OMIM:603511",
+      "OMIM:615510",
+      "OMIM:615947",
+      "OMIM:613780",
+      "OMIM:600329"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 9509,
+     "distinct": 63,
+     "examples": [
+      "ECO:0000033|ECO:0000220: traceable author statement|sequencing assay evidence",
+      "ECO:0000306: inference from background scientific knowledge used in manual as...",
+      "ECO:0000220|ECO:0000323: sequencing assay evidence|imported automatically ass...",
+      "ECO:0000177|ECO:0000033: genomic context evidence|traceable author statement",
+      "ECO:0000306|ECO:0000322: inference from background scientific knowledge used ...",
+      "ECO:0000213|ECO:0000033: combinatorial evidence used in automatic assertion|t..."
+     ]
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 9509,
+     "distinct": 5626,
+     "examples": [
+      "55.6325346938",
+      "95.3653061782",
+      "45.9287399855",
+      "57.6082949131",
+      "49.2249691503",
+      "85.3831181872"
+     ]
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 9349,
+     "distinct": 5012,
+     "examples": [
+      "MONDO:0010011",
+      "MONDO:0011537",
+      "MONDO:0013222",
+      "MONDO:0014232",
+      "MONDO:0008150",
+      "MONDO:0014572"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "188890",
+     "dtype": "Monarch",
+     "protein_id": "16147",
+     "nhprotein_id": null,
+     "name": "dermatomyositis",
+     "ncats_name": "dermatomyositis",
+     "did": "DOID:10223",
+     "evidence": "ECO:0000033: traceable author statement",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "100",
+     "mondoid": "MONDO:0016367",
+     "updated": null
+    },
+    {
+     "id": "197345",
+     "dtype": "Monarch",
+     "protein_id": "9628",
+     "nhprotein_id": null,
+     "name": "Mental Retardation, Autosomal Recessive 39",
+     "ncats_name": "severe intellectual disability-short stature-behavioral abnormalities-facial ...",
+     "did": "OMIM:615541",
+     "evidence": "ECO:0000322|ECO:0000220: imported manually asserted information used in autom...",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "100",
+     "mondoid": "MONDO:0014238",
+     "updated": null
+    },
+    {
+     "id": "190025",
+     "dtype": "Monarch",
+     "protein_id": "13172",
+     "nhprotein_id": null,
+     "name": "Long QT syndrome 1",
+     "ncats_name": "long QT syndrome 1",
+     "did": "OMIM:192500",
+     "evidence": "ECO:0000322: imported manually asserted information used in automatic assertion",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "100",
+     "mondoid": "MONDO:0100316",
+     "updated": null
+    },
+    {
+     "id": "191971",
+     "dtype": "Monarch",
+     "protein_id": "1464",
+     "nhprotein_id": null,
+     "name": "retinal vein occlusion",
+     "ncats_name": "retinal vein occlusion",
+     "did": "DOID:1727",
+     "evidence": "ECO:0000033: traceable author statement",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "46.8159825073",
+     "mondoid": "MONDO:0006951",
+     "updated": null
+    },
+    {
+     "id": "194559",
+     "dtype": "Monarch",
+     "protein_id": "20102",
+     "nhprotein_id": null,
+     "name": "Hypothyroidism, congenital, nongoitrous, 5",
+     "ncats_name": "hypothyroidism, congenital, nongoitrous, 5",
+     "did": "OMIM:225250",
+     "evidence": "ECO:0000220: sequencing assay evidence",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "44.2941031505",
+     "mondoid": "MONDO:0009154",
+     "updated": null
+    },
+    {
+     "id": "189540",
+     "dtype": "Monarch",
+     "protein_id": "16006",
+     "nhprotein_id": null,
+     "name": "Gerstmann-Straussler-Scheinker syndrome",
+     "ncats_name": "Gerstmann-Straussler-Scheinker syndrome",
+     "did": "OMIM:137440",
+     "evidence": "ECO:0000322|ECO:0000220|ECO:0000033: imported manually asserted information u...",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "83.9771228388",
+     "mondoid": "MONDO:0007656",
+     "updated": null
+    },
+    {
+     "id": "193318",
+     "dtype": "Monarch",
+     "protein_id": "5627",
+     "nhprotein_id": null,
+     "name": "chromosome Xp11.23-p11.22 duplication syndrome",
+     "ncats_name": "chromosome Xp11.23-p11.22 duplication syndrome",
+     "did": "OMIM:300801",
+     "evidence": "ECO:0000322: imported manually asserted information used in automatic assertion",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "100",
+     "mondoid": "MONDO:0010428",
+     "updated": null
+    },
+    {
+     "id": "190012",
+     "dtype": "Monarch",
+     "protein_id": "13449",
+     "nhprotein_id": null,
+     "name": "Brugada syndrome",
+     "ncats_name": "Brugada syndrome",
+     "did": "DOID:0050451",
+     "evidence": "ECO:0000322: imported manually asserted information used in automatic assertion",
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": "97.0817849298",
+     "mondoid": "MONDO:0015263",
+     "updated": null
+    }
+   ]
+  },
+  "disease.UniProt_Disease": {
+   "view": "disease.UniProt_Disease",
+   "table": "disease",
+   "where": "dtype = 'UniProt Disease'",
+   "where_in_release": "dtype = 'uniprot'",
+   "dataset": {
+    "name": "UniProt",
+    "source": "XML file downloaded from from UniProt query reviewed:yes AND organism:\"Homo sapiens (Human) [9606]\"",
+    "url": "https://www.uniprot.org/uniprot",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 5651,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 5651,
+     "distinct": 5651,
+     "examples": [
+      "838",
+      "1428",
+      "1933",
+      "2609",
+      "3538",
+      "4172"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 5651,
+     "distinct": 1,
+     "values": {
+      "UniProt Disease": 5651
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 5651,
+     "distinct": 3766,
+     "examples": [
+      "9488",
+      "130",
+      "2380",
+      "8792",
+      "18366",
+      "19218"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 5651,
+     "distinct": 5062,
+     "examples": [
+      "Avascular necrosis of femoral head, primary, 1",
+      "Cataract 4, multiple types",
+      "Encephalocraniocutaneous lipomatosis",
+      "Macular degeneration, age-related, 7",
+      "Gaucher disease 1",
+      "Intellectual developmental disorder with dysmorphic facies, seizures, and dis..."
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 5651,
+     "distinct": 4940,
+     "examples": [
+      "46,XY gonadal dysgenesis-motor and sensory neuropathy syndrome",
+      "amyotrophic lateral sclerosis type 6",
+      "autism, susceptibility to, 17",
+      "X-linked adrenal hypoplasia congenita",
+      "vibratory urticaria",
+      "hypophosphatasia"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 5651,
+     "distinct": 4959,
+     "examples": [
+      "MIM:607341",
+      "MIM:617572",
+      "MIM:300519",
+      "MIM:613172",
+      "MIM:614156",
+      "MIM:605822"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 5510,
+     "distinct": 1676,
+     "examples": [
+      "5 11",
+      "22 25 33",
+      "3 4 5 7 8 9 12",
+      "4 5 6 7 8 9 10 11 13 16 17 18",
+      "27 39 40",
+      "11 26"
+     ]
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 5651,
+     "distinct": 3056,
+     "examples": [
+      "A disorder characterized by increased bleeding tendency due to platelet dysfu...",
+      "Recurrent invasive pneumococcal disease (IPD) is defined as two episodes of I...",
+      "An asymptomatic anomaly of in vitro blood coagulation. Its diagnosis is based...",
+      "A form of epidermolysis bullosa characterized by severe fragility of skin and...",
+      "A syndrome characterized by severe micrognathia, rib defects ranging from a f...",
+      "Pyruvate dehydrogenase (PDH) deficiency is a major cause of primary lactic ac..."
+     ]
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 5614,
+     "distinct": 4948,
+     "examples": [
+      "MONDO:0010680",
+      "MONDO:0024552",
+      "MONDO:0010083",
+      "MONDO:0010490",
+      "MONDO:0013482",
+      "MONDO:0000499"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 3347,
+     "distinct": 1,
+     "values": {
+      "1": 3347
+     }
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "4674",
+     "dtype": "UniProt Disease",
+     "protein_id": "17048",
+     "nhprotein_id": null,
+     "name": "Mental retardation, autosomal dominant 52",
+     "ncats_name": "intellectual disability, autosomal dominant 52",
+     "did": "MIM:617796",
+     "evidence": "18 20 21 22",
+     "zscore": null,
+     "conf": null,
+     "description": "A form of mental retardation, a disorder characterized by significantly below...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0030918",
+     "updated": "1"
+    },
+    {
+     "id": "1710",
+     "dtype": "UniProt Disease",
+     "protein_id": "6230",
+     "nhprotein_id": null,
+     "name": "Hypogonadotropic hypogonadism 8 with or without anosmia",
+     "ncats_name": "hypogonadotropic hypogonadism 8 with or without anosmia",
+     "did": "MIM:614837",
+     "evidence": "8 9 12 13 15 16",
+     "zscore": null,
+     "conf": null,
+     "description": "A disorder characterized by absent or incomplete sexual maturation by the age...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0013910",
+     "updated": null
+    },
+    {
+     "id": "1374",
+     "dtype": "UniProt Disease",
+     "protein_id": "5029",
+     "nhprotein_id": null,
+     "name": "Microcephaly 7, primary, autosomal recessive",
+     "ncats_name": "microcephaly 7, primary, autosomal recessive",
+     "did": "MIM:612703",
+     "evidence": "16 21",
+     "zscore": null,
+     "conf": null,
+     "description": "A disease defined as a head circumference more than 3 standard deviations bel...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0012989",
+     "updated": null
+    },
+    {
+     "id": "2639",
+     "dtype": "UniProt Disease",
+     "protein_id": "9519",
+     "nhprotein_id": null,
+     "name": "Nephrotic syndrome 14",
+     "ncats_name": "nephrotic syndrome 14",
+     "did": "MIM:617575",
+     "evidence": "9 10 11",
+     "zscore": null,
+     "conf": null,
+     "description": "A form of nephrotic syndrome, a renal disease clinically characterized by sev...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0033203",
+     "updated": null
+    },
+    {
+     "id": "1018",
+     "dtype": "UniProt Disease",
+     "protein_id": "3625",
+     "nhprotein_id": null,
+     "name": "Spinocerebellar ataxia 47",
+     "ncats_name": "spinocerebellar ataxia 47",
+     "did": "MIM:617931",
+     "evidence": "44",
+     "zscore": null,
+     "conf": null,
+     "description": "A form of spinocerebellar ataxia, a clinically and genetically heterogeneous ...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0033482",
+     "updated": null
+    },
+    {
+     "id": "2450",
+     "dtype": "UniProt Disease",
+     "protein_id": "8852",
+     "nhprotein_id": null,
+     "name": "Sveinsson chorioretinal atrophy",
+     "ncats_name": "helicoid peripapillary chorioretinal degeneration",
+     "did": "MIM:108985",
+     "evidence": "10 11 13",
+     "zscore": null,
+     "conf": null,
+     "description": "Characterized by symmetrical lesions radiating from the optic disk involving ...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0007176",
+     "updated": "1"
+    },
+    {
+     "id": "469",
+     "dtype": "UniProt Disease",
+     "protein_id": "1386",
+     "nhprotein_id": null,
+     "name": "Arterial calcification of infancy, generalized, 1",
+     "ncats_name": "arterial calcification, generalized, of infancy, 1",
+     "did": "MIM:208000",
+     "evidence": "11 13 14 18 22 23 27",
+     "zscore": null,
+     "conf": null,
+     "description": "A severe autosomal recessive disorder characterized by calcification of the i...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008817",
+     "updated": "1"
+    },
+    {
+     "id": "1877",
+     "dtype": "UniProt Disease",
+     "protein_id": "6658",
+     "nhprotein_id": null,
+     "name": "Congenital afibrinogenemia",
+     "ncats_name": "congenital afibrinogenemia",
+     "did": "MIM:202400",
+     "evidence": "29",
+     "zscore": null,
+     "conf": null,
+     "description": "Rare autosomal recessive disorder is characterized by bleeding that varies fr...",
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008737",
+     "updated": null
+    }
+   ]
+  },
+  "disease.Expression_Atlas": {
+   "view": "disease.Expression_Atlas",
+   "table": "disease",
+   "where": "dtype = 'Expression Atlas'",
+   "where_in_release": "dtype = 'Expression Atlas'",
+   "dataset": {
+    "name": "Expression Atlas",
+    "source": "IDG-KMC generated data at UNM.",
+    "url": "https://www.ebi.ac.uk/gxa/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 159846,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 159846,
+     "distinct": 159846,
+     "examples": [
+      "221611",
+      "238326",
+      "252628",
+      "271725",
+      "298041",
+      "315959"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 1,
+     "values": {
+      "Expression Atlas": 159846
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 159846,
+     "distinct": 16784,
+     "examples": [
+      "5606",
+      "3643",
+      "13195",
+      "680",
+      "447",
+      "2887"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 142,
+     "examples": [
+      "intraductal papillary-mucinous neoplasm (IPMN)",
+      "oligodendroglioma",
+      "active Crohn's disease",
+      "gastric carcinoma",
+      "bipolar disorder",
+      "rhinitis with controlled asthma"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 107,
+     "examples": [
+      "invasive ductal breast carcinoma",
+      "plasma cell myeloma",
+      "Crohn disease",
+      "nephrosclerosis",
+      "polycystic ovary syndrome",
+      "bipolar disorder"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 107,
+     "examples": [
+      "DOID:0050902",
+      "DOID:171",
+      "DOID:11726",
+      "DOID:11724",
+      "DOID:2476",
+      "DOID:13810"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 159846,
+     "distinct": 5244,
+     "examples": [
+      "1.047",
+      "-2.122",
+      "2.547",
+      "-1.763",
+      "3.93",
+      "-4.734"
+     ]
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 137079,
+     "examples": [
+      "0.00144422208353815",
+      "0.00908171503938743",
+      "0.000138022214536452",
+      "0.0327046149610136",
+      "0.0118773406834413",
+      "6.24139531184458e-05"
+     ]
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 159846,
+     "distinct": 107,
+     "examples": [
+      "MONDO:0020560",
+      "MONDO:0004953",
+      "MONDO:0008243",
+      "MONDO:0009061",
+      "MONDO:0004972",
+      "MONDO:0004981"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "207360",
+     "dtype": "Expression Atlas",
+     "protein_id": "13125",
+     "nhprotein_id": null,
+     "name": "aldosterone-producing adenoma",
+     "ncats_name": "adenoma",
+     "did": "DOID:657",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "-1.954",
+     "pvalue": "0.0343864948491221",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0004972",
+     "updated": null
+    },
+    {
+     "id": "283905",
+     "dtype": "Expression Atlas",
+     "protein_id": "12312",
+     "nhprotein_id": null,
+     "name": "lung carcinoma",
+     "ncats_name": "lung carcinoma",
+     "did": "DOID:3905",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "-1.3",
+     "pvalue": "1.62081997514299e-11",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005138",
+     "updated": null
+    },
+    {
+     "id": "289395",
+     "dtype": "Expression Atlas",
+     "protein_id": "12997",
+     "nhprotein_id": null,
+     "name": "malignant mesothelioma",
+     "ncats_name": "malignant mesothelioma",
+     "did": "DOID:1790",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "-1.5",
+     "pvalue": "1.40942725168826e-05",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0006292",
+     "updated": null
+    },
+    {
+     "id": "319220",
+     "dtype": "Expression Atlas",
+     "protein_id": "6031",
+     "nhprotein_id": null,
+     "name": "ovarian cancer",
+     "ncats_name": "ovarian cancer",
+     "did": "DOID:2394",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "-1.3",
+     "pvalue": "0.00088903377390994",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008170",
+     "updated": null
+    },
+    {
+     "id": "286457",
+     "dtype": "Expression Atlas",
+     "protein_id": "7292",
+     "nhprotein_id": null,
+     "name": "lung carcinoma",
+     "ncats_name": "lung carcinoma",
+     "did": "DOID:3905",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "1.6",
+     "pvalue": "2.31706776481225e-16",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005138",
+     "updated": null
+    },
+    {
+     "id": "247218",
+     "dtype": "Expression Atlas",
+     "protein_id": "18823",
+     "nhprotein_id": null,
+     "name": "glioblastoma",
+     "ncats_name": "glioblastoma",
+     "did": "DOID:3068",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "1.5",
+     "pvalue": "3.76215192003492e-07",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0018177",
+     "updated": null
+    },
+    {
+     "id": "296928",
+     "dtype": "Expression Atlas",
+     "protein_id": "14328",
+     "nhprotein_id": null,
+     "name": "mucosa-associated lymphoid tissue lymphoma",
+     "ncats_name": "MALT lymphoma",
+     "did": "DOID:0050909",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "1.4",
+     "pvalue": "0.0304350526663297",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0007650",
+     "updated": null
+    },
+    {
+     "id": "262284",
+     "dtype": "Expression Atlas",
+     "protein_id": "16812",
+     "nhprotein_id": null,
+     "name": "interstitial cystitis",
+     "ncats_name": "interstitial cystitis",
+     "did": "DOID:13949",
+     "evidence": null,
+     "zscore": null,
+     "conf": null,
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": "1.2",
+     "pvalue": "0.00451652616936647",
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0018301",
+     "updated": null
+    }
+   ]
+  },
+  "disease.JensenLab": {
+   "view": "disease.JensenLab",
+   "table": "disease",
+   "where": "dtype LIKE 'JensenLab %'",
+   "where_in_release": "dtype LIKE 'JensenLab %'",
+   "dataset": {
+    "name": "JensenLab DISEASES",
+    "source": "Files human_disease_knowledge_filtered.tsv, human_disease_experiments_filtered.tsv, human_disease_textmining_filtered.tsv from http://download.jensenlab.org/",
+    "url": "http://diseases.jensenlab.org/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 41487,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 41487,
+     "distinct": 41487,
+     "examples": [
+      "909787",
+      "914125",
+      "917836",
+      "922793",
+      "929622",
+      "934273"
+     ]
+    },
+    {
+     "name": "dtype",
+     "type": "string",
+     "rows_with_a_value": 41487,
+     "distinct": 5,
+     "values": {
+      "JensenLab Experiment TIGA": 26330,
+      "JensenLab Text Mining": 7404,
+      "JensenLab Knowledge MedlinePlus": 4113,
+      "JensenLab Knowledge UniProtKB-KW": 3380,
+      "JensenLab Knowledge AmyCo": 260
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 41487,
+     "distinct": 10875,
+     "examples": [
+      "2676",
+      "5280",
+      "8938",
+      "3981",
+      "14631",
+      "11983"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 41487,
+     "distinct": 1995,
+     "examples": [
+      "Carpal tunnel syndrome",
+      "Disease of metabolism",
+      "Distal arthrogryposis",
+      "Pendred Syndrome",
+      "Solitary median maxillary central incisor",
+      "Epidermolysis bullosa simplex with muscular dystrophy"
+     ]
+    },
+    {
+     "name": "ncats_name",
+     "type": "string",
+     "rows_with_a_value": 41487,
+     "distinct": 1994,
+     "examples": [
+      "ADan amyloidosis",
+      "restrictive cardiomyopathy",
+      "Buschke-Ollendorff syndrome",
+      "selective IgA deficiency disease",
+      "Partington syndrome",
+      "geroderma osteodysplastica"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 41487,
+     "distinct": 1995,
+     "examples": [
+      "DOID:417",
+      "DOID:11714",
+      "DOID:0111509",
+      "DOID:0050635",
+      "DOID:0060436",
+      "DOID:1099"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 34083,
+     "distinct": 97,
+     "examples": [
+      "MeanRankScore = 93",
+      "MeanRankScore = 83",
+      "MeanRankScore = 40",
+      "MeanRankScore = 78",
+      "MeanRankScore = 6",
+      "MeanRankScore = 31"
+     ]
+    },
+    {
+     "name": "zscore",
+     "type": "double",
+     "rows_with_a_value": 7404,
+     "distinct": 1946,
+     "examples": [
+      "6.215",
+      "6.148",
+      "6.064",
+      "6.9",
+      "6.635",
+      "9.187"
+     ]
+    },
+    {
+     "name": "conf",
+     "type": "double",
+     "rows_with_a_value": 41487,
+     "distinct": 29,
+     "examples": [
+      "4",
+      "1.2",
+      "0.6",
+      "1",
+      "1.6",
+      "3.5"
+     ]
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "drug_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "log2foldchange",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "pvalue",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "score",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "O2S",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "S2O",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "mondoid",
+     "type": "string",
+     "rows_with_a_value": 40876,
+     "distinct": 1841,
+     "examples": [
+      "MONDO:0003009",
+      "MONDO:0016817",
+      "MONDO:0100339",
+      "MONDO:0008434",
+      "MONDO:0009039",
+      "MONDO:0009231"
+     ]
+    },
+    {
+     "name": "updated",
+     "type": "int64",
+     "rows_with_a_value": 40876,
+     "distinct": 1,
+     "values": {
+      "1": 40876
+     }
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "933194",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "15602",
+     "nhprotein_id": null,
+     "name": "Allergic rhinitis",
+     "ncats_name": "allergic rhinitis",
+     "did": "DOID:4481",
+     "evidence": "MeanRankScore = 45",
+     "zscore": null,
+     "conf": "1.1",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0011786",
+     "updated": "1"
+    },
+    {
+     "id": "903893",
+     "dtype": "JensenLab Knowledge MedlinePlus",
+     "protein_id": "303",
+     "nhprotein_id": null,
+     "name": "Retinitis pigmentosa",
+     "ncats_name": "retinitis pigmentosa",
+     "did": "DOID:10584",
+     "evidence": "CURATED",
+     "zscore": null,
+     "conf": "5",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0019200",
+     "updated": "1"
+    },
+    {
+     "id": "927441",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "15636",
+     "nhprotein_id": null,
+     "name": "Myocardial infarction",
+     "ncats_name": "myocardial infarction",
+     "did": "DOID:5844",
+     "evidence": "MeanRankScore = 86",
+     "zscore": null,
+     "conf": "1.8",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005068",
+     "updated": "1"
+    },
+    {
+     "id": "910285",
+     "dtype": "JensenLab Knowledge MedlinePlus",
+     "protein_id": "15550",
+     "nhprotein_id": null,
+     "name": "Psoriatic arthritis",
+     "ncats_name": "psoriatic arthritis",
+     "did": "DOID:9008",
+     "evidence": "CURATED",
+     "zscore": null,
+     "conf": "5",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0011849",
+     "updated": "1"
+    },
+    {
+     "id": "935565",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "2035",
+     "nhprotein_id": null,
+     "name": "Rheumatoid arthritis",
+     "ncats_name": "rheumatoid arthritis",
+     "did": "DOID:7148",
+     "evidence": "MeanRankScore = 15",
+     "zscore": null,
+     "conf": "0.7",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0008383",
+     "updated": "1"
+    },
+    {
+     "id": "930172",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "16138",
+     "nhprotein_id": null,
+     "name": "Liver disease",
+     "ncats_name": "liver disease",
+     "did": "DOID:409",
+     "evidence": "MeanRankScore = 66",
+     "zscore": null,
+     "conf": "1.5",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005154",
+     "updated": "1"
+    },
+    {
+     "id": "930302",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "16191",
+     "nhprotein_id": null,
+     "name": "Psoriatic arthritis",
+     "ncats_name": "psoriatic arthritis",
+     "did": "DOID:9008",
+     "evidence": "MeanRankScore = 60",
+     "zscore": null,
+     "conf": "1.4",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0011849",
+     "updated": "1"
+    },
+    {
+     "id": "916860",
+     "dtype": "JensenLab Experiment TIGA",
+     "protein_id": "15183",
+     "nhprotein_id": null,
+     "name": "Psoriasis",
+     "ncats_name": "psoriasis",
+     "did": "DOID:8893",
+     "evidence": "MeanRankScore = 9",
+     "zscore": null,
+     "conf": "0.6",
+     "description": null,
+     "reference": null,
+     "drug_name": null,
+     "log2foldchange": null,
+     "pvalue": null,
+     "score": null,
+     "source": null,
+     "O2S": null,
+     "S2O": null,
+     "mondoid": "MONDO:0005083",
+     "updated": "1"
+    }
+   ]
+  },
+  "tiga": {
+   "view": "tiga",
+   "table": "tiga",
+   "where": null,
+   "where_in_release": null,
+   "dataset": {
+    "name": "TIGA",
+    "source": "TIGA release 20220712 download files from https://unmtid-shinyapps.net/download/TIGA/20220712/",
+    "url": "https://unmtid-shinyapps.net/shiny/tiga/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 745611,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 745611,
+     "examples": [
+      "110462",
+      "188438",
+      "255150",
+      "344225",
+      "466985",
+      "550564"
+     ]
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 18005,
+     "examples": [
+      "2502",
+      "3403",
+      "2825",
+      "2456",
+      "11589",
+      "4427"
+     ]
+    },
+    {
+     "name": "ensg",
+     "type": "string",
+     "rows_with_a_value": 745611,
+     "distinct": 19351,
+     "examples": [
+      "ENSG00000172260",
+      "ENSG00000175550",
+      "ENSG00000147457",
+      "ENSG00000140285",
+      "ENSG00000273045",
+      "ENSG00000168772"
+     ]
+    },
+    {
+     "name": "efoid",
+     "type": "string",
+     "rows_with_a_value": 745611,
+     "distinct": 2247,
+     "examples": [
+      "EFO_1001489",
+      "GO_1901557",
+      "EFO_0010809",
+      "EFO_0007636",
+      "EFO_0011043",
+      "EFO_0007321"
+     ]
+    },
+    {
+     "name": "trait",
+     "type": "string",
+     "rows_with_a_value": 745611,
+     "distinct": 2248,
+     "examples": [
+      "lipid measurement",
+      "oral cavity cancer",
+      "cancer aggressiveness measurement",
+      "phosphatidylcholine 32:2 measurement",
+      "eye morphology measurement",
+      "opioid use disorder"
+     ]
+    },
+    {
+     "name": "n_study",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 126,
+     "examples": [
+      "17",
+      "39",
+      "41",
+      "84",
+      "83",
+      "206"
+     ]
+    },
+    {
+     "name": "n_snp",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 127,
+     "examples": [
+      "7",
+      "16",
+      "79",
+      "67",
+      "35",
+      "78"
+     ]
+    },
+    {
+     "name": "n_snpw",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 7342,
+     "examples": [
+      "1.956",
+      "0.507",
+      "5.956",
+      "1.452",
+      "8.834",
+      "105.931"
+     ]
+    },
+    {
+     "name": "geneNtrait",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 162,
+     "examples": [
+      "34",
+      "3",
+      "58",
+      "1",
+      "116",
+      "180"
+     ]
+    },
+    {
+     "name": "geneNstudy",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 346,
+     "examples": [
+      "6",
+      "85",
+      "61",
+      "66",
+      "79",
+      "346"
+     ]
+    },
+    {
+     "name": "traitNgene",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 432,
+     "examples": [
+      "2774",
+      "2633",
+      "1194",
+      "371",
+      "1145",
+      "28"
+     ]
+    },
+    {
+     "name": "traitNstudy",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 125,
+     "examples": [
+      "10",
+      "24",
+      "227",
+      "18",
+      "46",
+      "560"
+     ]
+    },
+    {
+     "name": "pvalue_mlog_median",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 3520,
+     "examples": [
+      "7.651",
+      "17.5",
+      "10.276",
+      "67.611",
+      "37.339",
+      "131.339"
+     ]
+    },
+    {
+     "name": "pvalue_mlog_max",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 2020,
+     "examples": [
+      "77",
+      "104",
+      "68",
+      "235.222",
+      "323",
+      "126.398"
+     ]
+    },
+    {
+     "name": "or_median",
+     "type": "double",
+     "rows_with_a_value": 224636,
+     "distinct": 4319,
+     "examples": [
+      "9272.94",
+      "7.302",
+      "48.919",
+      "12.17",
+      "17.992",
+      "3.113"
+     ]
+    },
+    {
+     "name": "n_beta",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 309,
+     "examples": [
+      "132",
+      "168",
+      "109",
+      "79",
+      "537",
+      "177"
+     ]
+    },
+    {
+     "name": "study_N_mean",
+     "type": "int64",
+     "rows_with_a_value": 745611,
+     "distinct": 17506,
+     "examples": [
+      "306132",
+      "188347",
+      "51372",
+      "4643",
+      "299154",
+      "299365"
+     ]
+    },
+    {
+     "name": "rcras",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 665,
+     "examples": [
+      "0.009",
+      "0.047",
+      "0.166",
+      "0.225",
+      "0.251",
+      "0.249"
+     ]
+    },
+    {
+     "name": "meanRank",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 47737,
+     "examples": [
+      "84129.66666666667",
+      "182273.66666666663",
+      "82842.33333333333",
+      "101551",
+      "262934.6666666667",
+      "136130.33333333334"
+     ]
+    },
+    {
+     "name": "meanRankScore",
+     "type": "double",
+     "rows_with_a_value": 745611,
+     "distinct": 47737,
+     "examples": [
+      "80.67743885195269",
+      "37.63952733987279",
+      "21.21619598427423",
+      "94.49681436833556",
+      "28.8960912937158",
+      "68.73173598904299"
+     ]
+    },
+    {
+     "name": "ncats_disease_id",
+     "type": "int64",
+     "rows_with_a_value": 128263,
+     "distinct": 326,
+     "examples": [
+      "13018",
+      "10200",
+      "13346",
+      "13206",
+      "7605",
+      "13634"
+     ]
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "475665",
+     "protein_id": "15653",
+     "ensg": "ENSG00000223532",
+     "efoid": "EFO_0007991",
+     "trait": "eosinophil percentage of leukocytes",
+     "n_study": "2",
+     "n_snp": "6",
+     "n_snpw": "5.776",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "1917",
+     "traitNstudy": "4",
+     "pvalue_mlog_median": "18.651",
+     "pvalue_mlog_max": "47",
+     "or_median": null,
+     "n_beta": "30",
+     "study_N_mean": "250956",
+     "rcras": "0",
+     "meanRank": "73249.66666666667",
+     "meanRankScore": "89.09815294359021",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "368895",
+     "protein_id": "16147",
+     "ensg": "ENSG00000206450",
+     "efoid": "EFO_0007995",
+     "trait": "basophil percentage of granulocytes",
+     "n_study": "1",
+     "n_snp": "1",
+     "n_snpw": "0.989",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "176",
+     "traitNstudy": "1",
+     "pvalue_mlog_median": "9.523",
+     "pvalue_mlog_max": "9.523",
+     "or_median": null,
+     "n_beta": "12",
+     "study_N_mean": "170223",
+     "rcras": "0",
+     "meanRank": "238700.33333333337",
+     "meanRankScore": "6.84453341170338",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "45662",
+     "protein_id": "15494",
+     "ensg": "ENSG00000105186",
+     "efoid": "EFO_0005047",
+     "trait": "erythrocyte measurement",
+     "n_study": "1",
+     "n_snp": "1",
+     "n_snpw": "1",
+     "geneNtrait": "21",
+     "geneNstudy": "31",
+     "traitNgene": "187",
+     "traitNstudy": "2",
+     "pvalue_mlog_median": "10",
+     "pvalue_mlog_max": "10",
+     "or_median": null,
+     "n_beta": "1",
+     "study_N_mean": "71861",
+     "rcras": "0.009",
+     "meanRank": "128957",
+     "meanRankScore": "61.34572837014323",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "235270",
+     "protein_id": "7634",
+     "ensg": "ENSG00000188807",
+     "efoid": "EFO_0007991",
+     "trait": "eosinophil percentage of leukocytes",
+     "n_study": "1",
+     "n_snp": "1",
+     "n_snpw": "1",
+     "geneNtrait": "8",
+     "geneNstudy": "13",
+     "traitNgene": "1917",
+     "traitNstudy": "4",
+     "pvalue_mlog_median": "18.699",
+     "pvalue_mlog_max": "18.699",
+     "or_median": null,
+     "n_beta": "1",
+     "study_N_mean": "408112",
+     "rcras": "0",
+     "meanRank": "127967",
+     "meanRankScore": "61.92795870046191",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "669434",
+     "protein_id": "16112",
+     "ensg": "ENSG00000232126",
+     "efoid": "EFO_0010116",
+     "trait": "choline measurement",
+     "n_study": "1",
+     "n_snp": "1",
+     "n_snpw": "1",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "371",
+     "traitNstudy": "5",
+     "pvalue_mlog_median": "15",
+     "pvalue_mlog_max": "15",
+     "or_median": null,
+     "n_beta": "5",
+     "study_N_mean": "115006",
+     "rcras": "0",
+     "meanRank": "139322",
+     "meanRankScore": "55.03351983187406",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "667821",
+     "protein_id": "15642",
+     "ensg": "ENSG00000232126",
+     "efoid": "EFO_0009925",
+     "trait": "Antithrombotic agent use measurement",
+     "n_study": "2",
+     "n_snp": "2",
+     "n_snpw": "1.948",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "162",
+     "traitNstudy": "3",
+     "pvalue_mlog_median": "15.349",
+     "pvalue_mlog_max": "15.699",
+     "or_median": null,
+     "n_beta": "10",
+     "study_N_mean": "255546",
+     "rcras": "0",
+     "meanRank": "130866",
+     "meanRankScore": "60.25778941006206",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "410621",
+     "protein_id": "16205",
+     "ensg": "ENSG00000206450",
+     "efoid": "EFO_0010116",
+     "trait": "choline measurement",
+     "n_study": "1",
+     "n_snp": "1",
+     "n_snpw": "1",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "371",
+     "traitNstudy": "5",
+     "pvalue_mlog_median": "15",
+     "pvalue_mlog_max": "15",
+     "or_median": null,
+     "n_beta": "12",
+     "study_N_mean": "115006",
+     "rcras": "0",
+     "meanRank": "139322",
+     "meanRankScore": "55.03351983187406",
+     "ncats_disease_id": null
+    },
+    {
+     "id": "337340",
+     "protein_id": "15551",
+     "ensg": "ENSG00000206450",
+     "efoid": "EFO_0000180",
+     "trait": "HIV-1 infection",
+     "n_study": "3",
+     "n_snp": "5",
+     "n_snpw": "4.796",
+     "geneNtrait": "212",
+     "geneNstudy": "563",
+     "traitNgene": "71",
+     "traitNstudy": "12",
+     "pvalue_mlog_median": "19.046",
+     "pvalue_mlog_max": "34.523",
+     "or_median": "2.6",
+     "n_beta": "0",
+     "study_N_mean": "4865",
+     "rcras": "0.063",
+     "meanRank": "23425.333333333332",
+     "meanRankScore": "98.66613803849374",
+     "ncats_disease_id": null
+    }
+   ]
+  },
+  "drug_activity": {
+   "view": "drug_activity",
+   "table": "drug_activity",
+   "where": null,
+   "where_in_release": null,
+   "dataset": {
+    "name": "DrugCentral",
+    "source": "DrugCentral v20220705 TSV files: tclin.tsv, tchem_drugs.tsv, drug_info.tsv, drug_indications.tsv, drug_names.tsv",
+    "url": "http://drugcentral.org/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 4436,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 4436,
+     "distinct": 4436,
+     "examples": [
+      "658",
+      "1121",
+      "1517",
+      "2048",
+      "2777",
+      "3275"
+     ]
+    },
+    {
+     "name": "target_id",
+     "type": "int64",
+     "rows_with_a_value": 4436,
+     "distinct": 1178,
+     "examples": [
+      "19290",
+      "19292",
+      "16545",
+      "20085",
+      "4200",
+      "979"
+     ]
+    },
+    {
+     "name": "drug",
+     "type": "string",
+     "rows_with_a_value": 4436,
+     "distinct": 1782,
+     "examples": [
+      "estradiol cypionate",
+      "caffeine",
+      "tolterodine",
+      "phenibut",
+      "ocrelizumab",
+      "teprotumumab"
+     ]
+    },
+    {
+     "name": "act_value",
+     "type": "double",
+     "rows_with_a_value": 3113,
+     "distinct": 1058,
+     "examples": [
+      "9.1549",
+      "5.22",
+      "8.25",
+      "7.1311",
+      "7.66354036",
+      "7.98"
+     ]
+    },
+    {
+     "name": "act_type",
+     "type": "string",
+     "rows_with_a_value": 3111,
+     "distinct": 11,
+     "values": {
+      "Ki": 1135,
+      "IC50": 1059,
+      "Kd": 592,
+      "EC50": 290,
+      "ID50": 12,
+      "A2": 9,
+      "AC50": 6,
+      "ED50": 5,
+      "IC90": 1,
+      "MEC": 1,
+      "Kb": 1
+     }
+    },
+    {
+     "name": "action_type",
+     "type": "string",
+     "rows_with_a_value": 3629,
+     "distinct": 22,
+     "values": {
+      "INHIBITOR": 1169,
+      "AGONIST": 614,
+      "ANTAGONIST": 532,
+      "BLOCKER": 454,
+      "POSITIVE ALLOSTERIC MODULATOR": 387,
+      "ANTIBODY BINDING": 105,
+      "POSITIVE MODULATOR": 76,
+      "BINDING AGENT": 59,
+      "ACTIVATOR": 58,
+      "OPENER": 41,
+      "MODULATOR": 35,
+      "PARTIAL AGONIST": 22,
+      "ALLOSTERIC ANTAGONIST": 16,
+      "INVERSE AGONIST": 11,
+      "NEGATIVE ALLOSTERIC MODULATOR": 10,
+      "GATING INHIBITOR": 9,
+      "ANTISENSE INHIBITOR": 8,
+      "RELEASING AGENT": 7,
+      "SUBSTRATE": 6,
+      "ALLOSTERIC MODULATOR": 6,
+      "PHARMACOLOGICAL CHAPERONE": 3,
+      "OTHER": 1
+     }
+    },
+    {
+     "name": "has_moa",
+     "type": "int64",
+     "rows_with_a_value": 4436,
+     "distinct": 2,
+     "values": {
+      "1": 3492,
+      "0": 944
+     }
+    },
+    {
+     "name": "source",
+     "type": "string",
+     "rows_with_a_value": 4436,
+     "distinct": 5,
+     "values": {
+      "CHEMBL": 2984,
+      "DRUG LABEL": 646,
+      "SCIENTIFIC LITERATURE": 544,
+      "IUPHAR": 237,
+      "KEGG DRUG": 25
+     }
+    },
+    {
+     "name": "reference",
+     "type": "string",
+     "rows_with_a_value": 4436,
+     "distinct": 1907,
+     "examples": [
+      "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL661",
+      "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL1520",
+      "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL1615438",
+      "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL1515",
+      "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL1201064",
+      "http://www.accessdata.fda.gov/drugsatfda_docs/label/2014/125390s004lbl.pdf"
+     ]
+    },
+    {
+     "name": "smiles",
+     "type": "string",
+     "rows_with_a_value": 4081,
+     "distinct": 1545,
+     "examples": [
+      "CN1N=C(SC1=NC(C)=O)S(N)(=O)=O",
+      "CC1(C)[C@H](CC[C@@]2(C)[C@H]1CC[C@]1(C)[C@@H]2C(=O)C=C2[C@@H]3C[C@](C)(CC[C@]...",
+      "CCCN(CCC1=CC=CS1)[C@H]1CCC2=C(O)C=CC=C2C1",
+      "C[C@H]1CN(C[C@H](CC2=CC=CC=C2)C(=O)NCC(O)=O)CC[C@@]1(C)C1=CC(O)=CC=C1",
+      "CCC[C@H](N[C@@H](C)C(=O)N1[C@H]2CCCC[C@H]2C[C@H]1C(O)=O)C(=O)OCC",
+      "CC1=CC=C(C=C1NC(=O)C1=CC=CC(NC(=O)NC2=CC=CC(=C2)C(=O)NC2=C(C)C=CC(=C2)C(=O)NC..."
+     ]
+    },
+    {
+     "name": "cmpd_chemblid",
+     "type": "string",
+     "rows_with_a_value": 3487,
+     "distinct": 1634,
+     "examples": [
+      "CHEMBL146855",
+      "CHEMBL1173055",
+      "CHEMBL1120",
+      "CHEMBL762",
+      "CHEMBL634",
+      "CHEMBL1199324"
+     ]
+    },
+    {
+     "name": "nlm_drug_info",
+     "type": "string",
+     "rows_with_a_value": 3952,
+     "distinct": 1532,
+     "examples": [
+      "A plant genus of the family ASTERACEAE. The name prickly burweed\" is sometime...",
+      "A local anesthetic that is similar pharmacologically to LIDOCAINE. Currently,...",
+      "The dextrorotary isomer of the synthetic THYROXINE.",
+      "A appetite depressant considered to produce less central nervous system distu...",
+      "Aprepitant is a selective high-affinity antagonist of human substance P/neuro...",
+      "In patients with aTTP, levels of a substance called von Willebrand factor are..."
+     ]
+    },
+    {
+     "name": "cmpd_pubchem_cid",
+     "type": "int64",
+     "rows_with_a_value": 3060,
+     "distinct": 1382,
+     "examples": [
+      "3033538",
+      "77992",
+      "204104",
+      "5311128",
+      "6917951",
+      "11315474"
+     ]
+    },
+    {
+     "name": "dcid",
+     "type": "int64",
+     "rows_with_a_value": 4436,
+     "distinct": 1782,
+     "examples": [
+      "1202",
+      "4207",
+      "2353",
+      "2201",
+      "2637",
+      "977"
+     ]
+    },
+    {
+     "name": "lychi_h4",
+     "type": "string",
+     "rows_with_a_value": 4081,
+     "distinct": 1569,
+     "examples": [
+      "XJV4VDZHLF2C",
+      "H5Q7DR5W7A2Z",
+      "F9TLF4UV5U1J",
+      "5KTUQ68GTNR8",
+      "T3XURCZ3344T",
+      "ULST396RWY2M"
+     ]
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "4123",
+     "target_id": "19264",
+     "drug": "indomethacin",
+     "act_value": "7.3",
+     "act_type": "IC50",
+     "action_type": null,
+     "has_moa": "0",
+     "source": "CHEMBL",
+     "reference": "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL6",
+     "smiles": "COC1=CC2=C(C=C1)N(C(=O)C1=CC=C(Cl)C=C1)C(C)=C2CC(O)=O",
+     "cmpd_chemblid": null,
+     "nlm_drug_info": "A non-steroidal anti-inflammatory agent (NSAID) that inhibits CYCLOOXYGENASE,...",
+     "cmpd_pubchem_cid": null,
+     "dcid": "1440",
+     "lychi_h4": "AC3D4RL6RU1S"
+    },
+    {
+     "id": "2403",
+     "target_id": "17567",
+     "drug": "dronedarone",
+     "act_value": null,
+     "act_type": null,
+     "action_type": "BLOCKER",
+     "has_moa": "1",
+     "source": "SCIENTIFIC LITERATURE",
+     "reference": "http://www.ncbi.nlm.nih.gov/pubmed/23647933",
+     "smiles": "CCCCN(CCCC)CCCOC1=CC=C(C=C1)C(=O)C1=C(CCCC)OC2=C1C=C(NS(C)(=O)=O)C=C2",
+     "cmpd_chemblid": "CHEMBL184412",
+     "nlm_drug_info": "Dronedarone has antiarrhythmic properties belonging to all four Vaughan-Willi...",
+     "cmpd_pubchem_cid": "208898",
+     "dcid": "4112",
+     "lychi_h4": "MFWXQ3S2LQB2"
+    },
+    {
+     "id": "1375",
+     "target_id": "6721",
+     "drug": "orphenadrine",
+     "act_value": "7.9586",
+     "act_type": "Ki",
+     "action_type": "ANTAGONIST",
+     "has_moa": "1",
+     "source": "CHEMBL",
+     "reference": "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL900",
+     "smiles": "CN(C)CCOC(C1=CC=CC=C1)C1=C(C)C=CC=C1",
+     "cmpd_chemblid": "CHEMBL900",
+     "nlm_drug_info": "A muscarinic antagonist used to treat drug-induced parkinsonism and to reliev...",
+     "cmpd_pubchem_cid": "4601",
+     "dcid": "1999",
+     "lychi_h4": "2DP6CBPWVNS9"
+    },
+    {
+     "id": "1874",
+     "target_id": "1316",
+     "drug": "triazolam",
+     "act_value": "8.699",
+     "act_type": "Ki",
+     "action_type": "POSITIVE ALLOSTERIC MODULATOR",
+     "has_moa": "1",
+     "source": "CHEMBL",
+     "reference": "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL646",
+     "smiles": "CC1=NN=C2CN=C(C3=CC(Cl)=CC=C3N12)C1=C(Cl)C=CC=C1",
+     "cmpd_chemblid": "CHEMBL646",
+     "nlm_drug_info": "A short-acting benzodiazepine used in the treatment of insomnia. Some countri...",
+     "cmpd_pubchem_cid": "5556",
+     "dcid": "2729",
+     "lychi_h4": "LLG5LABAKL51"
+    },
+    {
+     "id": "972",
+     "target_id": "10479",
+     "drug": "ketoprofen",
+     "act_value": "7.33",
+     "act_type": "IC50",
+     "action_type": "INHIBITOR",
+     "has_moa": "1",
+     "source": "CHEMBL",
+     "reference": "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL571",
+     "smiles": "CC(C(O)=O)C1=CC=CC(=C1)C(=O)C1=CC=CC=C1",
+     "cmpd_chemblid": "CHEMBL571",
+     "nlm_drug_info": "An IBUPROFEN-type anti-inflammatory analgesic and antipyretic. It is used in ...",
+     "cmpd_pubchem_cid": "3825",
+     "dcid": "1528",
+     "lychi_h4": "S3228AZ73B9C"
+    },
+    {
+     "id": "2827",
+     "target_id": "7029",
+     "drug": "amifampridine",
+     "act_value": null,
+     "act_type": null,
+     "action_type": "BLOCKER",
+     "has_moa": "1",
+     "source": "SCIENTIFIC LITERATURE",
+     "reference": "http://www.ncbi.nlm.nih.gov/pubmed/22805230",
+     "smiles": "NC1=CC=NC=C1N",
+     "cmpd_chemblid": "CHEMBL354077",
+     "nlm_drug_info": "4-Aminopyridine derivative that acts as a POTASSIUM CHANNEL blocker to increa...",
+     "cmpd_pubchem_cid": "5918",
+     "dcid": "4336",
+     "lychi_h4": "TKD5AFJ1327V"
+    },
+    {
+     "id": "2536",
+     "target_id": "6971",
+     "drug": "abciximab",
+     "act_value": null,
+     "act_type": null,
+     "action_type": "ANTIBODY BINDING",
+     "has_moa": "1",
+     "source": "DRUG LABEL",
+     "reference": "http://www.accessdata.fda.gov/drugsatfda_docs/label/2013/103575s5126lbl.pdf",
+     "smiles": null,
+     "cmpd_chemblid": "CHEMBL1201584",
+     "nlm_drug_info": "A Fab fragment of the chimeric monoclonal antibody 7E3 that binds to the glyc...",
+     "cmpd_pubchem_cid": null,
+     "dcid": "4950",
+     "lychi_h4": null
+    },
+    {
+     "id": "461",
+     "target_id": "1283",
+     "drug": "diazepam",
+     "act_value": "7.9393",
+     "act_type": "Ki",
+     "action_type": "POSITIVE ALLOSTERIC MODULATOR",
+     "has_moa": "1",
+     "source": "CHEMBL",
+     "reference": "https://www.ebi.ac.uk/chembl/compound/inspect/CHEMBL12",
+     "smiles": "CN1C2=CC=C(Cl)C=C2C(=NCC1=O)C1=CC=CC=C1",
+     "cmpd_chemblid": "CHEMBL12",
+     "nlm_drug_info": "A benzodiazepine with anticonvulsant, anxiolytic, sedative, muscle relaxant, ...",
+     "cmpd_pubchem_cid": "3016",
+     "dcid": "852",
+     "lychi_h4": "KHA18H7FF2WX"
+    }
+   ]
+  },
+  "ortholog_disease": {
+   "view": "ortholog_disease",
+   "table": "ortholog_disease",
+   "where": null,
+   "where_in_release": null,
+   "dataset": {
+    "name": "Monarch Ortholog Disease Associations",
+    "source": "UMiami Monarch MySQL database on AWS server.",
+    "url": null,
+    "comments": "Monarch database contact: John Turner <jpt55@med.miami.edu>"
+   },
+   "comment": "",
+   "rows": 37852,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 37852,
+     "distinct": 37852,
+     "examples": [
+      "5608",
+      "9566",
+      "12952",
+      "17475",
+      "23706",
+      "27949"
+     ]
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 37852,
+     "distinct": 3827,
+     "examples": [
+      "5017",
+      "2363",
+      "10199",
+      "17695",
+      "19986",
+      "3538"
+     ]
+    },
+    {
+     "name": "did",
+     "type": "string",
+     "rows_with_a_value": 37852,
+     "distinct": 5641,
+     "examples": [
+      "OMIM:300331",
+      "DOID:10763",
+      "OMIM:614465",
+      "OMIM:605027",
+      "OMIM:161000",
+      "OMIM:600122"
+     ]
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "rows_with_a_value": 37852,
+     "distinct": 5625,
+     "examples": [
+      "Hallermann-Streiff syndrome",
+      "Joubert syndrome 9",
+      "mosaic variegated aneuploidy syndrome 1",
+      "Generalized Epilepsy With Febrile Seizures Plus, Type 3",
+      "Hypohidrotic ectodermal dysplasia with immunodeficiency",
+      "Focal Segmental Glomerulosclerosis 8"
+     ]
+    },
+    {
+     "name": "ortholog_id",
+     "type": "int64",
+     "rows_with_a_value": 37852,
+     "distinct": 3827,
+     "examples": [
+      "275984",
+      "305980",
+      "336727",
+      "219349",
+      "279902",
+      "227925"
+     ]
+    },
+    {
+     "name": "score",
+     "type": "string",
+     "rows_with_a_value": 37852,
+     "distinct": 23678,
+     "examples": [
+      "37.0077814295",
+      "40.8081701466",
+      "41.5633279935",
+      "57.0410809749",
+      "52.3965838867",
+      "35.2202242795"
+     ]
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "8903",
+     "protein_id": "2702",
+     "did": "OMIM:306950",
+     "name": "Hernia, Anterior Diaphragmatic",
+     "ortholog_id": "202356",
+     "score": "78.6468543262"
+    },
+    {
+     "id": "27716",
+     "protein_id": "9885",
+     "did": "DOID:166",
+     "name": "melanotic neuroectodermal tumor",
+     "ortholog_id": "266583",
+     "score": "37.5436810959"
+    },
+    {
+     "id": "9672",
+     "protein_id": "505",
+     "did": "OMIM:224700",
+     "name": "Ebstein anomaly",
+     "ortholog_id": "182902",
+     "score": "45.9082846374"
+    },
+    {
+     "id": "13924",
+     "protein_id": "745",
+     "did": "OMIM:271322",
+     "name": "Spinocerebellar Degeneration With Slow Eye Movements",
+     "ortholog_id": "185036",
+     "score": "61.1111111111"
+    },
+    {
+     "id": "30616",
+     "protein_id": "8252",
+     "did": "OMIM:137920",
+     "name": "Renal cysts and diabetes syndrome",
+     "ortholog_id": "251622",
+     "score": "51.7254621402"
+    },
+    {
+     "id": "26757",
+     "protein_id": "3865",
+     "did": "OMIM:615907",
+     "name": "Lymphedema, hereditary, ID",
+     "ortholog_id": "212780",
+     "score": "41.0938350658"
+    },
+    {
+     "id": "25601",
+     "protein_id": "9858",
+     "did": "DOID:4235",
+     "name": "spindle cell sarcoma",
+     "ortholog_id": "266304",
+     "score": "39.2460375108"
+    },
+    {
+     "id": "6421",
+     "protein_id": "2784",
+     "did": "OMIM:193670",
+     "name": "WHIM syndrome",
+     "ortholog_id": "203190",
+     "score": "32.6728562766"
+    }
+   ]
+  },
+  "phenotype.OMIM": {
+   "view": "phenotype.OMIM",
+   "table": "phenotype",
+   "where": "ptype = 'OMIM'",
+   "where_in_release": "ptype = 'OMIM'",
+   "dataset": {
+    "name": "OMIM",
+    "source": "Files genemap.txt, mimTitles.txt, phenotypicSeries.txt downloaded from omim.org",
+    "url": "http://omim.org/",
+    "comments": "Confirmed OMIM phenotypes and OMIM Phenotype Series info"
+   },
+   "comment": null,
+   "rows": 14147,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 14147,
+     "distinct": 14147,
+     "examples": [
+      "2096",
+      "3575",
+      "4840",
+      "6531",
+      "8859",
+      "10445"
+     ]
+    },
+    {
+     "name": "ptype",
+     "type": "string",
+     "rows_with_a_value": 14147,
+     "distinct": 1,
+     "values": {
+      "OMIM": 14147
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 14147,
+     "distinct": 13856,
+     "examples": [
+      "16629",
+      "6713",
+      "1147",
+      "5212",
+      "8517",
+      "6631"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "trait",
+     "type": "string",
+     "rows_with_a_value": 14147,
+     "distinct": 13751,
+     "examples": [
+      "MIM Number: 114250; Phenotype: Myopathy, vacuolar, with CASQ1 aggregates, 616...",
+      "MIM Number: 601209",
+      "MIM Number: 138359",
+      "MIM Number: 611345",
+      "MIM Number: 610884",
+      "MIM Number: 600288"
+     ]
+    },
+    {
+     "name": "top_level_term_id",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "top_level_term_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "term_id",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "term_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "term_description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "p_value",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "percentage_change",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "effect_size",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "procedure_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "parameter_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "gp_assoc",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "statistical_method",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "sex",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "original_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "5594",
+     "ptype": "OMIM",
+     "protein_id": "2242",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 601048",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "1924",
+     "ptype": "OMIM",
+     "protein_id": "13602",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 606587",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "10964",
+     "ptype": "OMIM",
+     "protein_id": "9202",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 615949; Phenotype: Nanophthalmos 4, 615972 (3)",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "8903",
+     "ptype": "OMIM",
+     "protein_id": "12636",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 613802",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "13183",
+     "ptype": "OMIM",
+     "protein_id": "8904",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 182590",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "12700",
+     "ptype": "OMIM",
+     "protein_id": "8466",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 617358",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "7947",
+     "ptype": "OMIM",
+     "protein_id": "10008",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 603025; Phenotype: Leukemia, acute myeloid, somatic, 601626 (3)",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "7960",
+     "ptype": "OMIM",
+     "protein_id": "16471",
+     "nhprotein_id": null,
+     "trait": "MIM Number: 615533; Phenotype: Mitochondrial complex I deficiency, nuclear ty...",
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": null,
+     "term_name": null,
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    }
+   ]
+  },
+  "phenotype.JAX_MGI": {
+   "view": "phenotype.JAX_MGI",
+   "table": "phenotype",
+   "where": "ptype = 'JAX/MGI Human Ortholog Phenotype'",
+   "where_in_release": "ptype = 'JAX/MGI Human Ortholog Phenotyp'",
+   "dataset": {
+    "name": "JAX/MGI Mouse/Human Orthology Phenotypes",
+    "source": "File HMD_HumanPhenotype.rpt from ftp.informatics.jax.org",
+    "url": "http://www.informatics.jax.org/",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 58398,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 58398,
+     "distinct": 58398,
+     "examples": [
+      "593638",
+      "599744",
+      "604969",
+      "611947",
+      "621560",
+      "628107"
+     ]
+    },
+    {
+     "name": "ptype",
+     "type": "string",
+     "rows_with_a_value": 58398,
+     "distinct": 1,
+     "values": {
+      "JAX/MGI Human Ortholog Phenotype": 58398
+     }
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 58398,
+     "distinct": 10204,
+     "examples": [
+      "2727",
+      "1022",
+      "6253",
+      "15871",
+      "11684",
+      "4804"
+     ]
+    },
+    {
+     "name": "nhprotein_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "trait",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "top_level_term_id",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "top_level_term_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "term_id",
+     "type": "string",
+     "rows_with_a_value": 58398,
+     "distinct": 27,
+     "examples": [
+      "MP:0005376",
+      "MP:0005384",
+      "MP:0005379",
+      "MP:0005382",
+      "MP:0002006",
+      "MP:0005394"
+     ]
+    },
+    {
+     "name": "term_name",
+     "type": "string",
+     "rows_with_a_value": 58398,
+     "distinct": 27,
+     "examples": [
+      "behavior/neurological phenotype",
+      "endocrine/exocrine gland phenotype",
+      "skeleton phenotype",
+      "digestive/alimentary phenotype",
+      "liver/biliary system phenotype",
+      "craniofacial phenotype"
+     ]
+    },
+    {
+     "name": "term_description",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "p_value",
+     "type": "double",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "percentage_change",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "effect_size",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "procedure_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "parameter_name",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "gp_assoc",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "statistical_method",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "sex",
+     "type": "string",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    },
+    {
+     "name": "original_id",
+     "type": "int64",
+     "rows_with_a_value": 0,
+     "distinct": 0,
+     "values": {}
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "596121",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "14140",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0005387",
+     "term_name": "immune system phenotype",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "627483",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "3385",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0003631",
+     "term_name": "nervous system phenotype",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "612208",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "19209",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0010768",
+     "term_name": "mortality/aging",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "607014",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "17951",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0005378",
+     "term_name": "growth/size/body region phenotype",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "627280",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "16768",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0005376",
+     "term_name": "homeostasis/metabolism phenotype",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "623162",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "10456",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0010768",
+     "term_name": "mortality/aging",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "630216",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "4372",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0010768",
+     "term_name": "mortality/aging",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    },
+    {
+     "id": "636344",
+     "ptype": "JAX/MGI Human Ortholog Phenotype",
+     "protein_id": "4969",
+     "nhprotein_id": null,
+     "trait": null,
+     "top_level_term_id": null,
+     "top_level_term_name": null,
+     "term_id": "MP:0005386",
+     "term_name": "behavior/neurological phenotype",
+     "term_description": null,
+     "p_value": null,
+     "percentage_change": null,
+     "effect_size": null,
+     "procedure_name": null,
+     "parameter_name": null,
+     "gp_assoc": null,
+     "statistical_method": null,
+     "sex": null,
+     "original_id": null
+    }
+   ]
+  },
+  "goa": {
+   "view": "goa",
+   "table": "goa",
+   "where": null,
+   "where_in_release": null,
+   "dataset": {
+    "name": "UniProt",
+    "source": "XML file downloaded from from UniProt query reviewed:yes AND organism:\"Homo sapiens (Human) [9606]\"",
+    "url": "https://www.uniprot.org/uniprot",
+    "comments": null
+   },
+   "comment": null,
+   "rows": 258719,
+   "columns": [
+    {
+     "name": "id",
+     "type": "int64",
+     "rows_with_a_value": 258719,
+     "distinct": 258719,
+     "examples": [
+      "38330",
+      "65386",
+      "88534",
+      "119443",
+      "162038",
+      "191039"
+     ]
+    },
+    {
+     "name": "protein_id",
+     "type": "int64",
+     "rows_with_a_value": 258719,
+     "distinct": 19100,
+     "examples": [
+      "9959",
+      "1085",
+      "11897",
+      "19703",
+      "16497",
+      "3452"
+     ]
+    },
+    {
+     "name": "go_id",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 17903,
+     "examples": [
+      "GO:0046540",
+      "GO:0034656",
+      "GO:1990592",
+      "GO:0050915",
+      "GO:0008352",
+      "GO:0072355"
+     ]
+    },
+    {
+     "name": "go_term",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 17842,
+     "examples": [
+      "P:cilium movement involved in cell motility",
+      "F:SUMO polymer binding",
+      "P:cerebellar cortex morphogenesis",
+      "C:CGRP receptor complex",
+      "P:embryonic ectodermal digestive tract morphogenesis",
+      "F:double-stranded DNA-dependent ATPase activity"
+     ]
+    },
+    {
+     "name": "evidence",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 18,
+     "values": {
+      "IEA": 68025,
+      "IDA": 60052,
+      "TAS": 37757,
+      "IBA": 32444,
+      "ISS": 21378,
+      "IMP": 17115,
+      "HDA": 6426,
+      "IPI": 5557,
+      "NAS": 5054,
+      "ISA": 1399,
+      "IGI": 1095,
+      "IEP": 867,
+      "IC": 849,
+      "EXP": 416,
+      "HMP": 119,
+      "ISM": 86,
+      "HEP": 72,
+      "ISO": 8
+     }
+    },
+    {
+     "name": "goeco",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 18,
+     "values": {
+      "ECO:0000501": 68025,
+      "ECO:0000314": 60052,
+      "ECO:0000304": 37757,
+      "ECO:0000318": 32444,
+      "ECO:0000250": 21378,
+      "ECO:0000315": 17115,
+      "ECO:0007005": 6426,
+      "ECO:0000353": 5557,
+      "ECO:0000303": 5054,
+      "ECO:0000247": 1399,
+      "ECO:0000316": 1095,
+      "ECO:0000270": 867,
+      "ECO:0000305": 849,
+      "ECO:0000269": 416,
+      "ECO:0007001": 119,
+      "ECO:0000255": 86,
+      "ECO:0007007": 72,
+      "ECO:0000266": 8
+     }
+    },
+    {
+     "name": "assigned_by",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 35,
+     "examples": [
+      "UniProtKB",
+      "UniProtKB-KW",
+      "UniProtKB-EC",
+      "CACAO",
+      "LIFEdb",
+      "UniProtKB-UniRule"
+     ]
+    },
+    {
+     "name": "go_type",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 3,
+     "values": {
+      "Process": 126465,
+      "Component": 77707,
+      "Function": 54547
+     }
+    },
+    {
+     "name": "go_term_text",
+     "type": "string",
+     "rows_with_a_value": 258719,
+     "distinct": 17857,
+     "examples": [
+      "negative regulation of neurogenesis",
+      "G protein-coupled acetylcholine receptor activity",
+      "inositol-5-diphosphate-1,2,3,4,6-pentakisphosphate diphosphatase activity",
+      "fibroblast activation",
+      "establishment of protein-containing complex localization to telomere",
+      "S-methyl-5-thioribose-1-phosphate isomerase activity"
+     ]
+    }
+   ],
+   "example_rows": [
+    {
+     "id": "182634",
+     "protein_id": "14548",
+     "go_id": "GO:0006904",
+     "go_term": "P:vesicle docking involved in exocytosis",
+     "evidence": "IEA",
+     "goeco": "ECO:0000501",
+     "assigned_by": "InterPro",
+     "go_type": "Process",
+     "go_term_text": "vesicle docking involved in exocytosis"
+    },
+    {
+     "id": "170050",
+     "protein_id": "13551",
+     "go_id": "GO:0005070",
+     "go_term": "F:SH3/SH2 adaptor activity",
+     "evidence": "IDA",
+     "goeco": "ECO:0000314",
+     "assigned_by": "UniProtKB",
+     "go_type": "Function",
+     "go_term_text": "SH3/SH2 adaptor activity"
+    },
+    {
+     "id": "161449",
+     "protein_id": "12861",
+     "go_id": "GO:0007275",
+     "go_term": "P:multicellular organism development",
+     "evidence": "IBA",
+     "goeco": "ECO:0000318",
+     "assigned_by": "GO_Central",
+     "go_type": "Process",
+     "go_term_text": "multicellular organism development"
+    },
+    {
+     "id": "43016",
+     "protein_id": "3575",
+     "go_id": "GO:0007165",
+     "go_term": "P:signal transduction",
+     "evidence": "TAS",
+     "goeco": "ECO:0000304",
+     "assigned_by": "ProtInc",
+     "go_type": "Process",
+     "go_term_text": "signal transduction"
+    },
+    {
+     "id": "82137",
+     "protein_id": "6426",
+     "go_id": "GO:0006898",
+     "go_term": "P:receptor-mediated endocytosis",
+     "evidence": "ISS",
+     "goeco": "ECO:0000250",
+     "assigned_by": "ARUK-UCL",
+     "go_type": "Process",
+     "go_term_text": "receptor-mediated endocytosis"
+    },
+    {
+     "id": "109433",
+     "protein_id": "8689",
+     "go_id": "GO:0052696",
+     "go_term": "P:flavonoid glucuronidation",
+     "evidence": "IBA",
+     "goeco": "ECO:0000318",
+     "assigned_by": "GO_Central",
+     "go_type": "Process",
+     "go_term_text": "flavonoid glucuronidation"
+    },
+    {
+     "id": "17786",
+     "protein_id": "1380",
+     "go_id": "GO:0005874",
+     "go_term": "C:microtubule",
+     "evidence": "IEA",
+     "goeco": "ECO:0000501",
+     "assigned_by": "Ensembl",
+     "go_type": "Component",
+     "go_term_text": "microtubule"
+    },
+    {
+     "id": "37697",
+     "protein_id": "3179",
+     "go_id": "GO:0045211",
+     "go_term": "C:postsynaptic membrane",
+     "evidence": "IEA",
+     "goeco": "ECO:0000501",
+     "assigned_by": "UniProtKB-SubCell",
+     "go_type": "Component",
+     "go_term_text": "postsynaptic membrane"
+    }
+   ]
+  }
+ }
+}
