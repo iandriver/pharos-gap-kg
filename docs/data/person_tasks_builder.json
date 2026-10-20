@@ -1,0 +1,138 @@
+{
+ "seed": 20261020,
+ "sha256": "7a7cfba42061594141d12093505d6db4161cd37446c73566d2794ddb89f9196c",
+ "tasks": [
+  {
+   "id": "T1",
+   "kind": "tied_no_compound",
+   "text": "How many genes does the graph tie to osteoarthritis? Of those, how many have no drug acting on them and no compound at their family's potency cutoff?",
+   "record": "two numbers: genes tied, and genes with no drug and no compound",
+   "gold": {
+    "tied": 155,
+    "no_compound": 122
+   }
+  },
+  {
+   "id": "T2",
+   "kind": "loci",
+   "text": "How many loci of age-related hearing impairment carry its GWAS link on more than one gene?",
+   "record": "a number",
+   "gold": {
+    "loci": 28
+   }
+  },
+  {
+   "id": "T3",
+   "kind": "study_size",
+   "text": "About how many cases would a study of breast neoplasm need to find a common variant with an odds ratio of 1.1? Did the largest study so far have that many?",
+   "record": "a number of cases, and yes or no",
+   "gold": {
+    "cases": 13959,
+    "had": false
+   }
+  },
+  {
+   "id": "T4",
+   "kind": "first_year",
+   "text": "Is IL13 linked to asthma by GWAS? In what year was the link first reported, and by how many studies in all?",
+   "record": "yes or no, a year, a number of studies",
+   "gold": {
+    "linked": true,
+    "year": 2016,
+    "studies": 12
+   }
+  },
+  {
+   "id": "T5",
+   "kind": "as_of",
+   "text": "As of 2018, was RAB24 linked to chronic kidney disease by GWAS? If not, has a link been reported since, and in what year?",
+   "record": "yes or no, and a year or none",
+   "gold": {
+    "linked_then": false,
+    "year": 2019
+   }
+  },
+  {
+   "id": "T6",
+   "kind": "sources",
+   "text": "How many disease sources assert ERCC6 with hearing loss?",
+   "record": "a number",
+   "gold": {
+    "sources": 2
+   }
+  },
+  {
+   "id": "T7",
+   "kind": "withheld",
+   "text": "The graph withholds a row for APC and familial hyperlipidemia. Which source's row is it, and how many papers mention both?",
+   "record": "a source, and a number of papers",
+   "gold": {
+    "source": "CTD",
+    "papers": 10
+   }
+  },
+  {
+   "id": "T8",
+   "kind": "drug",
+   "text": "Name one drug indicated for Adrenal cortical hypofunction whose mechanism of action is on NR3C1.",
+   "record": "a drug name",
+   "gold": {
+    "drug": [
+     "betamethasone",
+     "betamethasone acetate",
+     "cortisone acetate",
+     "dexamethasone",
+     "hydrocortisone",
+     "hydrocortisone acetate",
+     "hydrocortisone succinate",
+     "methylprednisolone",
+     "methylprednisolone acetate",
+     "prednisolone",
+     "prednisone",
+     "triamcinolone",
+     "triamcinolone acetonide",
+     "triamcinolone diacetate"
+    ]
+   }
+  },
+  {
+   "id": "T9",
+   "kind": "dark",
+   "text": "Is OOSP3 Tdark? If it is, how many criteria must it still clear to leave Tdark?",
+   "record": "yes or no, and a number",
+   "gold": {
+    "tdark": true,
+    "criteria": 2
+   }
+  },
+  {
+   "id": "T10",
+   "kind": "not_in_graph",
+   "text": "What does the graph hold on the gene XKVB4?",
+   "record": "what the graph says",
+   "gold": {
+    "problem": "not_in_graph"
+   }
+  },
+  {
+   "id": "T11",
+   "kind": "absence",
+   "text": "The graph has no GWAS link between DUSP15 and thoracic aortic aneurysm. Does that mean DUSP15 has no association with thoracic aortic aneurysm? For the largest study behind thoracic aortic aneurysm's links, what is the smallest odds ratio a variant carried by 20% of chromosomes needed in order to be found?",
+   "record": "yes or no, and an odds ratio",
+   "gold": {
+    "no_association": false,
+    "odds_ratio": 1.259
+   }
+  },
+  {
+   "id": "T12",
+   "kind": "observation",
+   "text": "The graph holds an expression observation for CHPT1 in Waldenstrons macroglobulinemia. Was its expression higher or lower? Does the graph say CHPT1 is involved in Waldenstrons macroglobulinemia?",
+   "record": "higher or lower, and yes or no",
+   "gold": {
+    "direction": "higher",
+    "involved": false
+   }
+  }
+ ]
+}

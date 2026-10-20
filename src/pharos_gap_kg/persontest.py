@@ -6,11 +6,16 @@ Expected answers are computed from the bundle's tables without the question laye
 the question layer each task and refuses a set where the two disagree. No disease, target or drug in
 a task appears in README.md or docs/ASK.md.
 
+TWO SETS. `first` is the set for researchers (P1, P2, ...). `builder` is a second set of the same
+twelve kinds, for the builder taking the test as B1 (docs/PROTOCOL.md, amendment of 20 Oct); it has its
+own seed and invented gene, and its result is reported apart. Add `--set builder` to any command.
+
 Run:  python -m pharos_gap_kg.persontest freeze pharos319     # write docs/data/person_tasks.json, once
       python -m pharos_gap_kg.persontest check pharos319      # the question layer gives every expected answer
       python -m pharos_gap_kg.persontest sheet                # the participant's task sheet, without answers
       python -m pharos_gap_kg.persontest template             # the file a facilitator fills in during a session
       python -m pharos_gap_kg.persontest grade answers.json   # one session's answers -> docs/data/person_test_<P>.json
+      python -m pharos_gap_kg.persontest session B1 --set builder   # the runner: one task at a time, timed, then the SUS; grades at the end
       python -m pharos_gap_kg.persontest --selftest
 """
 from __future__ import annotations
@@ -19,8 +24,10 @@ import hashlib
 import json
 import random
 import re
+import os
 import statistics
 import sys
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -29,6 +36,15 @@ from pharos_gap_kg import paths
 
 SEED = 20261019
 FAKE = "QZRV7"
+SETS = {"first": {"seed": SEED, "fake": FAKE, "file": "person_tasks.json", "code": r"P\d+"},
+        "builder": {"seed": 20261020, "fake": "XKVB4", "file": "person_tasks_builder.json", "code": r"B\d+"}}
+# What the runner asks for each expected field, in words; never the value.
+PROMPTS = {"tied": "genes tied to it", "no_compound": "of those, genes with no drug and no compound", "loci": "loci", "cases": "cases",
+           "had": "did the largest study have that many (yes or no)", "linked": "linked (yes or no)", "year": "year (or none)", "studies": "studies in all",
+           "linked_then": "linked then (yes or no)", "sources": "sources", "source": "the source", "papers": "papers that mention both", "drug": "a drug",
+           "tdark": "Tdark (yes or no)", "criteria": "criteria still to clear", "problem": "what the graph says",
+           "no_association": "does it mean no association (yes or no)", "odds_ratio": "odds ratio", "direction": "higher or lower",
+           "involved": "does the graph say it is involved (yes or no)"}
 LIMIT_MINUTES, MEDIAN_MINUTES, RIGHT_AT_LEAST = 8.0, 5.0, 9
 SIZE_WITHIN, OR_WITHIN = 0.05, 0.01
 SUS_AVERAGE = 68
@@ -48,8 +64,8 @@ OPEN = ("What was hardest to find, or to trust?", "Was there an answer you did n
         "What would you ask this graph in your own work?")
 
 
-def tasks_path() -> Path:
-    return paths.DOCS_DATA / "person_tasks.json"
+def tasks_path(name: str = "first") -> Path:
+    return paths.DOCS_DATA / SETS[name]["file"]
 
 
 def digest(tasks: list[dict]) -> str:
@@ -61,7 +77,7 @@ def _mentioned(text: str):
     return lambda name: bool(re.search(r"(?<![\w-])" + re.escape(str(name).casefold()) + r"(?![\w-])", t))
 
 
-def make_tasks(bundle: Path, seed: int = SEED) -> list[dict]:
+def make_tasks(bundle: Path, seed: int = SEED, fake: str = FAKE) -> list[dict]:
     from pharos_gap_kg import ask, gaptables
     G = ask.Graph(bundle)
     rng = random.Random(seed)
@@ -151,9 +167,9 @@ def make_tasks(bundle: Path, seed: int = SEED) -> list[dict]:
     r = dark.iloc[rng.randrange(len(dark))]
     used_t.add(r.id)
     add("dark", f"Is {sym[r.id]} Tdark? If it is, how many criteria must it still clear to leave Tdark?", "yes or no, and a number", {"tdark": True, "criteria": int(r.flips)})
-    if G.resolve(FAKE)["ok"] or G.resolve(FAKE)["problem"] != "not in the graph":
-        raise SystemExit(f"REFUSED: {FAKE!r} is in the graph, or looks like something in it")
-    add("not_in_graph", f"What does the graph hold on the gene {FAKE}?", "what the graph says", {"problem": "not_in_graph"})
+    if G.resolve(fake)["ok"] or G.resolve(fake)["problem"] != "not in the graph":
+        raise SystemExit(f"REFUSED: {fake!r} is in the graph, or looks like something in it")
+    add("not_in_graph", f"What does the graph hold on the gene {fake}?", "what the graph says", {"problem": "not_in_graph"})
 
     c = disease(lambda r: pd.notna(r.smallest_odds_ratio_it_could_find))
     linked_to_c = set(links[links.trait == c].target)
@@ -212,7 +228,7 @@ def via_ask(task: dict, G) -> dict:
         d = next((v for v in g["gaps"] if v["kind"] == "dark"), None)
         return {"tdark": g["target"]["pharos_level"] == "Tdark", "criteria": d["criteria_to_clear"] if d else None}
     if k == "not_in_graph":
-        k_ = G.known(FAKE)
+        k_ = G.known(re.match(r"^What does the graph hold on the gene (\S+)\?$", x).group(1))
         return {"problem": "not_in_graph" if k_.get("problem") == "not in the graph" else "found"}
     if k == "absence":
         a, b = re.match(r"^The graph has no GWAS link between (\S+) and (.+?)\. Does", x).groups()
@@ -291,9 +307,9 @@ def sus(items: list[int]) -> float:
     return 2.5 * sum((int(v) - 1) if i % 2 == 0 else (5 - int(v)) for i, v in enumerate(items))
 
 
-def grade(session: dict, tasks: list[dict], frozen_digest: str) -> dict:
-    if not re.fullmatch(r"P\d+", str(session.get("participant", ""))):
-        raise SystemExit("REFUSED: a participant is recorded by a code such as P1, and by nothing that names them")
+def grade(session: dict, tasks: list[dict], frozen_digest: str, name: str = "first") -> dict:
+    if not re.fullmatch(SETS[name]["code"], str(session.get("participant", ""))):
+        raise SystemExit(f"REFUSED: a participant of the {name} set is recorded by a code such as {SETS[name]['code'][0]}1, and by nothing that names them")
     rows, times = [], []
     for t in tasks:
         a = session["tasks"].get(t["id"], {})
@@ -306,7 +322,8 @@ def grade(session: dict, tasks: list[dict], frozen_digest: str) -> dict:
     med = statistics.median(times) if times else None
     score = sus(session["sus"]) if session.get("sus") else None
     usable = n_right >= RIGHT_AT_LEAST and not any(r["invented"] for r in rows) and med is not None and med <= MEDIAN_MINUTES
-    return {"participant": session["participant"], "field": session.get("field"), "years_in_research": session.get("years_in_research"),
+    return {"participant": session["participant"], "set": name, "counts_toward_the_researcher_verdict": name == "first",
+            "field": session.get("field"), "years_in_research": session.get("years_in_research"),
             "client": session.get("client"), "model": session.get("model"), "date": session.get("date"), "tasks_sha256": frozen_digest,
             "right": n_right, "of": len(tasks), "invented": sum(r["invented"] for r in rows), "median_minutes": med,
             "usable_by_this_researcher": bool(usable), "sus": score, "sus_against_average": None if score is None else score - SUS_AVERAGE,
@@ -326,6 +343,78 @@ def template(tasks: list[dict]) -> dict:
     return {"participant": "P1", "field": "", "years_in_research": "", "client": "", "model": "", "date": "",
             "tasks": {t["id"]: {"answer": {k: None for k in t["gold"]}, "minutes": None} for t in tasks},
             "sus": [None] * 10, "open": ["", "", ""]}
+
+
+# ---- the runner, in the facilitator's place -----------------------------------------------------------------
+
+def _write(path: Path, obj) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, indent=1) + "\n")
+    os.replace(tmp, path)
+
+
+def session(participant: str, name: str = "first", where: Path | None = None, inp=input, out=print, clock=time.time) -> dict:
+    """Run one session: each task shown once, timed from when it is shown to when the last part of the
+    answer is entered, then the SUS and the open questions; then grade it. Saved after every step, so a
+    session stopped between tasks resumes where it stopped. A task left mid-way keeps its clock running:
+    its minutes count from when it was first shown. It answers no question about the graph."""
+    where = where or paths.DOCS_DATA
+    f = json.loads((where / SETS[name]["file"]).read_text())
+    if digest(f["tasks"]) != f["sha256"]:
+        raise SystemExit("REFUSED: the frozen tasks do not match their digest")
+    if not re.fullmatch(SETS[name]["code"], participant):
+        raise SystemExit(f"REFUSED: a participant of the {name} set is recorded by a code such as {SETS[name]['code'][0]}1")
+    graded = where / f"person_test_{participant}.json"
+    if graded.is_file():
+        raise SystemExit(f"REFUSED: {graded.name} exists; a session is run and graded once")
+    path = where / f"person_session_{participant}.json"
+    s = json.loads(path.read_text()) if path.is_file() else {**template(f["tasks"]), "participant": participant, "set": name,
+                                                              "date": time.strftime("%Y-%m-%d"), "tasks_sha256": f["sha256"]}
+    tasks = f["tasks"]
+    out(f"\nParticipant {participant}, {len(tasks)} tasks. Ask each one in your MCP client, with web search off and no other source open.\n"
+        f"Press Enter to see a task; its clock starts when it appears. Type your final answer here, one part at a time.\n"
+        f"At most {LIMIT_MINUTES:g} minutes a task. To stop, press Ctrl-C between tasks; what is entered is kept.")
+    if not s.get("client"):
+        s["client"] = inp("\nYour MCP client [Claude Desktop]: ").strip() or "Claude Desktop"
+    if not s.get("model"):
+        s["model"] = inp("The model the client is using, as it shows it: ").strip()
+    if name == "builder":
+        s["field"], s["years_in_research"] = s.get("field") or "the builder of the graph", s.get("years_in_research") or ""
+    else:
+        s["field"] = s.get("field") or inp("Your field: ").strip()
+        s["years_in_research"] = s.get("years_in_research") or inp("Years in research (a band, such as 5-10): ").strip()
+    _write(path, s)
+    for i, t in enumerate(tasks):
+        r = s["tasks"][t["id"]]
+        if r.get("minutes") is not None:
+            continue
+        if r.get("shown_at") is None:
+            inp(f"\nPress Enter to see {t['id']} ({i + 1} of {len(tasks)}). ")
+            r["shown_at"] = clock()
+            _write(path, s)
+        out(f"\n{t['id']}. {t['text']}\n    Answer: {t['record']}")
+        r["answer"] = {k: inp(f"    {PROMPTS[k]}: ").strip() for k in t["gold"]}
+        r["minutes"] = round((clock() - r["shown_at"]) / 60, 2)
+        if r["minutes"] > LIMIT_MINUTES:
+            out(f"    {r['minutes']:.1f} minutes: over the limit, so it is recorded and graded as not answered in time")
+        _write(path, s)
+    out("\nTen statements about the system. For each: 1 strongly disagree, 2, 3, 4, 5 strongly agree.")
+    for i, item in enumerate(SUS_ITEMS):
+        while s["sus"][i] is None:
+            v = inp(f"  {i + 1}. {item} ").strip()
+            if v in {"1", "2", "3", "4", "5"}:
+                s["sus"][i] = int(v)
+        _write(path, s)
+    out("\nThree questions, answered in your own words.")
+    for i, q in enumerate(OPEN):
+        if not s["open"][i]:
+            s["open"][i] = inp(f"  {q} ").strip() or "(no answer)"
+        _write(path, s)
+    g = grade(s, tasks, f["sha256"], name)
+    _write(graded, g)
+    out(f"\n{participant}: {g['right']} of {g['of']} right, {g['invented']} invented, median {g['median_minutes']} minutes a task; "
+        f"usable by the protocol's measure: {g['usable_by_this_researcher']}; SUS {g['sus']}. Recorded in {graded.name}.")
+    return g
 
 
 def _selftest() -> int:
@@ -360,41 +449,77 @@ def _selftest() -> int:
         ck("a participant is recorded by a code, never a name", True)
     ck("the sheet holds the tasks and no expected answer", "14316" not in sheet([{**t, "text": "q", "record": "r"} for t in tasks]))
     ck("a name in the docs is found as a whole word only", _mentioned("APOE and Parkinson disease")("APOE") and not _mentioned("APOE4")("APOE"))
+    ck("every field a task asks for has a prompt in words", {"tied", "no_compound", "loci", "cases", "had", "linked", "year", "studies", "linked_then", "sources",
+                                                           "source", "papers", "drug", "tdark", "criteria", "problem", "no_association", "odds_ratio",
+                                                           "direction", "involved"} <= set(PROMPTS))
+    ck("the builder's set has its own seed and invented gene", SETS["builder"]["seed"] != SETS["first"]["seed"] and SETS["builder"]["fake"] != FAKE)
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        d = Path(d)
+        few = [{**t, "text": f"question {t['id']}", "record": "r"} for t in tasks[:3]]
+        (d / SETS["builder"]["file"]).write_text(json.dumps({"seed": 1, "sha256": digest(few), "tasks": few}))
+        answers = iter(["", "a model", "", "14000", "yes", "", "Galantamine", "", "not in the graph"] + ["4", "2"] * 5 + ["x", "", "z"])
+        ticks = iter([0, 60, 600, 700, 1300, 1400])
+        said = []
+        g = session("B1", "builder", where=d, inp=lambda _="": next(answers), out=said.append, clock=lambda: next(ticks))
+        ck("the runner times each task from when it is shown, grades it, and keeps a blank open answer as said",
+           [r["minutes"] for r in g["tasks"]] == [1.0, 1.67, 1.67] and g["right"] == 3 and g["sus"] == 75 and g["set"] == "builder"
+           and not g["counts_toward_the_researcher_verdict"] and g["open_answers"] == ["x", "(no answer)", "z"] and (d / "person_test_B1.json").is_file())
+        try:
+            session("B1", "builder", where=d, inp=lambda _="": "", out=said.append)
+            ck("a graded session is not run again", False)
+        except SystemExit:
+            ck("a graded session is not run again", True)
+        try:
+            session("P1", "builder", where=d, inp=lambda _="": "", out=said.append)
+            ck("the builder's set takes a builder's code only", False)
+        except SystemExit:
+            ck("the builder's set takes a builder's code only", True)
     return 0 if ok else 1
 
 
 def main(argv: list[str] | None = None) -> int:
-    argv = sys.argv[1:] if argv is None else argv
+    argv = sys.argv[1:] if argv is None else list(argv)
     if "--selftest" in argv:
         return _selftest()
+    name = "first"
+    if "--set" in argv:
+        i = argv.index("--set")
+        name = argv[i + 1]
+        del argv[i:i + 2]
+    if name not in SETS:
+        raise SystemExit(f"no task set {name!r}; the sets are {sorted(SETS)}")
+    tp = tasks_path(name)
     if len(argv) >= 2 and argv[0] in ("freeze", "check"):
         b = paths.bundle(argv[1])
         if argv[0] == "freeze":
-            if tasks_path().is_file():
-                raise SystemExit(f"REFUSED: {tasks_path().name} is frozen and is not written again")
-            ts = make_tasks(b)
+            if tp.is_file():
+                raise SystemExit(f"REFUSED: {tp.name} is frozen and is not written again")
+            ts = make_tasks(b, SETS[name]["seed"], SETS[name]["fake"])
             bad = check(b, ts)
             if bad:
                 raise SystemExit("REFUSED: the question layer disagrees with the expected answers:\n  " + "\n  ".join(bad))
-            tasks_path().write_text(json.dumps({"seed": SEED, "sha256": digest(ts), "tasks": ts}, indent=1) + "\n")
-            print(f"  {len(ts)} tasks frozen -> {tasks_path()}  sha256 {digest(ts)}")
+            tp.write_text(json.dumps({"seed": SETS[name]["seed"], "sha256": digest(ts), "tasks": ts}, indent=1) + "\n")
+            print(f"  {len(ts)} tasks frozen -> {tp}  sha256 {digest(ts)}")
             return 0
-        f = json.loads(tasks_path().read_text())
+        f = json.loads(tp.read_text())
         bad = check(b, f["tasks"])
         print("  the question layer gives every expected answer" if not bad else "\n".join(bad))
         return 0 if not bad else 1
     if argv and argv[0] == "template":
-        ts = json.loads(tasks_path().read_text())["tasks"]
-        print(json.dumps(template(ts), indent=1))
+        print(json.dumps(template(json.loads(tp.read_text())["tasks"]), indent=1))
         return 0
     if argv and argv[0] == "sheet":
-        print(sheet(json.loads(tasks_path().read_text())["tasks"]))
+        print(sheet(json.loads(tp.read_text())["tasks"]))
+        return 0
+    if len(argv) == 2 and argv[0] == "session":
+        session(argv[1], name)
         return 0
     if len(argv) == 2 and argv[0] == "grade":
-        f = json.loads(tasks_path().read_text())
+        f = json.loads(tp.read_text())
         if digest(f["tasks"]) != f["sha256"]:
             raise SystemExit("REFUSED: the frozen tasks do not match their digest")
-        g = grade(json.loads(Path(argv[1]).read_text()), f["tasks"], f["sha256"])
+        g = grade(json.loads(Path(argv[1]).read_text()), f["tasks"], f["sha256"], name)
         out = paths.DOCS_DATA / f"person_test_{g['participant']}.json"
         if out.is_file():
             raise SystemExit(f"REFUSED: {out.name} exists; a session is graded once")
