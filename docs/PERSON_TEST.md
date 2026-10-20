@@ -95,3 +95,43 @@ answer is recorded as invented.
 
 The record holds the participant's code, field, band of years in research, client, model and date,
 each task's result and minutes, the SUS score and the open answers. It holds nothing that names them.
+
+## The builder's session, B1
+
+The builder takes the test alone, on a set of twelve tasks of its own, and is reported apart
+(`docs/PROTOCOL.md`, amendment of 20 Oct). A runner takes the facilitator's place.
+
+**The server, outside `~/Downloads`.** The desktop app cannot start an MCP server, or let it read
+files, under `~/Downloads`, so the server runs from a copy of the package and of the release's bundle:
+
+```bash
+uv venv ~/.pharos-gap-kg/venv
+uv pip install --python ~/.pharos-gap-kg/venv/bin/python ".[server]" -c constraints.txt
+PHAROS_GAP_KG_DATA=~/.pharos-gap-kg/data python -m pharos_gap_kg.release unpack pharos319 data/release/pharos-gap-kg-bundle-pharos319.tar.gz
+```
+
+`release unpack` checks the archive and every file in it against the committed digests. The entry in
+Claude Desktop's config (`~/Library/Application Support/Claude/claude_desktop_config.json`, under
+`mcpServers`) is:
+
+```json
+"pharos-gap-kg": {"command": "/Users/<you>/.pharos-gap-kg/venv/bin/python",
+                  "args": ["-m", "pharos_gap_kg.server", "--bundle", "/Users/<you>/.pharos-gap-kg/data/bundle/pharos319"],
+                  "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}
+```
+
+The app reads its config when it starts, so quit it and open it again after the entry is added.
+
+**The session.** In Claude Desktop, open a new chat, check that `pharos-gap-kg` is among its tools,
+and turn web search off. In a terminal, from the repository:
+
+```bash
+python -m pharos_gap_kg.persontest session B1 --set builder
+```
+
+The runner asks for the client and the model, then shows one task at a time. A task's clock starts when
+it is shown and stops when the last part of the answer is typed; ask it in the chat, and type the
+final answer into the runner. It saves after every step: stop between tasks with Ctrl-C and run the
+same command to go on, and a task left half done keeps its clock running. After the twelfth task it
+asks the ten SUS items and the three open questions, then grades the session and writes
+`docs/data/person_test_B1.json` beside `docs/data/person_session_B1.json`, the answers as typed.
