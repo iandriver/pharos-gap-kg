@@ -22,3 +22,8 @@ def test_the_incremental_rebuild_is_the_full_build_and_a_clean_clone_is_this_che
     n = len({f for s in J("build_graph_pharos319.json")["stages"] for f in s["reads"] + s["writes"]})
     assert c["files_compared"] == r["files_compared"] == n == 112 and c["files_that_differ"] == []
     assert r["files_that_differ"] == ["data:tables/pharos319/_manifest.json"]
+
+
+def test_a_clean_clone_after_the_remodel_is_this_checkout():
+    r = J("reproduce_check_pharos319_e4e581f.json")
+    assert r["files_compared"] == 112 and r["files_that_differ"] == ["data:tables/pharos319/_manifest.json"]

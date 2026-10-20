@@ -1,0 +1,8 @@
+{
+ "release": "pharos319",
+ "what": "a clean clone of e4e581f against this checkout",
+ "files_compared": 112,
+ "files_that_differ": [
+  "data:tables/pharos319/_manifest.json"
+ ]
+}

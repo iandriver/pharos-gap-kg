@@ -2,6 +2,15 @@
 
 Whether someone with only the repository and the published files gets the same graph.
 
+**20 Oct 2026, commit e4e581f,** after the remodel for Biolink 4.4.3 (`findings/GRAPH.md`). The same
+run as on 18 Oct: a clean clone, installed as the README says, the published files read-only, the
+network blocked after the install, and the build traced by `python -m pharos_gap_kg.maintain`. Of the
+112 files the build reads or writes, 111 are byte for byte this checkout's, and the one that differs is
+again the extraction manifest (`docs/data/reproduce_check_pharos319_e4e581f.json`). After the build,
+git showed no change in the clone: every record the build writes under `docs/data` was rewritten byte
+for byte, among them the remodelled graph's records and the release archive's digest. Each stage read
+and wrote the files the committed map gives it.
+
 **18 Oct 2026, commit 8d413c3.** A clean clone, installed as the README says, read the published files
 read-only and ran the README's extraction, `recorded restore` and build block, with the network
 blocked after the install. `python -m pharos_gap_kg.maintain` traced the build and took the digest of
