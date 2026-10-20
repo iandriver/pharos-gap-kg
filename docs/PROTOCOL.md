@@ -1844,3 +1844,19 @@ untouched.
 kgx-gaps' ten checks with every input row an edge or a gap; the reference validator is run again; the
 subgraph check finds no difference from the export; the census of disease gaps and every typed answer
 other than an assertion's edge id are what they were.
+
+**20 Oct 2026, usability with a person: the builder as participant, on Ian's word ("there is really
+only me to test it"), before the builder's tasks were generated.** No researcher outside the project
+is available before the report. Ian, who directed the build, takes the test as participant B1. He is
+not a participant of the kind the section describes, so his session is reported apart, as the
+builder's, and counts toward no verdict for researchers who have not built a knowledge graph. He gets
+twelve tasks of the same twelve kinds, made by the same code with seed 20261020 and an invented gene
+name of their own, and frozen before he sees them (`docs/data/person_tasks_builder.json`); the first
+set stays unseen for a later participant. A command-line runner takes the facilitator's place: it
+shows one task at a time, records the answer as typed and the minutes from the task being shown to
+the answer being entered, then asks the ten SUS items and the three open questions, and answers no
+question about the graph. The MCP server runs from a copy of the package and of the release's bundle
+outside `~/Downloads`, since the desktop app cannot start a server there; the copy is the archive
+whose digest is committed. Everything else is as the section says: Claude Desktop with web search off
+and no other source open, the model the client offers recorded, at most 8 minutes a task, and grading
+by code with the same verdict, reported for B1 alone.
