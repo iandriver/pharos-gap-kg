@@ -98,8 +98,8 @@ questions are not.
 ## Not built
 
 A live Amazon Neptune service, GPU graph analytics, and retrieval-augmented generation over the graph.
-None is scored and no compute is provided. The graph ships as KGX files with a loader script for
-Neptune.
+None is scored and no compute is provided. The graph ships as KGX files; no Neptune loader is
+written.
 
 ## Open questions for the organisers
 

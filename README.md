@@ -1,12 +1,15 @@
 # pharos-gap-kg
 
-A knowledge graph built by an agent from dated [Pharos](https://pharos.nih.gov) snapshots, for the
-Bio-Agent Knowledge Graph Construction Challenge (6 Oct to 17 Nov 2026).
+A knowledge graph built by an agent from the [Pharos](https://pharos.nih.gov) 3.19 database, with each
+GWAS link dated by its first study, for the Bio-Agent Knowledge Graph Construction Challenge (6 Oct to
+17 Nov 2026).
 
 Three properties are the point of it:
 
-- **Every edge carries its lineage.** An edge id is a digest of what the edge claims, and each edge
-  resolves to the source row, the published file and that file's SHA-256.
+- **Every edge carries its lineage.** An edge id is a digest of what the edge claims; each edge names
+  its source, and the graph records the published file and its SHA-256. A GWAS link names its studies
+  and papers, an expression observation its row in the release, and a disease source's assertion the
+  source's own evidence where it gives any.
 - **Every pruned edge stays, as a typed gap.** Removing a link is a claim too. The graph records what
   was removed, by which rule, and what evidence would put it back. The rules and their conformance
   suite are [`kgx-gaps`](https://github.com/iandriver/kgx-gaps).
@@ -60,9 +63,11 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   models (mercury-2.5, deepseek-v4-flash and glm-5.3-flash, in that order) answered 35, 35 and 35;
   34, 35 and 35; 35, 35 and 34; and 34, 35 and 35 through the typed questions, against 31, 33 and 35;
   33, 33 and 34; 32, 34 and 35; and 28, 34 and 35 with SQL over the same tables. Typed beat SQL on two
-  of the four sets. No model answered about an invented gene, drug or disease as if it were known. No
-  person has used it
-  yet; the test is written and frozen ([`docs/PERSON_TEST.md`](docs/PERSON_TEST.md)).
+  of the four sets. A first frozen set, before the faults it showed were fixed, gave 27, 27 and 26
+  typed against 30, 27 and 30 with SQL. No model answered about an invented gene, drug or disease as
+  if it were known. No researcher outside the project has used it yet; the test is written and frozen
+  ([`docs/PERSON_TEST.md`](docs/PERSON_TEST.md)), and the builder takes it first on a separate set,
+  reported apart.
 - **Pruning** ([`findings/PRUNING.md`](findings/PRUNING.md), [`findings/PRUNING2.md`](findings/PRUNING2.md)).
   Each rule is scored on planted false pairs against a bar stated in advance: at least 80% of planted
   pairs withheld, at most 50% of one-source pairs. A cut on how much more often than chance PubMed
@@ -70,8 +75,11 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   withheld, 6,999 by the cut and 249 by in-graph rules on Monarch. On CTD, which holds 5,982 of them,
   it withholds 82.2% [78.2%, 85.7%] of 400 further planted pairs. A model that reads the abstracts
   does worse than the cut. Three sources are out of reach of every rule tried, full text included.
+  How many kept rows are wrong is not measured, and the rule counts a second source by identifier:
+  4,081 withheld rows have a kept row from another source, 4,059 of them DisGeNET's, on a condition of
+  the same name.
 - **Explainability** ([`docs/ASK.md`](docs/ASK.md)). An edge id is a digest of the claim, and each edge
-  resolves to the source row, the published file and its SHA-256. `why` gives the studies behind a
+  names its source. `why` gives the studies behind a
   link; where there is none, what lies nearby, what the trait's largest study could have found and
   the study that would close the gap; and for a withheld row, the rule, the count and what would
   restore it. `subgraph` returns the nodes and edges behind any answer as KGX, with the graph's own
@@ -99,9 +107,12 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   joined on 0.0866, and the same without the pruned rows 0.0864. The context adds to LightGCN
   (+0.0041 [+0.0006, +0.0085]), also on links neither trait lineage nor gene position explains, but
   it is undated, so that is an upper bound; pruning changes nothing (-0.0002 [-0.0007, +0.0002]).
-  Blended into the neighbour score, each kind of context lowers it. A small combiner of neighbours,
-  degree and gene position beats it on links first reported from 2023 (0.1012 against 0.0947, +0.0066
-  [+0.0031, +0.0102]), at loci the training links already hold, and the questions rank by it. Cold
+  Blended into the neighbour score, each kind of context lowers it. Three small combiners of
+  neighbours, degree and gene position beat it on links first reported from 2023; the one named in
+  advance, which the questions rank by, scores 0.1012 against 0.0947 (+0.0066 [+0.0031, +0.0102]), at
+  loci the training links already hold. On links nothing earlier explains it is level with neighbours
+  (+0.0005 [-0.0006, +0.0012]), or behind on the reading that is a lower bound for it (-0.0060
+  [-0.0081, -0.0043]). Cold
   start, rehearsal inside the training years and the controls are in
   [`findings/COLDSTART.md`](findings/COLDSTART.md), [`findings/REHEARSAL.md`](findings/REHEARSAL.md)
   and [`findings/CONTROLS.md`](findings/CONTROLS.md).
@@ -109,8 +120,10 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   each build stage reads and writes. When the recorded PubMed answers for 20 pairs changed, 6 of the 20
   stages were stale and rebuilt, in 72 seconds, and every file came out byte for byte as a full build
   gives.
-- **Reproducible** ([`findings/REPRODUCE.md`](findings/REPRODUCE.md)). A clean clone following the
-  README rebuilds the files of the build block byte for byte as on record.
+- **Reproducible** ([`findings/REPRODUCE.md`](findings/REPRODUCE.md)). A clean clone of commit
+  e4e581f following the README rebuilt 111 of the 112 files the build touches byte for byte as on
+  record, the other being this checkout's longer extraction manifest, and rewrote every committed
+  record unchanged.
 - **For other teams** ([`findings/SNAPSHOTS.md`](findings/SNAPSHOTS.md),
   [`findings/CONTEXT.md`](findings/CONTEXT.md)). The April 2023 and April 2024 Pharos databases hold
   identical link tables, so no later links come from comparing them. One Pharos disease source,

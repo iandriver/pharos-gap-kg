@@ -1,0 +1,66 @@
+{
+ "release": "pharos319",
+ "withheld": 7248,
+ "with_a_same_named_row_from_another_source": 4081,
+ "of_those_under_another_identifier": 4081,
+ "by_withheld_source": {
+  "CTD": 3999,
+  "Monarch": 75,
+  "UniProt Disease": 6,
+  "JensenLab Knowledge MedlinePlus": 1
+ },
+ "rows_by_the_other_source": {
+  "DisGeNET": 4059,
+  "eRAM": 43,
+  "CTD": 27,
+  "Monarch": 18,
+  "UniProt Disease": 17,
+  "JensenLab Knowledge MedlinePlus": 14,
+  "JensenLab Text Mining": 11,
+  "JensenLab Knowledge UniProtKB-KW": 5,
+  "JensenLab Knowledge AmyCo": 1
+ },
+ "examples": [
+  {
+   "target": "UniProtKB:A0A0C5B5G6",
+   "condition": "MESH:D014012",
+   "source": "CTD",
+   "also_asserted_by": [
+    "DisGeNET"
+   ]
+  },
+  {
+   "target": "UniProtKB:A0PJX4",
+   "condition": "MESH:D008106",
+   "source": "CTD",
+   "also_asserted_by": [
+    "DisGeNET"
+   ]
+  },
+  {
+   "target": "UniProtKB:A1A5C7",
+   "condition": "MESH:D008106",
+   "source": "CTD",
+   "also_asserted_by": [
+    "DisGeNET"
+   ]
+  },
+  {
+   "target": "UniProtKB:A1X283",
+   "condition": "MONDO:0015514",
+   "source": "CTD",
+   "also_asserted_by": [
+    "DisGeNET"
+   ]
+  },
+  {
+   "target": "UniProtKB:A1Z1Q3",
+   "condition": "MONDO:0002494",
+   "source": "CTD",
+   "also_asserted_by": [
+    "DisGeNET"
+   ]
+  }
+ ],
+ "names": "the condition's name in the bundle, normalised as the questions normalise names (ask._norm)"
+}
