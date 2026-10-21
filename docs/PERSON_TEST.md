@@ -120,10 +120,16 @@ Claude Desktop's config (`~/Library/Application Support/Claude/claude_desktop_co
                   "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}
 ```
 
-The app reads its config when it starts, so quit it and open it again after the entry is added.
+Edit the config with the app quit. The app reads the file when it starts, keeps it in memory, and
+writes that copy back whenever its settings change, so an entry added while it runs is gone within
+minutes (on 20 Oct one was dropped 2.5 minutes after it was written). When the app has started the
+server, `~/Library/Logs/Claude/mcp.log` has a line `[pharos-gap-kg] Server started and connected
+successfully`.
 
-**The session.** In Claude Desktop, open a new chat, check that `pharos-gap-kg` is among its tools,
-and turn web search off. In a terminal, from the repository:
+**The session.** In Claude Desktop, open a new chat and turn web search off. Check the server is
+connected by asking "Using pharos-gap-kg, what are the gaps for Parkinson disease?": the reply should
+show a tool call named `gaps` before the answer. A reply without one means the server is not
+connected. In a terminal, from the repository:
 
 ```bash
 python -m pharos_gap_kg.persontest session B1 --set builder
