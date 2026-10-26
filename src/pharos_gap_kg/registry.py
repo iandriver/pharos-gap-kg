@@ -27,10 +27,12 @@ class Source:
     published: str          # date in the publisher's listing, ISO
     what: str
     sha256: str | None = None   # pinned after the first verified fetch
+    file: str | None = None     # the name to keep it under, when the url does not end in one
+    command: str | None = None  # how to fetch it, when `fetch` cannot (a file made on request)
 
     @property
     def filename(self) -> str:
-        return self.url.rsplit("/", 1)[1]
+        return self.file or self.url.rsplit("/", 1)[1]
 
     @property
     def path(self) -> Path:
@@ -38,7 +40,7 @@ class Source:
 
     @property
     def fetch_command(self) -> str:
-        return f"python -m pharos_gap_kg.fetch {self.key}"
+        return self.command or f"python -m pharos_gap_kg.fetch {self.key}"
 
 
 _S = [
@@ -78,6 +80,15 @@ _S += [
     Source("gwas_catalog_20261005", "https://ftp.ebi.ac.uk/pub/databases/gwas/releases/2026/10/05/gwas-catalog-associations_ontology-annotated-full.zip",
            72_826_184, "2026-10-05", "GWAS Catalog release of 5 Oct 2026: every curated association with its mapped genes, ontology terms, study and date",
            sha256="c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1"),
+]
+# ClinGen's expert curations of gene-disease validity, to audit what the pruning rule kept and withheld
+# (docs/PROTOCOL.md, "Kept and withheld rows against ClinGen"). ClinGen makes the file on request and
+# changes it as curations are added, so the registry pins the one served on 26 Oct 2026.
+_S += [
+    Source("clingen_gv_20261026", "https://search.clinicalgenome.org/kb/gene-validity/download", 1_133_761, "2026-10-26",
+           "ClinGen gene-disease validity curations as served on 26 Oct 2026 (CSV): 3,715 curations of 3,066 genes, each with a MONDO disease and a classification",
+           sha256="b1fc3a11d606c3f47d838a443b7b9513d18eb3af3c53ed0e31a96c29f3f4a2f8", file="Clingen-Gene-Disease-Summary-2026-10-26.csv",
+           command="python -m pharos_gap_kg.clingen fetch clingen_gv_20261026"),
 ]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 

@@ -1236,6 +1236,71 @@ choices, and the control runs them through the same validator. That an accepted 
 predicate can be valid, fit its domain and range and still say more than the source does. Every
 accepted mapping is listed field by field for a person to read.
 
+## Kept and withheld rows against ClinGen
+
+Defined on 26 Oct 2026, on Ian's word, before any row was matched to a ClinGen classification. The
+only counts looked at first are the ones under "Rows": how many rows fall where ClinGen has curated
+the gene.
+
+**The question.** The pruning rule (second round, above) withholds 7,248 of the 161,611 rows of the
+nine disease sources in the pharos319 bundle. How often a kept row is wrong has not been measured, and
+whether the withheld rows are worse than the kept ones has been measured only on planted pairs.
+ClinGen's gene-disease validity curations are expert panels' judgements, from the literature, of
+whether a gene causes a disease. Neither the sources nor the rule read them. This puts both sides of
+the rule beside them. It is an audit: no bar is set for the graph, the rule is not changed on its
+result, and no row is restored or withheld because of it.
+
+**ClinGen.** The summary file as served on 26 Oct 2026 (registry key `clingen_gv_20261026`, 1,133,761
+bytes, SHA-256 b1fc3a11...): 3,715 curations of 3,066 genes, each naming a MONDO disease. A gene-disease
+pair is *supported* if any of its curations is Definitive, Strong or Moderate; *limited* if none is
+and one is Limited; *against* if every one is Disputed, Refuted or No Known Disease Relationship. A
+pair curated more than once takes the best of its curations, since a second curation of a pair is
+usually for another mode of inheritance.
+
+**Rows.** A row is in scope if its target's symbol is a gene ClinGen has curated and its condition is
+a MONDO id: 51,862 rows, 1,503 of them withheld (CTD 946, Monarch 353, JensenLab Knowledge
+UniProtKB-KW 110, JensenLab Knowledge MedlinePlus 48, UniProt Disease 46; `clingen scope`). An
+in-scope row is *judged* if ClinGen curated its gene for its MONDO id, and takes that pair's class.
+As a secondary reading, a row is also judged when its disease is the same live term in EFO 3.94 as a
+disease curated for the gene, or within two is_a steps above or below one (never across to a
+sibling); a row that matches several takes the best class.
+
+**Measures**, for any set of rows: *agreement*, supported over judged; *against rate*, against over
+judged; *confirmation*, supported over in scope. Each proportion has a Wilson 95% interval.
+
+**What is reported.**
+
+1. The kept rows of all nine sources: agreement and against rate, overall and by source. Where ClinGen
+   has judged a kept row, this is how often expert curation supports it and how often it disputes or
+   refutes it.
+2. For each of the five pruned sources, agreement kept minus withheld, with Newcombe's hybrid score
+   interval; and pooled over the five, each weighted by its judged withheld rows, with a 95% interval
+   from 2,000 draws of a parametric bootstrap of each cell (seed 20261026). The same for confirmation.
+   The pooled figures are also given without Monarch.
+3. The withheld rows ClinGen supports, by source, with examples, and the kept rows it is against.
+
+**Reading.** The rule withholds rows ClinGen judges worse than the ones it keeps if the pooled
+agreement difference, kept minus withheld, has its interval above 0. If the interval includes 0, no
+difference is detected, and its ends bound the difference that could have gone unseen. If it lies
+below 0, the rule withheld rows ClinGen supports more often than the rows it kept. A source with
+fewer than 10 judged withheld rows gets its counts and no verdict of its own, and still enters the
+pooled figure. The exact reading is primary; the secondary reading is reported beside it and decides
+nothing.
+
+**Limits, stated before the result.**
+
+- ClinGen curates mostly Mendelian genes. 109,749 of the 161,611 rows are out of scope, so the figures
+  describe agreement where expert curation exists, not the precision of the graph.
+- A pair ClinGen has not curated is not evidence against a row. Confirmation is therefore a lower
+  bound, and it mixes a row being wrong with a pair not having been curated.
+- Confirmation favours well-published pairs, which ClinGen curates first and which the rule keeps,
+  since the rule reads how often papers mention a pair. Kept rows may confirm more often even if no
+  withheld row is wrong. Agreement among judged rows does not have this bias, and has fewer rows.
+- Monarch's gene-disease associations are assembled from curated sources that may include ClinGen,
+  so Monarch's agreement is not independent of ClinGen. The pooled figures are given without it too.
+- ClinGen's curations run to October 2026, after the release. That suits asking whether a row is
+  true, and means the rule could not have known them.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
