@@ -794,6 +794,32 @@ The entry it writes, for anyone adding it by hand (with the app quit):
   "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}}}
 ```
 
+### Over the web
+
+`--http` serves the same questions as MCP's streamable HTTP at `/mcp`, for a client that connects by
+URL, such as a custom connector in Claude:
+
+```bash
+python -m pharos_gap_kg.server --http --port 8000                 # http://127.0.0.1:8000/mcp
+docker build -t pharos-gap-kg . && docker run --rm -p 8080:8080 pharos-gap-kg
+```
+
+It answers each request on its own and keeps no session, so it can be restarted or run as several
+copies. It serves plain HTTP and is meant to sit behind a host that terminates TLS. In front of the
+questions it:
+
+- limits each client to 60 requests a minute and all clients together to 1,200, answering 429 with
+  Retry-After beyond that. With `--behind-proxy` a client is the address the proxy names, which a
+  client can set itself, so the per-client limit holds only for clients that do not, and the total is
+  the cap that always holds;
+- answers at most 4 requests at a time, and refuses a request body over 64 KB;
+- answers only requests addressed to a name given with `--public-host` (421 otherwise), or to any name
+  with `--public-host '*'`. Bound to a public address, it will not start without one;
+- answers `/health` with the bundle's name.
+
+The image (`Dockerfile`) unpacks the release's bundle, checking every file against the digests
+committed in `docs/data/bundle_archive_pharos319.json`, and runs as an unprivileged user.
+
 ## The subgraph behind an answer
 
 `python -m pharos_gap_kg.subgraph` takes the same question and arguments as `ask` and gives the nodes

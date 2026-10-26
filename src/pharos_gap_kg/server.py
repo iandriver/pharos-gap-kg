@@ -8,16 +8,28 @@ The tool descriptions say which question answers which kind of request. That one
 lets a model pick the second call of a two-step question, so it is written for the model, not for a
 person reading the code.
 
+Over the web (`--http`) the same server answers MCP's streamable HTTP at /mcp, statelessly, so any
+request can go to any copy and a restart loses nothing. It is meant to sit behind a host that
+terminates TLS. In front of it, `Guard` limits requests per client and in all, caps how many run at
+once, and answers /health; the request body is capped at 64 KB, and the Host header must be one the
+server was told it answers to.
+
 Run:  python -m pharos_gap_kg.server                 # stdio, the bundle under data/bundle
       python -m pharos_gap_kg.server --bundle PATH
       PHAROS_GAP_KG_BUNDLE=PATH python -m pharos_gap_kg.server
+      python -m pharos_gap_kg.server --http --port 8000                      # http://127.0.0.1:8000/mcp
+      python -m pharos_gap_kg.server --http --host 0.0.0.0 --public-host kg.example.org --behind-proxy
 
 Needs the optional dependency, from a checkout:  uv pip install -e ".[server]" -c constraints.txt
 """
 from __future__ import annotations
 
 import argparse
+import asyncio
+import json
 import sys
+import time
+from collections import defaultdict, deque
 from pathlib import Path
 
 from pharos_gap_kg import ask
@@ -149,11 +161,90 @@ def build(bundle_dir: Path):
     return app
 
 
+LOCAL = ("127.0.0.1", "localhost", "::1")
+MAX_BODY = 64 * 1024        # a question's arguments are a few hundred bytes
+
+
+class Guard:
+    """In front of the MCP app: /health, requests per minute per client and in all, and how many run at once.
+
+    A client is the address the request came from (with --behind-proxy, the one the proxy names). A
+    refused request gets 429 and Retry-After, and costs the graph nothing."""
+
+    def __init__(self, app, per_client: int, in_all: int, at_once: int, release: str = "", clock=time.monotonic):
+        self.app, self.per_client, self.in_all, self.release, self.clock = app, per_client, in_all, release, clock
+        self.at_once = asyncio.Semaphore(at_once)
+        self.seen: dict[str, deque] = defaultdict(deque)
+        self.all: deque = deque()
+
+    def wait(self, who: str) -> float | None:
+        """Seconds until this client may ask again, or None and the request is counted."""
+        now = self.clock()
+        for q in (self.all, self.seen[who]):
+            while q and now - q[0] >= 60:
+                q.popleft()
+        if len(self.seen) > 10_000:
+            for k in [k for k, q in self.seen.items() if not q]:
+                del self.seen[k]
+        for q, cap in ((self.all, self.in_all), (self.seen[who], self.per_client)):
+            if len(q) >= cap:
+                return max(1.0, 60 - (now - q[0]))
+        self.all.append(now)
+        self.seen[who].append(now)
+        return None
+
+    async def _send(self, send, status: int, body: dict, headers: list | None = None) -> None:
+        await send({"type": "http.response.start", "status": status,
+                    "headers": [(b"content-type", b"application/json")] + (headers or [])})
+        await send({"type": "http.response.body", "body": json.dumps(body).encode()})
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            return await self.app(scope, receive, send)
+        if scope["path"] == "/health":
+            return await self._send(send, 200, {"status": "ok", "bundle": self.release})
+        wait = self.wait((scope.get("client") or ("unknown",))[0])
+        if wait is not None:
+            return await self._send(send, 429, {"error": "too many requests; try again shortly"}, [(b"retry-after", str(int(wait + 0.999)).encode())])
+        async with self.at_once:
+            await self.app(scope, receive, send)
+
+
+def http_app(bundle_dir: Path, host: str, public_hosts: list[str], per_client: int, in_all: int, at_once: int):
+    from mcp.server.transport_security import TransportSecuritySettings
+    if "*" in public_hosts:
+        security = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+    elif public_hosts:
+        security = TransportSecuritySettings(allowed_hosts=[h for p in public_hosts for h in (p, f"{p}:*")],
+                                             allowed_origins=[o for p in public_hosts for o in (f"https://{p}", f"https://{p}:*")])
+    else:
+        security = None     # the library then allows only the local names, when bound to one
+    app = build(bundle_dir).streamable_http_app(stateless_http=True, json_response=True, max_request_body_size=MAX_BODY,
+                                                transport_security=security, host=host)
+    return Guard(app, per_client, in_all, at_once, release=Path(bundle_dir).name)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--bundle", type=Path)
+    ap.add_argument("--http", action="store_true", help="serve MCP's streamable HTTP at /mcp instead of stdio")
+    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument("--public-host", action="append", default=[], help="a Host the server answers to; '*' for any")
+    ap.add_argument("--behind-proxy", action="store_true", help="take the client's address from the proxy's X-Forwarded-For")
+    ap.add_argument("--per-minute", type=int, default=60, help="requests a minute from one client")
+    ap.add_argument("--in-all-per-minute", type=int, default=1200)
+    ap.add_argument("--at-once", type=int, default=4, help="requests answered at the same time")
     a = ap.parse_args(argv)
-    build(a.bundle or ask.default_bundle()).run(transport="stdio")
+    bundle_dir = a.bundle or ask.default_bundle()
+    if not a.http:
+        build(bundle_dir).run(transport="stdio")
+        return 0
+    if a.host not in LOCAL and not a.public_host:
+        raise SystemExit("REFUSED: bound to a public address, the server needs --public-host for each name it is reached by, or --public-host '*'")
+    import uvicorn
+    uvicorn.run(http_app(bundle_dir, a.host, a.public_host, a.per_minute, a.in_all_per_minute, a.at_once), host=a.host, port=a.port,
+                proxy_headers=a.behind_proxy, forwarded_allow_ips="*" if a.behind_proxy else None, log_level="info")
     return 0
 
 
