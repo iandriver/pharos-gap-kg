@@ -757,6 +757,33 @@ For a client configured by JSON:
                                     "args": ["-m", "pharos_gap_kg.server"]}}}
 ```
 
+### Claude Desktop on macOS
+
+Claude Desktop could not start the server from a checkout under `~/Downloads`. macOS protects
+Downloads, Documents and Desktop, and the app starts a server as a separate program that the app's own
+permissions do not cover. Install a copy and its bundle elsewhere, from the checkout with its `.venv`
+active:
+
+```bash
+uv venv ~/.pharos-gap-kg/venv
+uv pip install --python ~/.pharos-gap-kg/venv/bin/python ".[server]" -c constraints.txt
+PHAROS_GAP_KG_DATA=~/.pharos-gap-kg/data python -m pharos_gap_kg.release get pharos319
+```
+
+Quit the app (Cmd-Q) before editing `~/Library/Application Support/Claude/claude_desktop_config.json`.
+The app keeps the file in memory and writes it back when its settings change, which drops an entry
+added while it runs. The entry, with `<you>` replaced:
+
+```json
+{"mcpServers": {"pharos-gap-kg": {"command": "/Users/<you>/.pharos-gap-kg/venv/bin/python",
+  "args": ["-m", "pharos_gap_kg.server", "--bundle", "/Users/<you>/.pharos-gap-kg/data/bundle/pharos319"],
+  "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}}}
+```
+
+Open the app and ask in a new chat "Using pharos-gap-kg, what are the gaps for Parkinson disease?". The
+reply shows a call to the `gaps` tool before the answer; a reply without one means the server is not
+connected, and `~/Library/Logs/Claude/mcp-server-pharos-gap-kg.log` says why.
+
 ## The subgraph behind an answer
 
 `python -m pharos_gap_kg.subgraph` takes the same question and arguments as `ask` and gives the nodes
