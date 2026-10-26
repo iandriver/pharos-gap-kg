@@ -77,8 +77,8 @@ def install_copy(home: Path) -> None:
     if uv:
         _run([uv, "pip", "install", "--python", py, spec, "-c", pins, "--reinstall-package", NAME])
     else:
-        _run([py, "-m", "pip", "install", "--quiet", spec, "-c", pins])
-        _run([py, "-m", "pip", "install", "--quiet", "--force-reinstall", "--no-deps", paths.ROOT])
+        _run([py, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", spec, "-c", pins])
+        _run([py, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", "--force-reinstall", "--no-deps", paths.ROOT])
 
 
 def install_bundle(home: Path, rel: str) -> str:
