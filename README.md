@@ -29,6 +29,7 @@ python -m pharos_gap_kg.release get pharos319          # downloads the bundle, c
 python -m pharos_gap_kg.ask gaps "Parkinson disease"   # the genes tied to a disease, what each lacks, the study that would close it
 python -m pharos_gap_kg.ask why TREM2 "Alzheimer disease" --as-of 2012
 python -m pharos_gap_kg.server                         # the same eight questions over MCP, the Model Context Protocol
+python -m pharos_gap_kg.desktop install                # or put them in Claude Desktop on macOS; quit it first (docs/ASK.md)
 ```
 
 `get` refuses an archive, or a file in it, whose digest is not the one committed in

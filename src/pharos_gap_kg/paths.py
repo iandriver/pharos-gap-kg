@@ -44,6 +44,10 @@ CONTEXT = DATA / "context"                                    # context/<release
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
 RECORDED = (ROOT / "recorded") if ROOT else DATA / "recorded"      # recorded/<release>: committed answers from live services
 RELEASE = DATA / "release"                                    # the bundle archive, as attached to a published release
+DESKTOP_HOME = Path.home() / ".pharos-gap-kg"                 # the copy Claude Desktop runs: venv/ and data/bundle/<release>
+DESKTOP_CONFIG = Path.home() / "Library/Application Support/Claude/claude_desktop_config.json"   # Claude Desktop on macOS
+DESKTOP_LOGS = Path.home() / "Library/Logs/Claude"            # mcp.log says when the app started each server
+DESKTOP_UNREADABLE = [Path.home() / d for d in ("Downloads", "Documents", "Desktop")]   # what macOS keeps from a server the app starts
 
 
 def tables(release: str) -> Path:

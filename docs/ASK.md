@@ -759,30 +759,40 @@ For a client configured by JSON:
 
 ### Claude Desktop on macOS
 
-Claude Desktop could not start the server from a checkout under `~/Downloads`. macOS protects
-Downloads, Documents and Desktop, and the app starts a server as a separate program that the app's own
-permissions do not cover. Install a copy and its bundle elsewhere, from the checkout with its `.venv`
-active:
+Quit the app (Cmd-Q), then from the checkout with its `.venv` active:
 
 ```bash
-uv venv ~/.pharos-gap-kg/venv
-uv pip install --python ~/.pharos-gap-kg/venv/bin/python ".[server]" -c constraints.txt
-PHAROS_GAP_KG_DATA=~/.pharos-gap-kg/data python -m pharos_gap_kg.release get pharos319
+python -m pharos_gap_kg.desktop install
 ```
 
-Quit the app (Cmd-Q) before editing `~/Library/Application Support/Claude/claude_desktop_config.json`.
-The app keeps the file in memory and writes it back when its settings change, which drops an entry
-added while it runs. The entry, with `<you>` replaced:
+Open the app and ask in a new chat "Using pharos-gap-kg, what are the gaps for Parkinson disease?". The
+reply shows a call to the `gaps` tool before the answer; a reply without one means the server is not
+connected, and `~/Library/Logs/Claude/mcp-server-pharos-gap-kg.log` says why. `desktop check` says
+whether the app has started the server, and `desktop remove` takes the entry out of the config.
+
+`install` does three things, each for a failure the builder's own setup met:
+
+- Claude Desktop could not start the server from a checkout under `~/Downloads`. macOS protects
+  Downloads, Documents and Desktop, and the app starts a server as a separate program that the app's
+  own permissions do not cover. So `install` puts a copy of the package, at the versions in
+  `constraints.txt`, in an environment of its own, and the release's bundle beside it, in
+  `~/.pharos-gap-kg` (`--home` names another place). The bundle comes from the checkout's archive if it
+  holds the committed one, and is downloaded otherwise; every digest is checked either way.
+- The app keeps its config in memory and writes it back when its settings change, which drops an entry
+  added while it runs. `install` writes the entry only while the app is closed, after a dated backup,
+  and keeps every other key. Run with the app open, it installs the copy and the bundle and says to
+  quit the app and run it again.
+- Before it finishes, it starts the installed server over MCP in a sandbox that cannot read Downloads,
+  Documents or Desktop, and asks it the Parkinson disease question. A server run from a checkout under
+  `~/Downloads` does not start in that sandbox.
+
+The entry it writes, for anyone adding it by hand (with the app quit):
 
 ```json
 {"mcpServers": {"pharos-gap-kg": {"command": "/Users/<you>/.pharos-gap-kg/venv/bin/python",
   "args": ["-m", "pharos_gap_kg.server", "--bundle", "/Users/<you>/.pharos-gap-kg/data/bundle/pharos319"],
   "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}}}
 ```
-
-Open the app and ask in a new chat "Using pharos-gap-kg, what are the gaps for Parkinson disease?". The
-reply shows a call to the `gaps` tool before the answer; a reply without one means the server is not
-connected, and `~/Library/Logs/Claude/mcp-server-pharos-gap-kg.log` says why.
 
 ## The subgraph behind an answer
 

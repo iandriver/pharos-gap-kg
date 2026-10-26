@@ -32,6 +32,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.evidence --selftest
 	$(PY) -m pharos_gap_kg.litcheck --selftest
 	$(PY) -m pharos_gap_kg.prune2 --selftest
+	$(PY) -m pharos_gap_kg.desktop --selftest
 	$(PY) -m pharos_gap_kg.applycut --selftest
 	$(PY) -m pharos_gap_kg.fulltext --selftest
 	$(PY) -m pharos_gap_kg.recorded --selftest

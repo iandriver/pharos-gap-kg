@@ -102,29 +102,19 @@ The builder takes the test alone, on a set of twelve tasks of its own, and is re
 (`docs/PROTOCOL.md`, amendment of 20 Oct). A runner takes the facilitator's place.
 
 **The server, outside `~/Downloads`.** The desktop app cannot start an MCP server, or let it read
-files, under `~/Downloads`, so the server runs from a copy of the package and of the release's bundle:
+files, under `~/Downloads`, so the server runs from a copy of the package and of the release's bundle
+in `~/.pharos-gap-kg`. With the app quit (Cmd-Q), from the repository:
 
 ```bash
-uv venv ~/.pharos-gap-kg/venv
-uv pip install --python ~/.pharos-gap-kg/venv/bin/python ".[server]" -c constraints.txt
-PHAROS_GAP_KG_DATA=~/.pharos-gap-kg/data python -m pharos_gap_kg.release unpack pharos319 data/release/pharos-gap-kg-bundle-pharos319.tar.gz
+python -m pharos_gap_kg.desktop install
 ```
 
-`release unpack` checks the archive and every file in it against the committed digests. The entry in
-Claude Desktop's config (`~/Library/Application Support/Claude/claude_desktop_config.json`, under
-`mcpServers`) is:
-
-```json
-"pharos-gap-kg": {"command": "/Users/<you>/.pharos-gap-kg/venv/bin/python",
-                  "args": ["-m", "pharos_gap_kg.server", "--bundle", "/Users/<you>/.pharos-gap-kg/data/bundle/pharos319"],
-                  "env": {"PHAROS_GAP_KG_DATA": "/Users/<you>/.pharos-gap-kg/data"}}
-```
-
-Edit the config with the app quit. The app reads the file when it starts, keeps it in memory, and
-writes that copy back whenever its settings change, so an entry added while it runs is gone within
-minutes (on 20 Oct one was dropped 2.5 minutes after it was written). When the app has started the
-server, `~/Library/Logs/Claude/mcp.log` has a line `[pharos-gap-kg] Server started and connected
-successfully`.
+It installs the copy, unpacks the bundle after checking every digest, adds the server to the app's
+config, and asks the installed server one question with Downloads, Documents and Desktop unreadable
+(`docs/ASK.md`, "Claude Desktop on macOS"). It writes the config only while the app is closed: the app
+keeps the file in memory and writes that copy back whenever its settings change, and on 20 Oct an entry
+added while it ran was gone 2.5 minutes later. `python -m pharos_gap_kg.desktop check` says whether the
+app has started the server.
 
 **The session.** In Claude Desktop, open a new chat and turn web search off. Check the server is
 connected by asking "Using pharos-gap-kg, what are the gaps for Parkinson disease?": the reply should
