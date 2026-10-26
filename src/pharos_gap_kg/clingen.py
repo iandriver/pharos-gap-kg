@@ -39,7 +39,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pharos_gap_kg import ontology, paths, registry
+from pharos_gap_kg import ontology, paths, prune2, registry
 
 KEY = "clingen_gv_20261026"
 SUPPORTED = {"Definitive", "Strong", "Moderate"}
@@ -232,6 +232,20 @@ def examples(J: pd.DataFrame, pairs: pd.DataFrame, mask, n: int = 20) -> list:
     return out
 
 
+def searched(rows: pd.DataFrame, release: str) -> dict:
+    """Which of these kept rows the lift cut searched and passed, from the cut's own output (the bundle keeps the counts only on withheld rows)."""
+    f = prune2.work(release) / "applied.parquet"
+    out = {"rows": int(len(rows)), "asserted_by_another_source": int((rows.n_sources > 1).sum())}
+    if not f.is_file():
+        return out | {"searched_by_the_cut": f"not known: {f} is not on disk (python -m pharos_gap_kg.applycut)"}
+    cut = pd.read_parquet(f, columns=["target", "disease", "source", "both"]).rename(columns={"disease": "condition"})
+    m = rows[["target", "condition", "source", "n_sources"]].merge(cut, on=["target", "condition", "source"], how="left")
+    hit = m.both.notna()
+    return out | {"searched_by_the_cut_and_kept": int(hit.sum()), "papers_naming_both_when_searched": [int(m.both[hit].min()), float(m.both[hit].median()), int(m.both[hit].max())] if hit.any() else [],
+                  "not_searched_and_asserted_by_another_source": int((~hit & (m.n_sources > 1)).sum()),
+                  "not_searched_and_asserted_by_no_other_source": sorted(f"{r.symbol} {r.condition} ({r.source})" for r in rows[~hit.to_numpy() & (m.n_sources == 1).to_numpy()].itertuples())}
+
+
 def audit(release: str) -> dict:
     text = registry.require(KEY).read_text(encoding="utf-8")
     cg = read(text)
@@ -245,6 +259,8 @@ def audit(release: str) -> dict:
         by_source.append({"source": s, "side": "withheld" if w else "kept", "rows": int(len(g)),
                           "exact": counts(sc.exact), "near": counts(sc.near)})
     K = J[~J.withheld & J.in_scope]
+    J["n_sources"] = J.groupby(["target", "condition"]).source.transform("nunique")
+    against_pruned = ~J.withheld & (J.exact == "against") & J.source.isin(PRUNED)
     return {
         "release": release, "protocol": "docs/PROTOCOL.md, Kept and withheld rows against ClinGen (26 Oct 2026)",
         "clingen": {"key": KEY, "file": registry.SOURCES[KEY].filename, "sha256": registry.SOURCES[KEY].sha256, "file_created": created(text),
@@ -259,8 +275,13 @@ def audit(release: str) -> dict:
         "pruned_sources": {"exact": compare(J, "exact", rng), "near": compare(J, "near", rng), "min_judged_withheld_for_a_verdict": MIN_JUDGED,
                            "seed": SEED, "draws": DRAWS},
         "withheld_rows_clingen_supports": {"by_source": {s: int(((J.source == s) & J.withheld & (J.exact == "supported")).sum()) for s in PRUNED},
+                                           "by_rule": J[J.withheld & (J.exact == "supported")].rule.value_counts().to_dict(),
+                                           "no_paper_found": int((J.withheld & (J.exact == "supported") & (J.papers == 0)).sum()),
                                            "examples": examples(J, pairs, J.withheld & (J.exact == "supported"))},
+        "withheld_rows_with_no_paper_found": {"all": int((J.withheld & (J.papers == 0)).sum()), "of": int(J.withheld.sum()),
+                                              "in_scope": int((J.withheld & J.in_scope & (J.papers == 0)).sum())},
         "kept_rows_clingen_is_against": {"by_source": {s: int(((J.source == s) & ~J.withheld & (J.exact == "against")).sum()) for s in sorted(J.source.unique())},
+                                         "in_the_pruned_sources": searched(J[against_pruned], release),
                                          "examples": examples(J, pairs, ~J.withheld & (J.exact == "against"))},
     }
 

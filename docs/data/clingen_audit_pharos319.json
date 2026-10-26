@@ -1,0 +1,1329 @@
+{
+ "release": "pharos319",
+ "protocol": "docs/PROTOCOL.md, Kept and withheld rows against ClinGen (26 Oct 2026)",
+ "clingen": {
+  "key": "clingen_gv_20261026",
+  "file": "Clingen-Gene-Disease-Summary-2026-10-26.csv",
+  "sha256": "b1fc3a11d606c3f47d838a443b7b9513d18eb3af3c53ed0e31a96c29f3f4a2f8",
+  "file_created": "2026-10-26",
+  "curations": 3715,
+  "genes": 3066,
+  "diseases": 2177,
+  "pairs": 3656,
+  "pairs_by_class": {
+   "supported": 2830,
+   "limited": 535,
+   "against": 291
+  }
+ },
+ "ontology_for_the_secondary_reading": "efo.obo",
+ "steps": 2,
+ "rows": 161611,
+ "in_scope": 51862,
+ "in_scope_withheld": 1503,
+ "clingen_genes_among_targets": 2830,
+ "kept_rows_of_all_sources": {
+  "exact": {
+   "in_scope": 50359,
+   "judged": 6562,
+   "supported": 5688,
+   "limited": 575,
+   "against": 299,
+   "agreement": [
+    0.8668,
+    0.8584,
+    0.8748
+   ],
+   "against_rate": [
+    0.0456,
+    0.0408,
+    0.0509
+   ],
+   "confirmation": [
+    0.1129,
+    0.1102,
+    0.1157
+   ]
+  },
+  "near": {
+   "in_scope": 50359,
+   "judged": 12964,
+   "supported": 11462,
+   "limited": 927,
+   "against": 575,
+   "agreement": [
+    0.8841,
+    0.8785,
+    0.8895
+   ],
+   "against_rate": [
+    0.0444,
+    0.0409,
+    0.048
+   ],
+   "confirmation": [
+    0.2276,
+    0.224,
+    0.2313
+   ]
+  }
+ },
+ "withheld_rows_of_all_sources": {
+  "exact": {
+   "in_scope": 1503,
+   "judged": 26,
+   "supported": 15,
+   "limited": 6,
+   "against": 5,
+   "agreement": [
+    0.5769,
+    0.3895,
+    0.7446
+   ],
+   "against_rate": [
+    0.1923,
+    0.0851,
+    0.3788
+   ],
+   "confirmation": [
+    0.01,
+    0.0061,
+    0.0164
+   ]
+  },
+  "near": {
+   "in_scope": 1503,
+   "judged": 71,
+   "supported": 43,
+   "limited": 17,
+   "against": 11,
+   "agreement": [
+    0.6056,
+    0.4894,
+    0.7111
+   ],
+   "against_rate": [
+    0.1549,
+    0.0888,
+    0.2565
+   ],
+   "confirmation": [
+    0.0286,
+    0.0213,
+    0.0383
+   ]
+  }
+ },
+ "by_source": [
+  {
+   "source": "CTD",
+   "side": "kept",
+   "rows": 28815,
+   "exact": {
+    "in_scope": 10193,
+    "judged": 1064,
+    "supported": 953,
+    "limited": 77,
+    "against": 34,
+    "agreement": [
+     0.8957,
+     0.8759,
+     0.9126
+    ],
+    "against_rate": [
+     0.032,
+     0.023,
+     0.0443
+    ],
+    "confirmation": [
+     0.0935,
+     0.088,
+     0.0993
+    ]
+   },
+   "near": {
+    "in_scope": 10193,
+    "judged": 1972,
+    "supported": 1767,
+    "limited": 125,
+    "against": 80,
+    "agreement": [
+     0.896,
+     0.8818,
+     0.9088
+    ],
+    "against_rate": [
+     0.0406,
+     0.0327,
+     0.0502
+    ],
+    "confirmation": [
+     0.1734,
+     0.1661,
+     0.1808
+    ]
+   }
+  },
+  {
+   "source": "CTD",
+   "side": "withheld",
+   "rows": 5982,
+   "exact": {
+    "in_scope": 946,
+    "judged": 1,
+    "supported": 0,
+    "limited": 1,
+    "against": 0,
+    "agreement": [
+     0.0,
+     0.0,
+     0.7935
+    ],
+    "against_rate": [
+     0.0,
+     0.0,
+     0.7935
+    ],
+    "confirmation": [
+     0.0,
+     0.0,
+     0.004
+    ]
+   },
+   "near": {
+    "in_scope": 946,
+    "judged": 10,
+    "supported": 6,
+    "limited": 2,
+    "against": 2,
+    "agreement": [
+     0.6,
+     0.3127,
+     0.8318
+    ],
+    "against_rate": [
+     0.2,
+     0.0567,
+     0.5098
+    ],
+    "confirmation": [
+     0.0063,
+     0.0029,
+     0.0138
+    ]
+   }
+  },
+  {
+   "source": "DisGeNET",
+   "side": "kept",
+   "rows": 82453,
+   "exact": {
+    "in_scope": 16810,
+    "judged": 1304,
+    "supported": 1077,
+    "limited": 133,
+    "against": 94,
+    "agreement": [
+     0.8259,
+     0.8044,
+     0.8455
+    ],
+    "against_rate": [
+     0.0721,
+     0.0593,
+     0.0874
+    ],
+    "confirmation": [
+     0.0641,
+     0.0605,
+     0.0679
+    ]
+   },
+   "near": {
+    "in_scope": 16810,
+    "judged": 2657,
+    "supported": 2257,
+    "limited": 241,
+    "against": 159,
+    "agreement": [
+     0.8495,
+     0.8354,
+     0.8625
+    ],
+    "against_rate": [
+     0.0598,
+     0.0514,
+     0.0695
+    ],
+    "confirmation": [
+     0.1343,
+     0.1292,
+     0.1395
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Knowledge AmyCo",
+   "side": "kept",
+   "rows": 260,
+   "exact": {
+    "in_scope": 55,
+    "judged": 5,
+    "supported": 4,
+    "limited": 1,
+    "against": 0,
+    "agreement": [
+     0.8,
+     0.3755,
+     0.9638
+    ],
+    "against_rate": [
+     0.0,
+     0.0,
+     0.4345
+    ],
+    "confirmation": [
+     0.0727,
+     0.0286,
+     0.1726
+    ]
+   },
+   "near": {
+    "in_scope": 55,
+    "judged": 7,
+    "supported": 6,
+    "limited": 1,
+    "against": 0,
+    "agreement": [
+     0.8571,
+     0.4869,
+     0.9743
+    ],
+    "against_rate": [
+     0.0,
+     -0.0,
+     0.3543
+    ],
+    "confirmation": [
+     0.1091,
+     0.051,
+     0.2183
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Knowledge MedlinePlus",
+   "side": "kept",
+   "rows": 4004,
+   "exact": {
+    "in_scope": 2361,
+    "judged": 581,
+    "supported": 498,
+    "limited": 58,
+    "against": 25,
+    "agreement": [
+     0.8571,
+     0.8263,
+     0.8833
+    ],
+    "against_rate": [
+     0.043,
+     0.0293,
+     0.0627
+    ],
+    "confirmation": [
+     0.2109,
+     0.1949,
+     0.2278
+    ]
+   },
+   "near": {
+    "in_scope": 2361,
+    "judged": 1105,
+    "supported": 963,
+    "limited": 77,
+    "against": 65,
+    "agreement": [
+     0.8715,
+     0.8505,
+     0.8899
+    ],
+    "against_rate": [
+     0.0588,
+     0.0464,
+     0.0743
+    ],
+    "confirmation": [
+     0.4079,
+     0.3882,
+     0.4278
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Knowledge MedlinePlus",
+   "side": "withheld",
+   "rows": 103,
+   "exact": {
+    "in_scope": 48,
+    "judged": 0,
+    "supported": 0,
+    "limited": 0,
+    "against": 0,
+    "agreement": [
+     null,
+     null,
+     null
+    ],
+    "against_rate": [
+     null,
+     null,
+     null
+    ],
+    "confirmation": [
+     0.0,
+     0.0,
+     0.0741
+    ]
+   },
+   "near": {
+    "in_scope": 48,
+    "judged": 0,
+    "supported": 0,
+    "limited": 0,
+    "against": 0,
+    "agreement": [
+     null,
+     null,
+     null
+    ],
+    "against_rate": [
+     null,
+     null,
+     null
+    ],
+    "confirmation": [
+     0.0,
+     0.0,
+     0.0741
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Knowledge UniProtKB-KW",
+   "side": "kept",
+   "rows": 3091,
+   "exact": {
+    "in_scope": 1998,
+    "judged": 195,
+    "supported": 135,
+    "limited": 37,
+    "against": 23,
+    "agreement": [
+     0.6923,
+     0.6243,
+     0.7529
+    ],
+    "against_rate": [
+     0.1179,
+     0.0799,
+     0.1708
+    ],
+    "confirmation": [
+     0.0676,
+     0.0574,
+     0.0794
+    ]
+   },
+   "near": {
+    "in_scope": 1998,
+    "judged": 743,
+    "supported": 611,
+    "limited": 81,
+    "against": 51,
+    "agreement": [
+     0.8223,
+     0.7932,
+     0.8481
+    ],
+    "against_rate": [
+     0.0686,
+     0.0526,
+     0.0891
+    ],
+    "confirmation": [
+     0.3058,
+     0.286,
+     0.3264
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Knowledge UniProtKB-KW",
+   "side": "withheld",
+   "rows": 273,
+   "exact": {
+    "in_scope": 110,
+    "judged": 6,
+    "supported": 1,
+    "limited": 3,
+    "against": 2,
+    "agreement": [
+     0.1667,
+     0.0301,
+     0.5635
+    ],
+    "against_rate": [
+     0.3333,
+     0.0968,
+     0.7
+    ],
+    "confirmation": [
+     0.0091,
+     0.0016,
+     0.0497
+    ]
+   },
+   "near": {
+    "in_scope": 110,
+    "judged": 11,
+    "supported": 3,
+    "limited": 5,
+    "against": 3,
+    "agreement": [
+     0.2727,
+     0.0975,
+     0.5656
+    ],
+    "against_rate": [
+     0.2727,
+     0.0975,
+     0.5656
+    ],
+    "confirmation": [
+     0.0273,
+     0.0093,
+     0.0771
+    ]
+   }
+  },
+  {
+   "source": "JensenLab Text Mining",
+   "side": "kept",
+   "rows": 7394,
+   "exact": {
+    "in_scope": 3156,
+    "judged": 316,
+    "supported": 288,
+    "limited": 9,
+    "against": 19,
+    "agreement": [
+     0.9114,
+     0.8749,
+     0.938
+    ],
+    "against_rate": [
+     0.0601,
+     0.0388,
+     0.092
+    ],
+    "confirmation": [
+     0.0913,
+     0.0817,
+     0.1018
+    ]
+   },
+   "near": {
+    "in_scope": 3156,
+    "judged": 710,
+    "supported": 658,
+    "limited": 21,
+    "against": 31,
+    "agreement": [
+     0.9268,
+     0.9052,
+     0.9437
+    ],
+    "against_rate": [
+     0.0437,
+     0.0309,
+     0.0613
+    ],
+    "confirmation": [
+     0.2085,
+     0.1947,
+     0.223
+    ]
+   }
+  },
+  {
+   "source": "Monarch",
+   "side": "kept",
+   "rows": 8628,
+   "exact": {
+    "in_scope": 5285,
+    "judged": 1249,
+    "supported": 1118,
+    "limited": 90,
+    "against": 41,
+    "agreement": [
+     0.8951,
+     0.8769,
+     0.9109
+    ],
+    "against_rate": [
+     0.0328,
+     0.0243,
+     0.0442
+    ],
+    "confirmation": [
+     0.2115,
+     0.2007,
+     0.2228
+    ]
+   },
+   "near": {
+    "in_scope": 5285,
+    "judged": 2248,
+    "supported": 2045,
+    "limited": 129,
+    "against": 74,
+    "agreement": [
+     0.9097,
+     0.8971,
+     0.9209
+    ],
+    "against_rate": [
+     0.0329,
+     0.0263,
+     0.0411
+    ],
+    "confirmation": [
+     0.3869,
+     0.3739,
+     0.4002
+    ]
+   }
+  },
+  {
+   "source": "Monarch",
+   "side": "withheld",
+   "rows": 796,
+   "exact": {
+    "in_scope": 353,
+    "judged": 8,
+    "supported": 4,
+    "limited": 1,
+    "against": 3,
+    "agreement": [
+     0.5,
+     0.2152,
+     0.7848
+    ],
+    "against_rate": [
+     0.375,
+     0.1368,
+     0.6943
+    ],
+    "confirmation": [
+     0.0113,
+     0.0044,
+     0.0288
+    ]
+   },
+   "near": {
+    "in_scope": 353,
+    "judged": 32,
+    "supported": 17,
+    "limited": 9,
+    "against": 6,
+    "agreement": [
+     0.5312,
+     0.3645,
+     0.6913
+    ],
+    "against_rate": [
+     0.1875,
+     0.0889,
+     0.3531
+    ],
+    "confirmation": [
+     0.0482,
+     0.0303,
+     0.0758
+    ]
+   }
+  },
+  {
+   "source": "UniProt Disease",
+   "side": "kept",
+   "rows": 5455,
+   "exact": {
+    "in_scope": 3643,
+    "judged": 1276,
+    "supported": 1154,
+    "limited": 104,
+    "against": 18,
+    "agreement": [
+     0.9044,
+     0.887,
+     0.9193
+    ],
+    "against_rate": [
+     0.0141,
+     0.0089,
+     0.0222
+    ],
+    "confirmation": [
+     0.3168,
+     0.3019,
+     0.3321
+    ]
+   },
+   "near": {
+    "in_scope": 3643,
+    "judged": 2004,
+    "supported": 1837,
+    "limited": 133,
+    "against": 34,
+    "agreement": [
+     0.9167,
+     0.9038,
+     0.928
+    ],
+    "against_rate": [
+     0.017,
+     0.0122,
+     0.0236
+    ],
+    "confirmation": [
+     0.5043,
+     0.488,
+     0.5205
+    ]
+   }
+  },
+  {
+   "source": "UniProt Disease",
+   "side": "withheld",
+   "rows": 94,
+   "exact": {
+    "in_scope": 46,
+    "judged": 11,
+    "supported": 10,
+    "limited": 1,
+    "against": 0,
+    "agreement": [
+     0.9091,
+     0.6226,
+     0.9838
+    ],
+    "against_rate": [
+     0.0,
+     0.0,
+     0.2588
+    ],
+    "confirmation": [
+     0.2174,
+     0.1226,
+     0.3557
+    ]
+   },
+   "near": {
+    "in_scope": 46,
+    "judged": 18,
+    "supported": 17,
+    "limited": 1,
+    "against": 0,
+    "agreement": [
+     0.9444,
+     0.7424,
+     0.9901
+    ],
+    "against_rate": [
+     0.0,
+     -0.0,
+     0.1759
+    ],
+    "confirmation": [
+     0.3696,
+     0.2452,
+     0.514
+    ]
+   }
+  },
+  {
+   "source": "eRAM",
+   "side": "kept",
+   "rows": 14263,
+   "exact": {
+    "in_scope": 6858,
+    "judged": 572,
+    "supported": 461,
+    "limited": 66,
+    "against": 45,
+    "agreement": [
+     0.8059,
+     0.7715,
+     0.8363
+    ],
+    "against_rate": [
+     0.0787,
+     0.0593,
+     0.1037
+    ],
+    "confirmation": [
+     0.0672,
+     0.0615,
+     0.0734
+    ]
+   },
+   "near": {
+    "in_scope": 6858,
+    "judged": 1518,
+    "supported": 1318,
+    "limited": 119,
+    "against": 81,
+    "agreement": [
+     0.8682,
+     0.8503,
+     0.8843
+    ],
+    "against_rate": [
+     0.0534,
+     0.0431,
+     0.0658
+    ],
+    "confirmation": [
+     0.1922,
+     0.183,
+     0.2017
+    ]
+   }
+  }
+ ],
+ "pruned_sources": {
+  "exact": {
+   "CTD": {
+    "agreement_kept_minus_withheld": [
+     0.8957,
+     0.1019,
+     0.9126
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.0935,
+     0.0867,
+     0.0993
+    ],
+    "judged_withheld": 1,
+    "verdict_of_its_own": false
+   },
+   "JensenLab Knowledge MedlinePlus": {
+    "agreement_kept_minus_withheld": [
+     null,
+     null,
+     null
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.2109,
+     0.1351,
+     0.2278
+    ],
+    "judged_withheld": 0,
+    "verdict_of_its_own": false
+   },
+   "JensenLab Knowledge UniProtKB-KW": {
+    "agreement_kept_minus_withheld": [
+     0.5256,
+     0.123,
+     0.675
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.0585,
+     0.0166,
+     0.0725
+    ],
+    "judged_withheld": 6,
+    "verdict_of_its_own": false
+   },
+   "Monarch": {
+    "agreement_kept_minus_withheld": [
+     0.3951,
+     0.1097,
+     0.6804
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.2002,
+     0.1797,
+     0.2134
+    ],
+    "judged_withheld": 8,
+    "verdict_of_its_own": false
+   },
+   "UniProt Disease": {
+    "agreement_kept_minus_withheld": [
+     -0.0047,
+     -0.0814,
+     0.2822
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.0994,
+     -0.0397,
+     0.1954
+    ],
+    "judged_withheld": 11,
+    "verdict_of_its_own": true
+   },
+   "pooled": {
+    "agreement_kept_minus_withheld": [
+     0.2753,
+     0.1269,
+     0.4248
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.1199,
+     0.1133,
+     0.1263
+    ],
+    "agreement_without_monarch": [
+     0.2221,
+     0.0816,
+     0.3556
+    ],
+    "confirmation_without_monarch": [
+     0.0953,
+     0.0882,
+     0.1019
+    ]
+   }
+  },
+  "near": {
+   "CTD": {
+    "agreement_kept_minus_withheld": [
+     0.296,
+     0.0638,
+     0.5836
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.167,
+     0.1566,
+     0.1752
+    ],
+    "judged_withheld": 10,
+    "verdict_of_its_own": true
+   },
+   "JensenLab Knowledge MedlinePlus": {
+    "agreement_kept_minus_withheld": [
+     null,
+     null,
+     null
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.4079,
+     0.3312,
+     0.4278
+    ],
+    "judged_withheld": 0,
+    "verdict_of_its_own": false
+   },
+   "JensenLab Knowledge UniProtKB-KW": {
+    "agreement_kept_minus_withheld": [
+     0.5496,
+     0.2553,
+     0.7267
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.2785,
+     0.2249,
+     0.3059
+    ],
+    "judged_withheld": 11,
+    "verdict_of_its_own": true
+   },
+   "Monarch": {
+    "agreement_kept_minus_withheld": [
+     0.3784,
+     0.2179,
+     0.5456
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.3388,
+     0.3082,
+     0.361
+    ],
+    "judged_withheld": 32,
+    "verdict_of_its_own": true
+   },
+   "UniProt Disease": {
+    "agreement_kept_minus_withheld": [
+     -0.0278,
+     -0.0752,
+     0.1746
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.1347,
+     -0.0107,
+     0.2601
+    ],
+    "judged_withheld": 18,
+    "verdict_of_its_own": true
+   },
+   "pooled": {
+    "agreement_kept_minus_withheld": [
+     0.2904,
+     0.1861,
+     0.3903
+    ],
+    "confirmation_kept_minus_withheld": [
+     0.2222,
+     0.2127,
+     0.232
+    ],
+    "agreement_without_monarch": [
+     0.2181,
+     0.0937,
+     0.338
+    ],
+    "confirmation_without_monarch": [
+     0.1864,
+     0.1759,
+     0.1964
+    ]
+   }
+  },
+  "min_judged_withheld_for_a_verdict": 10,
+  "seed": 20261026,
+  "draws": 2000
+ },
+ "withheld_rows_clingen_supports": {
+  "by_source": {
+   "CTD": 0,
+   "JensenLab Knowledge MedlinePlus": 0,
+   "JensenLab Knowledge UniProtKB-KW": 1,
+   "Monarch": 4,
+   "UniProt Disease": 10
+  },
+  "by_rule": {
+   "literature_lift": 12,
+   "uncorroborated": 2,
+   "literature_lift|uncorroborated": 1
+  },
+  "no_paper_found": 13,
+  "examples": [
+   {
+    "source": "JensenLab Knowledge UniProtKB-KW",
+    "symbol": "APC2",
+    "condition": "MONDO:0018838",
+    "clingen_label": "lissencephaly spectrum disorders",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_4fd2851a-bba3-47eb-a97c-e8bf51ec6766-2022-10-11T160000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "Monarch",
+    "symbol": "FOXE3",
+    "condition": "MONDO:0019625",
+    "clingen_label": "familial thoracic aortic aneurysm and aortic dissection",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGCIEX:assertion_8261",
+    "rule": "literature_lift|uncorroborated"
+   },
+   {
+    "source": "Monarch",
+    "symbol": "PRKG1",
+    "condition": "MONDO:0019625",
+    "clingen_label": "familial thoracic aortic aneurysm and aortic dissection",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGCIEX:assertion_8259",
+    "rule": "uncorroborated"
+   },
+   {
+    "source": "Monarch",
+    "symbol": "TRAPPC9",
+    "condition": "MONDO:0018123",
+    "clingen_label": "intellectual disability-obesity-brain malformations-facial dysmorphism syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_456bfabf-5cad-4a08-bf21-3611a6fbf9b1-2020-08-15T160000.000Z",
+    "rule": "uncorroborated"
+   },
+   {
+    "source": "Monarch",
+    "symbol": "TSPAN7",
+    "condition": "MONDO:0019181",
+    "clingen_label": "non-syndromic X-linked intellectual disability",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_2716e7b3-e038-421a-b584-55f6797502a4-2020-12-02T170000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "ANXA11",
+    "condition": "MONDO:0027694",
+    "clingen_label": "amyotrophic lateral sclerosis type 23",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_4dca2f56-87c6-4ac7-97bf-0889883b8e63-2021-11-12T215939.032Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "ATP1A1",
+    "condition": "MONDO:0054833",
+    "clingen_label": "Charcot-Marie-tooth disease, axonal, type 2DD",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_65182954-6603-4880-85fa-352700bd784b-2026-07-29T160000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "CFAP43",
+    "condition": "MONDO:0054723",
+    "clingen_label": "spermatogenic failure 19",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_a5055c70-e22e-47e5-af3b-04f3f2a0ed34-2022-12-14T200000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "IFT81",
+    "condition": "MONDO:0033485",
+    "clingen_label": "short-rib thoracic dysplasia 19 with or without polydactyly",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_eb2fbc39-acf0-4c60-904a-d712171f601d-2025-03-05T170000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "KIF5A",
+    "condition": "MONDO:0060670",
+    "clingen_label": "amyotrophic lateral sclerosis, susceptibility to, 25",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_5e7d2674-bce3-469c-b1e4-5cf57f5780a8-2022-05-26T110000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "OGT",
+    "condition": "MONDO:0030907",
+    "clingen_label": "intellectual disability, X-linked 106",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_07776d36-7494-4ee4-992e-c6fb82c36749-2024-08-08T160000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "RUSC2",
+    "condition": "MONDO:0030915",
+    "clingen_label": "intellectual disability, autosomal recessive 61",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_5bb8b3f0-db7d-428b-9d37-82d3dfd0f2d1-2025-10-27T160000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "TIMM50",
+    "condition": "MONDO:0044724",
+    "clingen_label": "3-methylglutaconic aciduria type 9",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_92bd34f9-b744-4246-b50f-cfa8ab95597b-2021-10-25T202158.414Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "TRAPPC6B",
+    "condition": "MONDO:0060640",
+    "clingen_label": "neurodevelopmental disorder with microcephaly, epilepsy, and brain atrophy",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_b98a9fbd-43ee-460c-8e22-0f2d31309b82-2024-11-19T170000.000Z",
+    "rule": "literature_lift"
+   },
+   {
+    "source": "UniProt Disease",
+    "symbol": "UBTF",
+    "condition": "MONDO:0044701",
+    "clingen_label": "childhood-onset motor and cognitive regression syndrome with extrapyramidal movement disorder",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_1a5d6060-b955-49a0-9804-265838495310-2023-08-16T190000.000Z",
+    "rule": "literature_lift"
+   }
+  ]
+ },
+ "withheld_rows_with_no_paper_found": {
+  "all": 3672,
+  "of": 7248,
+  "in_scope": 745
+ },
+ "kept_rows_clingen_is_against": {
+  "by_source": {
+   "CTD": 34,
+   "DisGeNET": 94,
+   "JensenLab Knowledge AmyCo": 0,
+   "JensenLab Knowledge MedlinePlus": 25,
+   "JensenLab Knowledge UniProtKB-KW": 23,
+   "JensenLab Text Mining": 19,
+   "Monarch": 41,
+   "UniProt Disease": 18,
+   "eRAM": 45
+  },
+  "in_the_pruned_sources": {
+   "rows": 141,
+   "asserted_by_another_source": 126,
+   "searched_by_the_cut_and_kept": 14,
+   "papers_naming_both_when_searched": [
+    1,
+    12.5,
+    64
+   ],
+   "not_searched_and_asserted_by_another_source": 126,
+   "not_searched_and_asserted_by_no_other_source": [
+    "SCN9A MONDO:0005027 (JensenLab Knowledge UniProtKB-KW)"
+   ]
+  },
+  "examples": [
+   {
+    "source": "CTD",
+    "symbol": "ABCA4",
+    "condition": "MONDO:0007932",
+    "clingen_label": "age related macular degeneration 2",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_3f249e6f-9a1c-4c82-893b-dfaa327cc06b-2025-03-06T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "ACAT2",
+    "condition": "MONDO:0013548",
+    "clingen_label": "acetyl-CoA acetyltransferase-2 deficiency",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_7cb46678-6e33-4d34-86ba-fdf59e59fb80-2021-01-25T194853.212Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "AVPR1A",
+    "condition": "MONDO:0005258",
+    "clingen_label": "autism spectrum disorder",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_8ea232de-063f-489a-b00a-8c5d11dbe43a-2022-03-01T110000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "BRAF",
+    "condition": "MONDO:0009026",
+    "clingen_label": "Costello syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_f229eceb-8f5e-4ecb-a484-7863b8dc7d19-2018-07-24T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "BTK",
+    "condition": "MONDO:0010615",
+    "clingen_label": "isolated growth hormone deficiency type III",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_6341781b-9ba9-41b1-889a-8d65a9b3ebb7-2020-11-17T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "CRB1",
+    "condition": "MONDO:0008246",
+    "clingen_label": "pigmented paravenous retinochoroidal atrophy",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_d963441b-23b3-4b5f-9ff4-66fcd7b01069-2026-07-02T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "DECR1",
+    "condition": "MONDO:0014464",
+    "clingen_label": "progressive encephalopathy with leukodystrophy due to DECR deficiency",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_1d25dfe8-8d0b-4b45-b04c-b315ebdceaaa-2021-01-25T194921.121Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "FANCM",
+    "condition": "MONDO:0019391",
+    "clingen_label": "Fanconi anemia",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_28865445-bea0-42c1-8f50-fae94e93f1d8-2024-12-10T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "FOXI1",
+    "condition": "MONDO:0023069",
+    "clingen_label": "enlarged vestibular aqueduct syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_d3a6b8fa-01d1-4f32-a45e-9c9582e14280-2018-02-27T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "IGBP1",
+    "condition": "MONDO:0010333",
+    "clingen_label": "corpus callosum agenesis-intellectual disability-coloboma-micrognathia syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_dbeb1651-add0-4a44-87ad-a56c7864f076-2021-02-02T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "KCNE2",
+    "condition": "MONDO:0002442",
+    "clingen_label": "long QT syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_9912be79-b172-46ca-a67c-99698de5590b-2020-12-15T002341.412Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "KCNJ10",
+    "condition": "MONDO:0023069",
+    "clingen_label": "enlarged vestibular aqueduct syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_09f81c95-1213-4029-a6bd-279e52f240c7-2018-02-20T170000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "KIF1B",
+    "condition": "MONDO:0007308",
+    "clingen_label": "Charcot-Marie-Tooth disease type 2A1",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_ae6ffeae-9609-47bf-89a9-4863cf6ef05c-2026-10-19T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "KRAS",
+    "condition": "MONDO:0009026",
+    "clingen_label": "Costello syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_bc9a82d0-8447-454c-8d54-def792d20e1d-2018-07-24T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "MAP2K1",
+    "condition": "MONDO:0009026",
+    "clingen_label": "Costello syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_8d28301c-df25-4c10-9edb-34be26f2838d-2018-07-24T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "MED25",
+    "condition": "MONDO:0011570",
+    "clingen_label": "Charcot-Marie-Tooth disease type 2B2",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_c0e0d66f-c68d-4df3-bab2-71afc448e4b0-2021-03-22T201527.084Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "MSX1",
+    "condition": "MONDO:0008582",
+    "clingen_label": "tooth and nail syndrome",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_bb08639f-7c58-45f1-8b00-644fcc820a38-2023-10-19T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "MYH6",
+    "condition": "MONDO:0005045",
+    "clingen_label": "hypertrophic cardiomyopathy",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_ee5380a4-0dee-49aa-b911-141502648144-2023-07-12T020000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "NPPA",
+    "condition": "MONDO:0005021",
+    "clingen_label": "dilated cardiomyopathy",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_d85124b6-b754-4a0f-bbe4-3bbf1ca95283-2024-09-06T160000.000Z",
+    "rule": ""
+   },
+   {
+    "source": "CTD",
+    "symbol": "NTF4",
+    "condition": "MONDO:0013134",
+    "clingen_label": "glaucoma 1, open angle, O",
+    "clingen_report": "https://search.clinicalgenome.org/kb/gene-validity/CGGV:assertion_144eb479-2c08-47cd-a6d2-8e1abef5cf54-2022-12-15T170000.000Z",
+    "rule": ""
+   }
+  ]
+ }
+}
