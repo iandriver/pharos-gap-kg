@@ -308,3 +308,25 @@ def test_the_judges_read_corrections(T):
     for fig in ("+0.0148 [+0.0074, +0.0243]", "+0.0162 [+0.0130, +0.0197]"):
         assert fig in cold and fig in T
     assert "MT-RNR1" not in T and "one exception" not in T and "no wrong property type" not in T
+
+
+def test_the_clingen_audit(T):
+    d = J("clingen_audit_pharos319.json")
+    k, w = d["kept_rows_of_all_sources"]["exact"], d["withheld_rows_of_all_sources"]["exact"]
+    ci = lambda x: f"{pc(x[0])} [{pc(x[1])}, {pc(x[2])}]"
+    un = lambda x: f"{x[0]:.3f} [{x[1]:.3f}, {x[2]:.3f}]"
+    by = {(b["source"], b["side"]): b["exact"] for b in d["by_source"]}
+    P = d["pruned_sources"]["exact"]
+    s = d["kept_rows_clingen_is_against"]["in_the_pruned_sources"]
+    sup = d["withheld_rows_clingen_supports"]
+    has(T, f"judged gene-disease validity for {d['clingen']['genes']:,} genes", f"Where they have judged a kept row, {k['judged']:,} rows, they support {ci(k['agreement'])} and are against {ci(k['against_rate'])}",
+        f"from {pc(by[('UniProt Disease', 'kept')]['against_rate'][0])} on UniProt Disease to {pc(by[('JensenLab Knowledge UniProtKB-KW', 'kept')]['against_rate'][0])} on JensenLab Knowledge UniProtKB-KW",
+        f"They have judged {w['judged']} withheld rows", f"by {un(P['pooled']['agreement_kept_minus_withheld'])}, and by {un(P['pooled']['agreement_without_monarch'])} without Monarch",
+        f"ClinGen supports {by[('UniProt Disease', 'withheld')]['supported']} of the {by[('UniProt Disease', 'withheld')]['judged']} rows withheld from it",
+        f"Of the {sum(sup['by_source'].values())} withheld rows ClinGen supports, the cut withheld {sup['no_paper_found']} because",
+        f"Of the {s['rows']} kept rows of the pruned sources that ClinGen is against, {s['asserted_by_another_source']} are asserted by a second source",
+        f"{d['rows'] - d['in_scope']:,} of the {d['rows']:,} rows are outside ClinGen's scope",
+        f"Where ClinGen's expert panels have judged a kept row, {k['judged']:,} rows, they support {pc(k['agreement'][0])} and are against {pc(k['against_rate'][0])}",
+        f"They support the {w['judged']} withheld rows they have judged less often")
+    assert P["UniProt Disease"]["verdict_of_its_own"] and P["UniProt Disease"]["agreement_kept_minus_withheld"][1] < 0
+    assert sup["by_rule"].get("literature_lift", 0) + sup["by_rule"].get("literature_lift|uncorroborated", 0) == sup["no_paper_found"]

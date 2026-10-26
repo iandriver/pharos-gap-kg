@@ -70,7 +70,7 @@ it is not read as a verdict.
 
 15 withheld rows are pairs ClinGen supports: UniProt Disease 10, Monarch 4, JensenLab Knowledge
 UniProtKB-KW 1. For 13 of them the PubMed search found no paper naming the gene with the disease, so
-the lift was 0 and the cut withheld the row. They are Mendelian subtypes under numbered names, such as
+the lift was 0 and the cut withheld the row. Most are Mendelian subtypes, several named by number:
 CFAP43 with spermatogenic failure 19, KIF5A with amyotrophic lateral sclerosis 25, and OGT with
 X-linked intellectual disability 106. The other two are Monarch rows withheld for having no second
 source, PRKG1 with familial thoracic aortic aneurysm and dissection and TRAPPC9 with its intellectual

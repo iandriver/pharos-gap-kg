@@ -76,9 +76,11 @@ Started 6 Oct 2026. What exists, by the challenge's criteria. The progress repor
   withheld, 6,999 by the cut and 249 by in-graph rules on Monarch. On CTD, which holds 5,982 of them,
   it withholds 82.2% [78.2%, 85.7%] of 400 further planted pairs. A model that reads the abstracts
   does worse than the cut. Three sources are out of reach of every rule tried, full text included.
-  How many kept rows are wrong is not measured, and the rule counts a second source by identifier:
-  4,081 withheld rows have a kept row from another source, 4,059 of them DisGeNET's, on a condition of
-  the same name.
+  Against ClinGen's expert curations ([`findings/CLINGEN.md`](findings/CLINGEN.md)), where they judge
+  a kept row (6,562 rows) they support 86.7% and are against 4.6%, and they support the 26 withheld
+  rows they judge less often, though not on UniProt Disease (10 of 11 supported). The rule counts a
+  second source by identifier: 4,081 withheld rows have a kept row from another source, 4,059 of them
+  DisGeNET's, on a condition of the same name.
 - **Explainability** ([`docs/ASK.md`](docs/ASK.md)). An edge id is a digest of the claim, and each edge
   names its source. `why` gives the studies behind a
   link; where there is none, what lies nearby, what the trait's largest study could have found and
