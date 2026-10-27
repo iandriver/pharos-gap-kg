@@ -820,6 +820,11 @@ questions it:
 The image (`Dockerfile`) unpacks the release's bundle, checking every file against the digests
 committed in `docs/data/bundle_archive_pharos319.json`, and runs as an unprivileged user.
 
+A copy runs at `https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp`: this image on AWS App Runner, one
+instance of 1 vCPU and 2 GB, health-checked at `/health`. In Claude, add it as a custom connector
+(Settings, Connectors). `scripts/deploy_apprunner.sh` builds the image from the current commit and
+creates or updates that service.
+
 ## The subgraph behind an answer
 
 `python -m pharos_gap_kg.subgraph` takes the same question and arguments as `ask` and gives the nodes

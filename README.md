@@ -18,7 +18,13 @@ Three properties are the point of it:
 
 ## Try it
 
-The questions read a bundle of files that each release carries as a 16 MB archive (20 MB
+The questions are served at `https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp`. In Claude, add that address as a custom connector
+named pharos-gap-kg (Settings, Connectors) and ask, for example, "Using pharos-gap-kg, what are the
+gaps for Parkinson disease?". It is this repository's container image with the Pharos 3.19 bundle,
+on AWS App Runner, deployed from a commit by `scripts/deploy_apprunner.sh`; its request limits are
+in [`docs/ASK.md`](docs/ASK.md#over-the-web).
+
+To run them yourself: they read a bundle of files that each release carries as a 16 MB archive (20 MB
 unpacked), so trying them needs neither the 2.5 GB of published files nor the build:
 
 ```bash
