@@ -36,6 +36,7 @@ aws ecr describe-repositories --region "$REGION" --repository-names "$NAME" >/de
   || aws ecr create-repository --region "$REGION" --repository-name "$NAME" --image-scanning-configuration scanOnPush=true >/dev/null
 aws ecr get-login-password --region "$REGION" | docker login --username AWS --password-stdin "$REGISTRY" >/dev/null
 docker push -q "$IMAGE"
+docker logout "$REGISTRY" >/dev/null   # the login token is written to ~/.docker/config.json unencrypted
 
 echo "3. the role App Runner reads the registry with"
 ROLE="AppRunnerECRAccessRole-$NAME"
