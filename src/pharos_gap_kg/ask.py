@@ -52,6 +52,19 @@ NOT_ABSENCE = ("No link here means no study in this source had reported one by t
 # The extended MHC on chromosome 6 (GRCh38), where one association signal spans dozens of genes. This
 # only adds a caution to an answer. It does not change a score or a rank.
 MHC = ("6", 25_000_000, 34_000_000)
+LATER_NOTE = ("A study added after the release, by hand: every other source stops where the release does. A predicted effector gene is the "
+              "study's prediction of the gene that acts at a locus, not a finding that it is the cause.")
+
+
+def _and(xs: list[str]) -> str:
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def later_dir(bundle_dir: Path) -> Path:
+    """Where studies added after the release sit beside a bundle: <data>/later/<release> for <data>/bundle/<release>."""
+    return Path(bundle_dir).parent.parent / "later" / Path(bundle_dir).name
+
+
 MHC_NOTE = "in the MHC region of chromosome 6, where one association signal spans many genes; treat neighbouring MHC candidates as one lead"
 TRAIT_BINS = [(1, 10), (11, 50), (51, 100), (101, 500)]
 TARGET_BINS = [(1, 5), (6, 20), (21, 50)]
@@ -93,7 +106,9 @@ def group_leads(ranked, related, label, top: int) -> list[dict]:
 
 
 class Graph:
-    def __init__(self, bundle_dir: Path, verify: bool = True):
+    def __init__(self, bundle_dir: Path, verify: bool = True, later: Path | None = None):
+        """later: where studies added after the release sit (`later_dir`). Only the server and the
+        command line pass it; code that computes from the release reads the release alone."""
         self.dir = Path(bundle_dir)
         man = self.dir / "manifest.json"
         if not man.is_file():
@@ -156,6 +171,17 @@ class Graph:
         for i, c in enumerate(d.live_term):
             if c:
                 self._live.setdefault(c.casefold(), []).append(i)
+        self.later, self.later_studies = None, {}
+        lm = Path(later) / "manifest.json" if later is not None else None
+        if lm is not None and lm.is_file():
+            m_ = json.loads(lm.read_text())
+            if m_["release"] != self.manifest["release"]:
+                raise SystemExit(f"REFUSED: {lm} is for {m_['release']}, the bundle for {self.manifest['release']}")
+            for f, want in m_["files"].items():
+                if graph.file_sha(lm.parent / f) != want:
+                    raise SystemExit(f"REFUSED: {f} in {lm.parent} is not the file its manifest describes; run:  python -I -m pharos_gap_kg.later build {m_['release']}")
+            self.later = pd.concat([pd.read_parquet(lm.parent / f) for f in sorted(m_["files"])], ignore_index=True)
+            self.later_studies = m_["studies"]
 
     # ------------------------------------------------------------------ pieces
     @property
@@ -539,6 +565,10 @@ class Graph:
                  self.others.condition(self.others.ids("trait", lab["id"]), lab["name"], limit))
             out["other_sources"] = o
             out["answer"] += " " + o["answer"]
+        lat = self._later_rows(**{r["kind"]: lab["id"]})
+        if len(lat):
+            out["after_the_release"] = self._later_known(lat, r["kind"], lab, limit)
+            out["answer"] += " " + out["after_the_release"]["answer"]
         return out
 
     def why(self, target: str, trait: str, as_of: int | None = None, limit: int = 15) -> dict:
@@ -562,7 +592,69 @@ class Graph:
             out["asserted_elsewhere"] = bool(o["asserted_by"])
             out["other_sources"] = o
             out["answer"] += " " + o["answer"]
+        if len(self._later_rows(trait=self.d.id[b["i"]])):
+            out["after_the_release"] = self._later_why(self._later_rows(target=tid, trait=self.d.id[b["i"]]), out["target"]["symbol"], out["found"])
+            out["answer"] += (" " + out["after_the_release"]["answer"]) if out["after_the_release"]["answer"] else ""
         return out
+
+    # ------------------------------------------------------------------ studies added after the release
+    def _later_rows(self, target: str | None = None, trait: str | None = None) -> pd.DataFrame:
+        """The links of studies added after the release (`later`), for a target, a trait or both."""
+        if self.later is None:
+            return pd.DataFrame()
+        m = np.ones(len(self.later), bool)
+        if target is not None:
+            m &= (self.later.target == target).to_numpy()
+        if trait is not None:
+            m &= (self.later.trait == trait).to_numpy()
+        return self.later[m]
+
+    def _later_study(self, key: str) -> dict:
+        s = self.later_studies[key]
+        return {"study": s["citation"], "doi": s["doi"], "published": s["published"], "added": s["added"], "licence": s["licence"], "what": s["what"]}
+
+    def _later_link(self, r) -> dict:
+        tl = {k: v for k, v in self._tlabel(self.ti[r.target]).items() if k in ("id", "symbol", "pharos_level")} if r.target in self.ti else {"id": r.target, "symbol": r.symbol}
+        k = self._row(self.ti[r.target], self.di[r.trait]) if r.target in self.ti and r.trait in self.di else None
+        return {**tl, "trait": self._dlabel(self.di[r.trait])["name"] if r.trait in self.di else r.trait, "first_reported": int(r.year),
+                "study": self.later_studies[r.study]["citation"], "as": "a predicted effector gene",
+                "locus": {"number_in_the_study": int(r.locus), "lead_variant": r.rsid, "chromosome": r.chromosome, "start": int(r.start), "end": int(r.end), "build": "GRCh37",
+                          "p": float(r.p_value), "new_in_this_study": bool(r.new_locus)},
+                "also_named_by": list(r.also_named_by), "linked_in_the_release": k is not None}
+
+    @staticmethod
+    def _locus_say(x: dict) -> str:
+        lo = x["locus"]
+        c = list(x["also_named_by"])
+        by = f"; its {_and(c)} column{'s also name' if len(c) > 1 else ' also names'} it" if c else ""
+        return f"locus {lo['number_in_the_study']} ({lo['lead_variant']}, {'new in that study' if lo['new_in_this_study'] else 'reported before that study'}{by})"
+
+    def _later_known(self, lat: pd.DataFrame, kind: str, lab: dict, limit: int) -> dict:
+        rows = [self._later_link(r) for r in lat.sort_values(["locus", "symbol"]).itertuples()]
+        keys = list(dict.fromkeys(lat.study))
+        cite = _and([self.later_studies[k]["citation"] for k in keys])
+        if kind == "target":
+            say = (f"Added after the release: {cite} names {lab['symbol']} as a predicted effector gene for "
+                   + "; ".join(f"{x['trait']} at {self._locus_say(x)}" for x in rows) + ".")
+        else:
+            genes, new = lat.symbol.nunique(), lat[lat.new_locus].symbol.nunique()
+            not_linked = sum(1 for x in {x["symbol"]: x for x in rows}.values() if not x["linked_in_the_release"])
+            say = (f"Added after the release: {cite} names {genes:,} genes at {lat.locus.nunique():,} loci as predicted effector genes for {lab['name']}, "
+                   f"{new:,} of them at loci new in that study; {not_linked:,} of the {genes:,} have no link to it in the release.")
+        return {"studies": [self._later_study(k) for k in keys], "links": len(rows), "top": rows[:limit], "more": max(0, len(rows) - limit), "answer": say, "note": LATER_NOTE}
+
+    def _later_why(self, lat: pd.DataFrame, symbol: str, found: bool) -> dict:
+        keys = list(dict.fromkeys(self.later[self.later.trait == lat.trait.iloc[0]].study)) if len(lat) else list(self.later_studies)
+        cite = _and([self.later_studies[k]["citation"] for k in keys])
+        if not len(lat):
+            return {"named": False, "studies": [self._later_study(k) for k in keys], "answer": "",
+                    "note": f"{cite}, added after the release, does not name {symbol} among its predicted effector genes; a study that does not name a gene is not evidence against it. " + LATER_NOTE}
+        rows = [self._later_link(r) for r in lat.sort_values("locus").itertuples()]
+        where = "; ".join(self._locus_say(x) for x in rows)
+        say = (f"Added after the release: {cite} also names {symbol} as a predicted effector gene, at {where}." if found else
+               f"Added after the release: {cite} reports a link the release does not hold: it names {symbol} as a predicted effector gene, at {where}. "
+               f"The absence above stands as of the release.")
+        return {"named": True, "studies": [self._later_study(k) for k in keys], "links": rows, "answer": say, "note": LATER_NOTE}
 
     def _why_dated(self, a: dict, b: dict, y: int, limit: int) -> dict:
         """The dated GWAS link between a target and a trait, or what stands near it where there is none."""
@@ -984,12 +1076,27 @@ class Graph:
                 (lambda k: {kk: v for kk, v in self._tlabel(int(self.lt[k])).items() if kk in ("id", "symbol", "pharos_level", "pharos_entries_with_this_symbol")})
         by = {int(yr): int(n) for yr, n in zip(*np.unique(self.first[rows], return_counts=True))}
         name = lab.get("symbol") or lab["name"]
-        return {"found": True, "node": {"kind": r["kind"], **lab}, "since": since, "data_ends": self.latest, "new_links": int(len(rows)),
+        lat = self._later_rows(**{r["kind"]: lab["id"]})
+        extra = {}
+        if len(lat) and int(lat.year.max()) > since:
+            lat = lat[lat.year > since]
+            rows_ = [self._later_link(x) for x in lat.sort_values(["locus", "symbol"]).itertuples()]
+            new_ = [x for x in rows_ if not x["linked_in_the_release"]]
+            keys = list(dict.fromkeys(lat.study))
+            cite = _and([self.later_studies[k]["citation"] for k in keys])
+            what = (f"names {name} as a predicted effector gene for " + _and(sorted({x['trait'] for x in rows_})) if r["kind"] == "target" else
+                    f"names {lat.symbol.nunique():,} genes as predicted effector genes for {name}")
+            extra = {"after_the_release": {"studies": [self._later_study(k) for k in keys], "links": len(rows_), "not_in_the_release": len(new_),
+                                           "first": (new_ or rows_)[:limit], "more": max(0, len(new_ or rows_) - limit), "note": LATER_NOTE,
+                                           "answer": f"Added after the release: {cite} {what}" + (f", {len(new_):,} of them with no link in the release." if r["kind"] == "trait" else
+                                                                                                    "; the release holds no such link." if new_ else "; the release already holds that link.")}}
+        return {"found": True, "node": {"kind": r["kind"], **lab}, "since": since, "data_ends": self.latest, "new_links": int(len(rows)), **extra,
                 "by_year": by, "first": [{**other(k), "first_reported": int(self.first[k]), "studies_in_release": int(self.n_studies[k]),
                                           "edge": self.edge_id[k]} for k in shown[:limit]],
                 "more": max(0, len(shown) - limit), "source": self._source(self.latest), "note": r["note"],
                 "answer": (f"{len(rows):,} link(s) to {name} were first reported after {since} (data to {self.latest})."
-                           if len(rows) else f"No link to {name} was first reported after {since} (data to {self.latest}). {NOT_ABSENCE}")}
+                           if len(rows) else f"No link to {name} was first reported after {since} (data to {self.latest}). {NOT_ABSENCE}")
+                          + (" " + extra["after_the_release"]["answer"] if extra else "")}
 
     def _gap_row(self, tid: str) -> dict | None:
         return self.tg.loc[tid].to_dict() if tid in self.tg.index else None
@@ -1146,7 +1253,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--unlinked", action="store_true", help="predict, for a trait: rank the targets that have no link and lie beside a gene that has this one")
     ap.add_argument("--bundle", type=Path)
     a = ap.parse_args(argv)
-    G = Graph(a.bundle or default_bundle())
+    b = a.bundle or default_bundle()
+    G = Graph(b, later=later_dir(b))
     q = a.question
     if q == "status":
         out = G.status()

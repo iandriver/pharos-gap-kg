@@ -85,3 +85,24 @@ gene the study names above a randomly chosen candidate about two times in three.
   reading narrows this and does not remove it.
 - Nothing in the graph changed on this result. Adding the study as a dated source is a separate
   protocol entry.
+
+## Added 29 Oct 2026: the study as a dated source
+
+The rule is `docs/PROTOCOL.md`, "A study added after the release" (43d943d), with its amendment of the
+same day (16254ac). `python -I -m pharos_gap_kg.later build pharos319` writes the table to
+`data/later/pharos319/`, beside the bundle, and its record to `docs/data/later_pharos319.json`.
+
+The table holds 181 links, one for each predicted effector gene that names a graph gene (181 of the
+191 symbols), at 122 of the 127 loci; 88 of the genes sit at loci the study calls new. 41 of the 181
+already carry a GWAS link to Alzheimer disease in the release and 140 do not. The study's FLAMES
+column also names the gene in 91 rows, Coloc_MR in 140, its literature column in 83 and the exome
+analysis in 15.
+
+`gaps` for Alzheimer disease now marks 3 of the 74 genes tied with no GWAS link (ABI3, APP and PLCG2)
+and 28 of the 90 loci, the figures of test 1 and test 2 above; no list or count changes. `why`,
+`known` and `whats_new` say what the study reported, apart from what the release holds.
+
+The release's files and the release archive are unchanged. Answers to questions that do not involve
+the trait are the same with and without the table (`tests/test_later.py` checks a sample), and both
+frozen person-test sets pass their check. The hosted server serves the release alone until it is
+redeployed with the table.

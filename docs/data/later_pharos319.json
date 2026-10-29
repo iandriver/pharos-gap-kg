@@ -1,0 +1,33 @@
+{
+ "release": "pharos319",
+ "study": "uffelmann2026_supp",
+ "citation": "Uffelmann et al., Nature (2026)",
+ "doi": "10.1038/s41586-026-11206-y",
+ "published": "2026-10-28",
+ "added": "2026-10-29",
+ "year": 2026,
+ "trait": "MONDO:0004975",
+ "licence": "CC BY-NC-ND 4.0",
+ "table": "SD2",
+ "loci": 127,
+ "new_loci": 48,
+ "what": "a genome-wide association study of Alzheimer disease: each locus with the gene or genes the study predicts act there",
+ "source_sha256": "cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a",
+ "kept_in": "data/later/pharos319/uffelmann2026_supp.parquet, not committed",
+ "loci_read": 127,
+ "new_loci_read": 48,
+ "effector_symbols": 191,
+ "effector_symbols_naming_a_graph_gene": 181,
+ "rows": 181,
+ "targets": 181,
+ "pharos_symbols": 181,
+ "loci_with_a_row": 122,
+ "pharos_symbols_at_new_loci": 88,
+ "rows_also_named_by": {
+  "FLAMES": 91,
+  "Exome": 15,
+  "Coloc_MR": 140,
+  "Literature": 83
+ },
+ "file_sha256": "5b84b8ca8a05a9821b31f5931824010a36ee224a4d71eefe4181031473433d7f"
+}

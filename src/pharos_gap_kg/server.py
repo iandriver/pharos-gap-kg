@@ -66,7 +66,7 @@ def build(bundle_dir: Path):
         from mcp.server.mcpserver import MCPServer
     except ModuleNotFoundError as e:
         raise SystemExit('the server needs the MCP library; from a checkout:  uv pip install -e ".[server]" -c constraints.txt') from e
-    G = ask.Graph(bundle_dir)
+    G = ask.Graph(bundle_dir, later=ask.later_dir(bundle_dir))
     app = MCPServer("pharos-gap-kg", instructions=INSTRUCTIONS)
 
     @app.tool(description="Resolve a loosely given name to targets, traits, conditions or drugs in the graph. kind is 'any', 'target', 'drug', or "

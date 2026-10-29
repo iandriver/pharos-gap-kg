@@ -35,6 +35,7 @@ selftest:
 	$(PY) -m pharos_gap_kg.desktop --selftest
 	$(PY) -m pharos_gap_kg.clingen --selftest
 	$(PY) -m pharos_gap_kg.adstudy --selftest
+	$(PY) -m pharos_gap_kg.later --selftest
 	$(PY) -m pharos_gap_kg.applycut --selftest
 	$(PY) -m pharos_gap_kg.fulltext --selftest
 	$(PY) -m pharos_gap_kg.recorded --selftest

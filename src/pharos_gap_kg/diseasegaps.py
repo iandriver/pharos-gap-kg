@@ -184,6 +184,9 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
                                                "target's grade. It is not the same as learning its part in the disease.")})
     # ---- loci the link does not resolve to one gene
     floor = None
+    # studies added after the release, where the server reads them: they mark rows and change no list or count
+    lat = G._later_rows(trait=G.d.id[r["i"]]) if is_trait and getattr(G, "later", None) is not None else pd.DataFrame()
+    named = {s_: g for s_, g in lat.groupby("symbol")} if len(lat) else {}
     if is_trait:
         L = loci([G.ti[t] for t in gw], G.neigh, sym)
         rows = []
@@ -207,7 +210,8 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
                          "other_evidence_for": other, "singled_out_by_other_evidence": next(iter(other)) if len(other) == 1 else None,
                          "lead": None if lead is None else ("one source" if hold[lead][0] == 1 else "an expression observation" if hold[lead][0] == 2 else "a tie"),
                          "in_the_MHC": bool(G.mhc[members].any()), "_by_studies": min(sym(i) for i in members if studies(G.t.id[i]) == max(studies(G.t.id[j]) for j in members)),
-                         "proposal": f"{n_} genes to test. " + (lead_say(lead) if lead is not None else "Nothing else in the graph points to one of them.")})
+                         "proposal": f"{n_} genes to test. " + (lead_say(lead) if lead is not None else "Nothing else in the graph points to one of them."),
+                         **({"named_by_a_later_study": [sym(G.ti[t]) for t in order if sym(G.ti[t]) in named]} if any(sym(G.ti[t]) in named for t in order) else {})})
         rows.sort(key=lambda r_: (r_["singled_out_by_other_evidence"] is not None, -r_["genes_with_the_link"], r_["_by_studies"]))      # the order of loci is as before
         single = sum(r_["singled_out_by_other_evidence"] is not None for r_ in rows)
         open_ = [r_ for r_ in rows if r_["singled_out_by_other_evidence"] is None]
@@ -216,6 +220,7 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
                      "loci": len(rows), "genes": sum(r_["genes_with_the_link"] for r_ in rows), "loci_where_other_evidence_singles_out_one_gene": single,
                      "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": sum(r_["lead"] in ("one source", "an expression observation") for r_ in open_),
                      "loci_not_singled_out_by_number_of_genes": {str(k_): int(v) for k_, v in sizes.items()},
+                     **({"loci_with_a_gene_named_by_a_later_study": sum("named_by_a_later_study" in r_ for r_ in rows)} if named else {}),
                      "loci_in_the_MHC": sum(r_["in_the_MHC"] for r_ in rows),
                      "top": [{**{k_: v for k_, v in r_.items() if k_ not in ("lead", "_by_studies")}, "genes": r_["genes"][:8], "genes_more": max(0, len(r_["genes"]) - 8),
                               "what_each_holds_besides_the_link": {k_: v for k_, v in r_["what_each_holds_besides_the_link"].items() if k_ in r_["genes"][:8]}} for r_ in rows[:top]],
@@ -235,6 +240,14 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
             k = G._row(G.ti[t], di)
             return {"gwas_link_first_reported_later": int(G.first[k])} if k is not None and G.first[k] > y else {}
 
+        def added(t):
+            g_ = named.get(sym(G.ti[t]))
+            if g_ is None:
+                return {}
+            x_ = G._later_link(next(g_.itertuples()))
+            return {"named_by_a_later_study": {"study": x_["study"], "first_reported": x_["first_reported"], "locus": x_["locus"]["number_in_the_study"],
+                                               "lead_variant": x_["locus"]["lead_variant"], "new_in_this_study": x_["locus"]["new_in_this_study"]}}
+
         rate = (G.backtest or {}).get("sources_then_gwas")
         how = "Not measured."
         if rate:
@@ -245,7 +258,9 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
                    f"GWAS-linked later between {by[lo]:.1%} of the time ({lo}) and {by[hi]:.1%} ({hi}), by source, against {rate['base_rate']:.1%} of all pairs. {rate['reading']}")
         gaps.append({"kind": "no_genetic_support", "what": "tied by two or more sources or by a drug's mechanism, with no GWAS link" + (f" as of {y}" if y < G.latest else ""),
                      "targets": len(ng),
-                     "top": [{**label(t), "tied_by": tie(t), "rank_among_gwas_candidates": (int((sc[cand] > sc[G.ti[t]]).sum()) + 1) if sc[G.ti[t]] > 0 else None, **later(t)} for t in ng[:top]],
+                     "top": [{**label(t), "tied_by": tie(t), "rank_among_gwas_candidates": (int((sc[cand] > sc[G.ti[t]]).sum()) + 1) if sc[G.ti[t]] > 0 else None, **later(t), **added(t)}
+                             for t in ng[:top]],
+                     **({"named_by_a_later_study": sum(bool(added(t)) for t in ng)} if named else {}),
                      "more": max(0, len(ng) - top),
                      "closes_with": ("a genome-wide significant association at the gene, in a study of this trait. The size of study that would find one is under "
                                      "what_an_absent_link_could_have_seen, the_study_that_would_close_it: the same for every gene of the trait"),
@@ -295,6 +310,14 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
         say += f" {name} is a measurement and not a disease, so the disease sources and the drugs seldom name it."
     if floor and "reading" in floor:
         say += " " + floor["reading"] + " " + floor["proposal"]
+    if named:
+        ng_ = by["no_genetic_support"]
+        cite = " and ".join(G.later_studies[k]["citation"] for k in dict.fromkeys(lat.study))
+        shut = sorted({sym(G.ti[t]) for t in (two | set(moa)) & set(G.ti) - set(gw) if sym(G.ti[t]) in named})
+        say += (f" Added after the release: {cite} names {ng_['named_by_a_later_study']:,} of the {ng_['targets']:,} genes tied with no GWAS link"
+                + (f" ({', '.join(shut[:5])}{', ...' if len(shut) > 5 else ''})" if shut else "")
+                + f" and a gene at {by['locus_not_resolved']['loci_with_a_gene_named_by_a_later_study']:,} of the {by['locus_not_resolved']['loci']:,} loci; "
+                "the lists and counts above are the release's.")
     count = lambda g_: next(g_[f] for f in ("targets", "loci", "rows") if f in g_)
     counts = lambda: {k_: (count(by[k_]) if k_ in by else None) for k_ in KINDS}        # null where the list needs a dated link and the condition has none
     if kind is not None:

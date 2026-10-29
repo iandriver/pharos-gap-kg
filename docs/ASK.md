@@ -734,6 +734,38 @@ Every answer ends with how to read it:
 > disease, and closing it may show that it does not. Two or more sources, a GWAS link or a drug's
 > mechanism tie a target to the condition; one source alone does not.
 
+### A study added after the release
+
+The graph's GWAS links stop where Pharos 3.19 stops. One study published after it is added by hand:
+the Alzheimer disease GWAS of Uffelmann et al. (Nature, 28 Oct 2026). Its Supplementary Data lists
+the genes the study predicts act at each of its 127 loci; 181 of its 191 gene symbols name a graph
+gene, and each becomes a link to Alzheimer disease with its locus and the year 2026. The file is
+licensed CC BY-NC-ND 4.0, so the table is built from your own copy and is in neither the repository
+nor the release archive:
+
+```bash
+python -m pharos_gap_kg.adstudy fetch uffelmann2026_supp
+python -I -m pharos_gap_kg.later build pharos319
+```
+
+The table lands in `data/later/pharos319/`, beside the bundle, and the command line and the server
+read it from there. The release's links, rankings, lists and counts do not change. `known` and
+`whats_new` for Alzheimer disease, or for a gene the study names, add the study's links apart from the
+release's; `why` says whether the study names the gene; and `gaps` for Alzheimer disease marks the
+genes with no GWAS link, and the loci, where the study names a gene:
+
+```bash
+python -m pharos_gap_kg.ask why ABI3 "Alzheimer disease"
+```
+
+> Added after the release: Uffelmann et al., Nature (2026) reports a link the release does not hold:
+> it names ABI3 as a predicted effector gene, at locus 109 (rs12185242, reported before that study;
+> its FLAMES, Exome and Literature columns also name it). The absence above stands as of the release.
+
+That sentence ends the answer; the rest is the answer without the study. What was built is recorded
+in `docs/data/later_pharos319.json`, and the rule is "A study added after the release" in
+`docs/PROTOCOL.md`.
+
 ## From an MCP client
 
 ```bash
