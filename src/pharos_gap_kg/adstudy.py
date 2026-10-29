@@ -323,14 +323,17 @@ def test_floor(G, L: pd.DataFrame, y: int) -> dict:
     for r_ in rows:
         r_["should_have_been_seen"] = r_["odds_ratio_above_1"] >= r_["could_have_found"]
     need = next(e for e in floor["the_study_that_would_close_it"]["common_variant"] if e["odds_ratio"] == 1.05)
-    out = {"assessed": True, "largest": floor["largest"], "check_at_20_percent": round(could(0.2), 3) == floor["largest"]["smallest_odds_ratio_it_could_find"],
+    largest = {k_: v for k_, v in floor["largest"].items() if k_ in ("study", "year", "design", "cases", "controls", "smallest_odds_ratio_it_could_find")}
+    out = {"assessed": True, "largest": largest, "check_at_20_percent": round(could(0.2), 3) == floor["largest"]["smallest_odds_ratio_it_could_find"],
            "new_loci": len(rows), "should_have_been_seen": sum(r_["should_have_been_seen"] for r_ in rows),
            "seen": [r_ for r_ in rows if r_["should_have_been_seen"]],
            "odds_ratio_above_1_range": [min(r_["odds_ratio_above_1"] for r_ in rows), max(r_["odds_ratio_above_1"] for r_ in rows)],
            "needed_at_1_05": {"cases": need["cases"], "controls": need["controls"], "effective": round(studysize.effective(need["cases"], need["controls"], 0))},
            "this_study_effective": STUDY_NEFF, "rows": rows}
     # The amendment of 28 Oct: the largest study's individuals, its proxy cases, counted as cases. A check, not the test.
-    people = int(G.sizes[floor["largest"]["study"]][2])
+    # Since 29 Oct the bundle counts proxies apart ("Proxy cases in the study-size table"); before, they stood among the individuals.
+    s_ = floor["largest"]["study"]
+    people = int(G.sizes[s_][2]) + int(getattr(G, "proxies", {}).get(s_, (0, 0))[0])
     if people:
         c2 = c + people
         seen2 = [{"locus": r_["locus"], "genes": r_["genes"], "effect_allele_frequency": r_["effect_allele_frequency"], "odds_ratio_above_1": r_["odds_ratio_above_1"],

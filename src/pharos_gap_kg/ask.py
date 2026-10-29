@@ -136,9 +136,12 @@ class Graph:
             self.tg = pd.read_parquet(self.dir / "target_gaps.parquet").set_index("id")
             self.tg_rates = json.loads((self.dir / "target_gaps.json").read_text())
         self.sizes = None                                            # study -> (cases, controls, individuals), where the bundle holds them
+        self.proxies = {}                                            # study -> (proxy cases, proxy controls), where it has any
         if "study_sizes.parquet" in self.manifest["files"]:
             z = pd.read_parquet(self.dir / "study_sizes.parquet")
             self.sizes = {s_: (int(c), int(k), int(n)) for s_, c, k, n in zip(z.study, z.cases, z.controls, z.individuals)}
+            if "proxy_cases" in z:
+                self.proxies = {s_: (int(c), int(k)) for s_, c, k in zip(z.study, z.proxy_cases, z.proxy_controls) if c or k}
         self.has_others = all(f in self.manifest["files"] for f in others.FILES)   # the merged graph's other parts, where the bundle holds them
         self._others = None
         self._ev = None

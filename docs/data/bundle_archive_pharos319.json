@@ -2,8 +2,8 @@
  "release": "pharos319",
  "file": "pharos-gap-kg-bundle-pharos319.tar.gz",
  "url": "https://github.com/iandriver/pharos-gap-kg/releases/latest/download/pharos-gap-kg-bundle-pharos319.tar.gz",
- "bytes": 16286024,
- "sha256": "62e67d0c66ca01e4c286b4326c6a39c89f141283178d8c7ffed714caef11c0d5",
+ "bytes": 16286269,
+ "sha256": "a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3",
  "members": {
   "assertions.parquet": "5a7e3d50d5777395ecc096d5a1c6945ea95cc76397ed55e96834e3cf9f352b52",
   "backtest.json": "0e0d84b56c028bff3bb65596c97c3e21132b528bfac6930515e0218a81d8c8ee",
@@ -14,10 +14,10 @@
   "expression.parquet": "a59c5693ffdd03c40b863e0776d7a471d320909fbeb90816dcb473d7e25f1858",
   "lineage.parquet": "e28c4d71f5f92d92a559475bc7f43642bbac3ea4f12239392053d73086c292dc",
   "links.parquet": "9e54546a9b42ca00dbdb49a9fce8fc3898a4237cd7f5e1dbefd85cebc97d68fe",
-  "manifest.json": "c45842cc4aaacdfd706ed62ab69a72c4a1702f2557fe4b2d32e4aae7976899c2",
+  "manifest.json": "385f6ab0bd519f3726da8a1f92f91b11b08f26851aeff7689ec9f97638a22b51",
   "neighbours.parquet": "f3649cc1ce6f5edef6beccf8c3c2541d2742e07967a855a25cbd3422ca936234",
   "nodes.parquet": "565c576a01965cff1a8a080ac15afd44d01e738c174f26f1527a3c983dff0f39",
-  "study_sizes.parquet": "6aa25ff43cb18c58c2737250bf6fcb84fc9cfd312346035525939f6b7123c8ae",
+  "study_sizes.parquet": "51bd7329d77d2927e968aa28fd900149bac1596161246235808afdc1373021ea",
   "target_gaps.json": "6db8a7f6ba5d227b0ebc6fab1ec8868b9357c3a67651308fc8f1b56a76325efb",
   "target_gaps.parquet": "eb600f84f5555e31f0ffe63adf861a43a96028c004d924913100d6764679a556"
  }

@@ -113,9 +113,11 @@ def size_files(release: str, out: Path) -> tuple[list[str], dict | None]:
         raise SystemExit(f"REFUSED: {src} is not the table {rec.name} describes; run:  python -I -m pharos_gap_kg.studysize build {release}")
     mine = set(pd.read_parquet(out / "evidence.parquet", columns=["study"]).study)
     t = pd.read_parquet(src)
-    t = t[t.study.isin(mine) & t.cases.notna()][["study", "cases", "controls", "individuals"]].sort_values("study").reset_index(drop=True)
-    t.astype({"cases": "int64", "controls": "int64", "individuals": "int64"}).to_parquet(out / SIZE_FILES[0], index=False)
-    return list(SIZE_FILES), {"studies": len(mine), "with_a_size": len(t), "catalog": r["catalog"], "catalog_sha256": r["catalog_sha256"]}
+    cols = ["cases", "controls", "individuals", "proxy_cases", "proxy_controls"]
+    t = t[t.study.isin(mine) & t.cases.notna()][["study"] + cols].sort_values("study").reset_index(drop=True)
+    t.astype({c: "int64" for c in cols}).to_parquet(out / SIZE_FILES[0], index=False)
+    return list(SIZE_FILES), {"studies": len(mine), "with_a_size": len(t), "with_proxies": int(((t.proxy_cases > 0) | (t.proxy_controls > 0)).sum()),
+                              "catalog": r["catalog"], "catalog_sha256": r["catalog_sha256"]}
 
 
 def add_sizes(release: str) -> dict:

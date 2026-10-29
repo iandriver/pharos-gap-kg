@@ -10,11 +10,45 @@
  "release_studies_read": 11952,
  "share_of_release_studies_read": 0.969,
  "of_them_cases_and_controls": 2413,
- "of_them_individuals_only": 9539,
+ "of_them_individuals_only": 9538,
+ "of_them_proxies_only": 1,
  "median_size": {
   "cases": 2098,
   "controls": 8571,
   "individuals": 5367
+ },
+ "proxies": {
+  "catalog_studies_with_proxies": 14,
+  "release_studies_with_proxies": {
+   "GCST005921": {
+    "cases": 0,
+    "controls": 0,
+    "individuals": 0,
+    "proxy_cases": 42034,
+    "proxy_controls": 272244
+   },
+   "GCST005922": {
+    "cases": 25580,
+    "controls": 48466,
+    "individuals": 0,
+    "proxy_cases": 42034,
+    "proxy_controls": 272244
+   },
+   "GCST007320": {
+    "cases": 24087,
+    "controls": 383378,
+    "individuals": 0,
+    "proxy_cases": 47793,
+    "proxy_controls": 0
+   },
+   "GCST90104087": {
+    "cases": 11142,
+    "controls": 547618,
+    "individuals": 0,
+    "proxy_cases": 5379,
+    "proxy_controls": 0
+   }
+  }
  },
  "constants": {
   "K": 39.6006,
@@ -23,5 +57,5 @@
   "p": 5e-08,
   "power": 0.8
  },
- "file_sha256": "b30f9e84eaf5f5264be0c43f9d59a737f35c288865b2dea8727048caa631bcff"
+ "file_sha256": "1642cb0dd2ecb9b1721d91e817c8d6ede309edf8c49774cdf05b300069c2ab82"
 }

@@ -157,3 +157,36 @@ the census over all 513.
 - That the first gene of a locus is the causal one. The order says where the graph's other evidence
   points. How often the first gene proves to be the one is not measured.
 - The proposals have not been put to a model or a person.
+
+## Added 29 Oct 2026: proxy cases
+
+The rule is in `docs/PROTOCOL.md`, "Proxy cases in the study-size table" (43d943d). `python -I -m
+pharos_gap_kg.studysize compare pharos319` writes `docs/data/proxy_floors_pharos319.json`.
+
+Of the 76,336 studies in the Catalog file, 14 have a line with proxies, 4 of them in the release:
+GCST005921, GCST005922, GCST007320 and GCST90104087. The 76,320 studies whose line holds no proxy
+words are read as before.
+
+The floor changes for 2 of the 2,223 traits whose links have a sized study.
+
+- Alzheimer disease (MONDO:0004975) keeps GCST007320 and its floor of 1.077, and gains the other
+  end: with its 47,793 proxy cases counted as cases, 1.046. These are the figures of the check of
+  28 Oct.
+- Family history of Alzheimer's disease (EFO:0009268). Its largest study was GCST005921, read before
+  as 314,278 individuals with a floor of 0.0198 standard deviations per allele. Its line counts
+  42,034 people with a parental history and 272,244 without, so the rule reads it as proxies only,
+  and the largest study with proxies left out is now GCST90042678 (36,155 cases, 381,650 controls),
+  with a floor of 1.063. For this trait the people the rule calls proxies are its cases; counted so,
+  GCST005921's floor is 1.060. The two studies give about the same figure, and the earlier figure in
+  standard deviations did not fit a trait of cases and controls.
+
+GCST005922 and GCST90104087, whose proxies were read as cases before, were the largest study of no
+trait, so no floor rose.
+
+One line outside the release is misread by the rule: GCST006035 counts colorectal cancer cases with
+a family history of breast cancer, and the reverse, and the rule reads 967 of these cases as proxy
+cases. No answer reads that study.
+
+The disease census (`disease_gaps_pharos319.json`) is unchanged. The answer of `why` for ACHE and
+Alzheimer disease quoted in `docs/ASK.md` gains the second end. The record of the test of 28 Oct,
+written again under the rule, is unchanged, and both frozen person-test sets pass their check.

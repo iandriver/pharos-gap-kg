@@ -391,22 +391,24 @@ python -m pharos_gap_kg.ask why ACHE "Alzheimer disease"
 
 > There is no link between ACHE and Alzheimer disease in this graph (data to 2023). No link here
 > means no study in this source had reported one by that year. It is not evidence that there is no
-> association. What nearby evidence exists: NYAP1, 395,192 bases away, was linked to this trait;
-> by this graph's ranking (shared-trait neighbours, traits already linked, and linked genes
-> nearby) ACHE ranks 2,147 of 19,794 candidates for this trait. The largest study behind this
-> trait's links (GCST007320, 2019): it had 24,087 cases and 383,378 controls, so a variant carried
-> by 20% of chromosomes needed an odds ratio of about 1.08 to be found. An absent link is no
+> association. What nearby evidence exists: NYAP1, 395,192 bases away, was linked to this trait; by
+> this graph's ranking (shared-trait neighbours, traits already linked, and linked genes nearby)
+> ACHE ranks 2,147 of 19,794 candidates for this trait. The largest study behind this trait's links
+> (GCST007320, 2019): it had 24,087 cases and 383,378 controls, so a variant carried by 20% of
+> chromosomes needed an odds ratio of about 1.08 to be found. It also had 47,793 proxy cases (people
+> counted by an affected relative); counted as cases, about 1.05. A proxy carries less information
+> than a case, so the smallest effect it could find lies between 1.05 and 1.08. An absent link is no
 > effect of about that size found at a common variant; smaller effects and rarer variants were not
 > visible. This is a rough floor, and a study that reported nothing for the trait is not in the
 > source. The study an absent link calls for: for a common variant, about 55,000 cases for an odds
-> ratio of 1.05, 14,000 for 1.1 and 4,000 for 1.2, with the largest study's 15.9 controls per
-> case; the largest study had enough for 1.1 and 1.2. For rare variants (1 in 1,000 chromosomes
-> combined, odds ratio 3), a gene-based test on sequence data would need about 14,000 cases. Apart
-> from GWAS, as of the release: 4 sources assert ACHE with this condition (CTD, DisGeNET,
-> JensenLab Text Mining, eRAM); 4 drugs that act on ACHE are indicated for it (donepezil,
-> galantamine, rivastigmine, tacrine; for 4 of them ACHE is the mechanism target). This was also
-> read under MONDO:0007088, which has the same name in the sources: a match on the name, not an
-> ontology statement.
+> ratio of 1.05, 14,000 for 1.1 and 4,000 for 1.2, with the largest study's 15.9 controls per case;
+> the largest study had enough for 1.1 and 1.2, and with its 47,793 proxy cases counted as cases,
+> enough for all three. For rare variants (1 in 1,000 chromosomes combined, odds ratio 3), a
+> gene-based test on sequence data would need about 14,000 cases. Apart from GWAS, as of the
+> release: 4 sources assert ACHE with this condition (CTD, DisGeNET, JensenLab Text Mining, eRAM); 4
+> drugs that act on ACHE are indicated for it (donepezil, galantamine, rivastigmine, tacrine; for 4
+> of them ACHE is the mechanism target). This was also read under MONDO:0007088, which has the same
+> name in the sources: a match on the name, not an ontology statement.
 
 Each path names both of its edges:
 

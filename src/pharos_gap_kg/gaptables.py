@@ -70,6 +70,13 @@ def floor(cases: int, controls: int, people: int) -> tuple[float | None, float |
     return (None, round(math.sqrt(K / (F * n)), 4)) if n > 0 else (None, None)
 
 
+def with_proxies(cases: int, controls: int, proxy_cases: int, proxy_controls: int) -> float | None:
+    """The floor's other end for a study with proxies: proxy cases counted as cases, proxy controls as controls."""
+    if proxy_cases + proxy_controls <= 0 or cases + proxy_cases <= 0 or controls + proxy_controls <= 0:
+        return None
+    return floor(cases + proxy_cases, controls + proxy_controls, 0)[0]
+
+
 def cases_needed(cases: int, controls: int, odds_ratio: float, k: float = K, f: float = F) -> int:
     """The cases a study with this study's controls per case needs to find this odds ratio."""
     return math.ceil(k * (1 + cases / controls) / (f * math.log(odds_ratio) ** 2))
@@ -105,6 +112,9 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
     place = {v: i for i, v in enumerate(t.id)}
     nb = T["neighbours"]
     ev = T["evidence"].drop_duplicates(["trait", "study"]).merge(T["study_sizes"], on="study")
+    for c in ("proxy_cases", "proxy_controls"):                  # a bundle built before proxies were counted apart has none
+        if c not in ev:
+            ev[c] = 0
     ev_by = {k: g for k, g in ev.groupby("trait")}
     names = dict(zip(d.id, d.name)) | dict(zip(T["context_nodes"].id, T["context_nodes"].name))
     traits = set(d.id)
@@ -127,7 +137,7 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
                "genes_that_are_a_mechanism_target": len(genes(moa)), "no_compound": len(G["no_compound"]), "dark": len(G["dark"]), "loci_not_resolved": None, "genes_in_those_loci": None,
                "loci_where_other_evidence_singles_out_one_gene": None, "no_genetic_support": None, "withheld_rows": int(a.withheld.sum()), "observed_only": len(G["observed_only"]),
                "largest_study": None, "largest_study_year": None, "cases": None, "controls": None, "individuals": None, "smallest_odds_ratio_it_could_find": None,
-               "smallest_effect_it_could_find_in_sd": None, "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": None,
+               "smallest_effect_it_could_find_in_sd": None, "proxy_cases": None, "proxy_controls": None, "smallest_odds_ratio_with_proxies_as_cases": None, "loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene": None,
                **{f"cases_needed_for_odds_ratio_{o}": None for o in ODDS_RATIOS}, "cases_needed_for_rare_variants": None}
         if is_trait:
             G["no_genetic_support"] = genes((two | moa) & is_target - gw)
@@ -163,8 +173,11 @@ def build(T: dict, only: set | None = None) -> dict[str, pd.DataFrame]:
                 z = ev_by[c].assign(size=[size_for_comparison(*r) for r in zip(ev_by[c].cases, ev_by[c].controls, ev_by[c].individuals)]).sort_values(["size", "study"]).iloc[-1]
                 o, sd = floor(int(z.cases), int(z.controls), int(z.individuals))
                 cc = o is not None
+                people = int(z.cases + z.controls + z.individuals)
+                pc, pk = int(z.proxy_cases), int(z.proxy_controls)
                 row.update({"largest_study": z.study, "largest_study_year": int(z.year), "cases": int(z.cases) if cc else None, "controls": int(z.controls) if cc else None,
-                            "individuals": None if cc else int(z.cases + z.controls + z.individuals), "smallest_odds_ratio_it_could_find": o, "smallest_effect_it_could_find_in_sd": sd})
+                            "individuals": None if cc or not people else people, "smallest_odds_ratio_it_could_find": o, "smallest_effect_it_could_find_in_sd": sd,
+                            **({"proxy_cases": pc, "proxy_controls": pk, "smallest_odds_ratio_with_proxies_as_cases": with_proxies(int(z.cases), int(z.controls), pc, pk)} if pc or pk else {})})
                 if cc:
                     row.update({f"cases_needed_for_odds_ratio_{o_}": cases_needed(int(z.cases), int(z.controls), o_) for o_ in ODDS_RATIOS})
                     row["cases_needed_for_rare_variants"] = cases_needed(int(z.cases), int(z.controls), RARE_OR, K_RARE, F_RARE)
@@ -234,6 +247,9 @@ def _selftest() -> int:
        and (a.loci_not_resolved, a.genes_in_those_loci, a.loci_where_other_evidence_singles_out_one_gene, a.loci_not_singled_out_where_one_source_or_an_observation_points_to_a_gene) == (1, 2, 1, 0))
     ck("the cases a study of the largest study's ratio needs for each odds ratio, and for the rare-variant test",
        [a[f"cases_needed_for_odds_ratio_{o}"] for o in ODDS_RATIOS] == [103973, 27247, 7446] and a.cases_needed_for_rare_variants == 25544)
+    ck("a study with proxies: the floor leaves them out, and the other end counts them as cases and controls; a study with none has no other end",
+       floor(24087, 383378, 0)[0] == 1.077 and with_proxies(24087, 383378, 47793, 0) == 1.046 and with_proxies(0, 0, 42034, 272244) == floor(42034, 272244, 0)[0]
+       and with_proxies(24087, 383378, 0, 0) is None and with_proxies(0, 0, 500, 0) is None and pd.isna(a.smallest_odds_ratio_with_proxies_as_cases))
     ck("tied with no GWAS link; a withheld row; an observation with nothing else", (a.no_genetic_support, a.withheld_rows, a.observed_only) == (1, 1, 0) and sorted(R["disease_gap_genes"].query("condition_id == 'EFO:1' and list == 'no_genetic_support'").symbol) == ["CCC"])
     ck("the largest study is the one with most cases and controls, and its floor is an odds ratio", (a.largest_study, a.cases, a.controls, a.smallest_odds_ratio_it_could_find) == ("S2", 10000, 10000, 1.17))
     b = s.loc["MONDO:2"]

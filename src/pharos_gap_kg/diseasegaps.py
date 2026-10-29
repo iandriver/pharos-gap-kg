@@ -79,13 +79,16 @@ def study_floor(G, trait_id: str, y: int) -> dict | None:
     out = {"studies_behind_its_links": int(len(e)), "with_a_size": len(sized)}
     if not sized:
         return out
-    s, yr, n = max(sized, key=lambda r: (studysize.effective(*r[2]), r[0]))
-    floor = studysize.smallest_effect(*n)
+    s, yr, n = max(sized, key=lambda r: (studysize.effective(*r[2]), r[0]))     # proxies left out
+    px = getattr(G, "proxies", {}).get(s, (0, 0))
+    floor = studysize.smallest_effect(*n, *px)
+    if floor is None:
+        return out
     out["largest"] = {"study": s, "year": yr, **floor}
     out["reading"] = (f"The largest study behind this trait's links ({s}, {yr}): {studysize.say(floor)}. An absent link is no effect of about that size found at a common "
                       "variant; smaller effects and rarer variants were not visible. This is a rough floor, and a study that reported nothing for the trait is not in the source.")
-    out["the_study_that_would_close_it"] = studysize.needed(*n)
-    out["proposal"] = studysize.say_needed(out["the_study_that_would_close_it"])
+    nd = out["the_study_that_would_close_it"] = studysize.needed(*n, px[0])
+    out["proposal"] = studysize.say_needed(nd) if nd else "The largest study counted proxies only, so the study an absent link calls for is not sized from it."
     return out
 
 

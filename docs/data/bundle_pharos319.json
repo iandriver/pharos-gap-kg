@@ -41,7 +41,7 @@
   "expression.parquet": "a59c5693ffdd03c40b863e0776d7a471d320909fbeb90816dcb473d7e25f1858",
   "drug_targets.parquet": "5551c9e7be32a8e69906c758a201bd86f25d65d8add61723755a7b6185909f8f",
   "drug_indications.parquet": "befe364754c034b09715f8dd2a10a0b01134673b3e3bbec2b0522ca92226e901",
-  "study_sizes.parquet": "6aa25ff43cb18c58c2737250bf6fcb84fc9cfd312346035525939f6b7123c8ae"
+  "study_sizes.parquet": "51bd7329d77d2927e968aa28fd900149bac1596161246235808afdc1373021ea"
  },
  "target_gaps": 17737,
  "context": {
@@ -65,6 +65,7 @@
  "study_sizes": {
   "studies": 12335,
   "with_a_size": 11952,
+  "with_proxies": 4,
   "catalog": "gwas_catalog_20261005",
   "catalog_sha256": "c3b18bcde213728abe7c0a93e58f86328584c9b1dd599b7acaae456215c9cee1"
  }

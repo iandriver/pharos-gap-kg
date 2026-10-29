@@ -1,0 +1,191 @@
+{
+ "release": "pharos319",
+ "rule": "docs/PROTOCOL.md, Proxy cases in the study-size table (29 Oct 2026)",
+ "catalog_studies_with_no_proxy_words_read_as_before": 76320,
+ "release_studies_with_proxies": 4,
+ "catalog_studies_with_proxies": {
+  "GCST005921": {
+   "in_the_release": true,
+   "text": "up to 42,034 British ancestry individuals with parental history of Alzheimer's disease, at least 272,244 European ancestry individuals with no parental history of Alzheimer's disease",
+   "cases": 0,
+   "controls": 0,
+   "individuals": 0,
+   "proxy_cases": 42034,
+   "proxy_controls": 272244
+  },
+  "GCST005922": {
+   "in_the_release": true,
+   "text": "up to 42,034 British ancestry individuals with parental history of Alzheimer's disease, at least 272,244 British ancestry individuals with no parental history of Alzheimer's disease, 25,580 Alzheimer's disease cases, 48,466 controls",
+   "cases": 25580,
+   "controls": 48466,
+   "individuals": 0,
+   "proxy_cases": 42034,
+   "proxy_controls": 272244
+  },
+  "GCST006035": {
+   "in_the_release": false,
+   "text": "589 European ancestry colorectal cancer with a family history of breast cancer cases, 378 European ancestry breast cancer cases with a family history of colorectal cancer cases, 18 European ancestry breast and colorectal cancer cases, 1,769 European ancestry controls",
+   "cases": 18,
+   "controls": 1769,
+   "individuals": 0,
+   "proxy_cases": 967,
+   "proxy_controls": 0
+  },
+  "GCST007320": {
+   "in_the_release": true,
+   "text": "24,087 European ancestry late-onset Alzheimer's disease cases, 47,793 European ancestry individuals with family history of Alzheimer's disease, 383,378 European ancestry controls",
+   "cases": 24087,
+   "controls": 383378,
+   "individuals": 0,
+   "proxy_cases": 47793,
+   "proxy_controls": 0
+  },
+  "GCST009325": {
+   "in_the_release": false,
+   "text": "15,056 European ancestry cases, 18,618 European ancestry proxy cases, 449,056 European ancestry controls",
+   "cases": 15056,
+   "controls": 449056,
+   "individuals": 0,
+   "proxy_cases": 18618,
+   "proxy_controls": 0
+  },
+  "GCST90027158": {
+   "in_the_release": false,
+   "text": "39,106 European ancestry clinically diagnosed cases, 46,828 European ancestry proxy cases, 401,577 European ancestry controls",
+   "cases": 39106,
+   "controls": 401577,
+   "individuals": 0,
+   "proxy_cases": 46828,
+   "proxy_controls": 0
+  },
+  "GCST90044699": {
+   "in_the_release": false,
+   "text": "43,725 European ancestry cases, 46,613 European ancestry proxy cases, 1,036,225 European ancestry controls",
+   "cases": 43725,
+   "controls": 1036225,
+   "individuals": 0,
+   "proxy_cases": 46613,
+   "proxy_controls": 0
+  },
+  "GCST90104086": {
+   "in_the_release": false,
+   "text": "6,451 European ancestry male cases, 3,551 European ancestry male proxy cases, 251,229 European ancestry controls",
+   "cases": 6451,
+   "controls": 251229,
+   "individuals": 0,
+   "proxy_cases": 3551,
+   "proxy_controls": 0
+  },
+  "GCST90104087": {
+   "in_the_release": true,
+   "text": "11,142 European ancestry cases, 5,379 European ancestry proxy cases, 547,618 European ancestry controls",
+   "cases": 11142,
+   "controls": 547618,
+   "individuals": 0,
+   "proxy_cases": 5379,
+   "proxy_controls": 0
+  },
+  "GCST90134603": {
+   "in_the_release": false,
+   "text": "71,880 European ancestry Alzheimer's disease or AD-by-proxy cases, 71,522 European ancestry GERD cases, up to 644,457 European ancestry controls",
+   "cases": 71522,
+   "controls": 644457,
+   "individuals": 0,
+   "proxy_cases": 71880,
+   "proxy_controls": 0
+  },
+  "GCST90134604": {
+   "in_the_release": false,
+   "text": "71,880 European ancestry Alzheimer's disease or AD-by-proxy cases, 16,666 European ancestry peptic ulcer disease cases, up to 823,039 European ancestry controls",
+   "cases": 16666,
+   "controls": 823039,
+   "individuals": 0,
+   "proxy_cases": 71880,
+   "proxy_controls": 0
+  },
+  "GCST90134605": {
+   "in_the_release": false,
+   "text": "71,880 European ancestry Alzheimer's disease or AD-by-proxy cases, 90,175 European ancestry peptic ulcer disease and/or GERD and/or medications for their treatment cases, up to 749,530 European ancestry controls",
+   "cases": 90175,
+   "controls": 749530,
+   "individuals": 0,
+   "proxy_cases": 71880,
+   "proxy_controls": 0
+  },
+  "GCST90243964": {
+   "in_the_release": false,
+   "text": "29,266 European ancestry lung cancer cases, 48,843 European ancestry individuals with family history of lung cancer,  251,837 European ancestry controls",
+   "cases": 29266,
+   "controls": 251837,
+   "individuals": 0,
+   "proxy_cases": 48843,
+   "proxy_controls": 0
+  },
+  "GCST90558250": {
+   "in_the_release": false,
+   "text": "6,740 British ancestry clinical Alzheimer's disease cases, 47,829 British ancestry proxy cases,  295,421 British ancestry controls",
+   "cases": 6740,
+   "controls": 295421,
+   "individuals": 0,
+   "proxy_cases": 47829,
+   "proxy_controls": 0
+  }
+ },
+ "traits_with_a_sized_study": 2223,
+ "traits_changed": 2,
+ "by_kind": {
+  "proxies read as individuals before: a second end added": 1,
+  "the largest study changed": 1
+ },
+ "traits": [
+  {
+   "trait": "MONDO:0004975",
+   "name": "Alzheimer disease",
+   "disease_like": true,
+   "kind": "proxies read as individuals before: a second end added",
+   "before": {
+    "study": "GCST007320",
+    "design": "cases and controls",
+    "cases": 24087,
+    "controls": 383378,
+    "smallest_odds_ratio_it_could_find": 1.077
+   },
+   "after": {
+    "study": "GCST007320",
+    "design": "cases and controls",
+    "cases": 24087,
+    "controls": 383378,
+    "smallest_odds_ratio_it_could_find": 1.077,
+    "smallest_odds_ratio_with_proxies_as_cases": 1.046,
+    "proxy_cases": 47793,
+    "proxy_controls": 0
+   }
+  },
+  {
+   "trait": "EFO:0009268",
+   "name": "family history of Alzheimer\u2019s disease",
+   "disease_like": false,
+   "kind": "the largest study changed",
+   "before": {
+    "study": "GCST005921",
+    "design": "individuals",
+    "individuals": 314278,
+    "smallest_effect_it_could_find_in_standard_deviations_per_allele": 0.0198
+   },
+   "after": {
+    "study": "GCST90042678",
+    "design": "cases and controls",
+    "cases": 36155,
+    "controls": 381650,
+    "smallest_odds_ratio_it_could_find": 1.063
+   },
+   "earlier_largest_study_under_the_rule": {
+    "study": "GCST005921",
+    "design": "proxies only",
+    "proxy_cases": 42034,
+    "proxy_controls": 272244,
+    "smallest_odds_ratio_with_proxies_as_cases": 1.06
+   }
+  }
+ ]
+}
