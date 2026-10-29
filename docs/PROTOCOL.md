@@ -2149,3 +2149,12 @@ proxy cases, which the floor's formula for cases and controls leaves out. A prox
 information than a case, so the floor as computed and the floor with those individuals counted as
 cases bound what the study could have found. `adstudy` reports the second beside the registered
 result, which stands as defined.
+
+**29 Oct 2026, "A study added after the release: the Alzheimer disease GWAS of 28 Oct 2026", before
+anything in it was built.** The table is kept beside the bundle, in `data/later/<release>/` with its
+own manifest and digest, and not in it. The release archive packs every file of the bundle and is
+attached to a public GitHub release, which the licence does not let the table join without Ian's
+word. The bundle's files, its manifest and the archive are therefore unchanged by the table. The
+answers read it where the server or the command line finds it beside the bundle; the code that
+computes from the release (the census, the usability and person tests, `adstudy`) reads the release
+alone.
