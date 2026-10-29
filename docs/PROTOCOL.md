@@ -1412,6 +1412,111 @@ interval is evidence of nothing either way.
 entry here, written after this is reported. The file is licensed CC BY-NC-ND 4.0; like every raw file
 it stays outside the repository, which records gene symbols, counts and figures.
 
+## Proxy cases in the study-size table
+
+Written on 29 Oct 2026, on Ian's word, before any floor was computed under it. Looked at first: the
+Catalog lines that hold "proxy", "family history", "parental", "parents", "maternal", "paternal",
+"relative", "sibling", "trio" or "famil", and 25 lines drawn at random from the 62 release studies
+whose line gives cases, controls and individuals. Whether the four frozen person-test tasks about a
+floor name a disease whose largest study has proxies was checked by code that printed yes or no for
+each, without the task: none does.
+
+**The fault.** A GWAS by proxy counts people with an affected parent or sibling as cases, and people
+without one as controls. `studysize` reads each number with the words up to the next number, so "46,828
+European ancestry proxy cases" is read as cases, and "47,793 European ancestry individuals with family
+history of Alzheimer's disease" as individuals, whom the floor for cases and controls leaves out. One
+design is read two ways. The check of 28 Oct on the Alzheimer study found the second: the served floor
+for Alzheimer disease, 1.077, leaves out GCST007320's 47,793 proxy cases, and counting them as cases
+gives 1.046.
+
+**The rule.** A number whose words hold "proxy" (with "by-proxy"), "family history" or "parental
+history" counts proxies: proxy controls if its words hold "control", "no family history" or "no
+parental history", and proxy cases otherwise. Proxies are counted apart from cases, controls and
+individuals. Every other number is read as before.
+
+**The floor of a study with proxies** is given at two ends.
+
+- *Proxies left out*: the floor from the cases, controls and individuals that are not proxies, by the
+  formulas of "Gaps for a disease". This stays `smallest_odds_ratio_it_could_find` (or its standard
+  deviation counterpart), because it is the statement an absent link supports whatever a proxy is
+  worth.
+- *Proxies counted*: proxy cases added to cases and proxy controls to controls. It is given where this
+  yields both cases and controls.
+
+A proxy case carries less information than a case, so the study's reach lies between the two ends. No
+weight between them is used: the weight depends on the disease's prevalence and heritability and on
+the relative's degree, and the line gives none of them.
+
+**What reads it.** The largest study behind a trait is chosen by effective size with proxies left out,
+as before. `the_study_that_would_close_it` keeps its sizes, computed from cases and controls without
+proxies, and adds whether the largest study had the cases once its proxy cases are counted. The
+answers of `gaps` for a disease and of `why` with no link, the gap tables (`gaptables`) and the
+bundle's study-size table gain the proxies and the second end.
+
+**What changes, counted after.** A trait whose largest study's line holds proxies read as cases gets a
+higher floor; the earlier figure becomes the second end. A trait whose proxies were read as
+individuals keeps its floor and gains a second end. A trait's largest study changes where its proxy
+cases, read as cases, had made it the largest. The record lists each trait of each kind.
+
+**Checks.** The self-test reads the lines quoted in this entry as stated. For GCST007320 the two ends
+are 1.077 and 1.046, the figures of the check of 28 Oct, and `adstudy` writes the same record as
+before. For every study whose line holds none of the proxy words, the counts are those of the earlier
+table. `persontest check` passes for both frozen sets.
+
+**Not claimed.** That a proxy is worth any fixed share of a case. That the rule finds every design by
+proxy: a line that describes proxies in other words is read as before.
+
+## A study added after the release: the Alzheimer disease GWAS of 28 Oct 2026
+
+Written on 29 Oct 2026, on Ian's word, after the test of 28 Oct was reported (`findings/AD_STUDY.md`)
+and before anything here was built.
+
+**What it adds.** One study as a dated source beside the release, so that answers can say what it
+reported. From table SD2 of the registered file (`uffelmann2026_supp`), for each of the 127 loci, each
+predicted effector gene that names a graph gene by the matching rule of the test of 28 Oct (181 of the
+191 symbols): a link from that gene to Alzheimer disease (MONDO:0004975), first reported in 2026, with
+the study's DOI; the locus (its number in SD2, its lead variant's rsid, its chromosome, start and end
+in GRCh37, its p-value); whether the study calls the locus new; and which of the FLAMES, Exome,
+Coloc_MR and Literature columns also name the gene. Only predicted effector genes are added, not the
+broad reading's genes or the closest gene. A gene cluster names no gene. The trait is Alzheimer
+disease alone: late-onset Alzheimers disease (EFO:1001870) and family history of Alzheimer's disease
+(EFO:0009268) gain nothing.
+
+**Kept apart from the release.** The release's links, the scored splits, every ranking (`predict`, the
+rank in `why`, the calibration), the loci and lists of `gaps` for a disease and their counts, the
+study-size floors and the KGX export are unchanged. Each of them is defined on the release's links, and
+the ranking was scored on them. The added links are a second table, read only where an answer says
+what was reported after the release.
+
+**What the answers gain.**
+
+- `known` for a gene the study names, or for the trait: the study's links, labelled as added after
+  the release and kept apart from the release's links.
+- `why` for a gene and the trait: whether the study names the gene, with its locus and the columns
+  that name it. Where the release has no link, the answer adds that this study reports one; the
+  absence stands as of the release.
+- `whats_new` for the trait or a gene the study names: the study's links that are not in the release,
+  apart from the release's own, with the release's `data_ends` unchanged and the date the study was
+  added.
+- `gaps` for a disease: a gene of `no_genetic_support` that the study names carries
+  `named_by_a_later_study` (the study, its year, its locus, whether new); a locus of
+  `locus_not_resolved` where the study names one or more genes carries those genes; the summary gives
+  how many of each. Nothing leaves a list and no count changes.
+
+**Checks.** The table holds 127 loci, 48 of them new, and the 181 symbols of the test of 28 Oct. In
+`gaps` for Alzheimer disease the genes of `no_genetic_support` the study names are ABI3, APP and
+PLCG2, and 28 of the 90 loci carry a gene it names, as the test's record (`adstudy_pharos319.json`)
+has them; the two are compared by code. The release's files in the bundle are byte for byte the same
+after the table is added. `persontest check` passes for both frozen sets, and the answers in
+`docs/ASK.md` that do not involve the trait are unchanged.
+
+**Licence.** The file is licensed CC BY-NC-ND 4.0. The table is built from the local file into the
+bundle and is not committed; the repository records its counts and digest, and each answer that uses
+it cites the study and its licence. Serving it from the hosted copy waits on Ian's word.
+
+**Not claimed.** That a predicted effector gene is the causal gene. That the graph is current beyond
+this one study: it was added by hand, and every other source stops where the release does.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
