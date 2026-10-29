@@ -315,19 +315,30 @@ def test_floor(G, L: pd.DataFrame, y: int) -> dict:
     if not floor or "largest" not in floor or floor["largest"].get("design") != "cases and controls":
         return {"floor": floor, "assessed": False}
     c, k = floor["largest"]["cases"], floor["largest"]["controls"]
-    could = lambda f: math.exp(math.sqrt(studysize.K * (c + k) / (2 * f * (1 - f) * c * k)))
+    reach = lambda c_, f: math.exp(math.sqrt(studysize.K * (c_ + k) / (2 * f * (1 - f) * c_ * k)))
+    could = lambda f: reach(c, f)
     new = L[L.new]
     rows = [{"locus": int(r.locus), "genes": r.cell, "effect_allele_frequency": round(float(r.eaf), 4), "odds_ratio_above_1": round(math.exp(abs(r.beta)), 4),
              "could_have_found": round(could(r.eaf), 4)} for r in new.itertuples()]
     for r_ in rows:
         r_["should_have_been_seen"] = r_["odds_ratio_above_1"] >= r_["could_have_found"]
     need = next(e for e in floor["the_study_that_would_close_it"]["common_variant"] if e["odds_ratio"] == 1.05)
-    return {"assessed": True, "largest": floor["largest"], "check_at_20_percent": round(could(0.2), 3) == floor["largest"]["smallest_odds_ratio_it_could_find"],
-            "new_loci": len(rows), "should_have_been_seen": sum(r_["should_have_been_seen"] for r_ in rows),
-            "seen": [r_ for r_ in rows if r_["should_have_been_seen"]],
-            "odds_ratio_above_1_range": [min(r_["odds_ratio_above_1"] for r_ in rows), max(r_["odds_ratio_above_1"] for r_ in rows)],
-            "needed_at_1_05": {"cases": need["cases"], "controls": need["controls"], "effective": round(studysize.effective(need["cases"], need["controls"], 0))},
-            "this_study_effective": STUDY_NEFF, "rows": rows}
+    out = {"assessed": True, "largest": floor["largest"], "check_at_20_percent": round(could(0.2), 3) == floor["largest"]["smallest_odds_ratio_it_could_find"],
+           "new_loci": len(rows), "should_have_been_seen": sum(r_["should_have_been_seen"] for r_ in rows),
+           "seen": [r_ for r_ in rows if r_["should_have_been_seen"]],
+           "odds_ratio_above_1_range": [min(r_["odds_ratio_above_1"] for r_ in rows), max(r_["odds_ratio_above_1"] for r_ in rows)],
+           "needed_at_1_05": {"cases": need["cases"], "controls": need["controls"], "effective": round(studysize.effective(need["cases"], need["controls"], 0))},
+           "this_study_effective": STUDY_NEFF, "rows": rows}
+    # The amendment of 28 Oct: the largest study's individuals, its proxy cases, counted as cases. A check, not the test.
+    people = int(G.sizes[floor["largest"]["study"]][2])
+    if people:
+        c2 = c + people
+        seen2 = [{"locus": r_["locus"], "genes": r_["genes"], "effect_allele_frequency": r_["effect_allele_frequency"], "odds_ratio_above_1": r_["odds_ratio_above_1"],
+                  "could_have_found": round(reach(c2, r_["effect_allele_frequency"]), 4)} for r_ in rows]
+        seen2 = [r_ for r_ in seen2 if r_["odds_ratio_above_1"] >= r_["could_have_found"]]
+        out["check_with_individuals_as_cases"] = {"individuals": people, "cases": c2, "at_20_percent": round(reach(c2, 0.2), 3),
+                                                  "should_have_been_seen": len(seen2), "seen": seen2}
+    return out
 
 
 def test_ranking(G, r: dict, S: dict, Gr: dict, N: dict[str, pd.Series], L: pd.DataFrame, rng: np.random.Generator) -> dict:

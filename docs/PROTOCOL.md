@@ -2036,3 +2036,11 @@ outside `~/Downloads`, since the desktop app cannot start a server there; the co
 whose digest is committed. Everything else is as the section says: Claude Desktop with web search off
 and no other source open, the model the client offers recorded, at most 8 minutes a task, and grading
 by code with the same verdict, reported for B1 alone.
+
+**28 Oct 2026, after the result of "A study published after the graph: Alzheimer disease": a check
+on its test 3, not a test.** The largest study behind the trait's links, GCST007320 (2019), is held in
+the study-size table as 24,087 cases, 383,378 controls and 47,793 individuals; the 47,793 are its
+proxy cases, which the floor's formula for cases and controls leaves out. A proxy case carries less
+information than a case, so the floor as computed and the floor with those individuals counted as
+cases bound what the study could have found. `adstudy` reports the second beside the registered
+result, which stands as defined.
