@@ -1,0 +1,3954 @@
+{
+ "release": "pharos319",
+ "protocol": "docs/PROTOCOL.md, A study published after the graph: Alzheimer disease (28 Oct 2026)",
+ "bundle_archive_sha256": "62e67d0c66ca01e4c286b4326c6a39c89f141283178d8c7ffed714caef11c0d5",
+ "study": {
+  "key": "uffelmann2026_supp",
+  "file": "41586_2026_11206_MOESM3_ESM.ods",
+  "sha256": "cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a",
+  "doi": "10.1038/s41586-026-11206-y",
+  "loci": 127,
+  "new_loci": 48,
+  "clusters": [
+   "IGH gene cluster",
+   "KIAA0125/IGH gene cluster",
+   "MS4A gene cluster"
+  ],
+  "effective_size": 416493
+ },
+ "trait": {
+  "id": "MONDO:0004975",
+  "name": "Alzheimer disease",
+  "as_of": 2023,
+  "other_alzheimer_traits": [
+   "EFO:1001870",
+   "EFO:0009268"
+  ]
+ },
+ "matching": {
+  "effector_symbols": 191,
+  "effector_symbols_matched": 181,
+  "effector_symbols_not_in_the_graph": [
+   "AC008394.1",
+   "AC104532.2",
+   "BZRAP1-AS1",
+   "C6orf57",
+   "FAM105B",
+   "HLA",
+   "KIAA0125",
+   "MIR142",
+   "RPA3-AS1",
+   "TSPOAP1-AS1"
+  ],
+  "matched_through_ensembl_symbol": [
+   "GBA1"
+  ],
+  "all_symbols": 439,
+  "all_symbols_matched": 422,
+  "loci_naming_a_graph_gene": {
+   "primary": 122,
+   "broad": 125,
+   "data_only": 118
+  }
+ },
+ "crosscheck": {
+  "served_counts": {
+   "no_compound": 542,
+   "dark": 109,
+   "locus_not_resolved": 90,
+   "no_genetic_support": 74,
+   "withheld": 8,
+   "observed_only": 251
+  },
+  "agree": true,
+  "rows_compared": {
+   "no_genetic_support": 25,
+   "locus_not_resolved": 25
+  }
+ },
+ "groups": {
+  "tied_without_a_link": 74,
+  "one_source": 57,
+  "withheld_only": 1,
+  "observed_only": 251,
+  "nothing": 19266,
+  "linked": 605
+ },
+ "seed": 20261028,
+ "draws": 2000,
+ "gaps_that_close": {
+  "primary:all_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 3,
+     "share": [
+      0.0405,
+      0.0139,
+      0.1125
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 4,
+     "share": [
+      0.0702,
+      0.0276,
+      0.167
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0151
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 133,
+     "share": [
+      0.0069,
+      0.0058,
+      0.0082
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 41,
+   "linked": 605,
+   "tied_minus_nothing": [
+    0.0336,
+    0.007,
+    0.1056
+   ],
+   "one_source_minus_nothing": [
+    0.0633,
+    0.0207,
+    0.1601
+   ],
+   "tied_minus_one_source": [
+    -0.0296,
+    -0.1301,
+    0.054
+   ],
+   "detectable_at_80_percent_power": 0.1011,
+   "tied_genes_closed": [
+    "ABI3",
+    "APP",
+    "PLCG2"
+   ]
+  },
+  "primary:new_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0493
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 1,
+     "share": [
+      0.0175,
+      0.0031,
+      0.0929
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0151
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 84,
+     "share": [
+      0.0044,
+      0.0035,
+      0.0054
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 3,
+   "linked": 605,
+   "tied_minus_nothing": [
+    -0.0044,
+    -0.0054,
+    0.0449
+   ],
+   "one_source_minus_nothing": [
+    0.0132,
+    -0.0013,
+    0.0885
+   ],
+   "tied_minus_one_source": [
+    -0.0175,
+    -0.0929,
+    0.0338
+   ],
+   "detectable_at_80_percent_power": 0.09927,
+   "tied_genes_closed": []
+  },
+  "broad:all_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 3,
+     "share": [
+      0.0405,
+      0.0139,
+      0.1125
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 4,
+     "share": [
+      0.0702,
+      0.0276,
+      0.167
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 3,
+     "share": [
+      0.012,
+      0.0041,
+      0.0345
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 321,
+     "share": [
+      0.0167,
+      0.0149,
+      0.0186
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 90,
+   "linked": 605,
+   "tied_minus_nothing": [
+    0.0239,
+    -0.0028,
+    0.0959
+   ],
+   "one_source_minus_nothing": [
+    0.0535,
+    0.0109,
+    0.1504
+   ],
+   "tied_minus_one_source": [
+    -0.0296,
+    -0.1301,
+    0.054
+   ],
+   "detectable_at_80_percent_power": 0.10739,
+   "tied_genes_closed": [
+    "ABI3",
+    "APP",
+    "PLCG2"
+   ]
+  },
+  "broad:new_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0493
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 1,
+     "share": [
+      0.0175,
+      0.0031,
+      0.0929
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 1,
+     "share": [
+      0.004,
+      0.0007,
+      0.0222
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 115,
+     "share": [
+      0.006,
+      0.005,
+      0.0072
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 4,
+   "linked": 605,
+   "tied_minus_nothing": [
+    -0.006,
+    -0.0072,
+    0.0433
+   ],
+   "one_source_minus_nothing": [
+    0.0116,
+    -0.0029,
+    0.0869
+   ],
+   "tied_minus_one_source": [
+    -0.0175,
+    -0.0929,
+    0.0338
+   ],
+   "detectable_at_80_percent_power": 0.10044,
+   "tied_genes_closed": []
+  },
+  "data_only:all_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 3,
+     "share": [
+      0.0405,
+      0.0139,
+      0.1125
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 4,
+     "share": [
+      0.0702,
+      0.0276,
+      0.167
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0151
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 121,
+     "share": [
+      0.0063,
+      0.0053,
+      0.0075
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 39,
+   "linked": 605,
+   "tied_minus_nothing": [
+    0.0343,
+    0.0076,
+    0.1062
+   ],
+   "one_source_minus_nothing": [
+    0.0639,
+    0.0213,
+    0.1607
+   ],
+   "tied_minus_one_source": [
+    -0.0296,
+    -0.1301,
+    0.054
+   ],
+   "detectable_at_80_percent_power": 0.10066,
+   "tied_genes_closed": [
+    "ABI3",
+    "APP",
+    "PLCG2"
+   ]
+  },
+  "data_only:new_loci": {
+   "groups": {
+    "tied_without_a_link": {
+     "genes": 74,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0493
+     ],
+     "with_a_link_to_another_alzheimer_trait": 2
+    },
+    "one_source": {
+     "genes": 57,
+     "closed": 1,
+     "share": [
+      0.0175,
+      0.0031,
+      0.0929
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "withheld_only": {
+     "genes": 1,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.7935
+     ],
+     "with_a_link_to_another_alzheimer_trait": 1
+    },
+    "observed_only": {
+     "genes": 251,
+     "closed": 0,
+     "share": [
+      0.0,
+      0.0,
+      0.0151
+     ],
+     "with_a_link_to_another_alzheimer_trait": 0
+    },
+    "nothing": {
+     "genes": 19266,
+     "closed": 78,
+     "share": [
+      0.004,
+      0.0032,
+      0.005
+     ],
+     "with_a_link_to_another_alzheimer_trait": 18
+    }
+   },
+   "linked_named": 3,
+   "linked": 605,
+   "tied_minus_nothing": [
+    -0.004,
+    -0.005,
+    0.0453
+   ],
+   "one_source_minus_nothing": [
+    0.0135,
+    -0.001,
+    0.0889
+   ],
+   "tied_minus_one_source": [
+    -0.0175,
+    -0.0929,
+    0.0338
+   ],
+   "detectable_at_80_percent_power": 0.09904,
+   "tied_genes_closed": []
+  }
+ },
+ "order_of_a_locus": {
+  "primary": {
+   "loci": 90,
+   "assessed": 28,
+   "with_first_genes": 20,
+   "graph": 17.0,
+   "chance": 5.706,
+   "baseline": 7.702,
+   "graph_minus_chance": [
+    11.294,
+    7.1775,
+    14.7602
+   ],
+   "graph_minus_baseline": [
+    9.298,
+    5.2071,
+    12.9412
+   ],
+   "singled_out_assessed": 13,
+   "singled_out_named": 12,
+   "rows": [
+    {
+     "genes": [
+      "APOE",
+      "APOC1",
+      "TOMM40",
+      "APOC2",
+      "APOC4",
+      "BCAM",
+      "NECTIN2",
+      "CLPTM1"
+     ],
+     "n": 44,
+     "named": [
+      "APOE"
+     ],
+     "expected": 0.022727272727272728,
+     "graph": 1.0,
+     "first": [
+      "APOE"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "APOE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ABCB9",
+      "ARL6IP4",
+      "C12orf65",
+      "CDK2AP1",
+      "KMT5A",
+      "MPHOSPH9",
+      "OGFOD2",
+      "PITPNM2"
+     ],
+     "n": 13,
+     "named": [
+      "MPHOSPH9",
+      "SBNO1",
+      "VPS37B"
+     ],
+     "expected": 0.23076923076923078,
+     "graph": null,
+     "first": [],
+     "baseline": 0.23076923076923078,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ZCWPW1",
+      "C7orf61",
+      "MEPCE",
+      "PILRA",
+      "PILRB",
+      "PPP1R35",
+      "SPDYE3",
+      "TSC22D4"
+     ],
+     "n": 22,
+     "named": [
+      "NYAP1",
+      "PILRA",
+      "SPDYE3",
+      "ZCWPW1"
+     ],
+     "expected": 0.18181818181818182,
+     "graph": 1.0,
+     "first": [
+      "ZCWPW1"
+     ],
+     "baseline": 0.375,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CD33",
+      "IGLON5",
+      "SIGLEC7",
+      "SIGLEC9",
+      "SIGLECL1"
+     ],
+     "n": 5,
+     "named": [
+      "CD33"
+     ],
+     "expected": 0.2,
+     "graph": 1.0,
+     "first": [
+      "CD33"
+     ],
+     "baseline": 0.2,
+     "singled_out": "CD33",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAMTS4",
+      "APOA2",
+      "B4GALT3",
+      "DEDD",
+      "FCER1G",
+      "KLHDC9",
+      "NDUFS2",
+      "NECTIN4"
+     ],
+     "n": 16,
+     "named": [
+      "ADAMTS4"
+     ],
+     "expected": 0.0625,
+     "graph": null,
+     "first": [],
+     "baseline": 0.0625,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "MAPT",
+      "KANSL1",
+      "LRRC37A2",
+      "ARL17A",
+      "CRHR1",
+      "LRRC37A",
+      "NSF",
+      "SPPL2C"
+     ],
+     "n": 11,
+     "named": [
+      "MAPT"
+     ],
+     "expected": 0.09090909090909091,
+     "graph": 1.0,
+     "first": [
+      "MAPT"
+     ],
+     "baseline": 0.0,
+     "singled_out": "MAPT",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BIN1",
+      "CYP27C1"
+     ],
+     "n": 2,
+     "named": [
+      "BIN1"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "BIN1"
+     ],
+     "baseline": 0.5,
+     "singled_out": "BIN1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAM10",
+      "MINDY2"
+     ],
+     "n": 2,
+     "named": [
+      "ADAM10"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "ADAM10"
+     ],
+     "baseline": 0.5,
+     "singled_out": "ADAM10",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BCKDK",
+      "FUS",
+      "KAT8",
+      "PRSS36",
+      "PRSS53",
+      "PRSS8",
+      "PYCARD",
+      "STX4"
+     ],
+     "n": 13,
+     "named": [
+      "BCKDK",
+      "KAT8",
+      "VKORC1"
+     ],
+     "expected": 0.23076923076923078,
+     "graph": null,
+     "first": [],
+     "baseline": 0.2727272727272727,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CASS4",
+      "AURKA",
+      "CSTF1",
+      "FAM209A",
+      "FAM209B",
+      "FAM210B",
+      "GCNT7",
+      "RTFDC1"
+     ],
+     "n": 8,
+     "named": [
+      "CASS4"
+     ],
+     "expected": 0.125,
+     "graph": 1.0,
+     "first": [
+      "CASS4"
+     ],
+     "baseline": 0.125,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "APH1B",
+      "CA12",
+      "RAB8B"
+     ],
+     "n": 3,
+     "named": [
+      "APH1B"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": null,
+     "first": [],
+     "baseline": 0.3333333333333333,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ABCA7",
+      "ARHGAP45",
+      "ARID3A",
+      "CNN2",
+      "GPX4",
+      "GRIN3B",
+      "POLR2E",
+      "SBNO2"
+     ],
+     "n": 10,
+     "named": [
+      "ABCA7"
+     ],
+     "expected": 0.1,
+     "graph": 1.0,
+     "first": [
+      "ABCA7"
+     ],
+     "baseline": 0.1,
+     "singled_out": "ABCA7",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ANKHD1",
+      "CYSTM1",
+      "HBEGF",
+      "PFDN1",
+      "SLC4A9"
+     ],
+     "n": 5,
+     "named": [
+      "HBEGF"
+     ],
+     "expected": 0.2,
+     "graph": null,
+     "first": [],
+     "baseline": 0.2,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "PICALM",
+      "EED",
+      "CCDC83"
+     ],
+     "n": 3,
+     "named": [
+      "PICALM"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "PICALM"
+     ],
+     "baseline": 1.0,
+     "singled_out": "PICALM",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "MPO",
+      "HSF5",
+      "LPO",
+      "RNF43",
+      "SUPT4H1",
+      "TSPOAP1"
+     ],
+     "n": 6,
+     "named": [
+      "TSPOAP1"
+     ],
+     "expected": 0.16666666666666666,
+     "graph": 0.0,
+     "first": [
+      "MPO"
+     ],
+     "baseline": 0.16666666666666666,
+     "singled_out": "MPO",
+     "singled_out_named": false
+    },
+    {
+     "genes": [
+      "TREM2",
+      "APOBEC2",
+      "NFYA",
+      "OARD1",
+      "TREML1",
+      "TREML2",
+      "TREML4",
+      "LRFN2"
+     ],
+     "n": 12,
+     "named": [
+      "TREM2"
+     ],
+     "expected": 0.08333333333333333,
+     "graph": 1.0,
+     "first": [
+      "TREM2"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "TREM2",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "NDUFAF6",
+      "CCNE2",
+      "INTS8",
+      "TP53INP1"
+     ],
+     "n": 4,
+     "named": [
+      "TP53INP1"
+     ],
+     "expected": 0.25,
+     "graph": 0.0,
+     "first": [
+      "NDUFAF6"
+     ],
+     "baseline": 0.25,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CLU",
+      "PTK2B",
+      "EPHX2",
+      "SCARA3",
+      "STMN4",
+      "TRIM35",
+      "CHRNA2"
+     ],
+     "n": 7,
+     "named": [
+      "CLU"
+     ],
+     "expected": 0.14285714285714285,
+     "graph": 1.0,
+     "first": [
+      "CLU"
+     ],
+     "baseline": 0.3333333333333333,
+     "singled_out": "CLU",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ACE",
+      "CYB561",
+      "DCAF7",
+      "KCNH6",
+      "TANC2"
+     ],
+     "n": 5,
+     "named": [
+      "ACE"
+     ],
+     "expected": 0.2,
+     "graph": 1.0,
+     "first": [
+      "ACE"
+     ],
+     "baseline": 0.2,
+     "singled_out": "ACE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "CR1",
+      "CR1L",
+      "CR2"
+     ],
+     "n": 3,
+     "named": [
+      "CR1"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "CR1"
+     ],
+     "baseline": 1.0,
+     "singled_out": "CR1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "EPHA1",
+      "CLCN1",
+      "FAM131B",
+      "TAS2R41",
+      "TAS2R60",
+      "ZYX",
+      "CASP2"
+     ],
+     "n": 7,
+     "named": [
+      "EPHA1"
+     ],
+     "expected": 0.14285714285714285,
+     "graph": 1.0,
+     "first": [
+      "EPHA1"
+     ],
+     "baseline": 0.16666666666666666,
+     "singled_out": "EPHA1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "SCIMP",
+      "RABEP1",
+      "USP6",
+      "ZNF594"
+     ],
+     "n": 4,
+     "named": [
+      "RABEP1",
+      "SCIMP"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "SCIMP"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ACTR2",
+      "SPRED2"
+     ],
+     "n": 2,
+     "named": [
+      "SPRED2"
+     ],
+     "expected": 0.5,
+     "graph": 0.0,
+     "first": [
+      "ACTR2"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "GLCCI1",
+      "ICA1"
+     ],
+     "n": 2,
+     "named": [
+      "ICA1"
+     ],
+     "expected": 0.5,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "INPP5D",
+      "ATG16L1",
+      "NEU2"
+     ],
+     "n": 3,
+     "named": [
+      "INPP5D"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "INPP5D"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "EPDR1",
+      "GPR141",
+      "NME8"
+     ],
+     "n": 3,
+     "named": [
+      "GPR141"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": null,
+     "first": [],
+     "baseline": 0.3333333333333333,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "SLC24A4",
+      "RIN3"
+     ],
+     "n": 2,
+     "named": [
+      "RIN3",
+      "SLC24A4"
+     ],
+     "expected": 1.0,
+     "graph": 1.0,
+     "first": [
+      "SLC24A4"
+     ],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ECHDC3",
+      "USP6NL"
+     ],
+     "n": 2,
+     "named": [
+      "USP6NL"
+     ],
+     "expected": 0.5,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    }
+   ]
+  },
+  "broad": {
+   "loci": 90,
+   "assessed": 33,
+   "with_first_genes": 23,
+   "graph": 19.0,
+   "chance": 10.14,
+   "baseline": 11.502,
+   "graph_minus_chance": [
+    8.86,
+    4.765,
+    12.725
+   ],
+   "graph_minus_baseline": [
+    7.498,
+    3.0401,
+    11.6457
+   ],
+   "singled_out_assessed": 15,
+   "singled_out_named": 13,
+   "rows": [
+    {
+     "genes": [
+      "APOE",
+      "APOC1",
+      "TOMM40",
+      "APOC2",
+      "APOC4",
+      "BCAM",
+      "NECTIN2",
+      "CLPTM1"
+     ],
+     "n": 44,
+     "named": [
+      "APOE",
+      "CLPTM1",
+      "MARK4"
+     ],
+     "expected": 0.06818181818181818,
+     "graph": 1.0,
+     "first": [
+      "APOE"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "APOE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ABCB9",
+      "ARL6IP4",
+      "C12orf65",
+      "CDK2AP1",
+      "KMT5A",
+      "MPHOSPH9",
+      "OGFOD2",
+      "PITPNM2"
+     ],
+     "n": 13,
+     "named": [
+      "MPHOSPH9",
+      "SBNO1",
+      "VPS37B"
+     ],
+     "expected": 0.23076923076923078,
+     "graph": null,
+     "first": [],
+     "baseline": 0.23076923076923078,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ZCWPW1",
+      "C7orf61",
+      "MEPCE",
+      "PILRA",
+      "PILRB",
+      "PPP1R35",
+      "SPDYE3",
+      "TSC22D4"
+     ],
+     "n": 22,
+     "named": [
+      "GPC2",
+      "LAMTOR4",
+      "NYAP1",
+      "PILRA",
+      "PVRIG",
+      "SPDYE3",
+      "STAG3",
+      "TAF6",
+      "ZCWPW1"
+     ],
+     "expected": 0.4090909090909091,
+     "graph": 1.0,
+     "first": [
+      "ZCWPW1"
+     ],
+     "baseline": 0.375,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CD33",
+      "IGLON5",
+      "SIGLEC7",
+      "SIGLEC9",
+      "SIGLECL1"
+     ],
+     "n": 5,
+     "named": [
+      "CD33"
+     ],
+     "expected": 0.2,
+     "graph": 1.0,
+     "first": [
+      "CD33"
+     ],
+     "baseline": 0.2,
+     "singled_out": "CD33",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAMTS4",
+      "APOA2",
+      "B4GALT3",
+      "DEDD",
+      "FCER1G",
+      "KLHDC9",
+      "NDUFS2",
+      "NECTIN4"
+     ],
+     "n": 16,
+     "named": [
+      "ADAMTS4",
+      "FCER1G",
+      "NDUFS2",
+      "PFDN2",
+      "PPOX",
+      "TOMM40L",
+      "UFC1"
+     ],
+     "expected": 0.4375,
+     "graph": null,
+     "first": [],
+     "baseline": 0.4375,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "MAPT",
+      "KANSL1",
+      "LRRC37A2",
+      "ARL17A",
+      "CRHR1",
+      "LRRC37A",
+      "NSF",
+      "SPPL2C"
+     ],
+     "n": 11,
+     "named": [
+      "ARL17A",
+      "KANSL1",
+      "LRRC37A",
+      "MAPT",
+      "WNT3"
+     ],
+     "expected": 0.45454545454545453,
+     "graph": 1.0,
+     "first": [
+      "MAPT"
+     ],
+     "baseline": 0.5,
+     "singled_out": "MAPT",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BIN1",
+      "CYP27C1"
+     ],
+     "n": 2,
+     "named": [
+      "BIN1",
+      "CYP27C1"
+     ],
+     "expected": 1.0,
+     "graph": 1.0,
+     "first": [
+      "BIN1"
+     ],
+     "baseline": 1.0,
+     "singled_out": "BIN1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAM10",
+      "MINDY2"
+     ],
+     "n": 2,
+     "named": [
+      "ADAM10"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "ADAM10"
+     ],
+     "baseline": 0.5,
+     "singled_out": "ADAM10",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BCKDK",
+      "FUS",
+      "KAT8",
+      "PRSS36",
+      "PRSS53",
+      "PRSS8",
+      "PYCARD",
+      "STX4"
+     ],
+     "n": 13,
+     "named": [
+      "BCKDK",
+      "FUS",
+      "KAT8",
+      "PRSS36",
+      "STX4",
+      "VKORC1"
+     ],
+     "expected": 0.46153846153846156,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5454545454545454,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CASS4",
+      "AURKA",
+      "CSTF1",
+      "FAM209A",
+      "FAM209B",
+      "FAM210B",
+      "GCNT7",
+      "RTFDC1"
+     ],
+     "n": 8,
+     "named": [
+      "CASS4"
+     ],
+     "expected": 0.125,
+     "graph": 1.0,
+     "first": [
+      "CASS4"
+     ],
+     "baseline": 0.125,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "APH1B",
+      "CA12",
+      "RAB8B"
+     ],
+     "n": 3,
+     "named": [
+      "APH1B"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": null,
+     "first": [],
+     "baseline": 0.3333333333333333,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ABCA7",
+      "ARHGAP45",
+      "ARID3A",
+      "CNN2",
+      "GPX4",
+      "GRIN3B",
+      "POLR2E",
+      "SBNO2"
+     ],
+     "n": 10,
+     "named": [
+      "ABCA7"
+     ],
+     "expected": 0.1,
+     "graph": 1.0,
+     "first": [
+      "ABCA7"
+     ],
+     "baseline": 0.1,
+     "singled_out": "ABCA7",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ANKHD1",
+      "CYSTM1",
+      "HBEGF",
+      "PFDN1",
+      "SLC4A9"
+     ],
+     "n": 5,
+     "named": [
+      "HBEGF",
+      "PFDN1"
+     ],
+     "expected": 0.4,
+     "graph": null,
+     "first": [],
+     "baseline": 0.4,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CELF1",
+      "C1QTNF4",
+      "FAM180B",
+      "KBTBD4",
+      "MTCH2",
+      "NDUFS3",
+      "PTPMT1",
+      "RAPSN"
+     ],
+     "n": 8,
+     "named": [
+      "C1QTNF4",
+      "MTCH2"
+     ],
+     "expected": 0.25,
+     "graph": 0.0,
+     "first": [
+      "CELF1"
+     ],
+     "baseline": 0.25,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "PICALM",
+      "EED",
+      "CCDC83"
+     ],
+     "n": 3,
+     "named": [
+      "EED",
+      "PICALM"
+     ],
+     "expected": 0.6666666666666666,
+     "graph": 1.0,
+     "first": [
+      "PICALM"
+     ],
+     "baseline": 1.0,
+     "singled_out": "PICALM",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "MPO",
+      "HSF5",
+      "LPO",
+      "RNF43",
+      "SUPT4H1",
+      "TSPOAP1"
+     ],
+     "n": 6,
+     "named": [
+      "TSPOAP1"
+     ],
+     "expected": 0.16666666666666666,
+     "graph": 0.0,
+     "first": [
+      "MPO"
+     ],
+     "baseline": 0.16666666666666666,
+     "singled_out": "MPO",
+     "singled_out_named": false
+    },
+    {
+     "genes": [
+      "TREM2",
+      "APOBEC2",
+      "NFYA",
+      "OARD1",
+      "TREML1",
+      "TREML2",
+      "TREML4",
+      "LRFN2"
+     ],
+     "n": 12,
+     "named": [
+      "TREM2",
+      "UNC5CL"
+     ],
+     "expected": 0.16666666666666666,
+     "graph": 1.0,
+     "first": [
+      "TREM2"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "TREM2",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "NDUFAF6",
+      "CCNE2",
+      "INTS8",
+      "TP53INP1"
+     ],
+     "n": 4,
+     "named": [
+      "CCNE2",
+      "INTS8",
+      "NDUFAF6",
+      "TP53INP1"
+     ],
+     "expected": 1.0,
+     "graph": 1.0,
+     "first": [
+      "NDUFAF6"
+     ],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "HLA-DRB5",
+      "HLA-DQA1",
+      "HLA-DQA2",
+      "HLA-DQB1",
+      "HLA-DRB1",
+      "BTNL2",
+      "HLA-DRA",
+      "HLA-DOB"
+     ],
+     "n": 10,
+     "named": [
+      "HLA-DQA1",
+      "HLA-DRB1",
+      "HLA-DRB5"
+     ],
+     "expected": 0.3,
+     "graph": 1.0,
+     "first": [
+      "HLA-DRB5"
+     ],
+     "baseline": 0.6,
+     "singled_out": "HLA-DRB5",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "CLU",
+      "PTK2B",
+      "EPHX2",
+      "SCARA3",
+      "STMN4",
+      "TRIM35",
+      "CHRNA2"
+     ],
+     "n": 7,
+     "named": [
+      "CLU",
+      "PTK2B",
+      "TRIM35"
+     ],
+     "expected": 0.42857142857142855,
+     "graph": 1.0,
+     "first": [
+      "CLU"
+     ],
+     "baseline": 0.3333333333333333,
+     "singled_out": "CLU",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ACE",
+      "CYB561",
+      "DCAF7",
+      "KCNH6",
+      "TANC2"
+     ],
+     "n": 5,
+     "named": [
+      "ACE",
+      "CYB561"
+     ],
+     "expected": 0.4,
+     "graph": 1.0,
+     "first": [
+      "ACE"
+     ],
+     "baseline": 0.4,
+     "singled_out": "ACE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "CR1",
+      "CR1L",
+      "CR2"
+     ],
+     "n": 3,
+     "named": [
+      "CR1",
+      "CR2"
+     ],
+     "expected": 0.6666666666666666,
+     "graph": 1.0,
+     "first": [
+      "CR1"
+     ],
+     "baseline": 1.0,
+     "singled_out": "CR1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "EPHA1",
+      "CLCN1",
+      "FAM131B",
+      "TAS2R41",
+      "TAS2R60",
+      "ZYX",
+      "CASP2"
+     ],
+     "n": 7,
+     "named": [
+      "CASP2",
+      "EPHA1",
+      "TAS2R60",
+      "ZYX"
+     ],
+     "expected": 0.5714285714285714,
+     "graph": 1.0,
+     "first": [
+      "EPHA1"
+     ],
+     "baseline": 0.5,
+     "singled_out": "EPHA1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "CDK2",
+      "DGKA",
+      "ERBB3",
+      "ESYT1",
+      "IKZF4",
+      "PA2G4",
+      "PMEL",
+      "PYM1"
+     ],
+     "n": 13,
+     "named": [
+      "RPL41"
+     ],
+     "expected": 0.07692307692307693,
+     "graph": null,
+     "first": [],
+     "baseline": 0.07692307692307693,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "SCIMP",
+      "RABEP1",
+      "USP6",
+      "ZNF594"
+     ],
+     "n": 4,
+     "named": [
+      "RABEP1",
+      "SCIMP"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "SCIMP"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "PHB",
+      "ZNF652"
+     ],
+     "n": 2,
+     "named": [
+      "ZNF652"
+     ],
+     "expected": 0.5,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ACTR2",
+      "SPRED2"
+     ],
+     "n": 2,
+     "named": [
+      "SPRED2"
+     ],
+     "expected": 0.5,
+     "graph": 0.0,
+     "first": [
+      "ACTR2"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "MS4A4A",
+      "MS4A6A",
+      "MS4A3",
+      "MS4A4E",
+      "MS4A2",
+      "MS4A6E",
+      "MS4A14",
+      "MS4A5"
+     ],
+     "n": 9,
+     "named": [
+      "MS4A2",
+      "MS4A4E",
+      "MS4A6A"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 0.0,
+     "first": [
+      "MS4A4A"
+     ],
+     "baseline": 0.6666666666666666,
+     "singled_out": "MS4A4A",
+     "singled_out_named": false
+    },
+    {
+     "genes": [
+      "GLCCI1",
+      "ICA1"
+     ],
+     "n": 2,
+     "named": [
+      "GLCCI1",
+      "ICA1"
+     ],
+     "expected": 1.0,
+     "graph": null,
+     "first": [],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "INPP5D",
+      "ATG16L1",
+      "NEU2"
+     ],
+     "n": 3,
+     "named": [
+      "INPP5D"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "INPP5D"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "EPDR1",
+      "GPR141",
+      "NME8"
+     ],
+     "n": 3,
+     "named": [
+      "EPDR1",
+      "GPR141",
+      "NME8"
+     ],
+     "expected": 1.0,
+     "graph": null,
+     "first": [],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "SLC24A4",
+      "RIN3"
+     ],
+     "n": 2,
+     "named": [
+      "RIN3",
+      "SLC24A4"
+     ],
+     "expected": 1.0,
+     "graph": 1.0,
+     "first": [
+      "SLC24A4"
+     ],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ECHDC3",
+      "USP6NL"
+     ],
+     "n": 2,
+     "named": [
+      "ECHDC3",
+      "USP6NL"
+     ],
+     "expected": 1.0,
+     "graph": null,
+     "first": [],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    }
+   ]
+  },
+  "data_only": {
+   "loci": 90,
+   "assessed": 27,
+   "with_first_genes": 19,
+   "graph": 17.0,
+   "chance": 5.54,
+   "baseline": 7.536,
+   "graph_minus_chance": [
+    11.46,
+    7.8586,
+    14.523
+   ],
+   "graph_minus_baseline": [
+    9.464,
+    5.7904,
+    12.7659
+   ],
+   "singled_out_assessed": 12,
+   "singled_out_named": 12,
+   "rows": [
+    {
+     "genes": [
+      "APOE",
+      "APOC1",
+      "TOMM40",
+      "APOC2",
+      "APOC4",
+      "BCAM",
+      "NECTIN2",
+      "CLPTM1"
+     ],
+     "n": 44,
+     "named": [
+      "APOE"
+     ],
+     "expected": 0.022727272727272728,
+     "graph": 1.0,
+     "first": [
+      "APOE"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "APOE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ABCB9",
+      "ARL6IP4",
+      "C12orf65",
+      "CDK2AP1",
+      "KMT5A",
+      "MPHOSPH9",
+      "OGFOD2",
+      "PITPNM2"
+     ],
+     "n": 13,
+     "named": [
+      "MPHOSPH9",
+      "SBNO1",
+      "VPS37B"
+     ],
+     "expected": 0.23076923076923078,
+     "graph": null,
+     "first": [],
+     "baseline": 0.23076923076923078,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ZCWPW1",
+      "C7orf61",
+      "MEPCE",
+      "PILRA",
+      "PILRB",
+      "PPP1R35",
+      "SPDYE3",
+      "TSC22D4"
+     ],
+     "n": 22,
+     "named": [
+      "NYAP1",
+      "PILRA",
+      "SPDYE3",
+      "ZCWPW1"
+     ],
+     "expected": 0.18181818181818182,
+     "graph": 1.0,
+     "first": [
+      "ZCWPW1"
+     ],
+     "baseline": 0.375,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CD33",
+      "IGLON5",
+      "SIGLEC7",
+      "SIGLEC9",
+      "SIGLECL1"
+     ],
+     "n": 5,
+     "named": [
+      "CD33"
+     ],
+     "expected": 0.2,
+     "graph": 1.0,
+     "first": [
+      "CD33"
+     ],
+     "baseline": 0.2,
+     "singled_out": "CD33",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAMTS4",
+      "APOA2",
+      "B4GALT3",
+      "DEDD",
+      "FCER1G",
+      "KLHDC9",
+      "NDUFS2",
+      "NECTIN4"
+     ],
+     "n": 16,
+     "named": [
+      "ADAMTS4"
+     ],
+     "expected": 0.0625,
+     "graph": null,
+     "first": [],
+     "baseline": 0.0625,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "MAPT",
+      "KANSL1",
+      "LRRC37A2",
+      "ARL17A",
+      "CRHR1",
+      "LRRC37A",
+      "NSF",
+      "SPPL2C"
+     ],
+     "n": 11,
+     "named": [
+      "MAPT"
+     ],
+     "expected": 0.09090909090909091,
+     "graph": 1.0,
+     "first": [
+      "MAPT"
+     ],
+     "baseline": 0.0,
+     "singled_out": "MAPT",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BIN1",
+      "CYP27C1"
+     ],
+     "n": 2,
+     "named": [
+      "BIN1"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "BIN1"
+     ],
+     "baseline": 0.5,
+     "singled_out": "BIN1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ADAM10",
+      "MINDY2"
+     ],
+     "n": 2,
+     "named": [
+      "ADAM10"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "ADAM10"
+     ],
+     "baseline": 0.5,
+     "singled_out": "ADAM10",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "BCKDK",
+      "FUS",
+      "KAT8",
+      "PRSS36",
+      "PRSS53",
+      "PRSS8",
+      "PYCARD",
+      "STX4"
+     ],
+     "n": 13,
+     "named": [
+      "BCKDK",
+      "KAT8"
+     ],
+     "expected": 0.15384615384615385,
+     "graph": null,
+     "first": [],
+     "baseline": 0.18181818181818182,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CASS4",
+      "AURKA",
+      "CSTF1",
+      "FAM209A",
+      "FAM209B",
+      "FAM210B",
+      "GCNT7",
+      "RTFDC1"
+     ],
+     "n": 8,
+     "named": [
+      "CASS4"
+     ],
+     "expected": 0.125,
+     "graph": 1.0,
+     "first": [
+      "CASS4"
+     ],
+     "baseline": 0.125,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "APH1B",
+      "CA12",
+      "RAB8B"
+     ],
+     "n": 3,
+     "named": [
+      "APH1B"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": null,
+     "first": [],
+     "baseline": 0.3333333333333333,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ABCA7",
+      "ARHGAP45",
+      "ARID3A",
+      "CNN2",
+      "GPX4",
+      "GRIN3B",
+      "POLR2E",
+      "SBNO2"
+     ],
+     "n": 10,
+     "named": [
+      "ABCA7"
+     ],
+     "expected": 0.1,
+     "graph": 1.0,
+     "first": [
+      "ABCA7"
+     ],
+     "baseline": 0.1,
+     "singled_out": "ABCA7",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ANKHD1",
+      "CYSTM1",
+      "HBEGF",
+      "PFDN1",
+      "SLC4A9"
+     ],
+     "n": 5,
+     "named": [
+      "HBEGF"
+     ],
+     "expected": 0.2,
+     "graph": null,
+     "first": [],
+     "baseline": 0.2,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "PICALM",
+      "EED",
+      "CCDC83"
+     ],
+     "n": 3,
+     "named": [
+      "PICALM"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "PICALM"
+     ],
+     "baseline": 1.0,
+     "singled_out": "PICALM",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "TREM2",
+      "APOBEC2",
+      "NFYA",
+      "OARD1",
+      "TREML1",
+      "TREML2",
+      "TREML4",
+      "LRFN2"
+     ],
+     "n": 12,
+     "named": [
+      "TREM2"
+     ],
+     "expected": 0.08333333333333333,
+     "graph": 1.0,
+     "first": [
+      "TREM2"
+     ],
+     "baseline": 0.14285714285714285,
+     "singled_out": "TREM2",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "NDUFAF6",
+      "CCNE2",
+      "INTS8",
+      "TP53INP1"
+     ],
+     "n": 4,
+     "named": [
+      "TP53INP1"
+     ],
+     "expected": 0.25,
+     "graph": 0.0,
+     "first": [
+      "NDUFAF6"
+     ],
+     "baseline": 0.25,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "CLU",
+      "PTK2B",
+      "EPHX2",
+      "SCARA3",
+      "STMN4",
+      "TRIM35",
+      "CHRNA2"
+     ],
+     "n": 7,
+     "named": [
+      "CLU"
+     ],
+     "expected": 0.14285714285714285,
+     "graph": 1.0,
+     "first": [
+      "CLU"
+     ],
+     "baseline": 0.3333333333333333,
+     "singled_out": "CLU",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "ACE",
+      "CYB561",
+      "DCAF7",
+      "KCNH6",
+      "TANC2"
+     ],
+     "n": 5,
+     "named": [
+      "ACE"
+     ],
+     "expected": 0.2,
+     "graph": 1.0,
+     "first": [
+      "ACE"
+     ],
+     "baseline": 0.2,
+     "singled_out": "ACE",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "CR1",
+      "CR1L",
+      "CR2"
+     ],
+     "n": 3,
+     "named": [
+      "CR1"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "CR1"
+     ],
+     "baseline": 1.0,
+     "singled_out": "CR1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "EPHA1",
+      "CLCN1",
+      "FAM131B",
+      "TAS2R41",
+      "TAS2R60",
+      "ZYX",
+      "CASP2"
+     ],
+     "n": 7,
+     "named": [
+      "EPHA1"
+     ],
+     "expected": 0.14285714285714285,
+     "graph": 1.0,
+     "first": [
+      "EPHA1"
+     ],
+     "baseline": 0.16666666666666666,
+     "singled_out": "EPHA1",
+     "singled_out_named": true
+    },
+    {
+     "genes": [
+      "SCIMP",
+      "RABEP1",
+      "USP6",
+      "ZNF594"
+     ],
+     "n": 4,
+     "named": [
+      "RABEP1",
+      "SCIMP"
+     ],
+     "expected": 0.5,
+     "graph": 1.0,
+     "first": [
+      "SCIMP"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ACTR2",
+      "SPRED2"
+     ],
+     "n": 2,
+     "named": [
+      "SPRED2"
+     ],
+     "expected": 0.5,
+     "graph": 0.0,
+     "first": [
+      "ACTR2"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "GLCCI1",
+      "ICA1"
+     ],
+     "n": 2,
+     "named": [
+      "ICA1"
+     ],
+     "expected": 0.5,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "INPP5D",
+      "ATG16L1",
+      "NEU2"
+     ],
+     "n": 3,
+     "named": [
+      "INPP5D"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": 1.0,
+     "first": [
+      "INPP5D"
+     ],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "EPDR1",
+      "GPR141",
+      "NME8"
+     ],
+     "n": 3,
+     "named": [
+      "GPR141"
+     ],
+     "expected": 0.3333333333333333,
+     "graph": null,
+     "first": [],
+     "baseline": 0.3333333333333333,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "SLC24A4",
+      "RIN3"
+     ],
+     "n": 2,
+     "named": [
+      "RIN3",
+      "SLC24A4"
+     ],
+     "expected": 1.0,
+     "graph": 1.0,
+     "first": [
+      "SLC24A4"
+     ],
+     "baseline": 1.0,
+     "singled_out": null,
+     "singled_out_named": null
+    },
+    {
+     "genes": [
+      "ECHDC3",
+      "USP6NL"
+     ],
+     "n": 2,
+     "named": [
+      "USP6NL"
+     ],
+     "expected": 0.5,
+     "graph": null,
+     "first": [],
+     "baseline": 0.5,
+     "singled_out": null,
+     "singled_out_named": null
+    }
+   ]
+  }
+ },
+ "largest_study": {
+  "assessed": true,
+  "largest": {
+   "study": "GCST007320",
+   "year": 2019,
+   "design": "cases and controls",
+   "cases": 24087,
+   "controls": 383378,
+   "smallest_odds_ratio_it_could_find": 1.077
+  },
+  "check_at_20_percent": true,
+  "new_loci": 48,
+  "should_have_been_seen": 0,
+  "seen": [],
+  "odds_ratio_above_1_range": [
+   1.0287,
+   1.1144
+  ],
+  "needed_at_1_05": {
+   "cases": 55253,
+   "controls": 879429,
+   "effective": 207947
+  },
+  "this_study_effective": 416493,
+  "rows": [
+   {
+    "locus": 1,
+    "genes": "HP1BP3/EIF4G3",
+    "effect_allele_frequency": 0.5459,
+    "odds_ratio_above_1": 1.0351,
+    "could_have_found": 1.0612,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 2,
+    "genes": "LAPTM5",
+    "effect_allele_frequency": 0.1879,
+    "odds_ratio_above_1": 1.0433,
+    "could_have_found": 1.0786,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 3,
+    "genes": "PLEKHO1",
+    "effect_allele_frequency": 0.0691,
+    "odds_ratio_above_1": 1.0624,
+    "could_have_found": 1.1236,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 6,
+    "genes": "KIF21B/CACNA1S",
+    "effect_allele_frequency": 0.2808,
+    "odds_ratio_above_1": 1.032,
+    "could_have_found": 1.068,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 15,
+    "genes": "ERC2",
+    "effect_allele_frequency": 0.0674,
+    "odds_ratio_above_1": 1.0655,
+    "could_have_found": 1.1251,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 16,
+    "genes": "NCK1",
+    "effect_allele_frequency": 0.6049,
+    "odds_ratio_above_1": 1.03,
+    "could_have_found": 1.0623,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 17,
+    "genes": "MBNL1",
+    "effect_allele_frequency": 0.6827,
+    "odds_ratio_above_1": 1.0316,
+    "could_have_found": 1.0656,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 20,
+    "genes": "MAP3K13",
+    "effect_allele_frequency": 0.023,
+    "odds_ratio_above_1": 1.1144,
+    "could_have_found": 1.218,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 21,
+    "genes": "UBXN7/PCYT1A/RNF168",
+    "effect_allele_frequency": 0.2552,
+    "odds_ratio_above_1": 1.0362,
+    "could_have_found": 1.0701,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 25,
+    "genes": "RAPGEF2",
+    "effect_allele_frequency": 0.61,
+    "odds_ratio_above_1": 1.0317,
+    "could_have_found": 1.0625,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 28,
+    "genes": "CEP120/SNX2",
+    "effect_allele_frequency": 0.2971,
+    "odds_ratio_above_1": 1.0367,
+    "could_have_found": 1.0668,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 32,
+    "genes": "DOK3",
+    "effect_allele_frequency": 0.1272,
+    "odds_ratio_above_1": 1.0657,
+    "could_have_found": 1.0928,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 37,
+    "genes": "RUNX2",
+    "effect_allele_frequency": 0.3438,
+    "odds_ratio_above_1": 1.0307,
+    "could_have_found": 1.0642,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 39,
+    "genes": "FAM135A/C6orf57",
+    "effect_allele_frequency": 0.217,
+    "odds_ratio_above_1": 1.0385,
+    "could_have_found": 1.0743,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 40,
+    "genes": "RGS17",
+    "effect_allele_frequency": 0.3301,
+    "odds_ratio_above_1": 1.0318,
+    "could_have_found": 1.0649,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 41,
+    "genes": "MAFK",
+    "effect_allele_frequency": 0.4336,
+    "odds_ratio_above_1": 1.0315,
+    "could_have_found": 1.0615,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 42,
+    "genes": "PMS2/EIF2AK1",
+    "effect_allele_frequency": 0.2165,
+    "odds_ratio_above_1": 1.0377,
+    "could_have_found": 1.0744,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 45,
+    "genes": "HDAC9",
+    "effect_allele_frequency": 0.4048,
+    "odds_ratio_above_1": 1.0342,
+    "could_have_found": 1.0621,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 50,
+    "genes": "DOCK4",
+    "effect_allele_frequency": 0.9761,
+    "odds_ratio_above_1": 1.1027,
+    "could_have_found": 1.2135,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 55,
+    "genes": "RRM2B/ODF1/UBR5",
+    "effect_allele_frequency": 0.7284,
+    "odds_ratio_above_1": 1.0325,
+    "could_have_found": 1.0687,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 57,
+    "genes": "SLA",
+    "effect_allele_frequency": 0.2145,
+    "odds_ratio_above_1": 1.0374,
+    "could_have_found": 1.0747,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 59,
+    "genes": "IFNE/IFNA8",
+    "effect_allele_frequency": 0.0713,
+    "odds_ratio_above_1": 1.0587,
+    "could_have_found": 1.1217,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 60,
+    "genes": "GNAQ",
+    "effect_allele_frequency": 0.5237,
+    "odds_ratio_above_1": 1.0287,
+    "could_have_found": 1.061,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 61,
+    "genes": "SYK",
+    "effect_allele_frequency": 0.2158,
+    "odds_ratio_above_1": 1.0383,
+    "could_have_found": 1.0745,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 62,
+    "genes": "FGD3/IPPK/ZNF484",
+    "effect_allele_frequency": 0.6503,
+    "odds_ratio_above_1": 1.0299,
+    "could_have_found": 1.0639,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 68,
+    "genes": "GPAM",
+    "effect_allele_frequency": 0.1966,
+    "odds_ratio_above_1": 1.0374,
+    "could_have_found": 1.0772,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 72,
+    "genes": "CFL1/EFEMP2/FIBP/RNASEH2C/BANF1/EIF1AD",
+    "effect_allele_frequency": 0.1562,
+    "odds_ratio_above_1": 1.0455,
+    "could_have_found": 1.0848,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 75,
+    "genes": "NINJ2",
+    "effect_allele_frequency": 0.6816,
+    "odds_ratio_above_1": 1.0341,
+    "could_have_found": 1.0655,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 76,
+    "genes": "GLS2/ANKRD52",
+    "effect_allele_frequency": 0.824,
+    "odds_ratio_above_1": 1.0421,
+    "could_have_found": 1.0807,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 78,
+    "genes": "HIP1R/VPS37B/DENR/SBNO1",
+    "effect_allele_frequency": 0.149,
+    "odds_ratio_above_1": 1.0435,
+    "could_have_found": 1.0866,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 79,
+    "genes": "ATP6V0A2/TCTN2/GTF2H3/DDX55/ZNF664/MPHOSPH9",
+    "effect_allele_frequency": 0.6271,
+    "odds_ratio_above_1": 1.0322,
+    "could_have_found": 1.063,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 80,
+    "genes": "MCF2L",
+    "effect_allele_frequency": 0.1763,
+    "odds_ratio_above_1": 1.0395,
+    "could_have_found": 1.0807,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 85,
+    "genes": "RASGRP1",
+    "effect_allele_frequency": 0.6961,
+    "odds_ratio_above_1": 1.0345,
+    "could_have_found": 1.0664,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 86,
+    "genes": "PLCB2",
+    "effect_allele_frequency": 0.7585,
+    "odds_ratio_above_1": 1.0334,
+    "could_have_found": 1.0715,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 90,
+    "genes": "GLCE",
+    "effect_allele_frequency": 0.9719,
+    "odds_ratio_above_1": 1.1031,
+    "could_have_found": 1.1959,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 92,
+    "genes": "MCTP2",
+    "effect_allele_frequency": 0.7312,
+    "odds_ratio_above_1": 1.035,
+    "could_have_found": 1.0689,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 94,
+    "genes": "GGA2",
+    "effect_allele_frequency": 0.767,
+    "odds_ratio_above_1": 1.0412,
+    "could_have_found": 1.0724,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 98,
+    "genes": "PMFBP1/DHODH",
+    "effect_allele_frequency": 0.821,
+    "odds_ratio_above_1": 1.0443,
+    "could_have_found": 1.0802,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 101,
+    "genes": "C16orf95",
+    "effect_allele_frequency": 0.5753,
+    "odds_ratio_above_1": 1.0355,
+    "could_have_found": 1.0616,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 104,
+    "genes": "MNT/SGSM2/DPH1/RAP1GAP2",
+    "effect_allele_frequency": 0.6372,
+    "odds_ratio_above_1": 1.0345,
+    "could_have_found": 1.0634,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 113,
+    "genes": "AC104532.2/VMAC/RFX2",
+    "effect_allele_frequency": 0.1376,
+    "odds_ratio_above_1": 1.048,
+    "could_have_found": 1.0896,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 114,
+    "genes": "DNM2/KEAP1",
+    "effect_allele_frequency": 0.5801,
+    "odds_ratio_above_1": 1.0304,
+    "could_have_found": 1.0617,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 115,
+    "genes": "LRRC25/SSBP4/PIK3R2/MAST3/ARRDC2",
+    "effect_allele_frequency": 0.5766,
+    "odds_ratio_above_1": 1.0343,
+    "could_have_found": 1.0616,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 116,
+    "genes": "YJEFN3/GATAD2A/TMEM161A/DDX49",
+    "effect_allele_frequency": 0.183,
+    "odds_ratio_above_1": 1.0429,
+    "could_have_found": 1.0794,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 117,
+    "genes": "CEP89/CEBPA",
+    "effect_allele_frequency": 0.3529,
+    "odds_ratio_above_1": 1.0481,
+    "could_have_found": 1.0638,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 118,
+    "genes": "AXL",
+    "effect_allele_frequency": 0.5428,
+    "odds_ratio_above_1": 1.0306,
+    "could_have_found": 1.0611,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 124,
+    "genes": "SMOX",
+    "effect_allele_frequency": 0.4381,
+    "odds_ratio_above_1": 1.0313,
+    "could_have_found": 1.0614,
+    "should_have_been_seen": false
+   },
+   {
+    "locus": 125,
+    "genes": "UBE2V1/SPATA2",
+    "effect_allele_frequency": 0.7246,
+    "odds_ratio_above_1": 1.0367,
+    "could_have_found": 1.0684,
+    "should_have_been_seen": false
+   }
+  ],
+  "check_with_individuals_as_cases": {
+   "individuals": 47793,
+   "cases": 71880,
+   "at_20_percent": 1.046,
+   "should_have_been_seen": 2,
+   "seen": [
+    {
+     "locus": 32,
+     "genes": "DOK3",
+     "effect_allele_frequency": 0.1272,
+     "odds_ratio_above_1": 1.0657,
+     "could_have_found": 1.0558
+    },
+    {
+     "locus": 117,
+     "genes": "CEP89/CEBPA",
+     "effect_allele_frequency": 0.3529,
+     "odds_ratio_above_1": 1.0481,
+     "could_have_found": 1.0386
+    }
+   ]
+  }
+ },
+ "ranking": {
+  "candidates": 17285,
+  "primary:new_loci": {
+   "positives": 85,
+   "named_with_no_link_to_any_trait": 0,
+   "named_already_linked": 3,
+   "roc_area": {
+    "served": 0.6824,
+    "neighbours": 0.6747,
+    "degree": 0.6786
+   },
+   "average_precision": {
+    "served": 0.0111,
+    "neighbours": 0.0112,
+    "degree": 0.0103
+   },
+   "served_minus_neighbours": [
+    0.0077,
+    -0.0137,
+    0.0377
+   ],
+   "served_minus_degree": [
+    0.0038,
+    -0.0239,
+    0.0379
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "DENR": 0.9887,
+    "ZNF664": 0.9883,
+    "GATAD2A": 0.9877,
+    "ATP6V0A2": 0.9861,
+    "RNASEH2C": 0.9828,
+    "PMFBP1": 0.9757,
+    "DHODH": 0.9753,
+    "CEBPA": 0.9752,
+    "CFL1": 0.9749,
+    "LRRC25": 0.9749,
+    "YJEFN3": 0.9747,
+    "SSBP4": 0.9738,
+    "FIBP": 0.9729,
+    "EFEMP2": 0.9714,
+    "MAST3": 0.954,
+    "SGSM2": 0.9389,
+    "GLS2": 0.9374,
+    "NCK1": 0.937,
+    "HIP1R": 0.9288,
+    "DPH1": 0.9274,
+    "PIK3R2": 0.922,
+    "GPAM": 0.9054,
+    "CEP120": 0.8998,
+    "MBNL1": 0.895,
+    "MNT": 0.8884,
+    "TMEM161A": 0.8816,
+    "ANKRD52": 0.8674,
+    "ARRDC2": 0.8449,
+    "RGS17": 0.8449,
+    "TCTN2": 0.8394,
+    "DNM2": 0.8358,
+    "PLEKHO1": 0.8315,
+    "DOK3": 0.8295,
+    "RASGRP1": 0.8183,
+    "DDX55": 0.8178,
+    "EIF4G3": 0.813,
+    "HDAC9": 0.8098,
+    "ERC2": 0.8081,
+    "NINJ2": 0.8036,
+    "AXL": 0.794,
+    "EIF1AD": 0.794,
+    "RAP1GAP2": 0.7863,
+    "C16orf95": 0.7801,
+    "SMOX": 0.7778,
+    "KEAP1": 0.7734,
+    "GTF2H3": 0.7516,
+    "KIF21B": 0.7436,
+    "RUNX2": 0.7422,
+    "BANF1": 0.7364,
+    "PCYT1A": 0.7148,
+    "IPPK": 0.696,
+    "HP1BP3": 0.688,
+    "PLCB2": 0.6867,
+    "UBXN7": 0.6778,
+    "MCF2L": 0.6324,
+    "DOCK4": 0.6098,
+    "RNF168": 0.5973,
+    "CEP89": 0.5865,
+    "VMAC": 0.5865,
+    "UBR5": 0.5601,
+    "LAPTM5": 0.5518,
+    "ZNF484": 0.5483,
+    "SLA": 0.5151,
+    "CACNA1S": 0.4769,
+    "ODF1": 0.4615,
+    "SNX2": 0.4583,
+    "FGD3": 0.4155,
+    "SYK": 0.4013,
+    "RFX2": 0.3819,
+    "DDX49": 0.3655,
+    "MAP3K13": 0.3539,
+    "GLCE": 0.3199,
+    "RRM2B": 0.3134,
+    "RAPGEF2": 0.2869,
+    "IFNE": 0.2573,
+    "FAM135A": 0.2565,
+    "UBE2V1": 0.2505,
+    "GNAQ": 0.2035,
+    "IFNA8": 0.1876,
+    "SPATA2": 0.1812,
+    "MCTP2": 0.1613,
+    "EIF2AK1": 0.1576,
+    "PMS2": 0.1576,
+    "MAFK": 0.1327,
+    "GGA2": 0.0117
+   }
+  },
+  "primary:all_loci": {
+   "positives": 139,
+   "named_with_no_link_to_any_trait": 1,
+   "named_already_linked": 41,
+   "roc_area": {
+    "served": 0.7019,
+    "neighbours": 0.6961,
+    "degree": 0.698
+   },
+   "average_precision": {
+    "served": 0.0206,
+    "neighbours": 0.0198,
+    "degree": 0.0188
+   },
+   "served_minus_neighbours": [
+    0.0058,
+    -0.0083,
+    0.0233
+   ],
+   "served_minus_degree": [
+    0.004,
+    -0.014,
+    0.0247
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "SPI1": 0.9993,
+    "TRIB1": 0.9941,
+    "DENR": 0.9887,
+    "NTN5": 0.9887,
+    "ZNF664": 0.9884,
+    "GATAD2A": 0.9878,
+    "JAZF1": 0.9865,
+    "ATP6V0A2": 0.9863,
+    "RNASEH2C": 0.983,
+    "LILRB2": 0.982,
+    "CTSB": 0.9765,
+    "MINK1": 0.9764,
+    "PMFBP1": 0.976,
+    "DHODH": 0.9757,
+    "CEBPA": 0.9755,
+    "CFL1": 0.9753,
+    "LRRC25": 0.9753,
+    "YJEFN3": 0.975,
+    "FDFT1": 0.9747,
+    "SSBP4": 0.9742,
+    "FIBP": 0.9733,
+    "EFEMP2": 0.9717,
+    "DOC2A": 0.969,
+    "ABCA1": 0.9677,
+    "FGFRL1": 0.9618,
+    "IDUA": 0.9618,
+    "SHARPIN": 0.9594,
+    "CHRNE": 0.9564,
+    "MAST3": 0.9547,
+    "GBA": 0.9512,
+    "ABI3": 0.9489,
+    "UMAD1": 0.9416,
+    "SGSM2": 0.9397,
+    "GLS2": 0.9381,
+    "NCK1": 0.9378,
+    "HIP1R": 0.9296,
+    "DPH1": 0.9282,
+    "ELMO1": 0.9253,
+    "PIK3R2": 0.9228,
+    "HAVCR2": 0.9085,
+    "GPAM": 0.9062,
+    "CEP120": 0.9006,
+    "MAF": 0.8967,
+    "MBNL1": 0.8958,
+    "MNT": 0.8892,
+    "TMEM161A": 0.8824,
+    "NKAPL": 0.8737,
+    "ANKRD52": 0.8682,
+    "MYO15A": 0.8479,
+    "ARRDC2": 0.8457,
+    "RGS17": 0.8457,
+    "TCTN2": 0.8402,
+    "TMEM106B": 0.839,
+    "DNM2": 0.8366,
+    "PLEKHO1": 0.8323,
+    "DOK3": 0.8303,
+    "IL34": 0.8297,
+    "RASGRP1": 0.8191,
+    "DDX55": 0.8187,
+    "PLEKHA1": 0.8144,
+    "EIF4G3": 0.8138,
+    "HDAC9": 0.8107,
+    "ERC2": 0.8089,
+    "TMEM163": 0.8051,
+    "GRN": 0.8047,
+    "NINJ2": 0.8046,
+    "AXL": 0.7949,
+    "EIF1AD": 0.7949,
+    "TNIP1": 0.793,
+    "VWA5B2": 0.7895,
+    "RAP1GAP2": 0.7873,
+    "OR2B2": 0.7823,
+    "C16orf95": 0.7811,
+    "SMOX": 0.7789,
+    "KEAP1": 0.7745,
+    "GTF2H3": 0.7525,
+    "TSPAN14": 0.7519,
+    "ICA1L": 0.7459,
+    "WDR81": 0.7452,
+    "KIF21B": 0.7447,
+    "RUNX2": 0.7433,
+    "BANF1": 0.7375,
+    "PLCG2": 0.7351,
+    "CCDC6": 0.7206,
+    "PCYT1A": 0.716,
+    "IQCK": 0.7133,
+    "EGFR": 0.7124,
+    "IPPK": 0.6972,
+    "HP1BP3": 0.6891,
+    "PLCB2": 0.6879,
+    "UBXN7": 0.679,
+    "WDR12": 0.664,
+    "MCF2L": 0.6335,
+    "QPCT": 0.6187,
+    "DOCK4": 0.6108,
+    "RNF168": 0.5983,
+    "RASGEF1C": 0.5952,
+    "CEP89": 0.5875,
+    "VMAC": 0.5875,
+    "PRDM7": 0.5825,
+    "CLNK": 0.5812,
+    "UBR5": 0.5611,
+    "ITGA2B": 0.5583,
+    "LAPTM5": 0.5529,
+    "ZNF484": 0.5493,
+    "SLA": 0.5161,
+    "NCK2": 0.4912,
+    "CTSH": 0.4906,
+    "BLNK": 0.4837,
+    "CACNA1S": 0.4779,
+    "ODF1": 0.4624,
+    "SNX2": 0.4593,
+    "RHOH": 0.4177,
+    "FGD3": 0.4164,
+    "SYK": 0.4021,
+    "RFX2": 0.3827,
+    "RASA1": 0.3707,
+    "DDX49": 0.3663,
+    "MAP3K13": 0.3547,
+    "GLCE": 0.3205,
+    "RRM2B": 0.314,
+    "RAPGEF2": 0.2874,
+    "IFNE": 0.2578,
+    "FAM135A": 0.2569,
+    "UBE2V1": 0.2509,
+    "MME": 0.2399,
+    "SNX1": 0.2312,
+    "APP": 0.2077,
+    "GNAQ": 0.204,
+    "RBCK1": 0.1891,
+    "IFNA8": 0.188,
+    "SPATA2": 0.1816,
+    "MCTP2": 0.1617,
+    "EIF2AK1": 0.158,
+    "PMS2": 0.158,
+    "HS3ST1": 0.1551,
+    "MAFK": 0.1331,
+    "TPCN1": 0.0915,
+    "GGA2": 0.0117
+   }
+  },
+  "broad:new_loci": {
+   "positives": 116,
+   "named_with_no_link_to_any_trait": 1,
+   "named_already_linked": 4,
+   "roc_area": {
+    "served": 0.6851,
+    "neighbours": 0.6778,
+    "degree": 0.6781
+   },
+   "average_precision": {
+    "served": 0.0144,
+    "neighbours": 0.0143,
+    "degree": 0.0134
+   },
+   "served_minus_neighbours": [
+    0.0074,
+    -0.0138,
+    0.0352
+   ],
+   "served_minus_degree": [
+    0.007,
+    -0.0171,
+    0.0354
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "DENR": 0.9886,
+    "ZNF664": 0.9882,
+    "GATAD2A": 0.9877,
+    "ATP6V0A2": 0.9861,
+    "RNASEH2C": 0.9828,
+    "HPR": 0.9761,
+    "PMFBP1": 0.9757,
+    "DHODH": 0.9754,
+    "CEBPA": 0.9752,
+    "CFL1": 0.975,
+    "LRRC25": 0.975,
+    "YJEFN3": 0.9747,
+    "SSBP4": 0.9738,
+    "FIBP": 0.9729,
+    "EFEMP2": 0.9714,
+    "SNX32": 0.9705,
+    "CCDC85B": 0.9597,
+    "MAST3": 0.9541,
+    "SGSM2": 0.939,
+    "GLS2": 0.9374,
+    "SPRYD4": 0.9374,
+    "NCK1": 0.9372,
+    "RBMS2": 0.9364,
+    "SLC35G2": 0.9303,
+    "HIP1R": 0.9291,
+    "DPH1": 0.9277,
+    "PIK3R2": 0.9222,
+    "SNX13": 0.9077,
+    "IL23A": 0.9062,
+    "GPAM": 0.9057,
+    "CEP120": 0.9001,
+    "MBNL1": 0.8953,
+    "SLC44A2": 0.8921,
+    "MNT": 0.8887,
+    "TMEM161A": 0.8819,
+    "TGFB1": 0.8709,
+    "ANKRD52": 0.8677,
+    "FNIP2": 0.8668,
+    "ARRDC2": 0.8453,
+    "RGS17": 0.8452,
+    "SUPT3H": 0.8426,
+    "TCTN2": 0.8398,
+    "DNM2": 0.8362,
+    "PLEKHO1": 0.8319,
+    "DOK3": 0.8299,
+    "TMEM91": 0.8249,
+    "IVD": 0.8217,
+    "RASGRP1": 0.8188,
+    "DDX55": 0.8183,
+    "EIF4G3": 0.8134,
+    "HDAC9": 0.8103,
+    "ERC2": 0.8086,
+    "NINJ2": 0.8041,
+    "AXL": 0.7945,
+    "EIF1AD": 0.7944,
+    "WNK1": 0.7888,
+    "RAP1GAP2": 0.7868,
+    "C16orf95": 0.7805,
+    "SMOX": 0.7783,
+    "CSNK1G3": 0.7748,
+    "KEAP1": 0.774,
+    "RAD52": 0.7719,
+    "YIF1A": 0.7629,
+    "GTF2H3": 0.7522,
+    "FAM193B": 0.7502,
+    "ADRA1D": 0.747,
+    "KIF21B": 0.7443,
+    "LAMP1": 0.7434,
+    "RUNX2": 0.743,
+    "C4orf45": 0.7419,
+    "BANF1": 0.7372,
+    "TG": 0.7288,
+    "PCYT1A": 0.7157,
+    "IPPK": 0.6968,
+    "HP1BP3": 0.6887,
+    "PLCB2": 0.6875,
+    "UBXN7": 0.6786,
+    "ERC1": 0.654,
+    "MCF2L": 0.6332,
+    "DOCK4": 0.6105,
+    "RNF168": 0.598,
+    "CEP89": 0.5872,
+    "VMAC": 0.5872,
+    "UBR5": 0.5607,
+    "LAPTM5": 0.5524,
+    "ZNF484": 0.5488,
+    "PSAT1": 0.5191,
+    "SLA": 0.5157,
+    "CACNA1S": 0.4774,
+    "ODF1": 0.4619,
+    "SNX2": 0.4588,
+    "FGD3": 0.4159,
+    "SYK": 0.4017,
+    "RFX2": 0.3823,
+    "PAQR5": 0.3683,
+    "DDX49": 0.3658,
+    "MAP3K13": 0.3543,
+    "GLCE": 0.3202,
+    "RRM2B": 0.3136,
+    "RAPGEF2": 0.2871,
+    "IFNE": 0.2575,
+    "FAM135A": 0.2567,
+    "UBE2V1": 0.2506,
+    "GNAQ": 0.2036,
+    "RNF114": 0.1973,
+    "IFNA8": 0.1877,
+    "SPATA2": 0.1813,
+    "DCTN5": 0.1622,
+    "MCTP2": 0.1615,
+    "EIF2AK1": 0.1578,
+    "PMS2": 0.1578,
+    "MAFK": 0.1328,
+    "SCNN1B": 0.0727,
+    "COG7": 0.0116,
+    "GGA2": 0.0116,
+    "INTS1": 0.0044
+   }
+  },
+  "broad:all_loci": {
+   "positives": 325,
+   "named_with_no_link_to_any_trait": 6,
+   "named_already_linked": 90,
+   "roc_area": {
+    "served": 0.7261,
+    "neighbours": 0.6955,
+    "degree": 0.6875
+   },
+   "average_precision": {
+    "served": 0.0502,
+    "neighbours": 0.0421,
+    "degree": 0.0419
+   },
+   "served_minus_neighbours": [
+    0.0306,
+    0.0136,
+    0.0508
+   ],
+   "served_minus_degree": [
+    0.0386,
+    0.0172,
+    0.0625
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "MYBPC3": 0.9995,
+    "SLC39A13": 0.9995,
+    "SPI1": 0.9994,
+    "NR1H3": 0.9987,
+    "TRIB1": 0.9942,
+    "SAP25": 0.9929,
+    "HSD3B7": 0.9909,
+    "FBXL19": 0.9903,
+    "FCGR3A": 0.9894,
+    "DENR": 0.9892,
+    "FUT2": 0.9892,
+    "MAMSTR": 0.9892,
+    "RASIP1": 0.9892,
+    "NTN5": 0.9892,
+    "ZNF664": 0.9889,
+    "GATAD2A": 0.9883,
+    "JAZF1": 0.987,
+    "ATP6V0A2": 0.9867,
+    "LILRA6": 0.9861,
+    "SPHK2": 0.9859,
+    "IZUMO1": 0.9854,
+    "RNASEH2C": 0.9835,
+    "FCGR3B": 0.9828,
+    "LILRB2": 0.9826,
+    "GPAA1": 0.9772,
+    "CTSB": 0.9771,
+    "HPR": 0.9771,
+    "MINK1": 0.9771,
+    "PMFBP1": 0.9767,
+    "DHODH": 0.9764,
+    "CEBPA": 0.9762,
+    "CFL1": 0.9759,
+    "LRRC25": 0.9759,
+    "NEIL2": 0.9758,
+    "YJEFN3": 0.9758,
+    "FDFT1": 0.9754,
+    "SSBP4": 0.9749,
+    "FIBP": 0.974,
+    "EFEMP2": 0.9724,
+    "SNX32": 0.9715,
+    "DOC2A": 0.9698,
+    "SLC50A1": 0.9685,
+    "ABCA1": 0.9685,
+    "INO80E": 0.9683,
+    "TAOK2": 0.9676,
+    "BCL7C": 0.9666,
+    "LILRB3": 0.9662,
+    "FAM57B": 0.966,
+    "FGFRL1": 0.9628,
+    "IDUA": 0.9628,
+    "TMEM175": 0.9627,
+    "CCDC85B": 0.9613,
+    "SHARPIN": 0.9605,
+    "USP3": 0.9597,
+    "CHRNE": 0.9575,
+    "LILRA4": 0.9567,
+    "LILRA5": 0.9564,
+    "MAST3": 0.9559,
+    "ALDOA": 0.9547,
+    "ZKSCAN1": 0.9546,
+    "NIPSNAP3B": 0.9543,
+    "KRTCAP2": 0.9539,
+    "GBA": 0.9527,
+    "PPP4C": 0.951,
+    "ABI3": 0.9503,
+    "RAI1": 0.9496,
+    "HAVCR1": 0.9465,
+    "CFD": 0.9464,
+    "MED16": 0.9464,
+    "TMEM219": 0.9443,
+    "ITGAX": 0.9443,
+    "CD46": 0.9439,
+    "TIMD4": 0.9437,
+    "UMAD1": 0.9435,
+    "RTN4RL1": 0.9427,
+    "SGSM2": 0.9416,
+    "GLS2": 0.94,
+    "SPRYD4": 0.94,
+    "NCK1": 0.9397,
+    "RBMS2": 0.939,
+    "SLC35G2": 0.9328,
+    "CD34": 0.9326,
+    "CIRBP": 0.9321,
+    "HIP1R": 0.9317,
+    "DPH1": 0.9302,
+    "ELMO1": 0.9274,
+    "TMUB2": 0.9264,
+    "CDK10": 0.926,
+    "PIK3R2": 0.9249,
+    "UBTF": 0.916,
+    "ASPHD1": 0.9133,
+    "KCTD13": 0.9133,
+    "TOM1L2": 0.9122,
+    "DDX42": 0.912,
+    "HAVCR2": 0.9107,
+    "SNX13": 0.9106,
+    "TRIM4": 0.9098,
+    "IL23A": 0.9091,
+    "GPAM": 0.9086,
+    "MAP3K3": 0.9083,
+    "TBX6": 0.9075,
+    "FTSJ3": 0.9067,
+    "THSD7A": 0.9059,
+    "CEP120": 0.9031,
+    "ZSCAN23": 0.9027,
+    "NDUFA3": 0.9008,
+    "SIGLEC5": 0.8998,
+    "MAF": 0.8994,
+    "MBNL1": 0.8985,
+    "ZSCAN16": 0.8954,
+    "SLC44A2": 0.8953,
+    "ZSCAN12": 0.8953,
+    "SEZ6L2": 0.8929,
+    "MNT": 0.892,
+    "ZKSCAN4": 0.8915,
+    "IK": 0.8892,
+    "TMCO6": 0.8892,
+    "ZMAT2": 0.8892,
+    "NGEF": 0.8889,
+    "SIGLEC14": 0.8885,
+    "TMEM161A": 0.8856,
+    "ZSCAN31": 0.883,
+    "YPEL3": 0.8787,
+    "TCF25": 0.878,
+    "NKAPL": 0.8769,
+    "ECE2": 0.8754,
+    "TGFB1": 0.8746,
+    "SULT2B1": 0.8746,
+    "ZKSCAN3": 0.872,
+    "ANKRD52": 0.8716,
+    "FNIP2": 0.8706,
+    "PPM1E": 0.8695,
+    "GPX5": 0.8678,
+    "PRR14": 0.8619,
+    "RNF40": 0.8583,
+    "ZNF629": 0.8583,
+    "SEPT4": 0.8581,
+    "PSMA4": 0.8565,
+    "MAPK3": 0.8535,
+    "MYO15A": 0.8516,
+    "ARRDC2": 0.8494,
+    "RGS17": 0.8494,
+    "FAM117B": 0.8483,
+    "SUPT3H": 0.8468,
+    "MYO1C": 0.8456,
+    "TCTN2": 0.844,
+    "TMEM106B": 0.8427,
+    "DNM2": 0.8403,
+    "PLEKHO1": 0.836,
+    "PFKFB2": 0.8355,
+    "ALG3": 0.8349,
+    "DOK3": 0.8341,
+    "IL34": 0.8335,
+    "TMEM91": 0.8291,
+    "DEF8": 0.8289,
+    "ZNF785": 0.8282,
+    "IVD": 0.826,
+    "FHL2": 0.825,
+    "CAMK2N2": 0.8237,
+    "RASGRP1": 0.8232,
+    "DDX55": 0.8227,
+    "PLEKHA1": 0.8183,
+    "EIF4G3": 0.8178,
+    "HDAC9": 0.8146,
+    "TRIP11": 0.8142,
+    "ERC2": 0.8129,
+    "TMEM163": 0.809,
+    "ANXA6": 0.809,
+    "GRN": 0.8087,
+    "NINJ2": 0.8085,
+    "ACMSD": 0.8051,
+    "HTRA1": 0.8035,
+    "GPRC5B": 0.8018,
+    "AXL": 0.799,
+    "EIF1AD": 0.7989,
+    "TNIP1": 0.797,
+    "VWA5B2": 0.7935,
+    "WNK1": 0.7934,
+    "RAP1GAP2": 0.7913,
+    "OR2B2": 0.7863,
+    "C16orf95": 0.7851,
+    "SMOX": 0.7828,
+    "CENPBD1": 0.7826,
+    "CCNT2": 0.7794,
+    "CSNK1G3": 0.7794,
+    "KEAP1": 0.7785,
+    "RAD52": 0.7764,
+    "YIF1A": 0.7674,
+    "VEZF1": 0.7587,
+    "GTF2H3": 0.7565,
+    "TSPAN14": 0.7559,
+    "FAM193B": 0.7546,
+    "STRN": 0.7546,
+    "ITGAL": 0.7519,
+    "ADRA1D": 0.7515,
+    "ICA1L": 0.7501,
+    "WDR81": 0.7493,
+    "KIF21B": 0.7489,
+    "LAMP1": 0.748,
+    "RUNX2": 0.7475,
+    "C4orf45": 0.7464,
+    "BANF1": 0.7417,
+    "PLCG2": 0.7393,
+    "APBB3": 0.7352,
+    "EIF4EBP3": 0.7352,
+    "SRA1": 0.7352,
+    "SF3B3": 0.7337,
+    "TG": 0.7334,
+    "UBE2K": 0.7315,
+    "USF1": 0.7296,
+    "ZNF232": 0.7289,
+    "CCDC6": 0.7251,
+    "NBEAL1": 0.7248,
+    "PCYT1A": 0.7205,
+    "CORO1A": 0.7203,
+    "ANKH": 0.7179,
+    "IQCK": 0.7179,
+    "EGFR": 0.717,
+    "CPSF2": 0.7091,
+    "CSNK1G1": 0.7025,
+    "IPPK": 0.7017,
+    "DRG2": 0.6968,
+    "HP1BP3": 0.6936,
+    "PLCB2": 0.6924,
+    "SERPINF2": 0.6892,
+    "UBXN7": 0.6834,
+    "WDR12": 0.6683,
+    "DDX19A": 0.6661,
+    "ERC1": 0.6586,
+    "GID4": 0.653,
+    "NDUFAF7": 0.65,
+    "PRKD3": 0.6392,
+    "MCF2L": 0.6377,
+    "SPON2": 0.6294,
+    "CSNK2A1": 0.6251,
+    "CHGA": 0.6246,
+    "QPCT": 0.6229,
+    "DOCK4": 0.615,
+    "HEATR5B": 0.6149,
+    "RBM47": 0.609,
+    "RNF168": 0.6025,
+    "ELP3": 0.6001,
+    "RASGEF1C": 0.5994,
+    "CEP89": 0.5916,
+    "VMAC": 0.5916,
+    "PRDM7": 0.5865,
+    "CLNK": 0.5853,
+    "PBK": 0.5702,
+    "UBR5": 0.565,
+    "ITGA2B": 0.5621,
+    "LAPTM5": 0.5566,
+    "ZNF484": 0.5531,
+    "CARF": 0.53,
+    "PSAT1": 0.5231,
+    "SLA": 0.5196,
+    "COG4": 0.5161,
+    "CEBPZ": 0.5098,
+    "TBC1D9B": 0.509,
+    "SEC61G": 0.5079,
+    "EIF2B5": 0.4966,
+    "NCK2": 0.4947,
+    "CTSH": 0.494,
+    "BLNK": 0.4871,
+    "ATPAF2": 0.486,
+    "CACNA1S": 0.4813,
+    "LILRA1": 0.4719,
+    "LILRA2": 0.4719,
+    "ODF1": 0.4658,
+    "SNX2": 0.4626,
+    "ERCC3": 0.4558,
+    "GSTK1": 0.4511,
+    "GOLGA5": 0.4504,
+    "PARL": 0.4425,
+    "DAPK2": 0.4379,
+    "RHOH": 0.4209,
+    "FGD3": 0.4196,
+    "KNOP1": 0.4062,
+    "SYK": 0.4052,
+    "SCRIB": 0.4025,
+    "RFX2": 0.3856,
+    "DHTKD1": 0.382,
+    "RASA1": 0.3735,
+    "PAQR5": 0.3716,
+    "DDX49": 0.3691,
+    "MAP3K13": 0.3574,
+    "GFPT2": 0.3304,
+    "GLCE": 0.3229,
+    "RRM2B": 0.3163,
+    "DNTT": 0.3068,
+    "RAPGEF2": 0.2895,
+    "CD2BP2": 0.271,
+    "IFNE": 0.2596,
+    "FAM135A": 0.2588,
+    "UBE2V1": 0.2527,
+    "MME": 0.2416,
+    "SNX1": 0.2328,
+    "SNX22": 0.2328,
+    "ANXA11": 0.2136,
+    "APP": 0.2091,
+    "GABPA": 0.2091,
+    "GNAQ": 0.2054,
+    "RNF114": 0.199,
+    "ARL4A": 0.1958,
+    "RBCK1": 0.1904,
+    "TBC1D20": 0.1904,
+    "IFNA8": 0.1894,
+    "SPATA2": 0.183,
+    "DCTN5": 0.1636,
+    "MCTP2": 0.1629,
+    "EIF2AK1": 0.1592,
+    "PMS2": 0.1592,
+    "HS3ST1": 0.1562,
+    "QPRT": 0.1384,
+    "MAFK": 0.134,
+    "TXNDC16": 0.1069,
+    "GRIN2D": 0.1047,
+    "SLC36A1": 0.0939,
+    "IQCD": 0.0922,
+    "RITA1": 0.0922,
+    "TPCN1": 0.0922,
+    "SLC8B1": 0.0751,
+    "SCNN1B": 0.0736,
+    "COG7": 0.0117,
+    "GGA2": 0.0117,
+    "INTS1": 0.0045
+   }
+  },
+  "data_only:new_loci": {
+   "positives": 79,
+   "named_with_no_link_to_any_trait": 0,
+   "named_already_linked": 3,
+   "roc_area": {
+    "served": 0.6951,
+    "neighbours": 0.686,
+    "degree": 0.6841
+   },
+   "average_precision": {
+    "served": 0.0112,
+    "neighbours": 0.0112,
+    "degree": 0.0101
+   },
+   "served_minus_neighbours": [
+    0.0091,
+    -0.014,
+    0.0386
+   ],
+   "served_minus_degree": [
+    0.011,
+    -0.0161,
+    0.0436
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "DENR": 0.9887,
+    "ZNF664": 0.9883,
+    "GATAD2A": 0.9877,
+    "ATP6V0A2": 0.9861,
+    "RNASEH2C": 0.9828,
+    "PMFBP1": 0.9757,
+    "DHODH": 0.9754,
+    "CEBPA": 0.9752,
+    "CFL1": 0.975,
+    "LRRC25": 0.975,
+    "YJEFN3": 0.9747,
+    "SSBP4": 0.9738,
+    "FIBP": 0.9729,
+    "EFEMP2": 0.9714,
+    "MAST3": 0.954,
+    "SGSM2": 0.9389,
+    "GLS2": 0.9374,
+    "NCK1": 0.9371,
+    "HIP1R": 0.9289,
+    "DPH1": 0.9275,
+    "PIK3R2": 0.922,
+    "GPAM": 0.9054,
+    "CEP120": 0.8998,
+    "MBNL1": 0.895,
+    "MNT": 0.8884,
+    "TMEM161A": 0.8817,
+    "ANKRD52": 0.8674,
+    "ARRDC2": 0.845,
+    "RGS17": 0.8449,
+    "TCTN2": 0.8395,
+    "DNM2": 0.8358,
+    "DOK3": 0.8295,
+    "RASGRP1": 0.8183,
+    "DDX55": 0.8179,
+    "EIF4G3": 0.813,
+    "HDAC9": 0.8098,
+    "ERC2": 0.8081,
+    "NINJ2": 0.8036,
+    "AXL": 0.794,
+    "EIF1AD": 0.794,
+    "RAP1GAP2": 0.7863,
+    "C16orf95": 0.7801,
+    "SMOX": 0.7779,
+    "KEAP1": 0.7735,
+    "GTF2H3": 0.7516,
+    "KIF21B": 0.7436,
+    "RUNX2": 0.7422,
+    "BANF1": 0.7365,
+    "PCYT1A": 0.7149,
+    "IPPK": 0.696,
+    "HP1BP3": 0.688,
+    "PLCB2": 0.6868,
+    "UBXN7": 0.6779,
+    "MCF2L": 0.6325,
+    "DOCK4": 0.6098,
+    "RNF168": 0.5974,
+    "CEP89": 0.5865,
+    "UBR5": 0.5601,
+    "LAPTM5": 0.5518,
+    "SLA": 0.5151,
+    "SNX2": 0.4582,
+    "FGD3": 0.4154,
+    "SYK": 0.4012,
+    "RFX2": 0.3818,
+    "DDX49": 0.3654,
+    "MAP3K13": 0.3539,
+    "GLCE": 0.3198,
+    "RRM2B": 0.3133,
+    "RAPGEF2": 0.2868,
+    "IFNE": 0.2573,
+    "FAM135A": 0.2565,
+    "UBE2V1": 0.2504,
+    "GNAQ": 0.2035,
+    "SPATA2": 0.1811,
+    "MCTP2": 0.1613,
+    "EIF2AK1": 0.1576,
+    "PMS2": 0.1576,
+    "MAFK": 0.1327,
+    "GGA2": 0.0117
+   }
+  },
+  "data_only:all_loci": {
+   "positives": 128,
+   "named_with_no_link_to_any_trait": 0,
+   "named_already_linked": 39,
+   "roc_area": {
+    "served": 0.7119,
+    "neighbours": 0.705,
+    "degree": 0.7033
+   },
+   "average_precision": {
+    "served": 0.0204,
+    "neighbours": 0.0196,
+    "degree": 0.0185
+   },
+   "served_minus_neighbours": [
+    0.0069,
+    -0.0083,
+    0.0262
+   ],
+   "served_minus_degree": [
+    0.0087,
+    -0.0093,
+    0.0294
+   ],
+   "draws_with_a_positive": 2000,
+   "positives_by_served_percentile": {
+    "SPI1": 0.9993,
+    "TRIB1": 0.9941,
+    "DENR": 0.9888,
+    "NTN5": 0.9887,
+    "ZNF664": 0.9884,
+    "GATAD2A": 0.9878,
+    "JAZF1": 0.9865,
+    "ATP6V0A2": 0.9863,
+    "RNASEH2C": 0.983,
+    "LILRB2": 0.982,
+    "CTSB": 0.9765,
+    "MINK1": 0.9764,
+    "PMFBP1": 0.976,
+    "DHODH": 0.9757,
+    "CEBPA": 0.9755,
+    "CFL1": 0.9753,
+    "LRRC25": 0.9753,
+    "YJEFN3": 0.9751,
+    "FDFT1": 0.9747,
+    "SSBP4": 0.9742,
+    "FIBP": 0.9733,
+    "EFEMP2": 0.9718,
+    "DOC2A": 0.9691,
+    "ABCA1": 0.9677,
+    "FGFRL1": 0.9619,
+    "IDUA": 0.9619,
+    "SHARPIN": 0.9594,
+    "CHRNE": 0.9565,
+    "MAST3": 0.9547,
+    "GBA": 0.9513,
+    "ABI3": 0.9489,
+    "SGSM2": 0.9397,
+    "GLS2": 0.9381,
+    "NCK1": 0.9378,
+    "HIP1R": 0.9296,
+    "DPH1": 0.9282,
+    "ELMO1": 0.9253,
+    "PIK3R2": 0.9228,
+    "HAVCR2": 0.9085,
+    "GPAM": 0.9062,
+    "CEP120": 0.9006,
+    "MAF": 0.8967,
+    "MBNL1": 0.8958,
+    "MNT": 0.8892,
+    "TMEM161A": 0.8824,
+    "ANKRD52": 0.8682,
+    "MYO15A": 0.8479,
+    "ARRDC2": 0.8457,
+    "RGS17": 0.8457,
+    "TCTN2": 0.8402,
+    "TMEM106B": 0.839,
+    "DNM2": 0.8366,
+    "DOK3": 0.8302,
+    "IL34": 0.8296,
+    "RASGRP1": 0.8191,
+    "DDX55": 0.8186,
+    "PLEKHA1": 0.8143,
+    "EIF4G3": 0.8138,
+    "HDAC9": 0.8106,
+    "ERC2": 0.8089,
+    "TMEM163": 0.805,
+    "GRN": 0.8046,
+    "NINJ2": 0.8045,
+    "AXL": 0.7949,
+    "EIF1AD": 0.7948,
+    "TNIP1": 0.7929,
+    "VWA5B2": 0.7894,
+    "RAP1GAP2": 0.7873,
+    "C16orf95": 0.781,
+    "SMOX": 0.7788,
+    "KEAP1": 0.7744,
+    "GTF2H3": 0.7525,
+    "TSPAN14": 0.7518,
+    "ICA1L": 0.7459,
+    "WDR81": 0.7451,
+    "KIF21B": 0.7447,
+    "RUNX2": 0.7433,
+    "BANF1": 0.7375,
+    "PLCG2": 0.735,
+    "CCDC6": 0.7205,
+    "PCYT1A": 0.7159,
+    "IQCK": 0.7132,
+    "EGFR": 0.7124,
+    "IPPK": 0.6971,
+    "HP1BP3": 0.6891,
+    "PLCB2": 0.6879,
+    "UBXN7": 0.679,
+    "WDR12": 0.664,
+    "MCF2L": 0.6335,
+    "QPCT": 0.6187,
+    "DOCK4": 0.6108,
+    "RNF168": 0.5984,
+    "RASGEF1C": 0.5953,
+    "CEP89": 0.5875,
+    "CLNK": 0.5812,
+    "UBR5": 0.5611,
+    "ITGA2B": 0.5583,
+    "LAPTM5": 0.5528,
+    "SLA": 0.516,
+    "NCK2": 0.4911,
+    "CTSH": 0.4905,
+    "BLNK": 0.4837,
+    "SNX2": 0.4591,
+    "RHOH": 0.4176,
+    "FGD3": 0.4163,
+    "SYK": 0.402,
+    "RFX2": 0.3826,
+    "RASA1": 0.3705,
+    "DDX49": 0.3661,
+    "MAP3K13": 0.3546,
+    "GLCE": 0.3205,
+    "RRM2B": 0.3139,
+    "RAPGEF2": 0.2873,
+    "IFNE": 0.2577,
+    "FAM135A": 0.2569,
+    "UBE2V1": 0.2509,
+    "MME": 0.2399,
+    "SNX1": 0.2312,
+    "APP": 0.2077,
+    "GNAQ": 0.2039,
+    "RBCK1": 0.189,
+    "SPATA2": 0.1816,
+    "MCTP2": 0.1617,
+    "EIF2AK1": 0.158,
+    "PMS2": 0.158,
+    "MAFK": 0.133,
+    "TPCN1": 0.0914,
+    "GGA2": 0.0117
+   }
+  }
+ }
+}

@@ -9,7 +9,7 @@ docs/PROTOCOL.md, "A study published after the graph: Alzheimer disease", before
     3  the largest study   could the largest study behind the graph's links have found the new loci?
     4  the ranking         where does the served ranking put the genes the study names?
 
-Run:  python -m pharos_gap_kg.adstudy fetch [--from <file>]     # the pinned Supplementary Data
+Run:  python -m pharos_gap_kg.adstudy fetch uffelmann2026_supp [--from <file>]     # the pinned Supplementary Data
       python -I -m pharos_gap_kg.adstudy audit pharos319         # -> docs/data/adstudy_pharos319.json
       python -m pharos_gap_kg.adstudy --selftest
 
@@ -478,7 +478,7 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return _selftest()
-    if argv[:1] == ["fetch"]:
+    if argv[:2] == ["fetch", KEY]:
         fetch(Path(argv[argv.index("--from") + 1]) if "--from" in argv else None)
         return 0
     if len(argv) == 2 and argv[0] == "audit":

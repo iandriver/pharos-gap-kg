@@ -98,7 +98,7 @@ _S += [
            "41586_2026_11206_MOESM3_ESM.ods", 897_272, "2026-10-28",
            "Supplementary Data of Uffelmann et al., Nature 2026 (doi:10.1038/s41586-026-11206-y), an Alzheimer disease GWAS: 22 tables, SD2 the 127 loci and their predicted effector genes",
            sha256="cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a", file="41586_2026_11206_MOESM3_ESM.ods",
-           command="python -m pharos_gap_kg.adstudy fetch"),
+           command="python -m pharos_gap_kg.adstudy fetch uffelmann2026_supp"),
 ]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
