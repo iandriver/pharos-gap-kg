@@ -90,6 +90,16 @@ _S += [
            sha256="b1fc3a11d606c3f47d838a443b7b9513d18eb3af3c53ed0e31a96c29f3f4a2f8", file="Clingen-Gene-Disease-Summary-2026-10-26.csv",
            command="python -m pharos_gap_kg.clingen fetch clingen_gv_20261026"),
 ]
+# A GWAS of Alzheimer disease published after everything the graph holds, to test what the graph says of
+# the disease (docs/PROTOCOL.md, "A study published after the graph: Alzheimer disease"). Licensed
+# CC BY-NC-ND 4.0, so it is kept with the raw files and not redistributed.
+_S += [
+    Source("uffelmann2026_supp", "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41586-026-11206-y/MediaObjects/"
+           "41586_2026_11206_MOESM3_ESM.ods", 897_272, "2026-10-28",
+           "Supplementary Data of Uffelmann et al., Nature 2026 (doi:10.1038/s41586-026-11206-y), an Alzheimer disease GWAS: 22 tables, SD2 the 127 loci and their predicted effector genes",
+           sha256="cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a", file="41586_2026_11206_MOESM3_ESM.ods",
+           command="python -m pharos_gap_kg.adstudy fetch"),
+]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
 

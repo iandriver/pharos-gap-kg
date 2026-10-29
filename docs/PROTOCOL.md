@@ -1301,6 +1301,117 @@ nothing.
 - ClinGen's curations run to October 2026, after the release. That suits asking whether a row is
   true, and means the rule could not have known them.
 
+## A study published after the graph: Alzheimer disease
+
+Defined on 28 Oct 2026, on Ian's word, before any gene of the study was matched to the graph. Looked
+at first: the paper, the layout of its Supplementary Data (127 loci, 48 marked new, and the columns
+named below), and the ids of the graph's trait nodes whose names mention Alzheimer disease. No list of
+the graph's gaps, loci or ranking for Alzheimer disease was looked at; `docs/ASK.md` shows three
+answers that name it, `why` for APOE, TREM2 and ACHE.
+
+**The question.** Uffelmann et al., "Alzheimer's disease genetics converges on microglial and
+neuronal dysregulation", Nature, published 28 Oct 2026 (doi:10.1038/s41586-026-11206-y), is a GWAS
+of 109,479 cases, 74,141 proxy cases, 2,131,799 controls and 499,708 proxy controls, effective size
+416,493. It reports 127 loci, 48 of them new, and predicts an effector gene, or several, for each.
+Everything the graph holds predates it: Pharos 3.19's GWAS links run to early 2022, the GWAS Catalog
+snapshot is of 5 Oct 2026, and the served ranking's weights were fitted on links to 2022. This asks
+whether what the graph says of Alzheimer disease anticipated the study: its genes tied with no GWAS
+link, the order it gives the genes of a locus, its statement of what the largest study could have
+found, and its ranking of candidates. It is one disease. The result illustrates the answers for one
+trait, is not pooled with the tests on links after 2018 and from 2023, and changes no rule, weight or
+answer.
+
+**The study's file.** The Supplementary Data, one OpenDocument spreadsheet of 22 tables (registry key
+`uffelmann2026_supp`, 897,272 bytes, SHA-256 cb450c90...), table SD2: one row per locus, with its
+predicted effector gene(s) separated by "/", a flag for loci new in this study, the lead SNP's effect
+allele frequency, beta and odds ratio, the sample sizes, the evidence columns FLAMES, Exome,
+Literature and Coloc_MR, and the gene closest to the lead SNP. A locus *names* its predicted effector
+genes. Two other readings are reported beside it and decide nothing: the *broad* reading adds the
+genes in its FLAMES, Exome and Coloc_MR columns and its closest gene; the *data-only* reading keeps
+only the predicted effector genes that its FLAMES, Exome or Coloc_MR column also names, leaving out
+genes named from the literature or from earlier studies alone, since the graph's disease sources read
+that literature. An entry that is a gene cluster, such as "MS4A gene cluster", names no gene.
+
+**Matching.** A study symbol names a graph gene if it is the gene's Pharos symbol, or the Ensembl 113
+symbol of an Ensembl gene the target is cross-referenced to, as `position.target_genes` places it.
+Genes are counted once per Pharos symbol. Study symbols that name no graph gene are listed; RNA genes
+and clusters are expected among them, since Pharos holds proteins.
+
+**The graph's side** is read from the pharos319 bundle (archive SHA-256 62e67d0c...) for the trait
+Alzheimer disease (MONDO:0004975), which `gaps "Alzheimer disease"` answers for, as of the latest
+year. The sets `gaps` builds are computed in full by the same rules (`diseasegaps`), and the served
+answer's counts and first 25 rows of each list must agree with them or nothing is written. The trait
+nodes late-onset Alzheimers disease (EFO:1001870) and family history of Alzheimer's disease
+(EFO:0009268) are other traits; how many genes of each group carry a link to one of them is reported.
+
+**1. Gaps that close.** Every graph gene with no GWAS link to the trait falls in the first of these
+groups it qualifies for: *tied without a link* (the `no_genetic_support` list: two or more kept
+sources, or the mechanism target of an indicated drug), *one source* (one kept source), *withheld
+only* (only rows a pruning rule withheld), *observed only* (an expression observation), *nothing*. A
+gene's gap *closes* if the study names it. Primary: the share of *tied without a link* that closes
+minus the share of *nothing*, with Newcombe's hybrid score interval. Also reported: each group's share
+with a Wilson interval; the same over the 48 new loci alone; the two other readings; and the genes
+with a GWAS link to the trait that the study names, which enter no comparison. Beside the primary
+result, the difference that a two-sided test at 0.05 had 80% power to detect, at the groups' sizes and
+the share of *nothing*.
+
+**2. The order of a locus's genes.** Each locus of the `locus_not_resolved` list is assessed if the
+study names one or more of its genes; E is those genes and n the locus's genes, so a gene picked at
+random is in E with probability |E|/n. The graph's *first* genes are those at the leading level of its
+order (a tie, then one source, then an expression observation); a locus where nothing besides the link
+points to a gene has none. A locus scores the share of its first genes that are in E. The baseline
+picks the genes with the most studies behind their link to the trait and is scored the same way.
+Reported, over assessed loci that have first genes: the sum of scores against the sum expected by
+chance, and graph minus baseline, each with a 95% interval from 2,000 bootstrap draws of those loci
+(seed 20261028); and how often the gene that other evidence singles out is in E.
+
+**3. What the largest study could have found.** For the trait, the graph names the largest study
+behind its links and the smallest odds ratio it could find for a variant carried by 20% of chromosomes
+(`studysize`), and says that an absent link says nothing of smaller effects. For each of the 48 new
+loci, the same formula at the lead SNP's own effect allele frequency f, with 2f(1-f) in place of 0.32,
+gives the odds ratio that study could have found there. A new locus *should have been seen* if its odds
+ratio, taken above 1, is at least that. Reported: how many of the 48 should have been seen, each
+listed; and the effective size the graph's `the_study_that_would_close_it` calls for at an odds ratio
+of 1.05, beside this study's 416,493.
+
+**4. The ranking.** Candidates are the targets the served `predict` ranks for the trait (a link to
+some trait as of the latest year and none to this one), one per gene symbol at its best score.
+Positives are the candidates the study names at its 48 new loci (primary) or at any locus
+(secondary). The measure is the ROC area of positives against the other candidates, ties at mid-rank,
+for the served score, the neighbour score alone (B3) and target degree (B1); and served minus each,
+with a 95% interval from 2,000 bootstrap draws of the study's loci (seed 20261028). Average precision
+is given beside each, without an interval. Named genes with no link to any trait are not ranked by
+`predict` and are counted.
+
+**Reading.** (1) Genes the graph ties with no GWAS link gain one more often than genes it does not tie
+if the primary interval lies above 0; if it includes 0, no difference is detected, and the 80%-power
+difference bounds what could have gone unseen. (2) The graph's order puts a named gene first more
+often than chance if that interval lies above 0, and more often than the baseline if the paired
+interval does. (3) The statement holds for this study if none of the 48 should have been seen; a locus
+that should have been is listed and read as one the earlier study did not find or did not report, not
+as a failure of the formula, since ancestry, the definition of a case and the lead SNP differ between
+studies. (4) The served ranking places the new genes above where the neighbour score does if the
+paired interval lies above 0. With one trait and a few dozen positives, a difference inside its
+interval is evidence of nothing either way.
+
+**Limits, stated before the result.**
+
+- One disease and one study.
+- The effector genes are the study's predictions; where it gives several for a locus, any of them
+  counts, so a locus's genes are not equally likely to be right.
+- The graph's GWAS links stop in early 2022. Some of the 79 loci the study calls known were first
+  reported between 2022 and 2026, so a gap that closes here may have closed in an earlier study. The
+  48 new loci are reported apart for that reason.
+- The study's literature column and its nominations from earlier studies read the literature the
+  graph's disease sources read; the data-only reading leaves those genes out.
+- An odds ratio at discovery is inflated, which makes a new locus look easier to have seen; this works
+  against the statement in (3).
+- Pharos holds proteins; RNA genes and clusters the study names are out of scope.
+
+**After the result.** The study's loci become a dated source of the graph only through a separate
+entry here, written after this is reported. The file is licensed CC BY-NC-ND 4.0; like every raw file
+it stays outside the repository, which records gene symbols, counts and figures.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
