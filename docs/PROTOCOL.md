@@ -1517,6 +1517,104 @@ it cites the study and its licence. Serving it from the hosted copy waits on Ian
 **Not claimed.** That a predicted effector gene is the causal gene. That the graph is current beyond
 this one study: it was added by hand, and every other source stops where the release does.
 
+## Adding a table: a model proposes, code checks, the person joins
+
+Written on 3 Nov 2026, on Ian's word, before any code for it was written, before the second study's
+file was fetched, and before any model read either table. Looked at first, for the second study: its
+article page (title, abstract, dates, licence and the list of supplementary files), and the number
+of associations the GWAS Catalog release of 5 Oct 2026 curates for it (121, as GCST90308590), not
+their genes. The first study's file was read for the test of 28 Oct, and its table was adapted by
+hand on 29 Oct (`later.py`).
+
+**What it asks.** Whether a scientist can hand the graph a table from a paper the release does not
+hold, with a few lines saying what it is, and have it join as a dated source with no code written for
+that table: a model proposes how the table maps, code checks the proposal, the person reads it and
+joins it, and the answers change as they did when the Alzheimer study was added by hand.
+
+**What the person gives.** The file (CSV, TSV, XLSX or ODS) and a description in a fixed form: the
+citation, the publication date, the DOI, the licence, the disease studied in words, and one sentence
+saying what to add. Nothing in it names a sheet, a column or an identifier. The two descriptions used
+here are fixed below, word for word.
+
+**The stages.** In each, a model returns one proposal in a fixed JSON form and code accepts or refuses
+it. A refused proposal goes back to the model once with the reasons, and the second proposal is
+final. No model judges another's proposal.
+
+1. *The sheet.* The card lists every sheet of the file (a CSV or TSV is one sheet): its name, its
+   numbers of rows and columns, and its first 12 rows, each cell cut to 40 characters. The model
+   names the sheet and the row that holds the column names. Code refuses a sheet that is not in the
+   file, and a header row with an empty or repeated name among its named columns (blank names after
+   the last named column are dropped).
+2. *The mapping.* The card of that sheet, made as in "Ingest" (each column with its count of values,
+   its number of distinct values, and its values or six examples; eight rows drawn with seed
+   20261103), with the description and the graph's traits that `find` returns for the disease in
+   words (up to eight, with ids). The proposal has the form of "Ingest", with three additions:
+   - a resolver `gene_symbol`: a symbol names a graph gene by the matching rule of the test of 28 Oct
+     (its Pharos symbol, or the Ensembl 113 symbol of a gene the target is cross-referenced to), and
+     gives every graph target with that symbol;
+   - a side may give a `separator`, for a cell that holds several values, each of which becomes its
+     own edge;
+   - the object may be `{"constant": id}`, and the id must be one of the traits on the card.
+
+   Code sets each edge's date to the description's publication year and its knowledge source to the
+   study. The validator is that of "Ingest", checks 1 to 9, with check 8 read per row for a side with a
+   separator: the row resolves if at least one of its values does.
+3. *The join.* The accepted mapping is shown to the person field by field, with the number of edges it
+   makes, the values that resolved to nothing, and the rows a condition withheld. The table joins
+   only when the person runs the join (`--join`). It is then written to `data/later/<release>/`, as the
+   Alzheimer study's table was under the amendment of 29 Oct, and the answers read it in the same
+   way. No model joins anything.
+
+**Models.** Claude Haiku 5.5 through OpenRouter at temperature 0, the cheapest model that qualified in
+"Ingest". If its second proposal for a stage is refused, Claude Sonnet 5.5 is asked once, from the
+start of that stage, and that is reported. Hosted spend for this entry is capped at $0.50, written to
+a ledger before each call.
+
+**The two studies and their descriptions.**
+
+- *A*, the study of the test of 28 Oct, its file as registered (`uffelmann2026_supp`): "Uffelmann et
+  al. Alzheimer's disease genetics converges on microglial and neuronal dysregulation. Nature,
+  published 28 October 2026. doi:10.1038/s41586-026-11206-y. Licence: CC BY-NC-ND 4.0. A genome-wide
+  association study of Alzheimer's disease. Add the genes the study names at each associated locus."
+- *B*, its Supplementary Tables (`41588_2023_1584_MOESM4_ESM.xlsx`), registered with size and digest
+  when fetched and kept with the raw files: "Kim et al. Multi-ancestry genome-wide association
+  meta-analysis of Parkinson's disease. Nature Genetics, published 28 December 2023.
+  doi:10.1038/s41588-023-01584-8. Licence: CC BY 4.0. A genome-wide association study of Parkinson's
+  disease. Add the genes the study names at each associated locus."
+
+**Checks, stated before the result.**
+
+- *A against the table built by hand.* The joined pairs of a graph target and a trait are compared
+  with the 181 pairs `later.py` built. A is *reproduced* if the two sets are equal. Otherwise each pair
+  in one set and not the other is listed with its cause: another sheet or column, a separator not
+  given, or a value that resolved otherwise.
+- *B against the GWAS Catalog.* The Catalog release of 5 Oct 2026 curates the study as GCST90308590,
+  with the genes it reports for each association. Matched to graph genes by the same symbol rule, they
+  are compared with the genes of the joined table: the share of the table's genes that the Catalog
+  reports for the study, and the share of the Catalog's genes that the table holds, each with a
+  Wilson interval. The two *agree* if both shares are at least 0.8 and *disagree* if either is below
+  0.5; between, the result is partial. Either way the mapping is listed for a person to read. The
+  Catalog's curators read the paper's tables, so agreement says the model read the table as they did,
+  not that the genes are causal.
+- *The answers.* After each join, `gaps` for the trait marks rows as the Alzheimer study's join does,
+  and no list, count, ranking or floor of the release moves (the checks of `tests/test_later.py`).
+  If A is reproduced, its marks equal those of the table built by hand: ABI3, APP and PLCG2, and 28
+  of 90 loci.
+- *Control.* The hand mapping of A, written in the proposal's form, goes through the same validator
+  and must be accepted, and its join must equal `later.py`'s table. A refusal of it is a defect of the
+  validator or of the form, and is fixed and reported before any model reads a card.
+
+**Also served.** The three stages as tools of the local MCP server: `add_card` gives the cards for a
+file and a description, `add_check` gives the validator's verdict on a proposal, and `add_join` joins
+an accepted proposal; its description says to call it only on the person's word. There the client's
+own model writes the proposals, and no key is needed. Checked: for each proposal the command made,
+`add_check` gives the command's verdict. The hosted server is read-only and serves none of them.
+
+**Not claimed.** That an accepted mapping is right: the validator checks form and fit, and a person
+reads the mapping before it joins. That two studies stand for every table a scientist may bring.
+That the description's form suits tables of other kinds or from other fields; that is a separate
+entry.
+
 ## Not claimed
 
 That performance on GWAS links carries to any other kind of link. That a model which ranks later
