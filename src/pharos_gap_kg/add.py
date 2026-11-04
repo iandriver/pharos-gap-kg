@@ -703,6 +703,8 @@ def join(release: str, study: str, rerun: bool = False) -> dict:
     r = json.loads(record_path(release, study, rerun).read_text())
     if not r.get("stage2", {}).get("accepted"):
         raise SystemExit(f"REFUSED: study {study} has no accepted mapping")
+    if not r.get("join") or not r["join"].get("rows"):
+        raise SystemExit(f"REFUSED: study {study}'s mapping makes no link from a graph gene to a graph trait, which is what the answers read")
     if study == "A":
         raise SystemExit("REFUSED: study A's table is already beside the bundle, built by hand (later.py); its mapping is compared, not joined (docs/PROTOCOL.md)")
     src = run_dir(release, study) / r["join"].get("file", "join.parquet")
@@ -787,10 +789,11 @@ def positional(release: str, study: str, r: dict) -> dict:
     from pharos_gap_kg import ask, clingen
     n = ABSTRACT_LOCI[study]
     out = {"sheet": r.get("sheet"), "rows": r.get("rows"), "abstract_loci": n, "rows_band": [n // 2, 2 * n],
-           "a_table_of_the_studys_loci": r.get("rows") is not None and n // 2 <= r["rows"] <= 2 * n, "joined_a_table": bool(r.get("join"))}
+           "a_table_of_the_studys_loci": r.get("rows") is not None and n // 2 <= r["rows"] <= 2 * n,
+           "joined_a_table": bool(r.get("join") and r["join"].get("rows"))}
     G = ask.Graph(paths.bundle(release))
     sym = Symbols(G, release)
-    mine = set(pd.read_parquet(run_dir(release, study) / r["join"]["file"]).symbol) if r.get("join") else set()
+    mine = set(pd.read_parquet(run_dir(release, study) / r["join"]["file"]).symbol) if out["joined_a_table"] else set()
     mapped, n_assoc = catalog_genes(CATALOG_STUDY[study], "MAPPED_GENE")
     cat = {sym.symbol[t] for g in mapped for t in sym(g)}
     k = len(mine & cat)

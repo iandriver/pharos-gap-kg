@@ -1,0 +1,393 @@
+{
+ "release": "pharos319",
+ "study": "C",
+ "key": "mcgrail2026_t1d_supp",
+ "description": "McGrail et al. Genetic association and machine learning improve the prediction of type 1 diabetes risk. Nature Genetics, published 30 April 2026. doi:10.1038/s41588-026-02578-y. Licence: CC BY 4.0. A genome-wide association study of type 1 diabetes. Add the genes the study names at each associated locus.",
+ "file": "41588_2026_2578_MOESM3_ESM.xlsx",
+ "file_sha256": "fe71c781c61acece33d7d9689ea80854855c716dda8586d644a9f6da104c4fcf",
+ "sheets": 20,
+ "stage1": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "sheet",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "sheet": "Supplementary Table 2",
+     "header_row": 2,
+     "notes": "Lists the T1D risk loci (about 100) with lead variants and stats; the Signal column is named by gene (e.g. PTPRC, RGS1). Supplementary Table 4 covers only novel loci (8 rows), so Table 2 is the per-locus table to add genes to."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.0025923,
+    "seconds": 6.2
+   }
+  ]
+ },
+ "mode": "run",
+ "back_to_the_sheet_rule": true,
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Signal"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "name_column": "Signal"
+     },
+     "object": {
+      "constant": "MONDO:0005147",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:gene_associated_with_condition",
+     "association_category": "biolink:GeneToDiseaseAssociation",
+     "knowledge_level": "statistical_association",
+     "agent_type": "manual_agent",
+     "qualifiers": {},
+     "edge_properties": [
+      "Lead Variant",
+      "Beta",
+      "Standard Error",
+      "P-value",
+      "Risk allele",
+      "Credible set size"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each row is one GWAS locus named by a gene symbol in Signal; the study names that gene at the locus, so the gene is linked to type 1 diabetes (MONDO:0005147) as a statistical association. The predicate is the general gene-condition association, since the table gives a locus-level GWAS signal rather than a demonstrated causal role. Lead variant, effect size and p-value are carried as edge properties. Genes resolve to Protein nodes as the graph uses proteins for genes."
+    },
+    "accepted": false,
+    "problems": [
+     "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+     "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+    ],
+    "usd": 0.0008741,
+    "seconds": 6.5
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 2,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Signal"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:GeneOrGeneProduct",
+      "name_column": "Signal"
+     },
+     "object": {
+      "constant": "MONDO:0005147",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetic_association",
+     "association_category": "biolink:GeneToDiseaseAssociation",
+     "knowledge_level": "statistical_association",
+     "agent_type": "manual_agent",
+     "qualifiers": {},
+     "edge_properties": [
+      "Lead Variant",
+      "Beta",
+      "Standard Error",
+      "P-value",
+      "Risk allele",
+      "Credible set size"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each row is one GWAS locus named by a gene symbol in Signal, linked to type 1 diabetes (MONDO:0005147) as a statistical association. The subject is typed GeneOrGeneProduct, the superclass of Protein, so the Pharos protein nodes that gene_symbol returns are admitted. biolink:gene_associated_with_condition was refused because its domain is Gene, which excludes Protein. genetic_association is the general gene-to-trait predicate, fitting a locus-level GWAS signal rather than a causal role. Lead variant, effect size, standard error, p-value, risk allele and credible set size are carried as edge properties."
+    },
+    "accepted": false,
+    "problems": [
+     "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated",
+     "3_categories: subject category biolink:GeneOrGeneProduct is not a concrete class below biolink:NamedThing",
+     "4_domain_range: biolink:genetic_association's domain is biolink:NamedThing, which does not admit biolink:GeneOrGeneProduct",
+     "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must",
+     "8_identifiers: subject: 95 of 95 distinct identifiers are under prefixes ['UniProtKB'] that biolink:GeneOrGeneProduct's id_prefixes do not list"
+    ],
+    "usd": 0.0012033,
+    "seconds": 6.8
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-sonnet-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Signal"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "name_column": "Signal"
+     },
+     "object": {
+      "constant": "MONDO:0005147",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetically_associated_with",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "Lead Variant",
+      "Beta",
+      "Standard Error",
+      "P-value",
+      "Risk allele",
+      "Credible set size"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "notes": "Each row is a GWAS signal named by its gene (Signal column), which the study names at the associated locus. Gene-to-type 1 diabetes is mapped as a genetic association; the locus-level evidence (lead variant, beta, p-value) is carried as edge properties. Gene symbols such as SEPT2 may be outdated aliases; unresolved ones are dropped by the resolver."
+    },
+    "accepted": false,
+    "problems": [
+     "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+    ],
+    "usd": 0.012382,
+    "seconds": 3.5
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-sonnet-5.5",
+    "attempt": 2,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Signal"
+      ],
+      "resolver": "name:gene",
+      "category": "biolink:Protein",
+      "name_column": "Signal"
+     },
+     "object": {
+      "constant": "MONDO:0005147",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetically_associated_with",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "Lead Variant",
+      "Beta",
+      "Standard Error",
+      "P-value",
+      "Risk allele",
+      "Credible set size"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "notes": "Each row is a GWAS signal named by the gene the study assigns to the locus, linked to type 1 diabetes by a genetic association. Locus evidence (lead variant, beta, SE, p-value, risk allele, credible set size) is carried as edge properties. Symbol matching to graph genes left 7 rows unresolved (likely outdated symbols such as SEPT2), so the gene is kept as a named, ungrounded node to avoid losing any named locus gene."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.02478,
+    "seconds": 13.2
+   }
+  ]
+ },
+ "sheet": "Supplementary Table 2",
+ "header_row": 2,
+ "rows": 102,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0005147",
+   "name": "type 1 diabetes mellitus",
+   "links": 404
+  }
+ ],
+ "knowledge_source": "infores:doi-10-1038-s41588-026-02578-y",
+ "mapping": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "Signal"
+   ],
+   "resolver": "name:gene",
+   "category": "biolink:Protein",
+   "name_column": "Signal"
+  },
+  "object": {
+   "constant": "MONDO:0005147",
+   "category": "biolink:Disease"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "qualifiers": {},
+  "edge_properties": [
+   "Lead Variant",
+   "Beta",
+   "Standard Error",
+   "P-value",
+   "Risk allele",
+   "Credible set size"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Each row is a GWAS signal named by the gene the study assigns to the locus, linked to type 1 diabetes by a genetic association. Locus evidence (lead variant, beta, SE, p-value, risk allele, credible set size) is carried as edge properties. Symbol matching to graph genes left 7 rows unresolved (likely outdated symbols such as SEPT2), so the gene is kept as a named, ungrounded node to avoid losing any named locus gene."
+ },
+ "model": {
+  "sheet": "anthropic/claude-haiku-5.5",
+  "mapping": "anthropic/claude-sonnet-5.5"
+ },
+ "verdict": {
+  "accepted": true,
+  "problems": [],
+  "rules": [
+   {
+    "value": null,
+    "rows": 102,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 102,
+      "resolved": 102,
+      "distinct": 102,
+      "prefixes": {
+       "pharosgapkg": 102
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {},
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 102,
+      "resolved": 102,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 102,
+    "kept": 102,
+    "made_gaps_by_condition": 0
+   }
+  ],
+  "export": {
+   "passed": true,
+   "failed": null,
+   "groups": 102,
+   "n_nodes": 103,
+   "n_edges": 102,
+   "n_gaps": 0,
+   "predicates": {
+    "biolink:genetically_associated_with": 102
+   }
+  }
+ },
+ "join": {
+  "rows": 0,
+  "targets": 0,
+  "symbols": 0,
+  "traits": [],
+  "table_rows_with_no_subject": 102,
+  "their_values": [
+   "14q32",
+   "16q23",
+   "17q24",
+   "2p24",
+   "6q27",
+   "ACOXL",
+   "ADCY3",
+   "AFF3",
+   "AGO2",
+   "AIRE",
+   "AKAP11",
+   "BACH2",
+   "BAD",
+   "BATF3",
+   "BCL11A",
+   "C1QTNF6",
+   "CAMK4",
+   "CAMSAP2",
+   "CCR5",
+   "CCR7",
+   "CD226",
+   "CD6",
+   "CDKN1C",
+   "CEL",
+   "CENPW",
+   "CFTR",
+   "CLNK",
+   "COBL",
+   "COLEC10",
+   "CPE",
+   "CTLA4",
+   "CTRB2",
+   "CTSH",
+   "CYP27B1",
+   "DEXI",
+   "DLK1",
+   "ELL",
+   "EMSY",
+   "FBXSIK68",
+   "FLI1",
+   "FUT2",
+   "GATA3",
+   "GLIS3",
+   "GP2",
+   "GPR183",
+   "GSDMB",
+   "HIVEP1",
+   "HORMAD2",
+   "IFIH1",
+   "IKZF1",
+   "IKZF4",
+   "IL10",
+   "IL2",
+   "IL27",
+   "IL2RA",
+   "IL7R",
+   "INPP5B",
+   "INS",
+   "IRF1",
+   "IRF2"
+  ],
+  "file": "join.parquet",
+  "file_sha256": "97a8717bd3f776b78eb07c14648981b5d8ec61445f44a0fda031676bac8b9de6"
+ },
+ "spent_usd": 0.1387
+}

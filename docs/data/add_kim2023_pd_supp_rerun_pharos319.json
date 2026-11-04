@@ -1,0 +1,641 @@
+{
+ "release": "pharos319",
+ "study": "B",
+ "key": "kim2023_pd_supp",
+ "description": "Kim et al. Multi-ancestry genome-wide association meta-analysis of Parkinson's disease. Nature Genetics, published 28 December 2023. doi:10.1038/s41588-023-01584-8. Licence: CC BY 4.0. A genome-wide association study of Parkinson's disease. Add the genes the study names at each associated locus.",
+ "file": "41588_2023_1584_MOESM4_ESM.xlsx",
+ "file_sha256": "5fab8e371bca73367f6cbfb850f310ae812639a4a618ffac6921d832871ea18b",
+ "sheets": 14,
+ "stage1": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "sheet",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "sheet": "Supplementary Table 5 - Genomic",
+     "header_row": 2,
+     "notes": "Table 5 lists each genomic risk locus (Locus, rsID, CHR, start, end) but has no gene column. Row 1 is the 'Random-Effect' title; row 2 holds the column names. Genes can be taken from Table 3's Nearest Protein Coding Gene per locus."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.0030974,
+    "seconds": 4.9
+   }
+  ]
+ },
+ "mode": "rerun",
+ "back_to_the_sheet_rule": true,
+ "rerun": "a rerun after the registered result, under the amendment of 4 Nov 2026: development, not a test",
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": false,
+     "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.0006813,
+    "seconds": 4.8
+   }
+  ]
+ },
+ "back_to_the_sheet": {
+  "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case.",
+  "stage1": {
+   "accepted": true,
+   "tries": [
+    {
+     "stage": "sheet_again",
+     "model": "anthropic/claude-haiku-5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supplementary Table 3 - Lead SN",
+      "header_row": 1,
+      "notes": "Table 3 lists each lead variant with its Locus number and Nearest Protein Coding Gene, so it gives the gene names the study reports per associated locus. Header is row 1. Table 5 has no genes."
+     },
+     "accepted": true,
+     "problems": [],
+     "usd": 0.0030643,
+     "seconds": 6.9
+    }
+   ]
+  },
+  "stage2": {
+   "accepted": true,
+   "tries": [
+    {
+     "stage": "mapping_again",
+     "model": "anthropic/claude-haiku-5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Nearest Protein Coding Gene"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein"
+      },
+      "object": {
+       "constant": "MONDO:0005180",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "rsID",
+       "BP",
+       "Method",
+       "P(RE)",
+       "Part of a novel locus"
+      ],
+      "keep_if": {
+       "column": "rsID",
+       "matches": "^rs[0-9]+$",
+       "reason": "Rows without a variant rsID are header repeats or empty entries, not a lead association at a locus."
+      },
+      "split_by": null,
+      "by_value": null,
+      "notes": "Each lead variant row links its nearest protein-coding gene to Parkinson disease, as the paper names that gene at the locus. The gene is the nearest protein-coding gene, not the nearest feature, which may be an lncRNA or pseudogene. Rows whose nearest gene is only a non-coding feature therefore have no subject. Several rows share a locus, so the same gene can recur with different rsIDs. The predicate is a statistical GWAS association, not a causal claim. The header-repeat row (no rsID) is kept as a gap."
+     },
+     "accepted": false,
+     "problems": [
+      "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+      "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+     ],
+     "usd": 0.0014753,
+     "seconds": 12.4
+    },
+    {
+     "stage": "mapping_again",
+     "model": "anthropic/claude-haiku-5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Nearest Protein Coding Gene"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Gene"
+      },
+      "object": {
+       "constant": "MONDO:0005180",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "rsID",
+       "BP",
+       "Method",
+       "P(RE)",
+       "Part of a novel locus"
+      ],
+      "keep_if": {
+       "column": "Nearest Protein Coding Gene",
+       "matches": "^[A-Z][A-Za-z0-9.-]*$",
+       "reason": "A row with no protein-coding gene symbol (empty, 'nan', or a repeated header label) names no gene at the locus, so it is kept as a recorded gap rather than an edge."
+      },
+      "split_by": null,
+      "by_value": null,
+      "notes": "Each lead variant row links the nearest protein-coding gene named by the paper to Parkinson disease. The subject is typed biolink:Gene, the domain of gene_associated_with_condition. Rows whose nearest gene is only a non-coding feature have no protein-coding symbol and become gaps. Rows that share a locus can repeat the same gene with different rsIDs. The association is a GWAS statistical association, not a causal claim. Header-repeat and empty rows fail the symbol pattern and are kept as gaps."
+     },
+     "accepted": false,
+     "problems": [
+      "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must",
+      "8_identifiers: subject: 131 of 131 distinct identifiers are under prefixes ['UniProtKB'] that biolink:Gene's id_prefixes do not list"
+     ],
+     "usd": 0.0015933,
+     "seconds": 8.8
+    },
+    {
+     "stage": "mapping_again",
+     "model": "anthropic/claude-sonnet-5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Nearest Protein Coding Gene"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein"
+      },
+      "object": {
+       "constant": "MONDO:0005180",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "rsID"
+      ],
+      "keep_if": {
+       "column": "Nearest Protein Coding Gene",
+       "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+       "reason": "Legend and header rows in the sheet have no gene named at a locus, so they are not asserted."
+      },
+      "split_by": null,
+      "notes": "The gene is the nearest protein-coding gene to each lead SNP (the paper's named locus gene). It is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. The effect-size columns are shifted in the MR-MEGA rows, so only the lead rsID is kept as an edge property."
+     },
+     "accepted": false,
+     "problems": [
+      "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+     ],
+     "usd": 0.023726,
+     "seconds": 9.6
+    },
+    {
+     "stage": "mapping_again",
+     "model": "anthropic/claude-sonnet-5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Nearest Protein Coding Gene"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein"
+      },
+      "object": {
+       "constant": "MONDO:0005180",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "rsID"
+      ],
+      "keep_if": {
+       "column": "Nearest Protein Coding Gene",
+       "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+       "reason": "A row with no protein-coding gene named at the locus asserts nothing."
+      },
+      "split_by": "Method",
+      "by_value": {
+       "Random-effect": {},
+       "MR-MEGA": {},
+       "Column name": {
+        "skip": "legend row, not data"
+       },
+       "Method": {
+        "skip": "repeated header row"
+       },
+       "Locus": {
+        "skip": "legend row, not data"
+       },
+       "rsID": {
+        "skip": "legend row, not data"
+       },
+       "CHR": {
+        "skip": "legend row, not data"
+       },
+       "BP": {
+        "skip": "legend row, not data"
+       },
+       "A1": {
+        "skip": "legend row, not data"
+       },
+       "A2": {
+        "skip": "legend row, not data"
+       },
+       "Nearest Gene/Feature": {
+        "skip": "legend row, not data"
+       },
+       "Nearest Protein Coding Gene": {
+        "skip": "legend row, not data"
+       },
+       "Functional Consequence": {
+        "skip": "legend row, not data"
+       },
+       "CADD": {
+        "skip": "legend row, not data"
+       },
+       "RDB": {
+        "skip": "legend row, not data"
+       },
+       "BETA(RE)": {
+        "skip": "legend row, not data"
+       },
+       "SE(RE)": {
+        "skip": "legend row, not data"
+       },
+       "P(RE/MR-MEGA)": {
+        "skip": "legend row, not data"
+       },
+       "I2": {
+        "skip": "legend row, not data"
+       },
+       "P(ANC-HET)": {
+        "skip": "legend row, not data"
+       },
+       "P(RES-HET)": {
+        "skip": "legend row, not data"
+       },
+       "Part of a novel locus": {
+        "skip": "legend row, not data"
+       }
+      },
+      "notes": "The study's named gene at each locus is the nearest protein-coding gene to the lead SNP. Legend and header rows at the foot of the sheet, identified by the Method column, are skipped. This is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. Effect-size columns are shifted in the MR-MEGA rows, so only rsID is kept as an edge property."
+     },
+     "accepted": true,
+     "problems": [],
+     "usd": 0.031222,
+     "seconds": 12.6
+    }
+   ]
+  }
+ },
+ "sheet": "Supplementary Table 3 - Lead SN",
+ "header_row": 1,
+ "rows": 303,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0005180",
+   "name": "Parkinson disease",
+   "links": 260
+  }
+ ],
+ "knowledge_source": "infores:doi-10-1038-s41588-023-01584-8",
+ "mapping": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "Nearest Protein Coding Gene"
+   ],
+   "resolver": "gene_symbol",
+   "category": "biolink:Protein"
+  },
+  "object": {
+   "constant": "MONDO:0005180",
+   "category": "biolink:Disease"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "qualifiers": {},
+  "edge_properties": [
+   "rsID"
+  ],
+  "keep_if": {
+   "column": "Nearest Protein Coding Gene",
+   "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+   "reason": "A row with no protein-coding gene named at the locus asserts nothing."
+  },
+  "split_by": "Method",
+  "by_value": {
+   "Random-effect": {},
+   "MR-MEGA": {},
+   "Column name": {
+    "skip": "legend row, not data"
+   },
+   "Method": {
+    "skip": "repeated header row"
+   },
+   "Locus": {
+    "skip": "legend row, not data"
+   },
+   "rsID": {
+    "skip": "legend row, not data"
+   },
+   "CHR": {
+    "skip": "legend row, not data"
+   },
+   "BP": {
+    "skip": "legend row, not data"
+   },
+   "A1": {
+    "skip": "legend row, not data"
+   },
+   "A2": {
+    "skip": "legend row, not data"
+   },
+   "Nearest Gene/Feature": {
+    "skip": "legend row, not data"
+   },
+   "Nearest Protein Coding Gene": {
+    "skip": "legend row, not data"
+   },
+   "Functional Consequence": {
+    "skip": "legend row, not data"
+   },
+   "CADD": {
+    "skip": "legend row, not data"
+   },
+   "RDB": {
+    "skip": "legend row, not data"
+   },
+   "BETA(RE)": {
+    "skip": "legend row, not data"
+   },
+   "SE(RE)": {
+    "skip": "legend row, not data"
+   },
+   "P(RE/MR-MEGA)": {
+    "skip": "legend row, not data"
+   },
+   "I2": {
+    "skip": "legend row, not data"
+   },
+   "P(ANC-HET)": {
+    "skip": "legend row, not data"
+   },
+   "P(RES-HET)": {
+    "skip": "legend row, not data"
+   },
+   "Part of a novel locus": {
+    "skip": "legend row, not data"
+   }
+  },
+  "notes": "The study's named gene at each locus is the nearest protein-coding gene to the lead SNP. Legend and header rows at the foot of the sheet, identified by the Method column, are skipped. This is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. Effect-size columns are shifted in the MR-MEGA rows, so only rsID is kept as an edge property."
+ },
+ "model": {
+  "sheet": "anthropic/claude-haiku-5.5",
+  "mapping": "anthropic/claude-sonnet-5.5"
+ },
+ "verdict": {
+  "accepted": true,
+  "problems": [],
+  "rules": [
+   {
+    "value": "A1",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "A2",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "BETA(RE)",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "BP",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "CADD",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "CHR",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Column name",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Functional Consequence",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "I2",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Locus",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "MR-MEGA",
+    "rows": 129,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 129,
+      "resolved": 127,
+      "distinct": 87,
+      "prefixes": {
+       "UniProtKB": 87
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "UniProtKB": {
+        "distinct": 87,
+        "in_release": 87
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 129,
+      "resolved": 129,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 127,
+    "kept": 129,
+    "made_gaps_by_condition": 0
+   },
+   {
+    "value": "Method",
+    "skip": "repeated header row"
+   },
+   {
+    "value": "Nearest Gene/Feature",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Nearest Protein Coding Gene",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "P(ANC-HET)",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "P(RE/MR-MEGA)",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "P(RES-HET)",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Part of a novel locus",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "RDB",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "Random-effect",
+    "rows": 152,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 152,
+      "resolved": 152,
+      "distinct": 104,
+      "prefixes": {
+       "UniProtKB": 104
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "UniProtKB": {
+        "distinct": 104,
+        "in_release": 104
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 152,
+      "resolved": 152,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 152,
+    "kept": 152,
+    "made_gaps_by_condition": 0
+   },
+   {
+    "value": "SE(RE)",
+    "skip": "legend row, not data"
+   },
+   {
+    "value": "rsID",
+    "skip": "legend row, not data"
+   }
+  ],
+  "export": {
+   "passed": true,
+   "failed": null,
+   "groups": 191,
+   "n_nodes": 132,
+   "n_edges": 191,
+   "n_gaps": 0,
+   "predicates": {
+    "biolink:genetically_associated_with": 191
+   }
+  }
+ },
+ "join": {
+  "rows": 191,
+  "targets": 131,
+  "symbols": 131,
+  "traits": [
+   "MONDO:0005180"
+  ],
+  "table_rows_with_no_subject": 22,
+  "their_values": [
+   "RAB7L1",
+   "RP11-297N6.4"
+  ],
+  "file": "join_rerun.parquet",
+  "file_sha256": "3ed53e4ca6d8918d780055336e02f7df43facc59bd6d7d633f82cad8c36fb8d0"
+ },
+ "spent_usd": 0.0969
+}
