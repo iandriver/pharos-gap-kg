@@ -741,6 +741,40 @@ def catalog_genes(accession: str, column: str = "REPORTED GENE(S)") -> tuple[lis
     return sorted({g for g in gs if g and g.upper() not in ("NR", "INTERGENIC")}), int(len(mine))
 
 
+def candidates(release: str, since: str = "2026-01-01", journals: tuple = ("Nat Genet", "Nat Commun", "Nature"), least: int = 50,
+               share: float = 0.9) -> dict:
+    """The rule that chose study D (the second amendment of 4 Nov 2026): the studies of the GWAS Catalog release of 5 Oct 2026 published
+    from `since` in `journals`, whose one mapped trait is a disease-like trait of the graph other than the traits `find` gives for the
+    diseases of the studies before, with at least `least` associations of which at least `share` carry a positional gene, by their
+    number of associations, most first. Which of them has an open article and one spreadsheet of tables is read from its article page."""
+    from pharos_gap_kg import ask
+    G = ask.Graph(paths.bundle(release))
+    before = {t["id"] for k, s in STUDIES.items() if k in "ABC" for t in traits(G, s["about"]["disease"])}
+    disease = dict(zip(G.d.id, G.d.disease_like))
+    z = zipfile.ZipFile(registry.require("gwas_catalog_20261005"))
+    with z.open(z.namelist()[0]) as f:
+        df = pd.read_csv(f, sep="\t", dtype=str, quoting=3, keep_default_na=False,
+                         usecols=["STUDY ACCESSION", "PUBMEDID", "FIRST AUTHOR", "DATE", "JOURNAL", "DISEASE/TRAIT", "MAPPED_GENE", "MAPPED_TRAIT_URI"])
+    df = df[(df["DATE"] >= since) & df["JOURNAL"].isin(journals)]
+    out = []
+    for acc, x in df.groupby("STUDY ACCESSION", sort=False):
+        uris = set(x["MAPPED_TRAIT_URI"])
+        if len(uris) != 1 or "," in next(iter(uris)):
+            continue
+        t = next(iter(uris)).rsplit("/", 1)[-1].replace("_", ":", 1)
+        n, mapped = len(x), int((x["MAPPED_GENE"].str.strip() != "").sum())
+        if t in G.di and disease.get(t) is True and t not in before and n >= least and mapped / n >= share:
+            r = x.iloc[0]
+            out.append({"accession": acc, "pmid": r["PUBMEDID"], "first_author": r["FIRST AUTHOR"], "published": r["DATE"], "journal": r["JOURNAL"],
+                        "trait_as_curated": r["DISEASE/TRAIT"], "trait": t, "trait_name": G.d.name[G.di[t]], "associations": n,
+                        "share_with_a_positional_gene": round(mapped / n, 4)})
+    out.sort(key=lambda r: (-r["associations"], r["accession"]))
+    rec = {"release": release, "catalog": "gwas_catalog_20261005", "since": since, "journals": list(journals), "at_least_associations": least,
+           "at_least_share_with_a_positional_gene": share, "traits_of_the_studies_before": sorted(before), "candidates": out}
+    (paths.DOCS_DATA / f"add_candidates_{release}.json").write_text(json.dumps(rec, indent=1) + "\n")
+    return rec
+
+
 def compare(release: str) -> dict:
     from pharos_gap_kg import clingen
     out = {"release": release}
@@ -995,6 +1029,10 @@ def main(argv: list[str] | None = None) -> int:
     if len(argv) >= 2 and argv[0] == "fetch":
         i = argv.index("--from") if "--from" in argv else None
         print(fetch(argv[1], Path(argv[i + 1]) if i else None))
+        return 0
+    if len(argv) == 2 and argv[0] == "candidates":
+        out = candidates(argv[1])
+        print(json.dumps({k: v for k, v in out.items() if k != "candidates"} | {"candidates": out["candidates"][:10]}, indent=1))
         return 0
     if len(argv) == 2 and argv[0] in ("control", "compare"):
         out = control(argv[1]) if argv[0] == "control" else compare(argv[1])

@@ -1,0 +1,69 @@
+{
+ "release": "pharos319",
+ "catalog": "gwas_catalog_20261005",
+ "since": "2026-01-01",
+ "journals": [
+  "Nat Genet",
+  "Nat Commun",
+  "Nature"
+ ],
+ "at_least_associations": 50,
+ "at_least_share_with_a_positional_gene": 0.9,
+ "traits_of_the_studies_before": [
+  "EFO:0006514",
+  "EFO:0009268",
+  "MONDO:0004975",
+  "MONDO:0005147",
+  "MONDO:0005180"
+ ],
+ "candidates": [
+  {
+   "accession": "GCST90841196",
+   "pmid": "42009823",
+   "first_author": "Cheng FF",
+   "published": "2026-04-20",
+   "journal": "Nat Genet",
+   "trait_as_curated": "Refractive error",
+   "trait": "MONDO:0004892",
+   "trait_name": "refractive error",
+   "associations": 932,
+   "share_with_a_positional_gene": 1.0
+  },
+  {
+   "accession": "GCST90841193",
+   "pmid": "42009823",
+   "first_author": "Cheng FF",
+   "published": "2026-04-20",
+   "journal": "Nat Genet",
+   "trait_as_curated": "Refractive error",
+   "trait": "MONDO:0004892",
+   "trait_name": "refractive error",
+   "associations": 708,
+   "share_with_a_positional_gene": 1.0
+  },
+  {
+   "accession": "GCST90726394",
+   "pmid": "42706231",
+   "first_author": "Prokunina-Olsson L",
+   "published": "2026-08-08",
+   "journal": "Nat Commun",
+   "trait_as_curated": "Bladder cancer",
+   "trait": "MONDO:0001187",
+   "trait_name": "urinary bladder cancer",
+   "associations": 69,
+   "share_with_a_positional_gene": 1.0
+  },
+  {
+   "accession": "GCST90726395",
+   "pmid": "42706231",
+   "first_author": "Prokunina-Olsson L",
+   "published": "2026-08-08",
+   "journal": "Nat Commun",
+   "trait_as_curated": "Bladder cancer",
+   "trait": "MONDO:0001187",
+   "trait_name": "urinary bladder cancer",
+   "associations": 69,
+   "share_with_a_positional_gene": 1.0
+  }
+ ]
+}

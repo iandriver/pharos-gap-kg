@@ -113,6 +113,13 @@ _S += [
            3_038_671, "2026-04-23", "Supplementary Tables 1-19 of McGrail et al., Nature Genetics 2026 (doi:10.1038/s41588-026-02578-y), a type 1 diabetes GWAS, CC BY 4.0",
            sha256="fe71c781c61acece33d7d9689ea80854855c716dda8586d644a9f6da104c4fcf", file="41588_2026_2578_MOESM3_ESM.xlsx",
            command="python -I -m pharos_gap_kg.add fetch mcgrail2026_t1d_supp"),
+    # The fourth study of "Adding a table" (the second amendment of 4 Nov 2026), chosen by `add candidates`: Cheng et al., Nature Genetics
+    # 2026, a refractive error GWAS. CC BY-NC-ND 4.0, as study A's file: kept with the raw files, and nothing made from it is committed
+    # or redistributed. Registered unopened.
+    Source("cheng2026_re_supp", "https://static-content.springer.com/esm/art%3A10.1038%2Fs41588-026-02576-0/MediaObjects/41588_2026_2576_MOESM4_ESM.xlsx",
+           2_175_048, "2026-04-14", "Supplementary Tables 1-14 of Cheng et al., Nature Genetics 2026 (doi:10.1038/s41588-026-02576-0), a refractive error GWAS, CC BY-NC-ND 4.0",
+           sha256="a51e688cbf6d56c8ec5e17c71df56001ef740d159b4cc17c03f1381604bf501a", file="41588_2026_2576_MOESM4_ESM.xlsx",
+           command="python -I -m pharos_gap_kg.add fetch cheng2026_re_supp"),
 ]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
