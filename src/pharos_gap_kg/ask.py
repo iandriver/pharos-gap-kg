@@ -79,7 +79,8 @@ def _frac(x: float) -> str:
 
 
 def _norm(s: str) -> str:
-    return " ".join(re.sub(r"[^a-z0-9]+", " ", str(s).casefold()).split())
+    """A name as it is matched: case and punctuation folded, and a possessive dropped, so "Parkinson's disease" is "parkinson disease"."""
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", re.sub(r"(\w)['\u2019]s\b", r"\1", str(s).casefold())).split())
 
 
 def group_leads(ranked, related, label, top: int) -> list[dict]:

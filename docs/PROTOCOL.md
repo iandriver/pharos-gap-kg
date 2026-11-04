@@ -2256,3 +2256,24 @@ word. The bundle's files, its manifest and the archive are therefore unchanged b
 answers read it where the server or the command line finds it beside the bundle; the code that
 computes from the release (the census, the usability and person tests, `adstudy`) reads the release
 alone.
+
+**3 Nov 2026, "Adding a table", after its code and its control ran and before any model read a card.**
+
+- *Padding.* SD2's header row begins with a blank cell over a column that holds no value. The rule as
+  written refuses an empty name among the named columns, so it would refuse that sheet whatever a
+  model proposed. A column with no name and no value below the header row is now dropped as padding.
+  A column with no name that holds values still refuses the header row.
+- *`find` and possessives.* `find` did not match "Parkinson's disease" to the trait Parkinson
+  disease, nor "Alzheimer's disease" to Alzheimer disease, because the possessive left a token "s".
+  The descriptions name the diseases as a person types them. Names are now matched with a possessive
+  dropped, in `find` itself, so the questions answer the same way. `make check` and both frozen
+  person-test sets pass after the change.
+- *Study A is compared, not joined.* Its table built by hand is already beside the bundle, and a
+  second table of the same study would repeat its links. The table the model's mapping would join is
+  written with the run's records and compared.
+- *The fallback model* runs a stage from its start under the stage's rule: a refused proposal goes
+  back once.
+- *The knowledge source* that code gives a study is `infores:doi-` followed by its DOI in lower case,
+  with punctuation as hyphens. The infores registry has no entry for a single paper.
+- *The control.* The hand mapping of A is accepted on all nine checks, and its join holds the same 181
+  pairs as `later.py`'s table (`docs/data/add_uffelmann2026_supp_control_pharos319.json`).

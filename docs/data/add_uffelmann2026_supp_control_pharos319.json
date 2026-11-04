@@ -1,0 +1,178 @@
+{
+ "release": "pharos319",
+ "study": "A",
+ "key": "uffelmann2026_supp",
+ "description": "Uffelmann et al. Alzheimer's disease genetics converges on microglial and neuronal dysregulation. Nature, published 28 October 2026. doi:10.1038/s41586-026-11206-y. Licence: CC BY-NC-ND 4.0. A genome-wide association study of Alzheimer's disease. Add the genes the study names at each associated locus.",
+ "file": "41586_2026_11206_MOESM3_ESM.ods",
+ "file_sha256": "cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a",
+ "sheets": 23,
+ "stage1": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "sheet",
+    "model": "hand",
+    "accepted": true,
+    "problems": []
+   }
+  ]
+ },
+ "sheet": "SD2",
+ "header_row": 2,
+ "rows": 127,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0004975",
+   "name": "Alzheimer disease",
+   "links": 618
+  },
+  {
+   "id": "EFO:0009268",
+   "name": "family history of Alzheimer\u2019s disease",
+   "links": 210
+  },
+  {
+   "id": "EFO:0006514",
+   "name": "Alzheimer's disease biomarker measurement",
+   "links": 21
+  }
+ ],
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "hand",
+    "accepted": true,
+    "problems": []
+   }
+  ]
+ },
+ "knowledge_source": "infores:doi-10-1038-s41586-026-11206-y",
+ "mapping": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "Predicted effector gene(s)"
+   ],
+   "resolver": "gene_symbol",
+   "separator": "/",
+   "category": "biolink:Protein"
+  },
+  "object": {
+   "constant": "MONDO:0004975",
+   "category": "biolink:Disease"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "qualifiers": {},
+  "edge_properties": [
+   "locus",
+   "rsid",
+   "chromosome",
+   "start",
+   "end",
+   "p_value",
+   "Novel"
+  ],
+  "keep_if": null,
+  "split_by": null
+ },
+ "model": {
+  "sheet": "hand",
+  "mapping": "hand"
+ },
+ "verdict": {
+  "accepted": true,
+  "problems": [],
+  "rules": [
+   {
+    "value": null,
+    "rows": 186,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 186,
+      "resolved": 181,
+      "distinct": 181,
+      "prefixes": {
+       "UniProtKB": 181
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "UniProtKB": {
+        "distinct": 181,
+        "in_release": 181
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 186,
+      "resolved": 186,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 181,
+    "kept": 186,
+    "made_gaps_by_condition": 0
+   }
+  ],
+  "export": {
+   "passed": true,
+   "failed": null,
+   "groups": 181,
+   "n_nodes": 182,
+   "n_edges": 181,
+   "n_gaps": 0,
+   "predicates": {
+    "biolink:genetically_associated_with": 181
+   }
+  }
+ },
+ "join": {
+  "rows": 181,
+  "targets": 181,
+  "symbols": 181,
+  "traits": [
+   "MONDO:0004975"
+  ],
+  "table_rows_with_no_subject": 5,
+  "their_values": [
+   "FAM105B",
+   "HLA",
+   "IGH gene cluster",
+   "KIAA0125/IGH gene cluster",
+   "MS4A gene cluster"
+  ],
+  "file_sha256": "e87b4b8f334a7265249b415592ad894672f73c5e5d13af17667aa244ed6720e9"
+ },
+ "spent_usd": 0.0,
+ "equals_later_py": true
+}

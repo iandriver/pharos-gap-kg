@@ -100,6 +100,14 @@ _S += [
            sha256="cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a", file="41586_2026_11206_MOESM3_ESM.ods",
            command="python -m pharos_gap_kg.adstudy fetch uffelmann2026_supp"),
 ]
+# A study the release does not hold, whose table a model maps in "Adding a table" (docs/PROTOCOL.md): Kim et al.,
+# Nature Genetics 2023, a Parkinson disease GWAS, licensed CC BY 4.0. Registered unopened, so the model reads it first.
+_S += [
+    Source("kim2023_pd_supp", "https://static-content.springer.com/esm/art%3A10.1038%2Fs41588-023-01584-8/MediaObjects/41588_2023_1584_MOESM4_ESM.xlsx",
+           1_373_316, "2024-01-18", "Supplementary Tables of Kim et al., Nature Genetics 2023 (doi:10.1038/s41588-023-01584-8), a multi-ancestry Parkinson disease GWAS, CC BY 4.0",
+           sha256="5fab8e371bca73367f6cbfb850f310ae812639a4a618ffac6921d832871ea18b", file="41588_2023_1584_MOESM4_ESM.xlsx",
+           command="python -I -m pharos_gap_kg.add fetch kim2023_pd_supp"),
+]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 
 
