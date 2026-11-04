@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding a table</title>
+<meta name="description" content="How tables from papers were added to the Pharos gap graph: a model proposes, code checks and says why it refuses, and the person decides what joins.">
+<link rel="stylesheet" href="/style.css">
+<script src="/add.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">Pharos gap graph <span>· release 3.19</span></a>
+    <nav aria-label="Pages">
+      <a href="/">Ask</a>
+      <a href="/add" aria-current="page">Adding a table</a>
+      <a href="https://github.com/iandriver/pharos-gap-kg">Code and method</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Adding a table from a paper</h1>
+    <p class="lede">A scientist brings a table from a paper the graph does not hold, and a few lines saying what the paper is. No code is written for that table. A model proposes how to read it, code checks each proposal and says why it refuses one, and the person reads the accepted mapping and decides whether it joins. Below is every run of the entry, step by step, as the records hold it.</p>
+    <div class="steps">
+      <div class="step"><b>The sheet</b><span class="small">The model sees the first rows of every sheet in the file and names the sheet to read and the row that holds its column names. Code checks that the sheet can be read.</span></div>
+      <div class="step"><b>The mapping</b><span class="small">The model proposes how each row becomes an edge of the graph, in the Biolink model. Code runs nine checks against Biolink and the data, and sends a refused proposal back once with its reasons. If both are refused, a second model starts over.</span></div>
+      <div class="step"><b>The person</b><span class="small">The accepted mapping is shown field by field, with how many links it would make and the rows that gave no gene. The table joins only when the person says so. No model joins anything.</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="runs-h">
+    <h2 id="runs-h" class="small">The runs</h2>
+    <div class="runs" id="runs" role="tablist" aria-label="Runs"></div>
+    <article class="card" id="run" aria-live="polite"><p class="loading">Loading the records…</p></article>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Try it with your own table</h2>
+      <p class="small">On your own machine, with the server installed for Claude Desktop (<code>python -m pharos_gap_kg.desktop install</code>, see the repository's <code>docs/ASK.md</code>), give Claude the path of your file (CSV, TSV, XLSX or ODS) and the paper: its citation, journal, date, DOI, licence, the disease in words and what to add. Claude's model reads the cards (<code>add_card</code>), checks its proposals (<code>add_check</code>) and joins (<code>add_join</code>) only when you say so. No key is needed. This hosted server is read-only and adds no table.</p>
+    </div>
+    <div class="card">
+      <h2>What the checks do not say</h2>
+      <p class="small">An accepted mapping has the right form and fits the data: the sheet reads, the Biolink classes and predicates exist and fit each other, and enough rows give a gene and a trait of the graph. It is not shown to be the reading the authors meant. That is why the person reads it before it joins, and why each run below states a check against an outside record, fixed before the run.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>What the models are told</h2>
+    <details><summary>The brief for the sheet</summary><pre id="brief-sheet"></pre></details>
+    <details><summary>The brief for the mapping</summary><pre id="brief-mapping"></pre></details>
+    <p class="small" id="built-from"></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>The protocol for these runs, written before each was made, is in the repository's <code>docs/PROTOCOL.md</code> ("Adding a table" and its amendments), and the results in <code>findings/ADD.md</code>. Code and method: <a href="https://github.com/iandriver/pharos-gap-kg">github.com/iandriver/pharos-gap-kg</a>.</p>
+  </div>
+</footer>
+</body>
+</html>

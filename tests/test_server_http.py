@@ -117,3 +117,53 @@ def test_a_large_body_and_a_host_it_was_not_told_of_are_refused(serve):
 def test_a_public_address_needs_its_names():
     p = subprocess.run([sys.executable, "-m", "pharos_gap_kg.server", "--http", "--host", "0.0.0.0", "--bundle", "nowhere"], capture_output=True, text=True, timeout=60)
     assert p.returncode != 0 and "--public-host" in p.stderr
+
+
+def _get(url: str, method: str = "GET") -> tuple:
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, method=method), timeout=10) as r:
+            return r.status, r.headers, r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, e.headers, e.read()
+
+
+def test_the_pages_and_the_questions_by_url(serve):
+    url, _ = serve()
+    for path, kind in (("/", "text/html"), ("/add", "text/html"), ("/style.css", "text/css"), ("/app.js", "text/javascript"),
+                       ("/add.js", "text/javascript"), ("/walkthrough.json", "application/json")):
+        status, headers, body = _get(url + path)
+        assert status == 200 and headers["Content-Type"].startswith(kind) and body, path
+        assert headers["X-Content-Type-Options"] == "nosniff"
+        if kind == "text/html":
+            assert "script-src 'self'" in headers["Content-Security-Policy"] and "frame-ancestors 'none'" in headers["Content-Security-Policy"]
+    status, headers, body = _get(url + "/", "HEAD")
+    assert status == 200 and body == b""
+    assert json.loads(_get(url + "/walkthrough.json")[2])["studies"] == [], "the self-test's bundle has no runs of adding a table"
+
+    async def go():
+        from mcp import ClientSession
+        from mcp.client.streamable_http import streamable_http_client
+        async with streamable_http_client(url + "/mcp") as streams:
+            async with ClientSession(streams[0], streams[1]) as s:
+                await s.initialize()
+                out = {}
+                for name, args in (("why", {"target": "AAA", "trait": "MONDO:1", "as_of": 2015}), ("known", {"node": "AAA"}), ("status", {})):
+                    r = await s.call_tool(name, args)
+                    out[name] = getattr(r, "structured_content", None) or getattr(r, "structuredContent", None) or json.loads(r.content[0].text)
+                return out
+    by_mcp = asyncio.run(go())
+    for q, qs in (("why", "target=AAA&trait=MONDO%3A1&as_of=2015"), ("known", "node=AAA"), ("status", "")):
+        status, headers, body = _get(f"{url}/api/{q}?{qs}")
+        assert status == 200 and headers["Cache-Control"] == "no-store"
+        assert json.loads(body) == by_mcp[q], f"/api/{q} and the MCP tool give different answers"
+    assert _get(url + "/api/why?target=AAA")[0] == 400, "a missing argument"
+    assert _get(url + "/api/why?target=AAA&trait=MONDO%3A1&as_of=soon")[0] == 400, "a year that is not a number"
+    assert _get(url + "/api/why?target=AAA&trait=MONDO%3A1&mood=x")[0] == 400, "an argument the question does not take"
+    assert _get(url + "/api/add_join?file=x")[0] == 404, "the questions by URL are the read-only nine, with no tool that adds a table"
+    assert _get(url + "/api/known?node=" + "A" * 3000)[0] == 414
+
+
+def test_the_pages_count_against_the_limit(serve):
+    url, _ = serve("--per-minute", "3")
+    codes = [_get(url + p)[0] for p in ("/", "/api/status", "/app.js", "/api/status")]
+    assert codes == [200, 200, 200, 429]

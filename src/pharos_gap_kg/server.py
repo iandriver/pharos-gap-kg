@@ -9,7 +9,9 @@ lets a model pick the second call of a two-step question, so it is written for t
 person reading the code.
 
 Over the web (`--http`) the same server answers MCP's streamable HTTP at /mcp, statelessly, so any
-request can go to any copy and a restart loses nothing. It is meant to sit behind a host that
+request can go to any copy and a restart loses nothing. It also serves the pages a browser reads (`web`):
+the questions at /, through /api/<question> and the same functions the tools call, and at /add how
+tables from papers were added. It is meant to sit behind a host that
 terminates TLS. In front of it, `Guard` limits requests per client and in all, caps how many run at
 once, and answers /health; the request body is capped at 64 KB, and the Host header must be one the
 server was told it answers to.
@@ -17,7 +19,7 @@ server was told it answers to.
 Run:  python -m pharos_gap_kg.server                 # stdio, the bundle under data/bundle
       python -m pharos_gap_kg.server --bundle PATH
       PHAROS_GAP_KG_BUNDLE=PATH python -m pharos_gap_kg.server
-      python -m pharos_gap_kg.server --http --port 8000                      # http://127.0.0.1:8000/mcp
+      python -m pharos_gap_kg.server --http --port 8000                      # http://127.0.0.1:8000/mcp, and the page at /
       python -m pharos_gap_kg.server --http --host 0.0.0.0 --public-host kg.example.org --behind-proxy
 
 Needs the optional dependency, from a checkout:  uv pip install -e ".[server]" -c constraints.txt
@@ -61,8 +63,9 @@ Rules for using the answers:
 - When an answer says it was also read under another id with the same name, pass that on."""
 
 
-def build(bundle_dir: Path, local: bool = False):
-    """local: served over stdio on the person's machine, where the three tools that add a table are also served."""
+def build(bundle_dir: Path, local: bool = False, answers: dict | None = None):
+    """local: served over stdio on the person's machine, where the three tools that add a table are also served.
+    answers: a dict to fill with the question tools' own functions, by name, for the pages a browser reads (`web`)."""
     try:
         from mcp.server.mcpserver import MCPServer
     except ModuleNotFoundError as e:
@@ -159,6 +162,9 @@ def build(bundle_dir: Path, local: bool = False):
         return sg.of(answer, bundle_dir, limit=max(1, min(int(limit), 2000)),
                      question={"question": question, "args": args, "as_of": as_of, "disease": disease})
 
+    if answers is not None:
+        answers.update(find=find, known=known, why=why, connect=connect, predict=predict, whats_new=whats_new, gaps=gaps, status=status,
+                       subgraph=subgraph)
     if not local:
         return app
     from pharos_gap_kg import add
@@ -252,9 +258,11 @@ def http_app(bundle_dir: Path, host: str, public_hosts: list[str], per_client: i
                                              allowed_origins=[o for p in public_hosts for o in (f"https://{p}", f"https://{p}:*")])
     else:
         security = None     # the library then allows only the local names, when bound to one
-    app = build(bundle_dir).streamable_http_app(stateless_http=True, json_response=True, max_request_body_size=MAX_BODY,
-                                                transport_security=security, host=host)
-    return Guard(app, per_client, in_all, at_once, release=Path(bundle_dir).name)
+    from pharos_gap_kg import web
+    answers: dict = {}
+    app = build(bundle_dir, answers=answers).streamable_http_app(stateless_http=True, json_response=True, max_request_body_size=MAX_BODY,
+                                                                 transport_security=security, host=host)
+    return Guard(web.Pages(app, answers, Path(bundle_dir).name), per_client, in_all, at_once, release=Path(bundle_dir).name)
 
 
 def main(argv: list[str] | None = None) -> int:

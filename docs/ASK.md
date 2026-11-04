@@ -879,6 +879,26 @@ instance of 1 vCPU and 2 GB, health-checked at `/health`. In Claude, add it as a
 (Settings, Connectors). `scripts/deploy_apprunner.sh` builds the image from the current commit and
 creates or updates that service.
 
+### In a browser
+
+The server over the web also serves two pages, for a person without an MCP client:
+
+- `/` asks the questions. Type a disease, a gene or a drug, pick the match, and read what is missing,
+  what is known, the candidates and what is new; or ask why a gene is linked to a disease. Each answer
+  is the server's own JSON from `/api/<question>` (for example `/api/gaps?disease=MONDO:0005180`),
+  made by the function the MCP tool calls, with the same arguments; `tests/test_server_http.py`
+  checks that the two give the same answer. Each is shown with its sources, a link to the graph
+  behind it as KGX, and the words to ask the same in Claude.
+- `/add` shows every run of "Adding a table", step by step: the sheets the model saw (by name and
+  size), each proposal with code's verdict and its reasons, what would join, and the check stated
+  before the run. It reads `src/pharos_gap_kg/web/walkthrough_pharos319.json`, which
+  `python -m pharos_gap_kg.web walkthrough pharos319` builds from the committed records;
+  `tests/test_web.py` fails if the records change and it is not rebuilt.
+
+The pages load nothing from another site, and their content security policy allows only the
+server's own scripts. Their requests count against the same limits as MCP requests. Neither page
+adds a table: that needs the server on your own machine.
+
 ## The subgraph behind an answer
 
 `python -m pharos_gap_kg.subgraph` takes the same question and arguments as `ask` and gives the nodes

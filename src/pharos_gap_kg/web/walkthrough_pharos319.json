@@ -1,0 +1,2054 @@
+{
+ "release": "pharos319",
+ "built_from": [
+  "add_uffelmann2026_supp_pharos319.json",
+  "add_kim2023_pd_supp_pharos319.json",
+  "add_kim2023_pd_supp_rerun_pharos319.json",
+  "add_mcgrail2026_t1d_supp_pharos319.json",
+  "add_mcgrail2026_t1d_supp_rerun_pharos319.json",
+  "add_cheng2026_re_supp_pharos319.json",
+  "add_compare_pharos319.json"
+ ],
+ "brief_sheet": "A scientist gives you a file from a scientific paper and a description of the paper. You will be shown every sheet of the file: its name, its numbers of rows and columns, and its first rows, numbered as read (empty rows are skipped), with each cell cut to 40 characters.\n\nChoose the one sheet that holds what the description asks to add, and the row that holds that sheet's column names.\n\nReturn ONE JSON object and nothing else: {\"sheet\": the sheet's name exactly as shown, \"header_row\": the number of the row that holds the column names, \"notes\": up to 300 characters}",
+ "brief_mapping": "You map one table from a scientific paper into a knowledge graph built from Pharos (the NIH Illuminating the Druggable Genome database) that follows the Biolink Model, version 4.4.3. A scientist gave the table with a description of the paper. You will be given the description, a card that describes the table (each column with its counts and its values or examples, and eight example rows), and the traits of the graph whose names match the disease the description names.\n\nPropose how each row becomes one or more edges (associations) between a subject node and an object node. Code will check your proposal against the Biolink Model and against the data, and may send it back once with the reasons it was refused. Code sets each edge's date (the year the paper was published) and its knowledge source (the paper); do not give them.\n\nReturn ONE JSON object and nothing else, with these keys:\n\n  \"map\": true, or false if this table should not become edges (then give only \"map\" and \"reason\")\n  \"subject\": {\"columns\": [column, ...], \"resolver\": one of the resolvers below, \"category\": a Biolink class CURIE such as \"biolink:Gene\", \"name_column\": optional column that names the node, \"separator\": optional text that separates several values in one cell, each of which becomes its own edge}\n  \"object\":  the same keys, or {\"constant\": one trait id from the list of traits, \"category\": a Biolink class CURIE} when every row's object is that one trait\n  \"predicate\": a Biolink predicate CURIE, such as \"biolink:related_to\"\n  \"association_category\": a Biolink association class CURIE, such as \"biolink:Association\"\n  \"knowledge_level\": one of knowledge_assertion, logical_entailment, not_provided, observation, prediction, statistical_association\n  \"agent_type\": one of automated_agent, computational_model, data_analysis_pipeline, image_processing_agent, manual_agent, manual_validation_of_automated_agent, not_provided, text_mining_agent\n  \"qualifiers\": {} or {Biolink qualifier slot name: a constant value, or {\"sign_of\": column} for a direction qualifier}\n  \"edge_properties\": [columns whose values the edge should carry]\n  \"keep_if\": null, or {\"column\": c, \"at_least\": number, \"reason\": why a row below it is not asserted}, or {\"column\": c, \"in\": [values], \"reason\": ...}, or {\"column\": c, \"matches\": a regular expression, \"reason\": ...}. A row that fails it is kept as a recorded gap of its subject, not dropped, and needs no object.\n  \"split_by\": null, or a column whose values need different mappings\n  \"by_value\": only with split_by: {value: {any of subject, object, predicate, association_category, knowledge_level, agent_type, qualifiers, edge_properties, keep_if, given as overrides}, or {\"skip\": reason} to leave that value's rows out}\n  \"notes\": up to 600 characters on the choices a reader might question\n\n\"columns\" lists the columns to try in order; the first that gives an identifier is used.\n\nRESOLVERS (code turns a cell into an identifier; you choose which):\n  gene_symbol: the value is a gene symbol, such as APOE; gives every gene of the graph with that symbol (its Pharos symbol, or the Ensembl symbol of a gene the Pharos target is cross-referenced to). Graph genes are proteins here: use the category biolink:Protein\n  curie: the value is already a compact identifier such as MONDO:0005148 (EFO_0004584 is read as EFO:0004584)\n  prefix:P: the value is a local identifier under the prefix P, written P:<value> (for example prefix:NCBIGene)\n  pattern:P:REGEX: the first group of the regular expression REGEX matched in the value, under the prefix P\n  name:KIND: no identifier: a local node made from the text, marked as not grounded\n\nRules:\n- Use only Biolink classes, predicates and qualifiers that exist in Biolink 4.4.3. The subject and object categories must fit the predicate's domain and range and the association class.\n- Choose the most specific predicate the source supports, and no more specific than that.\n- The knowledge level and agent type describe how the paper made the claim.\n- Do not invent columns or values.",
+ "studies": [
+  {
+   "id": "A",
+   "study": "A",
+   "rerun": false,
+   "what": "The Alzheimer disease study, whose table had been built by hand before: do the stages reproduce it?",
+   "citation": "Uffelmann et al., Nature (2026)",
+   "disease": "Alzheimer's disease",
+   "licence": "CC BY-NC-ND 4.0",
+   "description": "Uffelmann et al. Alzheimer's disease genetics converges on microglial and neuronal dysregulation. Nature, published 28 October 2026. doi:10.1038/s41586-026-11206-y. Licence: CC BY-NC-ND 4.0. A genome-wide association study of Alzheimer's disease. Add the genes the study names at each associated locus.",
+   "file": "41586_2026_11206_MOESM3_ESM.ods",
+   "sheets": [
+    {
+     "name": "Table_of_Contents",
+     "rows": 23,
+     "columns": 3
+    },
+    {
+     "name": "SD1",
+     "rows": 53,
+     "columns": 7
+    },
+    {
+     "name": "SD2",
+     "rows": 129,
+     "columns": 32
+    },
+    {
+     "name": "SD3",
+     "rows": 228,
+     "columns": 12
+    },
+    {
+     "name": "SD4",
+     "rows": 46,
+     "columns": 5
+    },
+    {
+     "name": "SD5",
+     "rows": 520,
+     "columns": 193
+    },
+    {
+     "name": "SD6",
+     "rows": 81,
+     "columns": 16
+    },
+    {
+     "name": "SD7",
+     "rows": 86,
+     "columns": 15
+    },
+    {
+     "name": "SD8",
+     "rows": 83,
+     "columns": 11
+    },
+    {
+     "name": "SD9",
+     "rows": 3928,
+     "columns": 24
+    },
+    {
+     "name": "SD10",
+     "rows": 127,
+     "columns": 12
+    },
+    {
+     "name": "SD11",
+     "rows": 222,
+     "columns": 6
+    },
+    {
+     "name": "SD12",
+     "rows": 67,
+     "columns": 29
+    },
+    {
+     "name": "SD13",
+     "rows": 1882,
+     "columns": 19
+    },
+    {
+     "name": "SD14",
+     "rows": 49,
+     "columns": 12
+    },
+    {
+     "name": "SD15",
+     "rows": 14,
+     "columns": 11
+    },
+    {
+     "name": "SD16",
+     "rows": 83,
+     "columns": 13
+    },
+    {
+     "name": "SD17",
+     "rows": 17,
+     "columns": 7
+    },
+    {
+     "name": "SD18",
+     "rows": 10,
+     "columns": 14
+    },
+    {
+     "name": "SD19",
+     "rows": 54,
+     "columns": 7
+    },
+    {
+     "name": "SD20",
+     "rows": 8,
+     "columns": 5
+    },
+    {
+     "name": "SD21",
+     "rows": 47,
+     "columns": 20
+    },
+    {
+     "name": "SD22",
+     "rows": 92,
+     "columns": 7
+    }
+   ],
+   "check_8": "a row counts when its sides give identifiers of any kind, and 95% of rows must (ingest's check 8)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "SD2",
+      "header_row": 2,
+      "notes": "SD2 lists the 127 loci from the multi-ancestry meta-analysis, with predicted effector gene(s) per locus in column 'Predicted effector gene(s)'. Header is on row 2. Rows 3-129 are data."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Predicted effector gene(s)"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "separator": "/"
+      },
+      "object": {
+       "constant": "MONDO:0004975",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetic_association",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "LeadSNP",
+       "rsid",
+       "p_value",
+       "beta",
+       "OR",
+       "Novel"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each slash-separated gene in 'Predicted effector gene(s)' becomes its own edge to Alzheimer disease. These are the effector genes the paper predicts for each GWAS locus (via FLAMES and related methods), so the agent is a computational pipeline. Non-gene entries such as 'IGH gene cluster' and lncRNA-style names (e.g. AC008394.1) will not resolve to a graph protein and are left unmatched. Literature and Coloc_MR columns are not used, since they are literature or colocalisation candidates rather than the study's named effector genes. Direction of effect is not mapped as a qualifier."
+     },
+     "accepted": false,
+     "problems": [
+      "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated"
+     ]
+    },
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Predicted effector gene(s)"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "separator": "/"
+      },
+      "object": {
+       "constant": "MONDO:0004975",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "LeadSNP",
+       "rsid",
+       "p_value",
+       "beta",
+       "OR",
+       "Novel"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each slash-separated gene in 'Predicted effector gene(s)' becomes its own edge to Alzheimer disease. These are the effector genes the paper predicts for each GWAS locus (via FLAMES and related methods), so the agent is a computational pipeline. Non-gene entries such as 'IGH gene cluster' and lncRNA-style names (e.g. AC008394.1) will not resolve to a graph protein and are left unmatched. Literature and Coloc_MR columns are not used, since they are literature or colocalisation candidates rather than the study's named effector genes. Direction of effect is not mapped as a qualifier."
+     },
+     "accepted": false,
+     "problems": [
+      "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+     ]
+    },
+    {
+     "model": "Claude Sonnet 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Predicted effector gene(s)"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "separator": "/"
+      },
+      "object": {
+       "constant": "MONDO:0004975",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "locus",
+       "LeadSNP",
+       "rsid",
+       "p_value",
+       "OR",
+       "OR 95% CI",
+       "beta",
+       "standard_error",
+       "Novel"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "notes": "Each slash-separated predicted effector gene at a GWAS locus is linked to Alzheimer disease. The paper names these genes through fine-mapping, colocalisation and the FLAMES method, so the claim is a statistical association rather than a causal assertion. Non-gene entries such as 'IGH gene cluster' will not resolve and are left to the resolver."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": null,
+   "sheet": "SD2",
+   "header_row": 2,
+   "rows": 127,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0004975",
+     "name": "Alzheimer disease",
+     "links": 618
+    },
+    {
+     "id": "EFO:0009268",
+     "name": "family history of Alzheimer’s disease",
+     "links": 210
+    },
+    {
+     "id": "EFO:0006514",
+     "name": "Alzheimer's disease biomarker measurement",
+     "links": 21
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41586-026-11206-y",
+   "mapping": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "Predicted effector gene(s)"
+     ],
+     "resolver": "gene_symbol",
+     "category": "biolink:Protein",
+     "separator": "/"
+    },
+    "object": {
+     "constant": "MONDO:0004975",
+     "category": "biolink:Disease"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+     "locus",
+     "LeadSNP",
+     "rsid",
+     "p_value",
+     "OR",
+     "OR 95% CI",
+     "beta",
+     "standard_error",
+     "Novel"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each slash-separated predicted effector gene at a GWAS locus is linked to Alzheimer disease. The paper names these genes through fine-mapping, colocalisation and the FLAMES method, so the claim is a statistical association rather than a causal assertion. Non-gene entries such as 'IGH gene cluster' will not resolve and are left to the resolver."
+   },
+   "join": {
+    "rows": 181,
+    "targets": 181,
+    "traits": [
+     "MONDO:0004975"
+    ],
+    "table_rows_with_no_subject": 5,
+    "their_values": [
+     "FAM105B",
+     "HLA",
+     "IGH gene cluster",
+     "KIAA0125/IGH gene cluster",
+     "MS4A gene cluster"
+    ]
+   },
+   "joined": false,
+   "outcome": "Reproduced: the model's mapping makes the same 181 pairs of a graph gene and Alzheimer disease as the table built by hand. It was compared, not joined, since the table built by hand is already beside the graph.",
+   "check": {
+    "against": "the table built by hand",
+    "hand_pairs": 181,
+    "model_pairs": 181,
+    "reproduced": true
+   }
+  },
+  {
+   "id": "B",
+   "study": "B",
+   "rerun": false,
+   "what": "A Parkinson disease study no part of the entry had read: the registered run.",
+   "citation": "Kim et al., Nature Genetics (2023)",
+   "disease": "Parkinson's disease",
+   "licence": "CC BY 4.0",
+   "description": "Kim et al. Multi-ancestry genome-wide association meta-analysis of Parkinson's disease. Nature Genetics, published 28 December 2023. doi:10.1038/s41588-023-01584-8. Licence: CC BY 4.0. A genome-wide association study of Parkinson's disease. Add the genes the study names at each associated locus.",
+   "file": "41588_2023_1584_MOESM4_ESM.xlsx",
+   "sheets": [
+    {
+     "name": "Supplementary Table 1 - Detaile",
+     "rows": 14,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 2 - All Nov",
+     "rows": 28,
+     "columns": 14
+    },
+    {
+     "name": "Supplementary Table 3 - Lead SN",
+     "rows": 304,
+     "columns": 20
+    },
+    {
+     "name": "Supplementary Table 4 - Lead SN",
+     "rows": 65,
+     "columns": 21
+    },
+    {
+     "name": "Supplementary Table 5 - Genomic",
+     "rows": 262,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 6 - PESCA r",
+     "rows": 486,
+     "columns": 21
+    },
+    {
+     "name": "Supplementary Table 7 - Variant",
+     "rows": 70,
+     "columns": 14
+    },
+    {
+     "name": "Supplementary Table 8 - Number ",
+     "rows": 30,
+     "columns": 4
+    },
+    {
+     "name": "Supplementary Table 9 - MAGMA g",
+     "rows": 17006,
+     "columns": 12
+    },
+    {
+     "name": "Supplementary Table 10 - Multi-",
+     "rows": 36,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 11 - GTEx v",
+     "rows": 36,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 12 - SMR re",
+     "rows": 102,
+     "columns": 26
+    },
+    {
+     "name": "Supplementary Table 13 - Known ",
+     "rows": 45,
+     "columns": 17
+    },
+    {
+     "name": "Supplementary Table 14 - GWAS C",
+     "rows": 229,
+     "columns": 37
+    }
+   ],
+   "check_8": "a row counts when its sides give identifiers of any kind, and 95% of rows must (ingest's check 8)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supplementary Table 5 - Genomic",
+      "header_row": 2,
+      "notes": "Table 5 lists each genomic risk locus (Locus, rsID, CHR, start, end) but has no gene column. Row 1 is the 'Random-Effect' title; row 2 holds the column names. Genes can be taken from Table 3's Nearest Protein Coding Gene per locus."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": false,
+      "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": null,
+   "sheet": "Supplementary Table 5 - Genomic",
+   "header_row": 2,
+   "rows": 260,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0005180",
+     "name": "Parkinson disease",
+     "links": 260
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41588-023-01584-8",
+   "mapping": {
+    "map": false,
+    "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case."
+   },
+   "join": null,
+   "joined": false,
+   "outcome": "Not added. The model chose a sheet that names no gene; given it, the mapping stage said the table should not become edges, and the stages as registered had no way back to the sheet.",
+   "check": {
+    "against": "the genes the GWAS Catalog reports for the study's associations",
+    "catalog_study": "GCST90308590",
+    "abstract_loci": null,
+    "rows_band": null,
+    "a_table_of_the_studys_loci": null,
+    "catalog_associations": 121,
+    "of_them_graph_genes": null,
+    "table_genes": 0,
+    "shared": null,
+    "share_of_table_genes_the_catalog_maps": null,
+    "share_of_catalog_genes_the_table_holds": null,
+    "reading": "not computable: the Catalog reports no gene for the study's associations"
+   }
+  },
+  {
+   "id": "B_rerun",
+   "study": "B",
+   "rerun": true,
+   "what": "The Parkinson disease study again, after its result, with a way back from the mapping to the sheet: development, not a test.",
+   "citation": "Kim et al., Nature Genetics (2023)",
+   "disease": "Parkinson's disease",
+   "licence": "CC BY 4.0",
+   "description": "Kim et al. Multi-ancestry genome-wide association meta-analysis of Parkinson's disease. Nature Genetics, published 28 December 2023. doi:10.1038/s41588-023-01584-8. Licence: CC BY 4.0. A genome-wide association study of Parkinson's disease. Add the genes the study names at each associated locus.",
+   "file": "41588_2023_1584_MOESM4_ESM.xlsx",
+   "sheets": [
+    {
+     "name": "Supplementary Table 1 - Detaile",
+     "rows": 14,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 2 - All Nov",
+     "rows": 28,
+     "columns": 14
+    },
+    {
+     "name": "Supplementary Table 3 - Lead SN",
+     "rows": 304,
+     "columns": 20
+    },
+    {
+     "name": "Supplementary Table 4 - Lead SN",
+     "rows": 65,
+     "columns": 21
+    },
+    {
+     "name": "Supplementary Table 5 - Genomic",
+     "rows": 262,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 6 - PESCA r",
+     "rows": 486,
+     "columns": 21
+    },
+    {
+     "name": "Supplementary Table 7 - Variant",
+     "rows": 70,
+     "columns": 14
+    },
+    {
+     "name": "Supplementary Table 8 - Number ",
+     "rows": 30,
+     "columns": 4
+    },
+    {
+     "name": "Supplementary Table 9 - MAGMA g",
+     "rows": 17006,
+     "columns": 12
+    },
+    {
+     "name": "Supplementary Table 10 - Multi-",
+     "rows": 36,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 11 - GTEx v",
+     "rows": 36,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 12 - SMR re",
+     "rows": 102,
+     "columns": 26
+    },
+    {
+     "name": "Supplementary Table 13 - Known ",
+     "rows": 45,
+     "columns": 17
+    },
+    {
+     "name": "Supplementary Table 14 - GWAS C",
+     "rows": 229,
+     "columns": 37
+    }
+   ],
+   "check_8": "a row counts when its sides give identifiers of any kind, and 95% of rows must (ingest's check 8)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supplementary Table 5 - Genomic",
+      "header_row": 2,
+      "notes": "Table 5 lists each genomic risk locus (Locus, rsID, CHR, start, end) but has no gene column. Row 1 is the 'Random-Effect' title; row 2 holds the column names. Genes can be taken from Table 3's Nearest Protein Coding Gene per locus."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": false,
+      "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": {
+    "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case.",
+    "stage1": [
+     {
+      "model": "Claude Haiku 5.5",
+      "attempt": 1,
+      "proposal": {
+       "sheet": "Supplementary Table 3 - Lead SN",
+       "header_row": 1,
+       "notes": "Table 3 lists each lead variant with its Locus number and Nearest Protein Coding Gene, so it gives the gene names the study reports per associated locus. Header is row 1. Table 5 has no genes."
+      },
+      "accepted": true,
+      "problems": []
+     }
+    ],
+    "stage2": [
+     {
+      "model": "Claude Haiku 5.5",
+      "attempt": 1,
+      "proposal": {
+       "map": true,
+       "subject": {
+        "columns": [
+         "Nearest Protein Coding Gene"
+        ],
+        "resolver": "gene_symbol",
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "constant": "MONDO:0005180",
+        "category": "biolink:Disease"
+       },
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:Association",
+       "knowledge_level": "statistical_association",
+       "agent_type": "data_analysis_pipeline",
+       "qualifiers": {},
+       "edge_properties": [
+        "rsID",
+        "BP",
+        "Method",
+        "P(RE)",
+        "Part of a novel locus"
+       ],
+       "keep_if": {
+        "column": "rsID",
+        "matches": "^rs[0-9]+$",
+        "reason": "Rows without a variant rsID are header repeats or empty entries, not a lead association at a locus."
+       },
+       "split_by": null,
+       "by_value": null,
+       "notes": "Each lead variant row links its nearest protein-coding gene to Parkinson disease, as the paper names that gene at the locus. The gene is the nearest protein-coding gene, not the nearest feature, which may be an lncRNA or pseudogene. Rows whose nearest gene is only a non-coding feature therefore have no subject. Several rows share a locus, so the same gene can recur with different rsIDs. The predicate is a statistical GWAS association, not a causal claim. The header-repeat row (no rsID) is kept as a gap."
+      },
+      "accepted": false,
+      "problems": [
+       "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+       "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+      ]
+     },
+     {
+      "model": "Claude Haiku 5.5",
+      "attempt": 2,
+      "proposal": {
+       "map": true,
+       "subject": {
+        "columns": [
+         "Nearest Protein Coding Gene"
+        ],
+        "resolver": "gene_symbol",
+        "category": "biolink:Gene"
+       },
+       "object": {
+        "constant": "MONDO:0005180",
+        "category": "biolink:Disease"
+       },
+       "predicate": "biolink:gene_associated_with_condition",
+       "association_category": "biolink:Association",
+       "knowledge_level": "statistical_association",
+       "agent_type": "data_analysis_pipeline",
+       "qualifiers": {},
+       "edge_properties": [
+        "rsID",
+        "BP",
+        "Method",
+        "P(RE)",
+        "Part of a novel locus"
+       ],
+       "keep_if": {
+        "column": "Nearest Protein Coding Gene",
+        "matches": "^[A-Z][A-Za-z0-9.-]*$",
+        "reason": "A row with no protein-coding gene symbol (empty, 'nan', or a repeated header label) names no gene at the locus, so it is kept as a recorded gap rather than an edge."
+       },
+       "split_by": null,
+       "by_value": null,
+       "notes": "Each lead variant row links the nearest protein-coding gene named by the paper to Parkinson disease. The subject is typed biolink:Gene, the domain of gene_associated_with_condition. Rows whose nearest gene is only a non-coding feature have no protein-coding symbol and become gaps. Rows that share a locus can repeat the same gene with different rsIDs. The association is a GWAS statistical association, not a causal claim. Header-repeat and empty rows fail the symbol pattern and are kept as gaps."
+      },
+      "accepted": false,
+      "problems": [
+       "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must",
+       "8_identifiers: subject: 131 of 131 distinct identifiers are under prefixes ['UniProtKB'] that biolink:Gene's id_prefixes do not list"
+      ]
+     },
+     {
+      "model": "Claude Sonnet 5.5",
+      "attempt": 1,
+      "proposal": {
+       "map": true,
+       "subject": {
+        "columns": [
+         "Nearest Protein Coding Gene"
+        ],
+        "resolver": "gene_symbol",
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "constant": "MONDO:0005180",
+        "category": "biolink:Disease"
+       },
+       "predicate": "biolink:genetically_associated_with",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "statistical_association",
+       "agent_type": "data_analysis_pipeline",
+       "qualifiers": {},
+       "edge_properties": [
+        "rsID"
+       ],
+       "keep_if": {
+        "column": "Nearest Protein Coding Gene",
+        "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+        "reason": "Legend and header rows in the sheet have no gene named at a locus, so they are not asserted."
+       },
+       "split_by": null,
+       "notes": "The gene is the nearest protein-coding gene to each lead SNP (the paper's named locus gene). It is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. The effect-size columns are shifted in the MR-MEGA rows, so only the lead rsID is kept as an edge property."
+      },
+      "accepted": false,
+      "problems": [
+       "8_identifiers: 279 of 303 rows (92.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+      ]
+     },
+     {
+      "model": "Claude Sonnet 5.5",
+      "attempt": 2,
+      "proposal": {
+       "map": true,
+       "subject": {
+        "columns": [
+         "Nearest Protein Coding Gene"
+        ],
+        "resolver": "gene_symbol",
+        "category": "biolink:Protein"
+       },
+       "object": {
+        "constant": "MONDO:0005180",
+        "category": "biolink:Disease"
+       },
+       "predicate": "biolink:genetically_associated_with",
+       "association_category": "biolink:GeneToDiseaseAssociation",
+       "knowledge_level": "statistical_association",
+       "agent_type": "data_analysis_pipeline",
+       "qualifiers": {},
+       "edge_properties": [
+        "rsID"
+       ],
+       "keep_if": {
+        "column": "Nearest Protein Coding Gene",
+        "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+        "reason": "A row with no protein-coding gene named at the locus asserts nothing."
+       },
+       "split_by": "Method",
+       "by_value": {
+        "Random-effect": {},
+        "MR-MEGA": {},
+        "Column name": {
+         "skip": "legend row, not data"
+        },
+        "Method": {
+         "skip": "repeated header row"
+        },
+        "Locus": {
+         "skip": "legend row, not data"
+        },
+        "rsID": {
+         "skip": "legend row, not data"
+        },
+        "CHR": {
+         "skip": "legend row, not data"
+        },
+        "BP": {
+         "skip": "legend row, not data"
+        },
+        "A1": {
+         "skip": "legend row, not data"
+        },
+        "A2": {
+         "skip": "legend row, not data"
+        },
+        "Nearest Gene/Feature": {
+         "skip": "legend row, not data"
+        },
+        "Nearest Protein Coding Gene": {
+         "skip": "legend row, not data"
+        },
+        "Functional Consequence": {
+         "skip": "legend row, not data"
+        },
+        "CADD": {
+         "skip": "legend row, not data"
+        },
+        "RDB": {
+         "skip": "legend row, not data"
+        },
+        "BETA(RE)": {
+         "skip": "legend row, not data"
+        },
+        "SE(RE)": {
+         "skip": "legend row, not data"
+        },
+        "P(RE/MR-MEGA)": {
+         "skip": "legend row, not data"
+        },
+        "I2": {
+         "skip": "legend row, not data"
+        },
+        "P(ANC-HET)": {
+         "skip": "legend row, not data"
+        },
+        "P(RES-HET)": {
+         "skip": "legend row, not data"
+        },
+        "Part of a novel locus": {
+         "skip": "legend row, not data"
+        }
+       },
+       "notes": "The study's named gene at each locus is the nearest protein-coding gene to the lead SNP. Legend and header rows at the foot of the sheet, identified by the Method column, are skipped. This is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. Effect-size columns are shifted in the MR-MEGA rows, so only rsID is kept as an edge property."
+      },
+      "accepted": true,
+      "problems": []
+     }
+    ],
+    "stopped": null
+   },
+   "sheet": "Supplementary Table 3 - Lead SN",
+   "header_row": 1,
+   "rows": 303,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0005180",
+     "name": "Parkinson disease",
+     "links": 260
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41588-023-01584-8",
+   "mapping": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "Nearest Protein Coding Gene"
+     ],
+     "resolver": "gene_symbol",
+     "category": "biolink:Protein"
+    },
+    "object": {
+     "constant": "MONDO:0005180",
+     "category": "biolink:Disease"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:GeneToDiseaseAssociation",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+     "rsID"
+    ],
+    "keep_if": {
+     "column": "Nearest Protein Coding Gene",
+     "matches": "^(?!nan$)[A-Za-z0-9\\-\\.]+$",
+     "reason": "A row with no protein-coding gene named at the locus asserts nothing."
+    },
+    "split_by": "Method",
+    "by_value": {
+     "Random-effect": {},
+     "MR-MEGA": {},
+     "Column name": {
+      "skip": "legend row, not data"
+     },
+     "Method": {
+      "skip": "repeated header row"
+     },
+     "Locus": {
+      "skip": "legend row, not data"
+     },
+     "rsID": {
+      "skip": "legend row, not data"
+     },
+     "CHR": {
+      "skip": "legend row, not data"
+     },
+     "BP": {
+      "skip": "legend row, not data"
+     },
+     "A1": {
+      "skip": "legend row, not data"
+     },
+     "A2": {
+      "skip": "legend row, not data"
+     },
+     "Nearest Gene/Feature": {
+      "skip": "legend row, not data"
+     },
+     "Nearest Protein Coding Gene": {
+      "skip": "legend row, not data"
+     },
+     "Functional Consequence": {
+      "skip": "legend row, not data"
+     },
+     "CADD": {
+      "skip": "legend row, not data"
+     },
+     "RDB": {
+      "skip": "legend row, not data"
+     },
+     "BETA(RE)": {
+      "skip": "legend row, not data"
+     },
+     "SE(RE)": {
+      "skip": "legend row, not data"
+     },
+     "P(RE/MR-MEGA)": {
+      "skip": "legend row, not data"
+     },
+     "I2": {
+      "skip": "legend row, not data"
+     },
+     "P(ANC-HET)": {
+      "skip": "legend row, not data"
+     },
+     "P(RES-HET)": {
+      "skip": "legend row, not data"
+     },
+     "Part of a novel locus": {
+      "skip": "legend row, not data"
+     }
+    },
+    "notes": "The study's named gene at each locus is the nearest protein-coding gene to the lead SNP. Legend and header rows at the foot of the sheet, identified by the Method column, are skipped. This is a GWAS locus association, not proof of causality, so the predicate is genetically_associated_with. Effect-size columns are shifted in the MR-MEGA rows, so only rsID is kept as an edge property."
+   },
+   "join": {
+    "rows": 191,
+    "targets": 131,
+    "traits": [
+     "MONDO:0005180"
+    ],
+    "table_rows_with_no_subject": 22,
+    "their_values": [
+     "RAB7L1",
+     "RP11-297N6.4"
+    ]
+   },
+   "joined": false,
+   "outcome": "It would join 191 links from 131 graph genes. Its 303 rows lie outside 39 to 156, half to twice the 78 the abstract reports, so by the stated check it is not a table of the study's loci. Against the genes the GWAS Catalog maps to the study's variants by position, the reading is partial. Not joined: it joins only on the person's word.",
+   "check": {
+    "against": "the genes the GWAS Catalog maps by position to the study's associations",
+    "catalog_study": "GCST90308590",
+    "abstract_loci": 78,
+    "rows_band": [
+     39,
+     156
+    ],
+    "a_table_of_the_studys_loci": false,
+    "catalog_associations": 121,
+    "of_them_graph_genes": 107,
+    "table_genes": 131,
+    "shared": 93,
+    "share_of_table_genes_the_catalog_maps": [
+     0.7099,
+     0.6271,
+     0.7808
+    ],
+    "share_of_catalog_genes_the_table_holds": [
+     0.8692,
+     0.7923,
+     0.9204
+    ],
+    "reading": "partial"
+   }
+  },
+  {
+   "id": "C",
+   "study": "C",
+   "rerun": false,
+   "what": "A type 1 diabetes study no part of the entry had read.",
+   "citation": "McGrail et al., Nature Genetics (2026)",
+   "disease": "type 1 diabetes",
+   "licence": "CC BY 4.0",
+   "description": "McGrail et al. Genetic association and machine learning improve the prediction of type 1 diabetes risk. Nature Genetics, published 30 April 2026. doi:10.1038/s41588-026-02578-y. Licence: CC BY 4.0. A genome-wide association study of type 1 diabetes. Add the genes the study names at each associated locus.",
+   "file": "41588_2026_2578_MOESM3_ESM.xlsx",
+   "sheets": [
+    {
+     "name": "Table of Contents",
+     "rows": 20,
+     "columns": 2
+    },
+    {
+     "name": "Supplementary Table 1",
+     "rows": 28,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 2",
+     "rows": 104,
+     "columns": 11
+    },
+    {
+     "name": "Supplementary Table 3",
+     "rows": 24099,
+     "columns": 8
+    },
+    {
+     "name": "Supplementary Table 4",
+     "rows": 10,
+     "columns": 4
+    },
+    {
+     "name": "Supplementary Table 5",
+     "rows": 25,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 6",
+     "rows": 401,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 7",
+     "rows": 72,
+     "columns": 8
+    },
+    {
+     "name": "Supplementary Table 8",
+     "rows": 6,
+     "columns": 9
+    },
+    {
+     "name": "Supplementary Table 9",
+     "rows": 19,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 10",
+     "rows": 201,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 11",
+     "rows": 19,
+     "columns": 15
+    },
+    {
+     "name": "Supplementary Table 12",
+     "rows": 14,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 13",
+     "rows": 10818,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 14",
+     "rows": 15,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 15",
+     "rows": 6,
+     "columns": 2
+    },
+    {
+     "name": "Supplementary Table 16",
+     "rows": 798,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 17",
+     "rows": 38,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 18",
+     "rows": 448,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 19",
+     "rows": 57,
+     "columns": 10
+    }
+   ],
+   "check_8": "a row counts when its sides give identifiers of any kind, and 95% of rows must (ingest's check 8)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supplementary Table 2",
+      "header_row": 2,
+      "notes": "Lists the T1D risk loci (about 100) with lead variants and stats; the Signal column is named by gene (e.g. PTPRC, RGS1). Supplementary Table 4 covers only novel loci (8 rows), so Table 2 is the per-locus table to add genes to."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "manual_agent",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is one GWAS locus named by a gene symbol in Signal; the study names that gene at the locus, so the gene is linked to type 1 diabetes (MONDO:0005147) as a statistical association. The predicate is the general gene-condition association, since the table gives a locus-level GWAS signal rather than a demonstrated causal role. Lead variant, effect size and p-value are carried as edge properties. Genes resolve to Protein nodes as the graph uses proteins for genes."
+     },
+     "accepted": false,
+     "problems": [
+      "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein",
+      "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+     ]
+    },
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:GeneOrGeneProduct",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetic_association",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "manual_agent",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is one GWAS locus named by a gene symbol in Signal, linked to type 1 diabetes (MONDO:0005147) as a statistical association. The subject is typed GeneOrGeneProduct, the superclass of Protein, so the Pharos protein nodes that gene_symbol returns are admitted. biolink:gene_associated_with_condition was refused because its domain is Gene, which excludes Protein. genetic_association is the general gene-to-trait predicate, fitting a locus-level GWAS signal rather than a causal role. Lead variant, effect size, standard error, p-value, risk allele and credible set size are carried as edge properties."
+     },
+     "accepted": false,
+     "problems": [
+      "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated",
+      "3_categories: subject category biolink:GeneOrGeneProduct is not a concrete class below biolink:NamedThing",
+      "4_domain_range: biolink:genetic_association's domain is biolink:NamedThing, which does not admit biolink:GeneOrGeneProduct",
+      "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must",
+      "8_identifiers: subject: 95 of 95 distinct identifiers are under prefixes ['UniProtKB'] that biolink:GeneOrGeneProduct's id_prefixes do not list"
+     ]
+    },
+    {
+     "model": "Claude Sonnet 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "notes": "Each row is a GWAS signal named by its gene (Signal column), which the study names at the associated locus. Gene-to-type 1 diabetes is mapped as a genetic association; the locus-level evidence (lead variant, beta, p-value) is carried as edge properties. Gene symbols such as SEPT2 may be outdated aliases; unresolved ones are dropped by the resolver."
+     },
+     "accepted": false,
+     "problems": [
+      "8_identifiers: 95 of 102 rows (93.1%) resolve as they must (both sides, or the subject of a row the condition makes a gap); at least 95% must"
+     ]
+    },
+    {
+     "model": "Claude Sonnet 5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "name:gene",
+       "category": "biolink:Protein",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "notes": "Each row is a GWAS signal named by the gene the study assigns to the locus, linked to type 1 diabetes by a genetic association. Locus evidence (lead variant, beta, SE, p-value, risk allele, credible set size) is carried as edge properties. Symbol matching to graph genes left 7 rows unresolved (likely outdated symbols such as SEPT2), so the gene is kept as a named, ungrounded node to avoid losing any named locus gene."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": null,
+   "sheet": "Supplementary Table 2",
+   "header_row": 2,
+   "rows": 102,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0005147",
+     "name": "type 1 diabetes mellitus",
+     "links": 404
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41588-026-02578-y",
+   "mapping": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "Signal"
+     ],
+     "resolver": "name:gene",
+     "category": "biolink:Protein",
+     "name_column": "Signal"
+    },
+    "object": {
+     "constant": "MONDO:0005147",
+     "category": "biolink:Disease"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+     "Lead Variant",
+     "Beta",
+     "Standard Error",
+     "P-value",
+     "Risk allele",
+     "Credible set size"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row is a GWAS signal named by the gene the study assigns to the locus, linked to type 1 diabetes by a genetic association. Locus evidence (lead variant, beta, SE, p-value, risk allele, credible set size) is carried as edge properties. Symbol matching to graph genes left 7 rows unresolved (likely outdated symbols such as SEPT2), so the gene is kept as a named, ungrounded node to avoid losing any named locus gene."
+   },
+   "join": {
+    "rows": 0,
+    "targets": 0,
+    "traits": [],
+    "table_rows_with_no_subject": 102,
+    "their_values": [
+     "14q32",
+     "16q23",
+     "17q24",
+     "2p24",
+     "6q27",
+     "ACOXL",
+     "ADCY3",
+     "AFF3",
+     "AGO2",
+     "AIRE",
+     "AKAP11",
+     "BACH2",
+     "BAD",
+     "BATF3",
+     "BCL11A",
+     "C1QTNF6",
+     "CAMK4",
+     "CAMSAP2",
+     "CCR5",
+     "CCR7",
+     "CD226",
+     "CD6",
+     "CDKN1C",
+     "CEL",
+     "CENPW",
+     "CFTR",
+     "CLNK",
+     "COBL",
+     "COLEC10",
+     "CPE",
+     "CTLA4",
+     "CTRB2",
+     "CTSH",
+     "CYP27B1",
+     "DEXI",
+     "DLK1",
+     "ELL",
+     "EMSY",
+     "FBXSIK68",
+     "FLI1",
+     "FUT2",
+     "GATA3",
+     "GLIS3",
+     "GP2",
+     "GPR183",
+     "GSDMB",
+     "HIVEP1",
+     "HORMAD2",
+     "IFIH1",
+     "IKZF1",
+     "IKZF4",
+     "IL10",
+     "IL2",
+     "IL27",
+     "IL2RA",
+     "IL7R",
+     "INPP5B",
+     "INS",
+     "IRF1",
+     "IRF2"
+    ]
+   },
+   "joined": false,
+   "outcome": "Nothing joins. The model chose the loci table, and code refused the mapping that read its genes by symbol (95 of 102 rows, 93.1%, resolved, under the 95% the check then required). The next mapping made a local node of each name, which the check of the rows counted as resolved; it links no gene of the graph, and the join refuses it. That check was changed after this result.",
+   "check": {
+    "against": "the genes the GWAS Catalog maps by position to the study's associations",
+    "catalog_study": "GCST90824163",
+    "abstract_loci": 160,
+    "rows_band": [
+     80,
+     320
+    ],
+    "a_table_of_the_studys_loci": true,
+    "catalog_associations": 101,
+    "of_them_graph_genes": 0,
+    "table_genes": 0,
+    "shared": 0,
+    "share_of_table_genes_the_catalog_maps": null,
+    "share_of_catalog_genes_the_table_holds": null,
+    "reading": "not computable: the Catalog maps no graph gene to the study's associations"
+   }
+  },
+  {
+   "id": "C_rerun",
+   "study": "C",
+   "rerun": true,
+   "what": "The type 1 diabetes study's logged replies, checked again under the new check of the rows: development, not a test.",
+   "citation": "McGrail et al., Nature Genetics (2026)",
+   "disease": "type 1 diabetes",
+   "licence": "CC BY 4.0",
+   "description": "McGrail et al. Genetic association and machine learning improve the prediction of type 1 diabetes risk. Nature Genetics, published 30 April 2026. doi:10.1038/s41588-026-02578-y. Licence: CC BY 4.0. A genome-wide association study of type 1 diabetes. Add the genes the study names at each associated locus.",
+   "file": "41588_2026_2578_MOESM3_ESM.xlsx",
+   "sheets": [
+    {
+     "name": "Table of Contents",
+     "rows": 20,
+     "columns": 2
+    },
+    {
+     "name": "Supplementary Table 1",
+     "rows": 28,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 2",
+     "rows": 104,
+     "columns": 11
+    },
+    {
+     "name": "Supplementary Table 3",
+     "rows": 24099,
+     "columns": 8
+    },
+    {
+     "name": "Supplementary Table 4",
+     "rows": 10,
+     "columns": 4
+    },
+    {
+     "name": "Supplementary Table 5",
+     "rows": 25,
+     "columns": 10
+    },
+    {
+     "name": "Supplementary Table 6",
+     "rows": 401,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 7",
+     "rows": 72,
+     "columns": 8
+    },
+    {
+     "name": "Supplementary Table 8",
+     "rows": 6,
+     "columns": 9
+    },
+    {
+     "name": "Supplementary Table 9",
+     "rows": 19,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 10",
+     "rows": 201,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 11",
+     "rows": 19,
+     "columns": 15
+    },
+    {
+     "name": "Supplementary Table 12",
+     "rows": 14,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 13",
+     "rows": 10818,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 14",
+     "rows": 15,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 15",
+     "rows": 6,
+     "columns": 2
+    },
+    {
+     "name": "Supplementary Table 16",
+     "rows": 798,
+     "columns": 6
+    },
+    {
+     "name": "Supplementary Table 17",
+     "rows": 38,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 18",
+     "rows": 448,
+     "columns": 5
+    },
+    {
+     "name": "Supplementary Table 19",
+     "rows": 57,
+     "columns": 10
+    }
+   ],
+   "check_8": "a row of the table counts when it gives an edge between a target and a trait of the graph, and 80% of each rule's rows must (the second amendment of 4 Nov 2026)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supplementary Table 2",
+      "header_row": 2,
+      "notes": "Lists the T1D risk loci (about 100) with lead variants and stats; the Signal column is named by gene (e.g. PTPRC, RGS1). Supplementary Table 4 covers only novel loci (8 rows), so Table 2 is the per-locus table to add genes to."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "manual_agent",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is one GWAS locus named by a gene symbol in Signal; the study names that gene at the locus, so the gene is linked to type 1 diabetes (MONDO:0005147) as a statistical association. The predicate is the general gene-condition association, since the table gives a locus-level GWAS signal rather than a demonstrated causal role. Lead variant, effect size and p-value are carried as edge properties. Genes resolve to Protein nodes as the graph uses proteins for genes."
+     },
+     "accepted": false,
+     "problems": [
+      "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+     ]
+    },
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:GeneOrGeneProduct",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetic_association",
+      "association_category": "biolink:GeneToDiseaseAssociation",
+      "knowledge_level": "statistical_association",
+      "agent_type": "manual_agent",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is one GWAS locus named by a gene symbol in Signal, linked to type 1 diabetes (MONDO:0005147) as a statistical association. The subject is typed GeneOrGeneProduct, the superclass of Protein, so the Pharos protein nodes that gene_symbol returns are admitted. biolink:gene_associated_with_condition was refused because its domain is Gene, which excludes Protein. genetic_association is the general gene-to-trait predicate, fitting a locus-level GWAS signal rather than a causal role. Lead variant, effect size, standard error, p-value, risk allele and credible set size are carried as edge properties."
+     },
+     "accepted": false,
+     "problems": [
+      "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated",
+      "3_categories: subject category biolink:GeneOrGeneProduct is not a concrete class below biolink:NamedThing",
+      "4_domain_range: biolink:genetic_association's domain is biolink:NamedThing, which does not admit biolink:GeneOrGeneProduct",
+      "8_identifiers: subject: 95 of 95 distinct identifiers are under prefixes ['UniProtKB'] that biolink:GeneOrGeneProduct's id_prefixes do not list"
+     ]
+    },
+    {
+     "model": "Claude Sonnet 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Signal"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "name_column": "Signal"
+      },
+      "object": {
+       "constant": "MONDO:0005147",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Lead Variant",
+       "Beta",
+       "Standard Error",
+       "P-value",
+       "Risk allele",
+       "Credible set size"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "notes": "Each row is a GWAS signal named by its gene (Signal column), which the study names at the associated locus. Gene-to-type 1 diabetes is mapped as a genetic association; the locus-level evidence (lead variant, beta, p-value) is carried as edge properties. Gene symbols such as SEPT2 may be outdated aliases; unresolved ones are dropped by the resolver."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": null,
+   "sheet": "Supplementary Table 2",
+   "header_row": 2,
+   "rows": 102,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0005147",
+     "name": "type 1 diabetes mellitus",
+     "links": 404
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41588-026-02578-y",
+   "mapping": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "Signal"
+     ],
+     "resolver": "gene_symbol",
+     "category": "biolink:Protein",
+     "name_column": "Signal"
+    },
+    "object": {
+     "constant": "MONDO:0005147",
+     "category": "biolink:Disease"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+     "Lead Variant",
+     "Beta",
+     "Standard Error",
+     "P-value",
+     "Risk allele",
+     "Credible set size"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "notes": "Each row is a GWAS signal named by its gene (Signal column), which the study names at the associated locus. Gene-to-type 1 diabetes is mapped as a genetic association; the locus-level evidence (lead variant, beta, p-value) is carried as edge properties. Gene symbols such as SEPT2 may be outdated aliases; unresolved ones are dropped by the resolver."
+   },
+   "join": {
+    "rows": 95,
+    "targets": 95,
+    "traits": [
+     "MONDO:0005147"
+    ],
+    "table_rows_with_no_subject": 7,
+    "their_values": [
+     "14q32",
+     "16q23",
+     "17q24",
+     "2p24",
+     "6q27",
+     "FBXSIK68",
+     "THEM131L"
+    ]
+   },
+   "joined": false,
+   "outcome": "It would join 95 links from 95 graph genes (95 of 102 rows give an edge of the graph). Its 102 rows lie within 80 to 320, half to twice the 160 the abstract reports, so by the stated check it is a table of the study's loci. The comparison with the GWAS Catalog cannot be made. Not joined: it joins only on the person's word.",
+   "check": {
+    "against": "the genes the GWAS Catalog maps by position to the study's associations",
+    "catalog_study": "GCST90824163",
+    "abstract_loci": 160,
+    "rows_band": [
+     80,
+     320
+    ],
+    "a_table_of_the_studys_loci": true,
+    "catalog_associations": 101,
+    "of_them_graph_genes": 0,
+    "table_genes": 95,
+    "shared": 0,
+    "share_of_table_genes_the_catalog_maps": [
+     0.0,
+     0.0,
+     0.0389
+    ],
+    "share_of_catalog_genes_the_table_holds": null,
+    "reading": "not computable: the Catalog maps no graph gene to the study's associations"
+   }
+  },
+  {
+   "id": "D",
+   "study": "D",
+   "rerun": false,
+   "what": "A refractive error study no part of the entry had read, chosen by a fixed rule from the GWAS Catalog, under the new check.",
+   "citation": "Cheng et al., Nature Genetics (2026)",
+   "disease": "refractive error",
+   "licence": "CC BY-NC-ND 4.0",
+   "description": "Cheng et al. Multi-ancestry genome-wide association analyses of refractive error augment genetic discovery and polygenic prediction. Nature Genetics, published 20 April 2026. doi:10.1038/s41588-026-02576-0. Licence: CC BY-NC-ND 4.0. A genome-wide association study of refractive error. Add the genes the study names at each associated locus.",
+   "file": "41588_2026_2576_MOESM4_ESM.xlsx",
+   "sheets": [
+    {
+     "name": "Overview",
+     "rows": 15,
+     "columns": 1
+    },
+    {
+     "name": "Supp Table 1",
+     "rows": 13,
+     "columns": 6
+    },
+    {
+     "name": "Supp Table 2",
+     "rows": 710,
+     "columns": 12
+    },
+    {
+     "name": "Supp Table 3",
+     "rows": 541,
+     "columns": 9
+    },
+    {
+     "name": "Supp Table 4",
+     "rows": 170,
+     "columns": 10
+    },
+    {
+     "name": "Supp Table 5",
+     "rows": 46,
+     "columns": 16
+    },
+    {
+     "name": "Supp Table 6",
+     "rows": 7,
+     "columns": 16
+    },
+    {
+     "name": "Supp Table 7",
+     "rows": 2942,
+     "columns": 20
+    },
+    {
+     "name": "Supp Table 8",
+     "rows": 934,
+     "columns": 8
+    },
+    {
+     "name": "Supp Table 9",
+     "rows": 577,
+     "columns": 9
+    },
+    {
+     "name": "Supp Table 10",
+     "rows": 480,
+     "columns": 22
+    },
+    {
+     "name": "Supp Table 11",
+     "rows": 48,
+     "columns": 10
+    },
+    {
+     "name": "Supp Table 12",
+     "rows": 1336,
+     "columns": 10
+    },
+    {
+     "name": "Supp Table 13",
+     "rows": 2270,
+     "columns": 9
+    },
+    {
+     "name": "Supp Table 14",
+     "rows": 996,
+     "columns": 19
+    }
+   ],
+   "check_8": "a row of the table counts when it gives an edge between a target and a trait of the graph, and 80% of each rule's rows must (the second amendment of 4 Nov 2026)",
+   "stage1": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "sheet": "Supp Table 3",
+      "header_row": 2,
+      "notes": "Locus-level table: one row per significant locus, with HGNC nearest protein-coding gene and the HGNC gene list in each locus. Supp Table 9 is a similar lowercase-header loci table that may be an alternative; not verified."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "stage2": [
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Genes_in_locus_ensembl"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "separator": ";"
+      },
+      "object": {
+       "constant": "MONDO:0004892",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetic_association",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Top_SNP_name",
+       "Pvalue"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is a GWAS locus for refractive error. Each gene named in Genes_in_locus_ensembl (split on ';') becomes its own edge to the trait, so one locus yields several edges. Entries 'NA' and non-coding placeholders are not resolvable and are skipped by the gene resolver. Genes_in_locus_hgnc is empty and is not used. Locus membership is not a claim that a gene is causal; the edge records only that the study names the gene at the locus. HGNC_nearest_gene is not added separately because it is already within the locus gene list."
+     },
+     "accepted": false,
+     "problems": [
+      "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated"
+     ]
+    },
+    {
+     "model": "Claude Haiku 5.5",
+     "attempt": 2,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "Genes_in_locus_ensembl"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein",
+       "separator": ";"
+      },
+      "object": {
+       "constant": "MONDO:0004892",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:gene_associated_with_condition",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Top_SNP_name",
+       "Pvalue"
+      ],
+      "keep_if": null,
+      "split_by": null,
+      "by_value": {},
+      "notes": "Each row is a GWAS locus for refractive error. Each gene named in Genes_in_locus_ensembl (split on ';') becomes its own edge to the trait, so one locus yields several edges. Entries 'NA' and non-coding placeholders are not resolvable and are skipped by the gene resolver. Genes_in_locus_hgnc is empty and is not used. Locus membership is not a claim that a gene is causal; the edge records only that the study names the gene at the locus. HGNC_nearest_gene is not added separately because it is already within the locus gene list."
+     },
+     "accepted": false,
+     "problems": [
+      "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+     ]
+    },
+    {
+     "model": "Claude Sonnet 5.5",
+     "attempt": 1,
+     "proposal": {
+      "map": true,
+      "subject": {
+       "columns": [
+        "HGNC_nearest_gene_snpsnap_protein_coding"
+       ],
+       "resolver": "gene_symbol",
+       "category": "biolink:Protein"
+      },
+      "object": {
+       "constant": "MONDO:0004892",
+       "category": "biolink:Disease"
+      },
+      "predicate": "biolink:genetically_associated_with",
+      "association_category": "biolink:Association",
+      "knowledge_level": "statistical_association",
+      "agent_type": "data_analysis_pipeline",
+      "qualifiers": {},
+      "edge_properties": [
+       "Top_SNP_name",
+       "Pvalue"
+      ],
+      "keep_if": {
+       "column": "HGNC_nearest_gene_snpsnap_protein_coding",
+       "matches": "^(?!NA$).+",
+       "reason": "No protein-coding nearest gene was named for this locus (value NA), so no gene is asserted."
+      },
+      "split_by": null,
+      "notes": "I mapped the nearest protein-coding gene to each locus lead SNP, one gene per row. I did not use Genes_in_locus_ensembl: it is a long list padded with NA, pseudogenes and RNA genes, and those genes are not individually named by the study. The edge keeps the lead SNP and its p-value as properties. The gene-locus link is positional, so the claim is a GWAS statistical association."
+     },
+     "accepted": true,
+     "problems": []
+    }
+   ],
+   "back_to_the_sheet": null,
+   "sheet": "Supp Table 3",
+   "header_row": 2,
+   "rows": 539,
+   "traits_on_the_card": [
+    {
+     "id": "MONDO:0004892",
+     "name": "refractive error",
+     "links": 625
+    }
+   ],
+   "knowledge_source": "infores:doi-10-1038-s41588-026-02576-0",
+   "mapping": {
+    "map": true,
+    "subject": {
+     "columns": [
+      "HGNC_nearest_gene_snpsnap_protein_coding"
+     ],
+     "resolver": "gene_symbol",
+     "category": "biolink:Protein"
+    },
+    "object": {
+     "constant": "MONDO:0004892",
+     "category": "biolink:Disease"
+    },
+    "predicate": "biolink:genetically_associated_with",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+     "Top_SNP_name",
+     "Pvalue"
+    ],
+    "keep_if": {
+     "column": "HGNC_nearest_gene_snpsnap_protein_coding",
+     "matches": "^(?!NA$).+",
+     "reason": "No protein-coding nearest gene was named for this locus (value NA), so no gene is asserted."
+    },
+    "split_by": null,
+    "notes": "I mapped the nearest protein-coding gene to each locus lead SNP, one gene per row. I did not use Genes_in_locus_ensembl: it is a long list padded with NA, pseudogenes and RNA genes, and those genes are not individually named by the study. The edge keeps the lead SNP and its p-value as properties. The gene-locus link is positional, so the claim is a GWAS statistical association."
+   },
+   "join": {
+    "rows": 500,
+    "targets": 500,
+    "traits": [
+     "MONDO:0004892"
+    ],
+    "table_rows_with_no_subject": 31,
+    "their_values": [
+     "C10orf11",
+     "C14orf23",
+     "C1orf143",
+     "CCDC101",
+     "CPSF3L",
+     "FAM101A",
+     "FAM134B",
+     "FAM46A",
+     "GLTSCR1L",
+     "GYLTL1B",
+     "KIAA1462",
+     "KIAA1919",
+     "KIRREL",
+     "LPHN3",
+     "NA",
+     "PPAP2C",
+     "TSSC1"
+    ]
+   },
+   "joined": false,
+   "outcome": "It would join 500 links from 500 graph genes (508 of 539 rows give an edge of the graph). Its 539 rows lie within 466 to 1,864, half to twice the 932 the abstract reports, so by the stated check it is a table of the study's loci. Against the genes the GWAS Catalog maps to the study's variants by position, the reading is disagree. The table gives one gene per locus and the Catalog maps each of its 932 associations, so the table could hold at most 68% of the Catalog's 737 graph genes; it holds 44%. Not joined: it joins only on the person's word.",
+   "check": {
+    "against": "the genes the GWAS Catalog maps by position to the study's associations",
+    "catalog_study": "GCST90841196",
+    "abstract_loci": 932,
+    "rows_band": [
+     466,
+     1864
+    ],
+    "a_table_of_the_studys_loci": true,
+    "catalog_associations": 932,
+    "of_them_graph_genes": 737,
+    "table_genes": 500,
+    "shared": 327,
+    "share_of_table_genes_the_catalog_maps": [
+     0.654,
+     0.6113,
+     0.6944
+    ],
+    "share_of_catalog_genes_the_table_holds": [
+     0.4437,
+     0.4082,
+     0.4798
+    ],
+    "reading": "disagree"
+   }
+  }
+ ]
+}

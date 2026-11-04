@@ -5,7 +5,7 @@
 #
 # From the repository root, with the archive at data/release/ (python -m pharos_gap_kg.release get pharos319):
 #   docker build -t pharos-gap-kg .
-#   docker run --rm -p 8080:8080 pharos-gap-kg                              # /mcp and /health, any Host
+#   docker run --rm -p 8080:8080 pharos-gap-kg                              # the pages at /, /mcp and /health, any Host
 #   docker run --rm -p 8080:8080 pharos-gap-kg --public-host kg.example.org # only that Host
 # For an x86-64 host, build with: docker buildx build --platform linux/amd64 -t pharos-gap-kg .
 

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pharos gap graph</title>
+<meta name="description" content="What is known and what is missing for a human gene or a disease, from NIH Pharos and dated GWAS links. Every answer names its sources and limits.">
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">Pharos gap graph <span>· release 3.19</span></a>
+    <nav aria-label="Pages">
+      <a href="/" aria-current="page">Ask</a>
+      <a href="/add">Adding a table</a>
+      <a href="https://github.com/iandriver/pharos-gap-kg">Code and method</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>What is known about a gene or a disease, and what is missing</h1>
+    <p class="lede">Look up a disease, a human gene or a drug. The answers come from NIH Pharos 3.19: GWAS links between genes and traits, each dated by its first study (2005 to 2023), and what nine disease sources, drug indications and expression studies say. Each answer names its sources and its limits. No language model writes or checks them.</p>
+  </section>
+
+  <section class="card" aria-labelledby="ask-h">
+    <form id="ask" role="search">
+      <label class="big" id="ask-h" for="q">A disease, a gene or a drug</label>
+      <div class="row">
+        <input id="q" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="for example Parkinson disease, TREM2 or metformin" required maxlength="120">
+        <button type="submit">Look up</button>
+      </div>
+      <div class="chips" id="examples">Try:
+        <button type="button" class="chip" data-q="Parkinson disease">Parkinson disease</button>
+        <button type="button" class="chip" data-q="Alzheimer disease">Alzheimer disease</button>
+        <button type="button" class="chip" data-q="TREM2">TREM2</button>
+        <button type="button" class="chip" data-q="type 2 diabetes mellitus">type 2 diabetes</button>
+        <button type="button" class="chip" data-q="metformin">metformin</button>
+      </div>
+    </form>
+    <div id="matches" aria-live="polite"></div>
+  </section>
+
+  <section class="card" id="node" hidden aria-live="polite">
+    <div class="node-head">
+      <h2 id="node-name"></h2>
+      <span class="meta" id="node-meta"></span>
+    </div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Questions"></div>
+    <div id="answer" class="answer"></div>
+  </section>
+
+  <section class="card" aria-labelledby="why-h">
+    <h2 id="why-h">Is a gene linked to a disease, and on what evidence?</h2>
+    <p class="small">With no link, the answer says what nearby evidence exists, where the gene ranks among the disease's candidates, and what size of study an absent link calls for.</p>
+    <form id="why">
+      <div class="row">
+        <input id="why-target" type="text" autocomplete="off" spellcheck="false" placeholder="gene, for example TREM2" required maxlength="80" aria-label="Gene">
+        <input id="why-trait" type="text" autocomplete="off" spellcheck="false" placeholder="disease, for example Alzheimer disease" required maxlength="120" aria-label="Disease or trait">
+        <button type="submit">Ask why</button>
+      </div>
+    </form>
+    <div id="why-answer" class="answer" aria-live="polite"></div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>How to read an answer</h2>
+      <p class="small">A GWAS link places an associated variant at a gene. It does not say the gene causes the disease. "No link" means no study in the source had reported one by that year; it is not evidence of no association, and the answer gives the size of effect the largest study could have seen. A gap is evidence the graph does not hold, with what would close it and how often such gaps have closed since.</p>
+    </div>
+    <div class="card">
+      <h2>Ask from Claude or another assistant</h2>
+      <p class="small">The same questions are served over MCP at <code id="mcp-url">/mcp</code>. In Claude, add that address as a custom connector (Settings, Connectors) and ask, for example, "Using pharos-gap-kg, what are the gaps for Parkinson disease?". Every answer on this page is also at <code>/api/&lt;question&gt;</code> as JSON.</p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="what-h">
+    <h2 id="what-h">What this graph is</h2>
+    <div class="status" id="status"><p class="loading">Loading…</p></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Built from the NIH Pharos 3.19 database (Illuminating the Druggable Genome), the GWAS Catalog by way of TIGA, and the disease, drug and expression sources Pharos carries. Code and method: <a href="https://github.com/iandriver/pharos-gap-kg">github.com/iandriver/pharos-gap-kg</a> (Apache-2.0). This page is read-only and loads nothing from another site.</p>
+  </div>
+</footer>
+</body>
+</html>
