@@ -69,8 +69,19 @@ STUDIES["C"] = {"key": "mcgrail2026_t1d_supp", "short": "McGrail et al., Nature 
                           "journal": "Nature Genetics", "published": "2026-04-30", "doi": "10.1038/s41588-026-02578-y", "licence": "CC BY 4.0",
                           "what": "A genome-wide association study of type 1 diabetes", "disease": "type 1 diabetes",
                           "add": "Add the genes the study names at each associated locus."}}
-CATALOG_STUDY = {"B": "GCST90308590", "C": "GCST90824163"}   # how the GWAS Catalog release of 5 Oct 2026 curates studies B and C
-ABSTRACT_LOCI = {"B": 78, "C": 160}            # the loci or signals each abstract reports (the amendment of 4 Nov 2026)
+STUDIES["D"] = {"key": "cheng2026_re_supp", "short": "Cheng et al., Nature Genetics (2026)",
+                "about": {"citation": "Cheng et al. Multi-ancestry genome-wide association analyses of refractive error augment genetic discovery and "
+                                      "polygenic prediction", "journal": "Nature Genetics", "published": "2026-04-20", "doi": "10.1038/s41588-026-02576-0",
+                          "licence": "CC BY-NC-ND 4.0", "what": "A genome-wide association study of refractive error", "disease": "refractive error",
+                          "add": "Add the genes the study names at each associated locus."}}
+CATALOG_STUDY = {"B": "GCST90308590", "C": "GCST90824163", "D": "GCST90841196"}   # how the GWAS Catalog release of 5 Oct 2026 curates studies B to D
+ABSTRACT_LOCI = {"B": 78, "C": 160, "D": 932}   # the loci, signals or variants each abstract reports (the amendments of 4 Nov 2026)
+
+# Check 8's first figure. A run's record names the one it was made under; a record that names none was made under "resolved".
+CHECK8 = {"resolved": "a row counts when its sides give identifiers of any kind, and 95% of rows must (ingest's check 8)",
+          "graph": "a row of the table counts when it gives an edge between a target and a trait of the graph, and 80% of each rule's rows must "
+                   "(the second amendment of 4 Nov 2026)"}
+RULE, BAR = "graph", 0.80
 
 BRIEF1 = """A scientist gives you a file from a scientific paper and a description of the paper. You will be shown every sheet of the file: its name, its numbers of rows and columns, and its first rows, numbered as read (empty rows are skipped), with each cell cut to 40 characters.
 
@@ -390,8 +401,28 @@ def transform(p: dict, df: pd.DataFrame, sym: Symbols, refs, ks: str) -> tuple[d
     return p2, rows2
 
 
-def check2(p, df: pd.DataFrame, tr: list[dict], sym: Symbols, refs, ks: str, view: str) -> dict:
-    """The validator's verdict on a mapping: the additions' checks, then `ingest`'s nine on the table as transformed."""
+def graph_rows(G, bar: float = BAR):
+    """Check 8's first figure under the rule "graph": a row of the table counts when one of its edges joins a target and a trait of
+    the graph, or, for a row the condition makes a gap, when its subject is a node of the graph. A row whose cell held several values
+    counts once (the rows `transform` made from one row share its `__row`)."""
+    ti, di = G.ti, G.di
+
+    def first(mine: pd.DataFrame, sub: list, obj: list, kept: list) -> dict:
+        rows = mine["__row"].tolist() if "__row" in mine else list(mine.index)
+        ok: dict = {}
+        for r, a, b, k in zip(rows, sub, obj, kept):
+            hit = ((a in ti and b in di) or (a in di and b in ti)) if k else (a in ti or a in di)
+            ok[r] = ok.get(r, False) or bool(hit)
+        return {"ok": int(sum(ok.values())), "rows": len(ok), "bar": bar,
+                "what": "give an edge between a target and a trait of the graph (a row the condition makes a gap: a subject in the graph)"}
+    return first
+
+
+def check2(p, df: pd.DataFrame, tr: list[dict], sym: Symbols, refs, ks: str, view: str, G=None, rule: str = RULE) -> dict:
+    """The validator's verdict on a mapping: the additions' checks, then `ingest`'s nine on the table as transformed, with check 8's
+    first figure by `rule` (CHECK8; "graph" needs the graph G)."""
+    if rule not in CHECK8:
+        raise ValueError(f"check 8 has no rule {rule!r}")
     if not isinstance(p, dict):
         return {"accepted": False, "problems": ["1_parses: no JSON object"]}
     if p.get("map") is False:
@@ -408,8 +439,8 @@ def check2(p, df: pd.DataFrame, tr: list[dict], sym: Symbols, refs, ks: str, vie
     if problems:
         return {"accepted": False, "problems": problems}
     p2, rows2 = transform(p, df, sym, refs, ks)
-    v = ingest.validate(p2, rows2, refs, export=True, view=view)
-    v["_rows"], v["_p2"] = rows2, p2
+    v = ingest.validate(p2, rows2, refs, export=True, view=view, first=graph_rows(G) if rule == "graph" else None)
+    v["_rows"], v["_p2"], v["check_8"] = rows2, p2, rule
     return v
 
 
@@ -523,7 +554,8 @@ def stage(release: str, study: str, name: str, system: str, user: str, check, re
                    "usd": r.get("usd"), "seconds": r.get("seconds")}
             if old is None:
                 with open(log, "a") as f:
-                    f.write(json.dumps({**rec, "reply": r.get("text"), "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, default=str) + "\n")
+                    f.write(json.dumps({**rec, "reply": r.get("text"), "at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "check_8": RULE},
+                                       default=str) + "\n")
             tries.append(rec)
             if verdict["accepted"]:
                 return {"accepted": True, "model": model, "proposal": p, "verdict": verdict, "tries": tries}
@@ -550,9 +582,9 @@ def run(release: str, study: str, proposals: tuple | None = None, mode: str = "r
     mode: 'run' calls the model and logs each reply; 'replay' checks again the replies a run logged, calling no model;
     'rerun' checks the logged replies again and calls a model only for a step the log does not hold.
     back: whether a mapping that declines sends its reason back to the sheet stage once (the amendment of 4 Nov 2026);
-    by default on for a rerun and for study C, and off for the runs of A and B as they were registered."""
+    by default on for a rerun and for studies C and D, and off for the runs of A and B as they were registered."""
     if back is None:
-        back = mode == "rerun" or study == "C"
+        back = mode == "rerun" or study in ("C", "D")
     s, G, sym, refs, path = _setup(release, study)
     a, key = s["about"], s["key"]
     d = run_dir(release, study if proposals is None else f"{study}_control")
@@ -577,7 +609,7 @@ def run(release: str, study: str, proposals: tuple | None = None, mode: str = "r
         df = check1(s1["proposal"], sheets)[0]               # the frame of the accepted proposal
         c2 = card2(df, s1["proposal"]["sheet"], s1["proposal"]["header_row"], tr)
         ingest.write_json(d / f"card2{'' if name == 'mapping' else '_' + name}.json", c2)
-        chk2 = lambda p: check2(p, df, tr, sym, refs, ks, key)
+        chk2 = lambda p: check2(p, df, tr, sym, refs, ks, key, G)
         if proposals is not None:
             v = chk2(proposals[1])
             s2 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[1], "verdict": v,
@@ -593,11 +625,12 @@ def run(release: str, study: str, proposals: tuple | None = None, mode: str = "r
         s1 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[0], "verdict": v, "tries": [{"stage": "sheet", "model": "hand", **v}]}
     out = {"release": release, "study": study, "key": key, "description": text(a), "file": path.name,
            "file_sha256": registry.SOURCES[key].sha256, "sheets": len(sheets), "stage1": {k: s1[k] for k in ("accepted", "tries")},
-           "mode": mode, "back_to_the_sheet_rule": back}
+           "mode": mode, "back_to_the_sheet_rule": back, "check_8": RULE}
     if mode == "replay":
         out["replayed"] = "the stages were checked again from the replies logged by the run; no model was called"
     if mode == "rerun":
-        out["rerun"] = "a rerun after the registered result, under the amendment of 4 Nov 2026: development, not a test"
+        out["rerun"] = ("a rerun after the registered result, under the amendment" + (" of 4 Nov 2026" if study == "B" else "s of 4 Nov 2026")
+                        + ": development, not a test")
     if not s1["accepted"]:
         return _record(release, study, out, proposals is not None, mode == "rerun")
     df, s2, chk2 = mapping(s1, "mapping", (MODEL, FALLBACK))
@@ -810,11 +843,42 @@ def compare(release: str) -> dict:
                     "only_the_table": sorted(mine - cat), "only_the_catalog": sorted(cat - mine)}
     else:
         out["B"] = {"reading": None, "why": "no accepted mapping"}
-    for name, study, rerun in (("B_rerun", "B", True), ("C", "C", False)):
+    for name, study, rerun in (("B_rerun", "B", True), ("C", "C", False), ("C_rerun", "C", True), ("D", "D", False)):
         p = record_path(release, study, rerun)
         out[name] = positional(release, study, json.loads(p.read_text())) if p.is_file() else {"reading": None, "why": "not run"}
+    out["rechecked"] = recheck(release)
     (paths.DOCS_DATA / f"add_compare_{release}.json").write_text(json.dumps(out, indent=1) + "\n")
     return out
+
+
+def recheck(release: str) -> dict:
+    """Every mapping proposal the runs logged, checked again under each rule of check 8, calling no model (the second amendment of
+    4 Nov 2026): the verdict logged, the verdict under each rule, and the proposals whose verdict the rule changes."""
+    from pharos_gap_kg import ask
+    G = ask.Graph(paths.bundle(release))
+    sym, refs = Symbols(G, release), ingest.Refs(release)
+    rows, changed = [], []
+    for study, s in STUDIES.items():
+        f = run_dir(release, study) / "calls.jsonl"
+        if not f.is_file():
+            continue
+        log = [json.loads(x) for x in f.read_text().splitlines()]
+        sheets = read_sheets(registry.require(s["key"]))
+        a = s["about"]
+        tr, ks = traits(G, a["disease"]), infores(a)
+        chosen = {x["stage"]: x["proposal"] for x in log if x["stage"] in ("sheet", "sheet_again") and x["accepted"]}
+        for x in log:
+            if x["stage"] not in ("mapping", "mapping_again") or x["proposal"] is None:
+                continue
+            df = check1(chosen["sheet" if x["stage"] == "mapping" else "sheet_again"], sheets)[0]
+            by = {r: check2(x["proposal"], df, tr, sym, refs, ks, s["key"], G, r) for r in CHECK8}
+            row = {"study": study, "stage": x["stage"], "model": x["model"], "attempt": x["attempt"], "logged": x["accepted"],
+                   "logged_under": x.get("check_8", "resolved"),
+                   **{r: {"accepted": v["accepted"], "check_8": [p for p in v["problems"] if p.startswith("8_identifiers")]} for r, v in by.items()}}
+            rows.append(row)
+            if by["resolved"]["accepted"] != by["graph"]["accepted"]:
+                changed.append({k: row[k] for k in ("study", "stage", "model", "attempt")} | {"resolved": by["resolved"]["accepted"], "graph": by["graph"]["accepted"]})
+    return {"rules": CHECK8, "proposals": len(rows), "changed": changed, "each": rows}
 
 
 def positional(release: str, study: str, r: dict) -> dict:
@@ -917,8 +981,10 @@ def tool_card(S: Session, file: str, about: dict, sheet: str | None = None, head
             "next": "Write the mapping the brief asks for, then call add_check with stage 'mapping' and the same sheet and header_row."}
 
 
-def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
-    """The validator's verdict on a proposal for one stage, and for an accepted mapping what it would join."""
+def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, sheet: str | None = None, header_row: int | None = None,
+               rule: str = RULE) -> dict:
+    """The validator's verdict on a proposal for one stage, and for an accepted mapping what it would join. rule: check 8's first
+    figure (CHECK8); the served tool always uses the current one."""
     bad = _about_problems(about)
     if bad:
         return {"accepted": False, "problems": bad}
@@ -929,7 +995,7 @@ def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, s
     df, problems = check1({"sheet": sheet, "header_row": header_row}, sheets)
     if problems:
         return {"accepted": False, "problems": problems}
-    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), "added")
+    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), "added", S.G, rule)
     out = {"accepted": v["accepted"], "problems": v["problems"], "checked_against": S.lists}
     if v["accepted"] and v.get("map") is not False:
         J = joinable(v, S.G, S.sym, about, "added")
@@ -947,7 +1013,7 @@ def tool_join(S: Session, file: str, about: dict, sheet: str, header_row: int, p
     if problems:
         return {"joined": False, "problems": problems}
     key = re.sub(r"[^a-z0-9]+", "_", about["doi"].casefold()).strip("_")
-    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), key)
+    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), key, S.G)
     if not v["accepted"] or v.get("map") is False:
         return {"joined": False, "problems": v["problems"] or ["the mapping makes no edges"]}
     J = joinable(v, S.G, S.sym, about, key)
@@ -1015,6 +1081,13 @@ def _selftest() -> int:
     ck("a separated cell becomes one row per graph gene, a row with none stays once, and the constant fills the object",
        [x if isinstance(x, str) else None for x in r2["__subject"]] == ["UniProtKB:P1", "UniProtKB:P2", "UniProtKB:P3", None, "UniProtKB:P1"] and set(r2["__object"]) == {"MONDO:1"}
        and r2["__row"].tolist() == [0, 0, 0, 1, 2] and p2["subject"]["resolver"] == "curie" and p2["primary_knowledge_source"] == "infores:x")
+    class FG:
+        ti, di = {"UniProtKB:P1": 0, "UniProtKB:P2": 1}, {"MONDO:1": 0}
+    f = graph_rows(FG)(r2, list(r2["__subject"]), list(r2["__object"]), [True] * len(r2))
+    loose = graph_rows(FG)(r2, ["pharosgapkg:gene_ab12"] * len(r2), list(r2["__object"]), [True] * len(r2))
+    ck("check 8 under 'graph' counts a table row once when one of its edges joins a graph target and a graph trait, and an ungrounded node never",
+       (f["ok"], f["rows"]) == (2, 3) and (loose["ok"], loose["rows"]) == (0, 3)
+       and graph_rows(FG)(r2.iloc[:1], ["UniProtKB:P1"], [None], [False])["ok"] == 1 and set(CHECK8) == {"resolved", "graph"} and RULE == "graph")
     ck("an object constant must be a trait on the card, and only the object takes one",
        side_problems("object", {"constant": "MONDO:9", "category": "biolink:Disease"}, set(), {"MONDO:1"})[0].startswith("1_parses: the constant")
        and side_problems("subject", {"constant": "MONDO:1", "category": "biolink:Disease"}, set(), {"MONDO:1"}) != []

@@ -623,7 +623,11 @@ def check_ids(sides: dict) -> list[str]:
     bad = []
     rows = sides["subject"]["rows"]
     both = sides["_both"]
-    if rows and both / rows < 0.95:
+    f = sides.get("_first")
+    if f is not None:                      # a caller's own first figure (add: rows that give an edge of the graph)
+        if f["rows"] and f["ok"] / f["rows"] < f["bar"]:
+            bad.append(f"{f['ok']:,} of {f['rows']:,} rows of the table ({f['ok'] / f['rows']:.1%}) {f['what']}; at least {f['bar']:.0%} must")
+    elif rows and both / rows < 0.95:
         bad.append(f"{both:,} of {rows:,} rows ({both / rows:.1%}) resolve as they must (both sides, or the subject of a row "
                    f"the condition makes a gap); at least 95% must")
     for side in ("subject", "object"):
@@ -637,8 +641,10 @@ def check_ids(sides: dict) -> list[str]:
     return bad
 
 
-def validate(proposal: dict, rows: pd.DataFrame, refs: Refs, export: bool = True, view: str = "view") -> dict:
-    """All nine checks. {"accepted", "problems": [..], "rules": [...], "export": {...}}."""
+def validate(proposal: dict, rows: pd.DataFrame, refs: Refs, export: bool = True, view: str = "view", first=None) -> dict:
+    """All nine checks. {"accepted", "problems": [..], "rules": [...], "export": {...}}.
+    first: None, or a function (rows of a rule, subject ids, object ids, kept) -> {"ok", "rows", "bar", "what"} that gives
+    check 8's first figure in place of the share of rows whose sides resolve (`add`, the second amendment of 4 Nov 2026)."""
     cols = set(rows.columns)
     if not isinstance(proposal, dict):
         return {"accepted": False, "problems": ["1_parses: no JSON object"], "rules": []}
@@ -675,6 +681,8 @@ def validate(proposal: dict, rows: pd.DataFrame, refs: Refs, export: bool = True
                 sides[side] = {**identifiers(judged, r[side]["category"], refs), "category": r[side]["category"]}
                 sides[side + "_ids"], sides[side + "_grounded"] = ids, grounded
             sides["_both"] = sum(bool(a and (b or not ok)) for a, b, ok in zip(sides["subject_ids"], sides["object_ids"], kept))
+            if first is not None:
+                sides["_first"] = res["first_figure"] = first(mine, sides["subject_ids"], sides["object_ids"], kept)
             res["checks"]["8_identifiers"] = check_ids(sides)
             res["identifiers"] = {s: {k2: v for k2, v in sides[s].items()} for s in ("subject", "object")}
             res["resolved_as_needed"], res["kept"], res["made_gaps_by_condition"] = sides["_both"], sum(kept), len(kept) - sum(kept)

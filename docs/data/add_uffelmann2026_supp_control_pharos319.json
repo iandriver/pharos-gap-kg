@@ -17,6 +17,20 @@
    }
   ]
  },
+ "mode": "run",
+ "back_to_the_sheet_rule": false,
+ "check_8": "graph",
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "hand",
+    "accepted": true,
+    "problems": []
+   }
+  ]
+ },
  "sheet": "SD2",
  "header_row": 2,
  "rows": 127,
@@ -37,17 +51,6 @@
    "links": 21
   }
  ],
- "stage2": {
-  "accepted": true,
-  "tries": [
-   {
-    "stage": "mapping",
-    "model": "hand",
-    "accepted": true,
-    "problems": []
-   }
-  ]
- },
  "knowledge_source": "infores:doi-10-1038-s41586-026-11206-y",
  "mapping": {
   "map": true,
@@ -100,6 +103,12 @@
      "6_qualifiers": [],
      "7_provenance": [],
      "8_identifiers": []
+    },
+    "first_figure": {
+     "ok": 122,
+     "rows": 127,
+     "bar": 0.8,
+     "what": "give an edge between a target and a trait of the graph (a row the condition makes a gap: a subject in the graph)"
     },
     "identifiers": {
      "subject": {
@@ -171,8 +180,9 @@
    "KIAA0125/IGH gene cluster",
    "MS4A gene cluster"
   ],
+  "file": "join.parquet",
   "file_sha256": "e87b4b8f334a7265249b415592ad894672f73c5e5d13af17667aa244ed6720e9"
  },
- "spent_usd": 0.0,
+ "spent_usd": 0.1387,
  "equals_later_py": true
 }
