@@ -2277,3 +2277,38 @@ alone.
   with punctuation as hyphens. The infores registry has no entry for a single paper.
 - *The control.* The hand mapping of A is accepted on all nine checks, and its join holds the same 181
   pairs as `later.py`'s table (`docs/data/add_uffelmann2026_supp_control_pharos319.json`).
+
+**4 Nov 2026, "Adding a table", after its result, on Ian's word: a way back to the sheet, a rerun of
+study B, and a third study.** Written before any model read the third study's file and before the
+rerun.
+
+- *The rule.* When the mapping stage's accepted proposal is that the table should not become edges,
+  its reason goes back to the sheet stage once. The model that chose the sheet sees its first card
+  again with that reason and proposes a sheet again, under the stage's rule. If it names another
+  sheet, the mapping stage runs on that sheet under its own rule; if it names the same sheet, or the
+  new sheet's mapping is again that no edges should be made, the stages stop and nothing joins.
+- *Study B again.* Study B is run again under this rule and reported as a rerun after its result,
+  development and not a test. Its registered result stands. The proposals the first run logged are
+  checked again from the log, and a model is called only for the steps the rule adds.
+- *The Catalog's genes.* The GWAS Catalog release of 5 Oct 2026 gives a reported gene for no
+  association published from 2022 on (0 of 127,671 associations of 2023, for example), so the check
+  the entry named cannot be made for any study after the graph. In its place, the joined table's
+  genes are compared with the genes the Catalog maps to each association's lead variant by position
+  (`MAPPED_GENE`), matched to graph genes by the symbol rule, with the same shares, intervals and
+  readings. This says how far the joined genes are those lying at the lead variants. It does not say
+  what the paper named.
+- *Study C*, unseen: McGrail et al., Nature Genetics, published 30 April 2026
+  (doi:10.1038/s41588-026-02578-y), licensed CC BY 4.0. Its Supplementary Tables
+  (`41588_2026_2578_MOESM3_ESM.xlsx`, 3,038,671 bytes, SHA-256 fe71c781...) are registered unopened
+  as `mcgrail2026_t1d_supp`. Looked at first: the article page (title, abstract, date, licence, the
+  list of supplementary files), and the number of associations the Catalog curates for the study
+  (101, as GCST90824163), not their genes. `find` gives the trait type 1 diabetes mellitus
+  (MONDO:0005147) for the disease in words. Its description: "McGrail et al. Genetic association and
+  machine learning improve the prediction of type 1 diabetes risk. Nature Genetics, published 30 April
+  2026. doi:10.1038/s41588-026-02578-y. Licence: CC BY 4.0. A genome-wide association study of type 1
+  diabetes. Add the genes the study names at each associated locus." It runs under the stages with
+  the rule above, once.
+- *A check from the abstract, for B and C.* The abstract gives the number of loci or signals: 78 for
+  B and 160 for C. The sheet the stages end on is *a table of the study's loci* if its rows number
+  between half and twice that (39 to 156 for B, 80 to 320 for C).
+- *The join.* An accepted mapping of C is shown to Ian field by field, and joins only on his word.
