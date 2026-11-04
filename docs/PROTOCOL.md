@@ -2312,3 +2312,55 @@ rerun.
   B and 160 for C. The sheet the stages end on is *a table of the study's loci* if its rows number
   between half and twice that (39 to 156 for B, 80 to 320 for C).
 - *The join.* An accepted mapping of C is shown to Ian field by field, and joins only on his word.
+
+**4 Nov 2026, second, "Adding a table", after the results of the first amendment of 4 Nov, on Ian's word ("go ahead with
+both"): check 8 for an added table, study C again, and a fourth study.** Written before the code for the new check, before
+the control ran under it, before study C's logged replies were checked again, and before any model read the fourth study's
+file.
+
+- *Check 8 for an added table.* Its first figure counted a row as resolved when its sides gave an identifier of any kind,
+  and 95% of the rows had to. The results of the first amendment showed two things it misses. The resolver `name:KIND`
+  gives an identifier for any text, as `prefix:P` does under a prefix the validator holds no list for, so a mapping that
+  names no gene of the graph meets the figure: study C's second mapping did, with 102 ungrounded local nodes, and joins
+  nothing. And the bar refused the two mappings that read the gene column by symbol, at 92.1% (study B's rerun, 279 of 303
+  rows) and 93.1% (study C, 95 of 102). The rows that give no graph gene there are loci named by an RNA gene, a gene
+  cluster or a symbol the graph does not hold, since the graph's genes are Pharos targets. Changed, in the stages and tools
+  of adding a table only (`ingest`'s own check 8 is unchanged):
+  - a row of the table counts when it gives an edge between a target of the graph and a trait of the graph, or, for a row
+    the condition makes a gap, when its subject is a node of the graph. A row whose cell holds several values counts once,
+    when one of them does;
+  - at least 80% of the rows of each rule must count. 80% is the share the entry already reads as agreement with the
+    Catalog. A wrong column, or a resolver that names nothing in the graph, gives a share near nought (C's second mapping:
+    0 of 102). The three mappings so far that read the gene column gave 96.1% (A), 92.1% and 93.1%, so any bar from just
+    above nought to 92% accepts them, and no bar was tried on another table;
+  - the refusal names the new figure. The figures for prefixes and vocabularies are unchanged, and the rows that count for
+    nothing are listed for the person at the join, as before.
+- *The record.* The runs' records stay as they were made. Each record says which check 8 it was made under; one that does
+  not say was made under the first. Every proposal the runs logged is checked again under the new check, calling no model,
+  and each verdict that changes is listed in `docs/data/add_compare_pharos319.json`.
+- *The control* runs again under the new check, and its record is written again, before any model reads the fourth
+  study's card. The hand mapping of A must be accepted and its join must equal `later.py`'s 181 pairs.
+- *Study C again*, as development after its result: its logged replies are checked again under the new check, and a model
+  is called only for a step the log does not hold. Its registered result stands. The rerun is compared as C was, and it
+  is not joined.
+- *Study D*, unseen, chosen by `add candidates` (0e8abc2): the studies of the Catalog release of 5 Oct 2026 published from
+  1 January 2026 in Nature Genetics, Nature Communications or Nature, whose one mapped trait is a disease-like trait of the
+  graph other than those `find` gives for the diseases of A to C, with at least 50 associations and at least 90% of them
+  with a positional gene, ranked by their number of associations. D is the first whose article is open and whose
+  supplementary tables are one spreadsheet file under 100 MB. The first ranked, GCST90841196 with 932 associations, is
+  Cheng et al., Nature Genetics, published 20 April 2026 (doi:10.1038/s41588-026-02576-0), licensed CC BY-NC-ND 4.0. Its
+  Supplementary Tables 1 to 14 (`41588_2026_2576_MOESM4_ESM.xlsx`, 2,175,048 bytes, SHA-256 a51e688c...) are registered
+  unopened as `cheng2026_re_supp`. As with study A's file, the file stays with the raw files, a table made from it stays in
+  `data/later/`, and neither is committed, put in the release archive or put in the image. Looked at first: its PubMed
+  record (title, abstract, date), its article page (date, licence, the list of supplementary files), and from the Catalog
+  its number of associations and the share of them with a positional gene, not the genes. `find` gives the traits
+  refractive error (MONDO:0004892) and Refractive Errors (UMLS:C0034951) for the disease in words. Its description:
+  "Cheng et al. Multi-ancestry genome-wide association analyses of refractive error augment genetic discovery and
+  polygenic prediction. Nature Genetics, published 20 April 2026. doi:10.1038/s41588-026-02576-0. Licence: CC BY-NC-ND
+  4.0. A genome-wide association study of refractive error. Add the genes the study names at each associated locus." It
+  runs once, under the stages with the rule of the first amendment of 4 Nov and the new check 8.
+- *Checks for D, stated before the result.* The abstract reports 932 associated variants, so the sheet the stages end on
+  is a table of the study's loci if its rows number between 466 and 1,864. The joined genes are compared with the genes
+  the Catalog maps by position to GCST90841196's associations, with the shares, intervals and readings of the first
+  amendment of 4 Nov.
+- *The join.* An accepted mapping of D is shown to Ian field by field, and it joins only on his word.
