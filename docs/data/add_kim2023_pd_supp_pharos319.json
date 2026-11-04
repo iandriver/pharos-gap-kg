@@ -25,16 +25,9 @@
    }
   ]
  },
- "sheet": "Supplementary Table 5 - Genomic",
- "header_row": 2,
- "rows": 260,
- "traits_on_the_card": [
-  {
-   "id": "MONDO:0005180",
-   "name": "Parkinson disease",
-   "links": 260
-  }
- ],
+ "mode": "replay",
+ "back_to_the_sheet_rule": false,
+ "replayed": "the stages were checked again from the replies logged by the run; no model was called",
  "stage2": {
   "accepted": true,
   "tries": [
@@ -53,8 +46,17 @@
    }
   ]
  },
+ "sheet": "Supplementary Table 5 - Genomic",
+ "header_row": 2,
+ "rows": 260,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0005180",
+   "name": "Parkinson disease",
+   "links": 260
+  }
+ ],
  "knowledge_source": "infores:doi-10-1038-s41588-023-01584-8",
- "replayed": "the stages were checked again from the replies logged by the run; no model was called",
  "mapping": {
   "map": false,
   "reason": "The table has no gene column. Its columns are Locus number, rsID, chromosome, and locus start and end coordinates, so it names no genes. The description asks for the genes the study names at each locus, but the only route to a gene would be mapping coordinates to genes, which no resolver does. Edges built on rsIDs would need variant nodes that the Pharos graph does not contain. The table also contains a header-repeat row (Locus = 'CHR', rsID = 'chromosome number') that would need removal in any case."

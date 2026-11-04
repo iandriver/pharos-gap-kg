@@ -107,6 +107,12 @@ _S += [
            1_373_316, "2024-01-18", "Supplementary Tables of Kim et al., Nature Genetics 2023 (doi:10.1038/s41588-023-01584-8), a multi-ancestry Parkinson disease GWAS, CC BY 4.0",
            sha256="5fab8e371bca73367f6cbfb850f310ae812639a4a618ffac6921d832871ea18b", file="41588_2023_1584_MOESM4_ESM.xlsx",
            command="python -I -m pharos_gap_kg.add fetch kim2023_pd_supp"),
+    # The third study of "Adding a table" (the amendment of 4 Nov 2026): McGrail et al., Nature Genetics 2026, a type 1 diabetes GWAS,
+    # CC BY 4.0, registered unopened.
+    Source("mcgrail2026_t1d_supp", "https://static-content.springer.com/esm/art%3A10.1038%2Fs41588-026-02578-y/MediaObjects/41588_2026_2578_MOESM3_ESM.xlsx",
+           3_038_671, "2026-04-23", "Supplementary Tables 1-19 of McGrail et al., Nature Genetics 2026 (doi:10.1038/s41588-026-02578-y), a type 1 diabetes GWAS, CC BY 4.0",
+           sha256="fe71c781c61acece33d7d9689ea80854855c716dda8586d644a9f6da104c4fcf", file="41588_2026_2578_MOESM3_ESM.xlsx",
+           command="python -I -m pharos_gap_kg.add fetch mcgrail2026_t1d_supp"),
 ]
 SOURCES: dict[str, Source] = {s.key: s for s in _S}
 

@@ -13,6 +13,8 @@ Run:  python -I -m pharos_gap_kg.add fetch kim2023_pd_supp            # the regi
       python -I -m pharos_gap_kg.add control pharos319                # the hand mapping of study A through the same checks
       python -I -m pharos_gap_kg.add run pharos319 A                  # both stages with the model (needs OPENROUTER_API_KEY)
       python -I -m pharos_gap_kg.add replay pharos319 B               # check a run's logged replies again, calling no model
+      python -I -m pharos_gap_kg.add rerun pharos319 B                # the logged replies again, and the model for a step the log lacks
+      python -I -m pharos_gap_kg.add show pharos319 B --rerun         # a rerun's mapping (join takes --rerun too)
       python -I -m pharos_gap_kg.add show pharos319 B                 # the accepted mapping, field by field, for the person
       python -I -m pharos_gap_kg.add join pharos319 B                 # the person's join
       python -I -m pharos_gap_kg.add compare pharos319                # A against later.py's table, B against the GWAS Catalog
@@ -62,7 +64,13 @@ STUDIES = {
                     "what": "A genome-wide association study of Parkinson's disease", "disease": "Parkinson's disease",
                     "add": "Add the genes the study names at each associated locus."}},
 }
-CATALOG_STUDY = {"B": "GCST90308590"}          # how the GWAS Catalog release of 5 Oct 2026 curates study B
+STUDIES["C"] = {"key": "mcgrail2026_t1d_supp", "short": "McGrail et al., Nature Genetics (2026)",
+                "about": {"citation": "McGrail et al. Genetic association and machine learning improve the prediction of type 1 diabetes risk",
+                          "journal": "Nature Genetics", "published": "2026-04-30", "doi": "10.1038/s41588-026-02578-y", "licence": "CC BY 4.0",
+                          "what": "A genome-wide association study of type 1 diabetes", "disease": "type 1 diabetes",
+                          "add": "Add the genes the study names at each associated locus."}}
+CATALOG_STUDY = {"B": "GCST90308590", "C": "GCST90824163"}   # how the GWAS Catalog release of 5 Oct 2026 curates studies B and C
+ABSTRACT_LOCI = {"B": 78, "C": 160}            # the loci or signals each abstract reports (the amendment of 4 Nov 2026)
 
 BRIEF1 = """A scientist gives you a file from a scientific paper and a description of the paper. You will be shown every sheet of the file: its name, its numbers of rows and columns, and its first rows, numbered as read (empty rows are skipped), with each cell cut to 40 characters.
 
@@ -488,19 +496,21 @@ def _public(v: dict) -> dict:
     return {k: x for k, x in v.items() if not k.startswith("_")}
 
 
-def stage(release: str, study: str, name: str, system: str, user: str, check, replay: list | None = None) -> dict:
+def stage(release: str, study: str, name: str, system: str, user: str, check, replay: list | None = None, mode: str = "run",
+          models: tuple = (MODEL, FALLBACK)) -> dict:
     """One stage: the model, one return of a refused proposal, then the fallback model from the start under the same rule.
-    replay: the logged replies of an earlier run, checked again in place of calling a model."""
+    replay: the logged replies of an earlier run, checked again in place of calling a model; in mode 'rerun' a step the log
+    does not hold calls the model and is logged."""
     log = run_dir(release, study) / "calls.jsonl"
     tries = []
-    for model in (MODEL, FALLBACK):
+    for model in models:
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         for attempt in (1, 2):
-            if replay is not None:
-                old = next((x for x in replay if (x["stage"], x["model"], x["attempt"]) == (name, model, attempt)), None)
-                if old is None:
-                    return {"accepted": False, "tries": tries, "replay": "no logged reply for the next call"}
+            old = next((x for x in replay if (x["stage"], x["model"], x["attempt"]) == (name, model, attempt)), None) if replay is not None else None
+            if old is not None:
                 r = {"text": old["reply"], "usd": old["usd"], "seconds": old["seconds"]} if old.get("reply") is not None else {"error": old["problems"][0]}
+            elif replay is not None and mode != "rerun":
+                return {"accepted": False, "tries": tries, "replay": "no logged reply for the next call"}
             else:
                 r = call(release, model, msgs, f"{study}:{name}:{model}:{attempt}")
             if "error" in r:
@@ -511,7 +521,7 @@ def stage(release: str, study: str, name: str, system: str, user: str, check, re
                 verdict = check(p)
             rec = {"stage": name, "model": model, "attempt": attempt, "proposal": p, "accepted": verdict["accepted"], "problems": verdict["problems"],
                    "usd": r.get("usd"), "seconds": r.get("seconds")}
-            if replay is None:
+            if old is None:
                 with open(log, "a") as f:
                     f.write(json.dumps({**rec, "reply": r.get("text"), "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, default=str) + "\n")
             tries.append(rec)
@@ -531,13 +541,18 @@ def _setup(release: str, study: str):
     return s, G, Symbols(G, release), ingest.Refs(release), registry.require(s["key"])
 
 
-def record_path(release: str, study: str) -> Path:
-    return paths.DOCS_DATA / f"add_{STUDIES[study]['key']}_{release}.json"
+def record_path(release: str, study: str, rerun: bool = False) -> Path:
+    return paths.DOCS_DATA / f"add_{STUDIES[study]['key']}{'_rerun' if rerun else ''}_{release}.json"
 
 
-def run(release: str, study: str, proposals: tuple | None = None, replay: bool = False) -> dict:
+def run(release: str, study: str, proposals: tuple | None = None, mode: str = "run", back: bool | None = None) -> dict:
     """Both stages for a registered study. proposals: (sheet proposal, mapping proposal) to check without a model (the control).
-    replay: check again the replies an earlier run logged, calling no model."""
+    mode: 'run' calls the model and logs each reply; 'replay' checks again the replies a run logged, calling no model;
+    'rerun' checks the logged replies again and calls a model only for a step the log does not hold.
+    back: whether a mapping that declines sends its reason back to the sheet stage once (the amendment of 4 Nov 2026);
+    by default on for a rerun and for study C, and off for the runs of A and B as they were registered."""
+    if back is None:
+        back = mode == "rerun" or study == "C"
     s, G, sym, refs, path = _setup(release, study)
     a, key = s["about"], s["key"]
     d = run_dir(release, study if proposals is None else f"{study}_control")
@@ -546,47 +561,64 @@ def run(release: str, study: str, proposals: tuple | None = None, replay: bool =
     c1 = card1(sheets)
     ingest.write_json(d / "card1.json", c1)
     user1 = f"DESCRIPTION\n{text(a)}\n\n" + json.dumps(c1, indent=1, ensure_ascii=False)
-    holder = {}
+    logged = None
+    if mode in ("replay", "rerun"):
+        f = d / "calls.jsonl"
+        logged = [json.loads(x) for x in f.read_text().splitlines()] if f.is_file() else []
+        if mode == "replay" and not logged:
+            raise SystemExit(f"REFUSED: no logged replies in {d}")
+    tr, ks = traits(G, a["disease"]), infores(a)
 
     def chk1(p):
-        df, problems = check1(p, sheets)
-        holder["df"] = df
+        _, problems = check1(p, sheets)
         return {"accepted": not problems, "problems": problems}
-    logged = [json.loads(x) for x in (d / "calls.jsonl").read_text().splitlines()] if replay else None
-    if replay and not logged:
-        raise SystemExit(f"REFUSED: no logged replies in {d}")
+
+    def mapping(s1: dict, name: str, models: tuple) -> tuple:
+        df = check1(s1["proposal"], sheets)[0]               # the frame of the accepted proposal
+        c2 = card2(df, s1["proposal"]["sheet"], s1["proposal"]["header_row"], tr)
+        ingest.write_json(d / f"card2{'' if name == 'mapping' else '_' + name}.json", c2)
+        chk2 = lambda p: check2(p, df, tr, sym, refs, ks, key)
+        if proposals is not None:
+            v = chk2(proposals[1])
+            s2 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[1], "verdict": v,
+                  "tries": [{"stage": "mapping", "model": "hand", "accepted": v["accepted"], "problems": v["problems"]}]}
+        else:
+            s2 = stage(release, study, name, brief2(), f"DESCRIPTION\n{text(a)}\n\n" + json.dumps(c2, indent=1, ensure_ascii=False), chk2, logged, mode, models)
+        return df, s2, chk2
+
     if proposals is None:
-        s1 = stage(release, study, "sheet", BRIEF1, user1, chk1, logged)
+        s1 = stage(release, study, "sheet", BRIEF1, user1, chk1, logged, mode)
     else:
         v = chk1(proposals[0])
         s1 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[0], "verdict": v, "tries": [{"stage": "sheet", "model": "hand", **v}]}
     out = {"release": release, "study": study, "key": key, "description": text(a), "file": path.name,
-           "file_sha256": registry.SOURCES[key].sha256, "sheets": len(sheets), "stage1": {k: s1[k] for k in ("accepted", "tries")}}
-    if not s1["accepted"]:
-        return _record(release, study, out, proposals is not None)
-    df = holder["df"] if proposals is None else check1(proposals[0], sheets)[0]
-    if proposals is None:                                  # the frame of the accepted proposal, not of a later refused one
-        df = check1(s1["proposal"], sheets)[0]
-    tr = traits(G, a["disease"])
-    c2 = card2(df, s1["proposal"]["sheet"], s1["proposal"]["header_row"], tr)
-    ingest.write_json(d / "card2.json", c2)
-    user2 = f"DESCRIPTION\n{text(a)}\n\n" + json.dumps(c2, indent=1, ensure_ascii=False)
-    ks = infores(a)
-    keepv = {}
-
-    def chk2(p):
-        v = check2(p, df, tr, sym, refs, ks, key)
-        keepv["v"] = v
-        return v
-    if proposals is None:
-        s2 = stage(release, study, "mapping", brief2(), user2, chk2, logged)
-    else:
-        v = chk2(proposals[1])
-        s2 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[1], "verdict": v, "tries": [{"stage": "mapping", "model": "hand", "accepted": v["accepted"], "problems": v["problems"]}]}
-    out.update({"sheet": s1["proposal"]["sheet"], "header_row": s1["proposal"]["header_row"], "rows": int(len(df)), "traits_on_the_card": tr,
-                "stage2": {k: s2[k] for k in ("accepted", "tries")}, "knowledge_source": ks})
-    if replay:
+           "file_sha256": registry.SOURCES[key].sha256, "sheets": len(sheets), "stage1": {k: s1[k] for k in ("accepted", "tries")},
+           "mode": mode, "back_to_the_sheet_rule": back}
+    if mode == "replay":
         out["replayed"] = "the stages were checked again from the replies logged by the run; no model was called"
+    if mode == "rerun":
+        out["rerun"] = "a rerun after the registered result, under the amendment of 4 Nov 2026: development, not a test"
+    if not s1["accepted"]:
+        return _record(release, study, out, proposals is not None, mode == "rerun")
+    df, s2, chk2 = mapping(s1, "mapping", (MODEL, FALLBACK))
+    out["stage2"] = {k: s2[k] for k in ("accepted", "tries")}
+    declined = s2["accepted"] and s2["proposal"].get("map") is False
+    if declined and back and proposals is None:
+        reason = s2["proposal"].get("reason") or ""
+        again = (user1 + f"\n\nYOUR CHOICE WAS DECLINED\nYou chose the sheet {s1['proposal']['sheet']!r} with its column names in row "
+                 f"{s1['proposal']['header_row']}. Reading that table for the mapping, a model said it should not become edges: {reason}\n"
+                 "Choose the sheet again. You may name another sheet or the same one.")
+        first = s1["model"]
+        s1b = stage(release, study, "sheet_again", BRIEF1, again, chk1, logged, mode, tuple(dict.fromkeys((first, FALLBACK))))
+        out["back_to_the_sheet"] = {"reason": reason, "stage1": {k: s1b[k] for k in ("accepted", "tries")}}
+        if s1b["accepted"] and s1b["proposal"]["sheet"] != s1["proposal"]["sheet"]:
+            df, s2, chk2 = mapping(s1b, "mapping_again", (MODEL, FALLBACK))
+            out["back_to_the_sheet"]["stage2"] = {k: s2[k] for k in ("accepted", "tries")}
+            s1 = s1b
+        else:
+            out["back_to_the_sheet"]["stopped"] = "the same sheet again" if s1b["accepted"] else "no sheet accepted"
+    out.update({"sheet": s1["proposal"]["sheet"], "header_row": s1["proposal"]["header_row"], "rows": int(len(df)), "traits_on_the_card": tr,
+                "knowledge_source": ks})
     if s2["accepted"] and s2["proposal"].get("map") is False:
         out.update({"mapping": s2["proposal"], "model": {"sheet": s1["model"], "mapping": s2["model"]}, "join": None,
                     "verdict": {"accepted": True, "map": False, "reason": s2["proposal"].get("reason")}})
@@ -601,14 +633,15 @@ def run(release: str, study: str, proposals: tuple | None = None, replay: bool =
         vals = [x for c in (s2["proposal"].get("subject") or {}).get("columns", []) if c in un for x in un[c].dropna()]
         out["join"] = {"rows": int(len(J)), "targets": int(J.target.nunique()), "symbols": int(J.symbol.nunique()), "traits": sorted(set(J.trait)),
                        "table_rows_with_no_subject": int(len(un)), "their_values": sorted(set(map(str, vals)))[:60]}
-        J.to_parquet(d / "join.parquet", index=False)
-        out["join"]["file_sha256"] = __import__("pharos_gap_kg.graph", fromlist=["file_sha"]).file_sha(d / "join.parquet")
-    return _record(release, study, out, proposals is not None)
+        jf = d / ("join_rerun.parquet" if mode == "rerun" else "join.parquet")
+        J.to_parquet(jf, index=False)
+        out["join"].update({"file": jf.name, "file_sha256": __import__("pharos_gap_kg.graph", fromlist=["file_sha"]).file_sha(jf)})
+    return _record(release, study, out, proposals is not None, mode == "rerun")
 
 
-def _record(release: str, study: str, out: dict, control: bool) -> dict:
+def _record(release: str, study: str, out: dict, control: bool, rerun: bool = False) -> dict:
     out["spent_usd"] = round(spent(release), 4)
-    p = record_path(release, study) if not control else paths.DOCS_DATA / f"add_{STUDIES[study]['key']}_control_{release}.json"
+    p = (paths.DOCS_DATA / f"add_{STUDIES[study]['key']}_control_{release}.json" if control else record_path(release, study, rerun))
     p.write_text(json.dumps(out, indent=1, default=str) + "\n")
     return out
 
@@ -644,8 +677,8 @@ def control(release: str) -> dict:
 
 # ---- the person's view and join --------------------------------------------------------------------
 
-def show(release: str, study: str) -> str:
-    r = json.loads(record_path(release, study).read_text())
+def show(release: str, study: str, rerun: bool = False) -> str:
+    r = json.loads(record_path(release, study, rerun).read_text())
     if not r.get("stage2", {}).get("accepted"):
         return f"study {study}: no accepted mapping; see {record_path(release, study)}"
     m, j = r["mapping"], r["join"]
@@ -663,16 +696,16 @@ def show(release: str, study: str) -> str:
     return "\n".join(lines)
 
 
-def join(release: str, study: str) -> dict:
+def join(release: str, study: str, rerun: bool = False) -> dict:
     """The person's join: the accepted mapping's rows, written beside the bundle as `later` writes its tables."""
     from pharos_gap_kg import graph
     s = STUDIES[study]
-    r = json.loads(record_path(release, study).read_text())
+    r = json.loads(record_path(release, study, rerun).read_text())
     if not r.get("stage2", {}).get("accepted"):
         raise SystemExit(f"REFUSED: study {study} has no accepted mapping")
     if study == "A":
         raise SystemExit("REFUSED: study A's table is already beside the bundle, built by hand (later.py); its mapping is compared, not joined (docs/PROTOCOL.md)")
-    src = run_dir(release, study) / "join.parquet"
+    src = run_dir(release, study) / r["join"].get("file", "join.parquet")
     if graph.file_sha(src) != r["join"]["file_sha256"]:
         raise SystemExit(f"REFUSED: {src} is not the table the record describes; run the stages again")
     d = paths.DATA / "later" / release
@@ -689,7 +722,7 @@ def join(release: str, study: str) -> dict:
                                 "mapped_by": r["model"]}
     mf.write_text(json.dumps(man, indent=1, sort_keys=True) + "\n")
     r["joined"] = {"at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "file": f"data/later/{release}/{f.name}", "file_sha256": man["files"][f.name]}
-    record_path(release, study).write_text(json.dumps(r, indent=1, default=str) + "\n")
+    record_path(release, study, rerun).write_text(json.dumps(r, indent=1, default=str) + "\n")
     return r
 
 
@@ -741,7 +774,35 @@ def compare(release: str) -> dict:
                     "only_the_table": sorted(mine - cat), "only_the_catalog": sorted(cat - mine)}
     else:
         out["B"] = {"reading": None, "why": "no accepted mapping"}
+    for name, study, rerun in (("B_rerun", "B", True), ("C", "C", False)):
+        p = record_path(release, study, rerun)
+        out[name] = positional(release, study, json.loads(p.read_text())) if p.is_file() else {"reading": None, "why": "not run"}
     (paths.DOCS_DATA / f"add_compare_{release}.json").write_text(json.dumps(out, indent=1) + "\n")
+    return out
+
+
+def positional(release: str, study: str, r: dict) -> dict:
+    """The checks of the amendment of 4 Nov 2026: whether the sheet the stages ended on is a table of the study's loci (rows between
+    half and twice the abstract's count), and the joined genes against the genes the Catalog maps to the lead variants by position."""
+    from pharos_gap_kg import ask, clingen
+    n = ABSTRACT_LOCI[study]
+    out = {"sheet": r.get("sheet"), "rows": r.get("rows"), "abstract_loci": n, "rows_band": [n // 2, 2 * n],
+           "a_table_of_the_studys_loci": r.get("rows") is not None and n // 2 <= r["rows"] <= 2 * n, "joined_a_table": bool(r.get("join"))}
+    G = ask.Graph(paths.bundle(release))
+    sym = Symbols(G, release)
+    mine = set(pd.read_parquet(run_dir(release, study) / r["join"]["file"]).symbol) if r.get("join") else set()
+    mapped, n_assoc = catalog_genes(CATALOG_STUDY[study], "MAPPED_GENE")
+    cat = {sym.symbol[t] for g in mapped for t in sym(g)}
+    k = len(mine & cat)
+    s1, s2 = (clingen.wilson(k, len(mine)) if mine else None), (clingen.wilson(k, len(cat)) if cat else None)
+    if not cat:
+        reading = "not computable: the Catalog maps no graph gene to the study's associations"
+    else:
+        reading = "disagree" if s2[0] < 0.5 or (s1 is not None and s1[0] < 0.5) else "agree" if s1 is not None and s1[0] >= 0.8 and s2[0] >= 0.8 else "partial"
+    out.update({"catalog_study": CATALOG_STUDY[study], "catalog_associations": n_assoc, "catalog_mapped_genes": len(mapped), "of_them_graph_genes": len(cat),
+                "table_genes": len(mine), "shared": k, "share_of_table_genes_the_catalog_maps": s1, "share_of_catalog_genes_the_table_holds": s2,
+                "reading": reading, "what_it_says": "how far the joined genes lie at the lead variants, by the Catalog's positional mapping; not what the paper named",
+                "only_the_table": sorted(mine - cat), "only_the_catalog": sorted(cat - mine)})
     return out
 
 
@@ -936,11 +997,13 @@ def main(argv: list[str] | None = None) -> int:
         out = control(argv[1]) if argv[0] == "control" else compare(argv[1])
         print(json.dumps({k: v for k, v in out.items() if k not in ("stage1", "stage2", "traits_on_the_card", "verdict")}, indent=1, default=str))
         return 0
-    if len(argv) == 3 and argv[0] in ("run", "replay", "show", "join") and argv[2] in STUDIES:
+    rerun = "--rerun" in argv
+    argv = [x for x in argv if x != "--rerun"]
+    if len(argv) == 3 and argv[0] in ("run", "replay", "rerun", "show", "join") and argv[2] in STUDIES:
         if argv[0] == "show":
-            print(show(argv[1], argv[2]))
+            print(show(argv[1], argv[2], rerun))
         else:
-            out = run(argv[1], argv[2], replay=argv[0] == "replay") if argv[0] in ("run", "replay") else join(argv[1], argv[2])
+            out = run(argv[1], argv[2], mode=argv[0]) if argv[0] in ("run", "replay", "rerun") else join(argv[1], argv[2], rerun)
             print(json.dumps({k: v for k, v in out.items() if k in ("study", "sheet", "header_row", "rows", "model", "join", "joined", "spent_usd")}
                              | {"stage1_accepted": out.get("stage1", {}).get("accepted"), "stage2_accepted": out.get("stage2", {}).get("accepted")}, indent=1, default=str))
         return 0

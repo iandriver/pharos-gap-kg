@@ -25,26 +25,9 @@
    }
   ]
  },
- "sheet": "SD2",
- "header_row": 2,
- "rows": 127,
- "traits_on_the_card": [
-  {
-   "id": "MONDO:0004975",
-   "name": "Alzheimer disease",
-   "links": 618
-  },
-  {
-   "id": "EFO:0009268",
-   "name": "family history of Alzheimer\u2019s disease",
-   "links": 210
-  },
-  {
-   "id": "EFO:0006514",
-   "name": "Alzheimer's disease biomarker measurement",
-   "links": 21
-  }
- ],
+ "mode": "replay",
+ "back_to_the_sheet_rule": false,
+ "replayed": "the stages were checked again from the replies logged by the run; no model was called",
  "stage2": {
   "accepted": true,
   "tries": [
@@ -179,8 +162,27 @@
    }
   ]
  },
+ "sheet": "SD2",
+ "header_row": 2,
+ "rows": 127,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0004975",
+   "name": "Alzheimer disease",
+   "links": 618
+  },
+  {
+   "id": "EFO:0009268",
+   "name": "family history of Alzheimer\u2019s disease",
+   "links": 210
+  },
+  {
+   "id": "EFO:0006514",
+   "name": "Alzheimer's disease biomarker measurement",
+   "links": 21
+  }
+ ],
  "knowledge_source": "infores:doi-10-1038-s41586-026-11206-y",
- "replayed": "the stages were checked again from the replies logged by the run; no model was called",
  "mapping": {
   "map": true,
   "subject": {
@@ -306,6 +308,7 @@
    "KIAA0125/IGH gene cluster",
    "MS4A gene cluster"
   ],
+  "file": "join.parquet",
   "file_sha256": "3ba1da391a558aba36f82ea6ca66a1cc104a0a902b549308619665e3983a3b4d"
  },
  "spent_usd": 0.0358
