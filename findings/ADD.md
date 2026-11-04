@@ -99,3 +99,52 @@ graph gene. The mapping code refused was the one that would have joined the stud
 
 **Limits.** Study B's rerun is development. Study C ran once. The two checks against the Catalog
 could not be made for C, and the check from the abstract says only whether the row count fits.
+
+## Added 4 Nov 2026, second: check 8 for an added table, study C again, and study D
+
+The second amendment of 4 Nov (3f98ae2) was written after the results above, before the code for the new check
+(70726c0), before the control ran under it and before any model read study D's file. The records are
+`docs/data/add_mcgrail2026_t1d_supp_rerun_pharos319.json`, `docs/data/add_cheng2026_re_supp_pharos319.json`,
+`docs/data/add_candidates_pharos319.json` and the parts `C_rerun`, `D` and `rechecked` of
+`docs/data/add_compare_pharos319.json`. Hosted spend for the whole entry is $0.165 of the $0.50 cap.
+
+**The new check.** A row of the table counts when it gives an edge between a target and a trait of the graph, and 80% of
+each rule's rows must. The control passes under it: 122 of 127 rows count, and its join equals `later.py`'s 181 pairs.
+Checked again under both rules, calling no model, 11 of the 15 mapping proposals the runs logged keep their verdict.
+Four change:
+
+- study B's rerun, Sonnet's first mapping (Table 3 by gene symbol, 279 of 303 rows): refused before, accepted now;
+- study C, Sonnet's first (Signal by gene symbol, 95 of 102): refused before, accepted now;
+- study C, Sonnet's second (`name:gene`): accepted before, refused now, with 0 of 102 rows giving an edge of the graph;
+- study D, Sonnet's first (below, 508 of 539): accepted, and refused under the old rule.
+
+Each logged verdict equals the recheck under the rule it was logged under.
+
+**Study C again, as development.** Checked from the log, with no model called, Sonnet's first mapping is accepted and
+links 95 graph genes to type 1 diabetes mellitus. Of the 7 rows that give no graph gene, five name a chromosome band
+(14q32, 16q23, 17q24, 2p24, 6q27) and two a symbol the graph does not hold (FBXSIK68, THEM131L). The Catalog maps no
+gene for the study, so neither Catalog check can be made. It was not joined.
+
+**Study D, unseen.** `add candidates` ranks four Catalog studies, and the first, GCST90841196, is Cheng et al. From the
+file's 15 sheets Haiku named "Supp Table 3", the study's loci with their nearest protein-coding gene, and its header row.
+Its 539 rows lie within 466 to 1,864, so by the stated check it is a table of the study's loci. Code refused both of
+Haiku's mappings (an abstract predicate; then a predicate whose domain is a gene) and accepted Sonnet's first. It reads
+the nearest protein-coding gene column by gene symbol, links each gene to refractive error with
+`biolink:genetically_associated_with` in a `biolink:Association`, carries the lead variant and its p-value, and keeps the
+15 rows whose gene is "NA" as gaps. 508 of 539 rows count (94.2%), and it joins 500 links from 500 graph genes. The other
+16 rows that give no graph gene name a symbol the rule does not match, among them LPHN3 and KIRREL, older names of ADGRL3
+and KIRREL1: the rule reads current symbols only.
+
+Against the Catalog's positional mapping, 327 genes are shared: 65% of the table's genes [61%, 69%] and 44% of the
+Catalog's [41%, 48%], so the two disagree by the stated reading. Part of the difference is one of grain. The Catalog's
+932 associations give 1,112 positional genes, 737 of them graph genes, against the table's 500 from 539 loci, so the
+table could hold at most 68% of the Catalog's genes. The rest is loci where the table's nearest protein-coding gene is
+not among the Catalog's genes: 173 of the table's 500. The mapping was not joined; it joins only on Ian's word.
+
+**What this shows.** On a study no part of the entry had read, the stages ended on the loci table with a mapping that
+reads its gene column, without going back to the sheet. The old check would have refused that mapping, as it refused the
+same kind of mapping for B and C, and the new one refuses the ungrounded mapping C ended on.
+
+**Limits.** Study D ran once and is one study. Check 8's bar was set after three tables had been seen, and D is the first
+table it met unseen. The Catalog check reads positional genes, not what the paper named, and on D the two lists differ in
+grain. The symbol rule has no table of previous symbols.

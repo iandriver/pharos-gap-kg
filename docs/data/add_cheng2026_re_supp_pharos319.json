@@ -1,0 +1,307 @@
+{
+ "release": "pharos319",
+ "study": "D",
+ "key": "cheng2026_re_supp",
+ "description": "Cheng et al. Multi-ancestry genome-wide association analyses of refractive error augment genetic discovery and polygenic prediction. Nature Genetics, published 20 April 2026. doi:10.1038/s41588-026-02576-0. Licence: CC BY-NC-ND 4.0. A genome-wide association study of refractive error. Add the genes the study names at each associated locus.",
+ "file": "41588_2026_2576_MOESM4_ESM.xlsx",
+ "file_sha256": "a51e688cbf6d56c8ec5e17c71df56001ef740d159b4cc17c03f1381604bf501a",
+ "sheets": 15,
+ "stage1": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "sheet",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "sheet": "Supp Table 3",
+     "header_row": 2,
+     "notes": "Locus-level table: one row per significant locus, with HGNC nearest protein-coding gene and the HGNC gene list in each locus. Supp Table 9 is a similar lowercase-header loci table that may be an alternative; not verified."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.003401,
+    "seconds": 9.4
+   }
+  ]
+ },
+ "mode": "run",
+ "back_to_the_sheet_rule": true,
+ "check_8": "graph",
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Genes_in_locus_ensembl"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "separator": ";"
+     },
+     "object": {
+      "constant": "MONDO:0004892",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetic_association",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "Top_SNP_name",
+      "Pvalue"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each row is a GWAS locus for refractive error. Each gene named in Genes_in_locus_ensembl (split on ';') becomes its own edge to the trait, so one locus yields several edges. Entries 'NA' and non-coding placeholders are not resolvable and are skipped by the gene resolver. Genes_in_locus_hgnc is empty and is not used. Locus membership is not a claim that a gene is causal; the edge records only that the study names the gene at the locus. HGNC_nearest_gene is not added separately because it is already within the locus gene list."
+    },
+    "accepted": false,
+    "problems": [
+     "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated"
+    ],
+    "usd": 0.0013643,
+    "seconds": 11.8
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 2,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Genes_in_locus_ensembl"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "separator": ";"
+     },
+     "object": {
+      "constant": "MONDO:0004892",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:gene_associated_with_condition",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "Top_SNP_name",
+      "Pvalue"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each row is a GWAS locus for refractive error. Each gene named in Genes_in_locus_ensembl (split on ';') becomes its own edge to the trait, so one locus yields several edges. Entries 'NA' and non-coding placeholders are not resolvable and are skipped by the gene resolver. Genes_in_locus_hgnc is empty and is not used. Locus membership is not a claim that a gene is causal; the edge records only that the study names the gene at the locus. HGNC_nearest_gene is not added separately because it is already within the locus gene list."
+    },
+    "accepted": false,
+    "problems": [
+     "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+    ],
+    "usd": 0.001191,
+    "seconds": 5.8
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-sonnet-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "HGNC_nearest_gene_snpsnap_protein_coding"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "constant": "MONDO:0004892",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetically_associated_with",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "Top_SNP_name",
+      "Pvalue"
+     ],
+     "keep_if": {
+      "column": "HGNC_nearest_gene_snpsnap_protein_coding",
+      "matches": "^(?!NA$).+",
+      "reason": "No protein-coding nearest gene was named for this locus (value NA), so no gene is asserted."
+     },
+     "split_by": null,
+     "notes": "I mapped the nearest protein-coding gene to each locus lead SNP, one gene per row. I did not use Genes_in_locus_ensembl: it is a long list padded with NA, pseudogenes and RNA genes, and those genes are not individually named by the study. The edge keeps the lead SNP and its p-value as properties. The gene-locus link is positional, so the claim is a GWAS statistical association."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.020636,
+    "seconds": 8.5
+   }
+  ]
+ },
+ "sheet": "Supp Table 3",
+ "header_row": 2,
+ "rows": 539,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0004892",
+   "name": "refractive error",
+   "links": 625
+  }
+ ],
+ "knowledge_source": "infores:doi-10-1038-s41588-026-02576-0",
+ "mapping": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "HGNC_nearest_gene_snpsnap_protein_coding"
+   ],
+   "resolver": "gene_symbol",
+   "category": "biolink:Protein"
+  },
+  "object": {
+   "constant": "MONDO:0004892",
+   "category": "biolink:Disease"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:Association",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "qualifiers": {},
+  "edge_properties": [
+   "Top_SNP_name",
+   "Pvalue"
+  ],
+  "keep_if": {
+   "column": "HGNC_nearest_gene_snpsnap_protein_coding",
+   "matches": "^(?!NA$).+",
+   "reason": "No protein-coding nearest gene was named for this locus (value NA), so no gene is asserted."
+  },
+  "split_by": null,
+  "notes": "I mapped the nearest protein-coding gene to each locus lead SNP, one gene per row. I did not use Genes_in_locus_ensembl: it is a long list padded with NA, pseudogenes and RNA genes, and those genes are not individually named by the study. The edge keeps the lead SNP and its p-value as properties. The gene-locus link is positional, so the claim is a GWAS statistical association."
+ },
+ "model": {
+  "sheet": "anthropic/claude-haiku-5.5",
+  "mapping": "anthropic/claude-sonnet-5.5"
+ },
+ "verdict": {
+  "accepted": true,
+  "problems": [],
+  "rules": [
+   {
+    "value": null,
+    "rows": 539,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "first_figure": {
+     "ok": 508,
+     "rows": 539,
+     "bar": 0.8,
+     "what": "give an edge between a target and a trait of the graph (a row the condition makes a gap: a subject in the graph)"
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 539,
+      "resolved": 508,
+      "distinct": 500,
+      "prefixes": {
+       "UniProtKB": 500
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "UniProtKB": {
+        "distinct": 500,
+        "in_release": 500
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 524,
+      "resolved": 524,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 508,
+    "kept": 524,
+    "made_gaps_by_condition": 15
+   }
+  ],
+  "export": {
+   "passed": true,
+   "failed": null,
+   "groups": 500,
+   "n_nodes": 501,
+   "n_edges": 500,
+   "n_gaps": 0,
+   "predicates": {
+    "biolink:genetically_associated_with": 500
+   }
+  }
+ },
+ "join": {
+  "rows": 500,
+  "targets": 500,
+  "symbols": 500,
+  "traits": [
+   "MONDO:0004892"
+  ],
+  "table_rows_with_no_subject": 31,
+  "their_values": [
+   "C10orf11",
+   "C14orf23",
+   "C1orf143",
+   "CCDC101",
+   "CPSF3L",
+   "FAM101A",
+   "FAM134B",
+   "FAM46A",
+   "GLTSCR1L",
+   "GYLTL1B",
+   "KIAA1462",
+   "KIAA1919",
+   "KIRREL",
+   "LPHN3",
+   "NA",
+   "PPAP2C",
+   "TSSC1"
+  ],
+  "file": "join.parquet",
+  "file_sha256": "bc226875a531d5ff417e98b67f812904538dbc674c65d2517cb2b9136521f969"
+ },
+ "spent_usd": 0.1653
+}

@@ -12,13 +12,18 @@ from pharos_gap_kg import add, paths, registry
 
 R = {k: paths.DOCS_DATA / f"add_{s['key']}_pharos319.json" for k, s in add.STUDIES.items()}
 R["B_rerun"] = paths.DOCS_DATA / "add_kim2023_pd_supp_rerun_pharos319.json"
+R["C_rerun"] = paths.DOCS_DATA / "add_mcgrail2026_t1d_supp_rerun_pharos319.json"
 CTRL = paths.DOCS_DATA / "add_uffelmann2026_supp_control_pharos319.json"
 CMP = paths.DOCS_DATA / "add_compare_pharos319.json"
-if not all(p.is_file() for p in (*R.values(), CTRL, CMP)) or paths.ROOT is None:
+CAND = paths.DOCS_DATA / "add_candidates_pharos319.json"
+if not all(p.is_file() for p in (*R.values(), CTRL, CMP, CAND)) or paths.ROOT is None:
     pytest.skip("no records of the add stage", allow_module_level=True)
 A, B, C, K = (json.loads(p.read_text()) for p in (R["A"], R["B"], CTRL, CMP))
 BR, SC = json.loads(R["B_rerun"].read_text()), json.loads(R["C"].read_text())
-F = re.sub(r"\s+", " ", (paths.ROOT / "findings" / "ADD.md").read_text().split("## Added 4 Nov 2026")[1])
+CR, D, CA = json.loads(R["C_rerun"].read_text()), json.loads(R["D"].read_text()), json.loads(CAND.read_text())
+_ADD = (paths.ROOT / "findings" / "ADD.md").read_text()
+F = re.sub(r"\s+", " ", _ADD.split("## Added 4 Nov 2026")[1])
+F2 = re.sub(r"\s+", " ", _ADD.split("## Added 4 Nov 2026, second")[1])
 PROTO = re.sub(r"\s+", " ", (paths.ROOT / "docs" / "PROTOCOL.md").read_text())
 HAVE = all(registry.SOURCES[s["key"]].path.is_file() for s in add.STUDIES.values()) and (paths.bundle("pharos319") / "manifest.json").is_file()
 need = pytest.mark.skipif(not HAVE, reason="the studies' files or the bundle are not here")
@@ -32,6 +37,7 @@ def test_the_descriptions_are_the_protocols_word_for_word():
 
 def test_the_control_passes_and_joins_later_pys_table():
     assert C["stage1"]["accepted"] and C["stage2"]["accepted"] and C["equals_later_py"] and C["join"]["rows"] == 181
+    assert C["check_8"] == add.RULE == "graph" and [r["first_figure"]["ok"] for r in C["verdict"]["rules"]] == [122]
 
 
 def test_study_a_is_reproduced():
@@ -76,13 +82,51 @@ def test_study_c_meets_check_8_with_ungrounded_names_and_joins_nothing():
         assert w in F, f"findings/ADD.md (4 Nov) no longer says: {w}"
 
 
+def test_study_c_again_under_the_new_check_joins_its_genes_and_is_not_joined():
+    t, k = CR["stage2"]["tries"], K["C_rerun"]
+    assert CR["rerun"].startswith("a rerun after the registered result") and CR["check_8"] == "graph" and "joined" not in CR
+    assert [x["accepted"] for x in t] == [False, False, True] and t[2]["proposal"]["subject"]["resolver"] == "gene_symbol"
+    assert [r["first_figure"]["ok"] for r in CR["verdict"]["rules"]] == [95] and (CR["join"]["rows"], CR["join"]["targets"]) == (95, 95)
+    assert CR["spent_usd"] == SC["spent_usd"] and k["reading"].startswith("not computable")
+    for w in ("links 95 graph genes to type 1 diabetes mellitus", "(14q32, 16q23, 17q24, 2p24, 6q27)", "(FBXSIK68, THEM131L)"):
+        assert w in F2, f"findings/ADD.md (4 Nov, second) no longer says: {w}"
+
+
+def test_study_d_is_the_first_candidate_and_maps_its_loci_table():
+    c = CA["candidates"][0]
+    assert (c["accession"], c["pmid"], c["associations"], len(CA["candidates"])) == (add.CATALOG_STUDY["D"], "42009823", add.ABSTRACT_LOCI["D"], 4)
+    k, t = K["D"], D["stage2"]["tries"]
+    assert D["check_8"] == "graph" and D["sheet"] == "Supp Table 3" and D["rows"] == k["rows"] == 539 and k["a_table_of_the_studys_loci"]
+    assert [x["accepted"] for x in D["stage1"]["tries"]] == [True] and "back_to_the_sheet" not in D
+    assert [x["accepted"] for x in t] == [False, False, True] and D["model"] == {"sheet": add.MODEL, "mapping": add.FALLBACK}
+    assert D["mapping"]["subject"] == {"columns": ["HGNC_nearest_gene_snpsnap_protein_coding"], "resolver": "gene_symbol", "category": "biolink:Protein"}
+    r = D["verdict"]["rules"][0]
+    assert (r["first_figure"]["ok"], r["first_figure"]["rows"], r["made_gaps_by_condition"], D["join"]["rows"], D["join"]["targets"]) == (508, 539, 15, 500, 500)
+    assert D["join"]["table_rows_with_no_subject"] == 31 and "joined" not in D and D["spent_usd"] <= add.CAP_USD
+    s1, s2 = k["share_of_table_genes_the_catalog_maps"], k["share_of_catalog_genes_the_table_holds"]
+    assert (k["reading"], k["shared"], k["table_genes"], k["catalog_mapped_genes"], k["of_them_graph_genes"]) == ("disagree", 327, 500, 1112, 737)
+    for w in (f"{k['shared']} genes are shared: {s1[0]:.0%} of the table's genes [{s1[1]:.0%}, {s1[2]:.0%}] and {s2[0]:.0%} of the Catalog's [{s2[1]:.0%}, {s2[2]:.0%}]",
+              f"could hold at most {k['table_genes'] / k['of_them_graph_genes']:.0%} of the Catalog's genes", f"{len(k['only_the_table'])} of the table's 500",
+              "508 of 539 rows count (94.2%), and it joins 500 links from 500 graph genes", f"${D['spent_usd']:.3f} of the $0.50 cap"):
+        assert w in F2, f"findings/ADD.md (4 Nov, second) no longer says: {w}"
+
+
+def test_every_logged_mapping_is_checked_again_under_both_rules():
+    r = K["rechecked"]
+    assert r["proposals"] == 15 and all(e["logged"] == e[e["logged_under"]]["accepted"] for e in r["each"])
+    assert [(c["study"], c["stage"], c["attempt"], c["resolved"], c["graph"]) for c in r["changed"]] == [
+        ("B", "mapping_again", 1, False, True), ("C", "mapping", 1, False, True), ("C", "mapping", 2, True, False), ("D", "mapping", 1, False, True)]
+    assert f"{r['proposals'] - len(r['changed'])} of the {r['proposals']} mapping proposals the runs logged keep their verdict" in F2
+
+
 @need
 def test_the_tools_give_the_commands_verdicts():
     from pharos_gap_kg import ask
     S = add.Session(ask.Graph(paths.bundle("pharos319")))
-    for k, r in (("A", A), ("B", B), ("B", BR), ("C", SC)):
+    for k, r in (("A", A), ("B", B), ("B", BR), ("C", SC), ("C", CR), ("D", D)):
         s = add.STUDIES[k]
         f = str(registry.SOURCES[s["key"]].path)
+        rule = r.get("check_8", "resolved")            # a record that names no rule was made under the first
         first = next(t["proposal"] for t in r["stage1"]["tries"] if t["accepted"])
         back = r.get("back_to_the_sheet") or {}
         for t in r["stage1"]["tries"] + (back.get("stage1") or {}).get("tries", []):
@@ -90,7 +134,7 @@ def test_the_tools_give_the_commands_verdicts():
             assert (v["accepted"], v["problems"]) == (t["accepted"], t["problems"]), (k, "sheet", t["attempt"])
         for sheet, tries in ((first, r["stage2"]["tries"]), ({"sheet": r["sheet"], "header_row": r["header_row"]}, (back.get("stage2") or {}).get("tries", []))):
             for t in tries:
-                v = add.tool_check(S, f, s["about"], "mapping", t["proposal"], sheet["sheet"], sheet["header_row"])
+                v = add.tool_check(S, f, s["about"], "mapping", t["proposal"], sheet["sheet"], sheet["header_row"], rule=rule)
                 assert (v["accepted"], v["problems"]) == (t["accepted"], t["problems"]), (k, t["stage"], t["model"], t["attempt"])
     v = add.tool_check(S, str(registry.SOURCES["uffelmann2026_supp"].path), add.STUDIES["A"]["about"], "mapping", A["mapping"], A["sheet"], A["header_row"])
     assert v["would_join"] == {"links": 181, "graph_genes": 181, "traits": ["MONDO:0004975"]}
