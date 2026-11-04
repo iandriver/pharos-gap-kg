@@ -61,7 +61,8 @@ Rules for using the answers:
 - When an answer says it was also read under another id with the same name, pass that on."""
 
 
-def build(bundle_dir: Path):
+def build(bundle_dir: Path, local: bool = False):
+    """local: served over stdio on the person's machine, where the three tools that add a table are also served."""
     try:
         from mcp.server.mcpserver import MCPServer
     except ModuleNotFoundError as e:
@@ -158,6 +159,38 @@ def build(bundle_dir: Path):
         return sg.of(answer, bundle_dir, limit=max(1, min(int(limit), 2000)),
                      question={"question": question, "args": args, "as_of": as_of, "disease": disease})
 
+    if not local:
+        return app
+    from pharos_gap_kg import add
+    session = {}
+
+    def S():
+        if "s" not in session:
+            session["s"] = add.Session(G)
+        return session["s"]
+
+    about_help = ("about is the paper, as fields: citation (authors and title), journal, published (YYYY-MM-DD), doi, licence, what (one "
+                  "sentence: what the study is), disease (in words) and add (one sentence: what to add). ")
+
+    @app.tool(description="Add a table from a paper to this graph, step 1 and 2 of 3: the card to read. Give the path of the person's file "
+                          "(CSV, TSV, XLSX or ODS) and " + about_help + "With no sheet it returns every sheet's first rows and a brief: propose the "
+                          "sheet and header row, and check the proposal with add_check. With a sheet and header_row it returns that table's card, the "
+                          "graph's traits that match the disease, and the brief for the mapping.")
+    def add_card(file: str, about: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
+        return add.tool_card(S(), file, about, sheet, header_row)
+
+    @app.tool(description="Add a table, the check: code's verdict on a proposal, for stage 'sheet' ({sheet, header_row}) or stage 'mapping' (the "
+                          "mapping the brief describes, with the sheet and header_row). A refused proposal comes back with the reasons; fix it once. "
+                          "For an accepted mapping it says how many links it would join. Show the person the accepted mapping before any join.")
+    def add_check(file: str, about: dict, stage: str, proposal: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
+        return add.tool_check(S(), file, about, stage, proposal, sheet, header_row)
+
+    @app.tool(description="Add a table, step 3: join an accepted mapping beside the graph as a dated source. Call this ONLY when the person has "
+                          "read the accepted mapping and said to join it; never on your own judgment. The release's links, rankings and counts do "
+                          "not change; the answers say what the added study reports, once the server restarts.")
+    def add_join(file: str, about: dict, sheet: str, header_row: int, proposal: dict) -> dict:
+        return add.tool_join(S(), file, about, sheet, header_row, proposal)
+
     return app
 
 
@@ -238,7 +271,7 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     bundle_dir = a.bundle or ask.default_bundle()
     if not a.http:
-        build(bundle_dir).run(transport="stdio")
+        build(bundle_dir, local=True).run(transport="stdio")
         return 0
     if a.host not in LOCAL and not a.public_host:
         raise SystemExit("REFUSED: bound to a public address, the server needs --public-host for each name it is reached by, or --public-host '*'")

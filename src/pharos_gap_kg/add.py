@@ -12,6 +12,7 @@ accepted mapping is shown to the person, and it joins, as a dated source beside 
 Run:  python -I -m pharos_gap_kg.add fetch kim2023_pd_supp            # the registered file of study B
       python -I -m pharos_gap_kg.add control pharos319                # the hand mapping of study A through the same checks
       python -I -m pharos_gap_kg.add run pharos319 A                  # both stages with the model (needs OPENROUTER_API_KEY)
+      python -I -m pharos_gap_kg.add replay pharos319 B               # check a run's logged replies again, calling no model
       python -I -m pharos_gap_kg.add show pharos319 B                 # the accepted mapping, field by field, for the person
       python -I -m pharos_gap_kg.add join pharos319 B                 # the person's join
       python -I -m pharos_gap_kg.add compare pharos319                # A against later.py's table, B against the GWAS Catalog
@@ -408,6 +409,7 @@ def joinable(v: dict, G, sym: Symbols, a: dict, key: str) -> pd.DataFrame:
     """The rows a join writes: each exported edge between a graph target and a graph trait, with the year,
     the study, the symbols the table gave for the target, and the properties the mapping carries."""
     e = v["_frames"]["edges"]
+    e = e.loc[:, ~e.columns.duplicated()]                  # the exporter writes a carried column twice when kgx-gaps also knows its name
     rows = v["_rows"]
     given: dict[str, list[str]] = {}
     if "__subject_value" in rows:
@@ -486,14 +488,21 @@ def _public(v: dict) -> dict:
     return {k: x for k, x in v.items() if not k.startswith("_")}
 
 
-def stage(release: str, study: str, name: str, system: str, user: str, check) -> dict:
-    """One stage: the model, one return of a refused proposal, then the fallback model from the start under the same rule."""
+def stage(release: str, study: str, name: str, system: str, user: str, check, replay: list | None = None) -> dict:
+    """One stage: the model, one return of a refused proposal, then the fallback model from the start under the same rule.
+    replay: the logged replies of an earlier run, checked again in place of calling a model."""
     log = run_dir(release, study) / "calls.jsonl"
     tries = []
     for model in (MODEL, FALLBACK):
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
         for attempt in (1, 2):
-            r = call(release, model, msgs, f"{study}:{name}:{model}:{attempt}")
+            if replay is not None:
+                old = next((x for x in replay if (x["stage"], x["model"], x["attempt"]) == (name, model, attempt)), None)
+                if old is None:
+                    return {"accepted": False, "tries": tries, "replay": "no logged reply for the next call"}
+                r = {"text": old["reply"], "usd": old["usd"], "seconds": old["seconds"]} if old.get("reply") is not None else {"error": old["problems"][0]}
+            else:
+                r = call(release, model, msgs, f"{study}:{name}:{model}:{attempt}")
             if "error" in r:
                 verdict = {"accepted": False, "problems": [f"the call failed: {r['error']}"]}
                 p = None
@@ -502,8 +511,9 @@ def stage(release: str, study: str, name: str, system: str, user: str, check) ->
                 verdict = check(p)
             rec = {"stage": name, "model": model, "attempt": attempt, "proposal": p, "accepted": verdict["accepted"], "problems": verdict["problems"],
                    "usd": r.get("usd"), "seconds": r.get("seconds")}
-            with open(log, "a") as f:
-                f.write(json.dumps({**rec, "reply": r.get("text"), "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, default=str) + "\n")
+            if replay is None:
+                with open(log, "a") as f:
+                    f.write(json.dumps({**rec, "reply": r.get("text"), "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, default=str) + "\n")
             tries.append(rec)
             if verdict["accepted"]:
                 return {"accepted": True, "model": model, "proposal": p, "verdict": verdict, "tries": tries}
@@ -525,8 +535,9 @@ def record_path(release: str, study: str) -> Path:
     return paths.DOCS_DATA / f"add_{STUDIES[study]['key']}_{release}.json"
 
 
-def run(release: str, study: str, proposals: tuple | None = None) -> dict:
-    """Both stages for a registered study. proposals: (sheet proposal, mapping proposal) to check without a model (the control)."""
+def run(release: str, study: str, proposals: tuple | None = None, replay: bool = False) -> dict:
+    """Both stages for a registered study. proposals: (sheet proposal, mapping proposal) to check without a model (the control).
+    replay: check again the replies an earlier run logged, calling no model."""
     s, G, sym, refs, path = _setup(release, study)
     a, key = s["about"], s["key"]
     d = run_dir(release, study if proposals is None else f"{study}_control")
@@ -541,8 +552,11 @@ def run(release: str, study: str, proposals: tuple | None = None) -> dict:
         df, problems = check1(p, sheets)
         holder["df"] = df
         return {"accepted": not problems, "problems": problems}
+    logged = [json.loads(x) for x in (d / "calls.jsonl").read_text().splitlines()] if replay else None
+    if replay and not logged:
+        raise SystemExit(f"REFUSED: no logged replies in {d}")
     if proposals is None:
-        s1 = stage(release, study, "sheet", BRIEF1, user1, chk1)
+        s1 = stage(release, study, "sheet", BRIEF1, user1, chk1, logged)
     else:
         v = chk1(proposals[0])
         s1 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[0], "verdict": v, "tries": [{"stage": "sheet", "model": "hand", **v}]}
@@ -565,13 +579,18 @@ def run(release: str, study: str, proposals: tuple | None = None) -> dict:
         keepv["v"] = v
         return v
     if proposals is None:
-        s2 = stage(release, study, "mapping", brief2(), user2, chk2)
+        s2 = stage(release, study, "mapping", brief2(), user2, chk2, logged)
     else:
         v = chk2(proposals[1])
         s2 = {"accepted": v["accepted"], "model": "hand", "proposal": proposals[1], "verdict": v, "tries": [{"stage": "mapping", "model": "hand", "accepted": v["accepted"], "problems": v["problems"]}]}
     out.update({"sheet": s1["proposal"]["sheet"], "header_row": s1["proposal"]["header_row"], "rows": int(len(df)), "traits_on_the_card": tr,
                 "stage2": {k: s2[k] for k in ("accepted", "tries")}, "knowledge_source": ks})
-    if s2["accepted"]:
+    if replay:
+        out["replayed"] = "the stages were checked again from the replies logged by the run; no model was called"
+    if s2["accepted"] and s2["proposal"].get("map") is False:
+        out.update({"mapping": s2["proposal"], "model": {"sheet": s1["model"], "mapping": s2["model"]}, "join": None,
+                    "verdict": {"accepted": True, "map": False, "reason": s2["proposal"].get("reason")}})
+    elif s2["accepted"]:
         v = chk2(s2["proposal"])                           # the verdict of the accepted proposal
         out["mapping"] = s2["proposal"]
         out["model"] = {"sheet": s1["model"], "mapping": s2["model"]}
@@ -676,13 +695,15 @@ def join(release: str, study: str) -> dict:
 
 # ---- the checks the protocol states ----------------------------------------------------------------
 
-def catalog_genes(accession: str) -> list[str]:
-    """The genes the GWAS Catalog release of 5 Oct 2026 reports for one study, over its associations."""
+def catalog_genes(accession: str, column: str = "REPORTED GENE(S)") -> tuple[list[str], int]:
+    """The genes the GWAS Catalog release of 5 Oct 2026 gives for one study in one column, over its associations,
+    and the number of associations."""
     z = zipfile.ZipFile(registry.require("gwas_catalog_20261005"))
     with z.open(z.namelist()[0]) as f:
-        df = pd.read_csv(f, sep="\t", dtype=str, quoting=3, keep_default_na=False, usecols=["STUDY ACCESSION", "REPORTED GENE(S)"])
-    gs = [g.strip() for cell in df[df["STUDY ACCESSION"] == accession]["REPORTED GENE(S)"] for g in re.split(r"[,;]", cell)]
-    return sorted({g for g in gs if g and g.upper() not in ("NR", "INTERGENIC")})
+        df = pd.read_csv(f, sep="\t", dtype=str, quoting=3, keep_default_na=False, usecols=["STUDY ACCESSION", column])
+    mine = df[df["STUDY ACCESSION"] == accession][column]
+    gs = [g.strip() for cell in mine for g in re.split(r"[,;]| - ", cell)]
+    return sorted({g for g in gs if g and g.upper() not in ("NR", "INTERGENIC")}), int(len(mine))
 
 
 def compare(release: str) -> dict:
@@ -699,18 +720,22 @@ def compare(release: str) -> dict:
     else:
         out["A"] = {"reproduced": False, "why": "no accepted mapping"}
     rB = json.loads(record_path(release, "B").read_text()) if record_path(release, "B").is_file() else None
-    if rB and rB.get("stage2", {}).get("accepted"):
+    if rB and rB.get("stage2", {}).get("accepted") is not None:
         from pharos_gap_kg import ask
         G = ask.Graph(paths.bundle(release))
         sym = Symbols(G, release)
-        J = pd.read_parquet(run_dir(release, "B") / "join.parquet")
-        mine = set(J.symbol)
-        reported = catalog_genes(CATALOG_STUDY["B"])
+        mine = set(pd.read_parquet(run_dir(release, "B") / "join.parquet").symbol) if rB.get("join") else set()   # no mapping joins no gene
+        reported, n_assoc = catalog_genes(CATALOG_STUDY["B"])
+        mapped, _ = catalog_genes(CATALOG_STUDY["B"], "MAPPED_GENE")
         cat = {sym.symbol[t] for g in reported for t in sym(g)}
         k1, k2 = len(mine & cat), len(cat & mine)
-        s1, s2 = clingen.wilson(k1, len(mine)), clingen.wilson(k2, len(cat))
-        verdict = "agree" if s1[0] >= 0.8 and s2[0] >= 0.8 else "disagree" if s1[0] < 0.5 or s2[0] < 0.5 else "partial"
-        out["B"] = {"catalog_study": CATALOG_STUDY["B"], "catalog_reported_genes": len(reported), "catalog_genes_in_the_graph": len(cat),
+        s1, s2 = (clingen.wilson(k1, len(mine)) if mine else None), (clingen.wilson(k2, len(cat)) if cat else None)
+        if not cat:
+            verdict = "not computable: the Catalog reports no gene for the study's associations"
+        else:
+            verdict = ("disagree" if s2[0] < 0.5 or (s1 and s1[0] < 0.5) else "agree" if s1 and s1[0] >= 0.8 and s2[0] >= 0.8 else "partial")
+        out["B"] = {"catalog_study": CATALOG_STUDY["B"], "sheet": rB.get("sheet"), "joined_a_table": bool(rB.get("join")), "catalog_associations": n_assoc,
+                    "catalog_mapped_genes_not_the_registered_check": len(mapped), "catalog_reported_genes": len(reported), "catalog_genes_in_the_graph": len(cat),
                     "table_genes": len(mine), "table_genes_the_catalog_reports": k1, "share_of_table_genes": s1,
                     "catalog_genes_the_table_holds": k2, "share_of_catalog_genes": s2, "reading": verdict,
                     "only_the_table": sorted(mine - cat), "only_the_catalog": sorted(cat - mine)}
@@ -737,6 +762,113 @@ def fetch(key: str, src: Path | None = None) -> Path:
     side.write_text(json.dumps({"key": key, "url": s.url, "bytes": len(data), "sha256": s.sha256, "published": s.published,
                                 "fetched_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "from": str(src) if src else s.url}, indent=1) + "\n")
     return s.path
+
+
+# ---- the same stages as MCP tools, for a client's own model ----------------------------------------
+
+ABOUT_KEYS = ("citation", "journal", "published", "doi", "licence", "what", "disease", "add")
+
+
+class BundleRefs:
+    """The lists `ingest`'s validator reads, from the bundle alone, where the release's tables are not on the machine:
+    the graph's targets and traits. A vocabulary the bundle does not hold is not checked."""
+
+    def __init__(self, G):
+        self.uniprot, self.gene, self.target = {}, {}, {}
+        self.symbol = dict(zip(G.t.id, G.t["name"]))
+        self.vocab = {"UniProtKB": set(G.t.id), "MONDO": {i for i in G.d.id if i.startswith("MONDO:")}, "NCBIGene": None, "DOID": None, "UBERON": None, "GO": None}
+        self.xref = set()
+
+
+class Session:
+    """What the tools share for one bundle: the graph, the symbol rule and the validator's lists."""
+
+    def __init__(self, G):
+        self.G, self.release = G, G.manifest["release"]
+        try:
+            self.refs, self.lists = ingest.Refs(self.release), "the release's tables"
+            self.sym = Symbols(G, self.release)
+        except (SystemExit, FileNotFoundError, OSError):
+            self.refs, self.lists = BundleRefs(G), "the bundle's targets and traits only"
+            self.sym = Symbols(G, None)
+
+
+def _about_problems(about) -> list[str]:
+    if not isinstance(about, dict) or set(ABOUT_KEYS) - set(about):
+        return [f"the description needs the fields {list(ABOUT_KEYS)}"]
+    try:
+        date.fromisoformat(about["published"])
+    except (TypeError, ValueError):
+        return ["published must be a date written YYYY-MM-DD"]
+    return []
+
+
+def tool_card(S: Session, file: str, about: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
+    """The first card (every sheet), or with a sheet and header row the second (the table, and the traits that match the disease)."""
+    bad = _about_problems(about)
+    if bad:
+        return {"accepted": False, "problems": bad}
+    sheets = read_sheets(Path(file).expanduser())
+    if sheet is None:
+        return {"stage": "sheet", "brief": BRIEF1, "description": text(about), "card": card1(sheets),
+                "next": "Write the proposal the brief asks for, then call add_check with stage 'sheet'."}
+    df, problems = check1({"sheet": sheet, "header_row": header_row}, sheets)
+    if problems:
+        return {"accepted": False, "problems": problems}
+    return {"stage": "mapping", "brief": brief2(), "description": text(about), "card": card2(df, sheet, header_row, traits(S.G, about["disease"])),
+            "next": "Write the mapping the brief asks for, then call add_check with stage 'mapping' and the same sheet and header_row."}
+
+
+def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
+    """The validator's verdict on a proposal for one stage, and for an accepted mapping what it would join."""
+    bad = _about_problems(about)
+    if bad:
+        return {"accepted": False, "problems": bad}
+    sheets = read_sheets(Path(file).expanduser())
+    if stage == "sheet":
+        df, problems = check1(proposal, sheets)
+        return {"accepted": not problems, "problems": problems, **({"rows": int(len(df))} if df is not None else {})}
+    df, problems = check1({"sheet": sheet, "header_row": header_row}, sheets)
+    if problems:
+        return {"accepted": False, "problems": problems}
+    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), "added")
+    out = {"accepted": v["accepted"], "problems": v["problems"], "checked_against": S.lists}
+    if v["accepted"] and v.get("map") is not False:
+        J = joinable(v, S.G, S.sym, about, "added")
+        out["would_join"] = {"links": int(len(J)), "graph_genes": int(J.target.nunique()), "traits": sorted(set(J.trait))}
+    return out
+
+
+def tool_join(S: Session, file: str, about: dict, sheet: str, header_row: int, proposal: dict) -> dict:
+    """Join an accepted mapping beside the bundle. Only on the person's word."""
+    from pharos_gap_kg import ask, graph
+    bad = _about_problems(about)
+    if bad:
+        return {"joined": False, "problems": bad}
+    df, problems = check1({"sheet": sheet, "header_row": header_row}, read_sheets(Path(file).expanduser()))
+    if problems:
+        return {"joined": False, "problems": problems}
+    key = re.sub(r"[^a-z0-9]+", "_", about["doi"].casefold()).strip("_")
+    v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), key)
+    if not v["accepted"] or v.get("map") is False:
+        return {"joined": False, "problems": v["problems"] or ["the mapping makes no edges"]}
+    J = joinable(v, S.G, S.sym, about, key)
+    if J.empty:
+        return {"joined": False, "problems": ["the mapping makes no link from a graph gene to a graph trait, which is what the answers read"]}
+    d = ask.later_dir(S.G.dir)
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / f"{key}.parquet"
+    J.to_parquet(f, index=False)
+    mf = d / "manifest.json"
+    man = json.loads(mf.read_text()) if mf.is_file() else {"release": S.release, "files": {}, "studies": {}}
+    man["files"][f.name] = graph.file_sha(f)
+    man["studies"][key] = {"citation": about["citation"].split(".")[0] + f", {about['journal']} ({date.fromisoformat(about['published']).year})",
+                           "doi": about["doi"], "published": about["published"], "added": date.today().isoformat(), "year": date.fromisoformat(about["published"]).year,
+                           "trait": sorted(set(J.trait))[0] if J.trait.nunique() == 1 else sorted(set(J.trait)), "licence": about["licence"], "table": sheet,
+                           "what": f"{about['what']}, as a client's model mapped its table and the person joined it", "mapped_by": "the MCP client's model"}
+    mf.write_text(json.dumps(man, indent=1, sort_keys=True) + "\n")
+    return {"joined": True, "links": int(len(J)), "graph_genes": int(J.target.nunique()), "file": str(f),
+            "answer": "Joined beside the bundle. Restart the server for the answers to read it."}
 
 
 # ---- self-test -------------------------------------------------------------------------------------
@@ -804,11 +936,11 @@ def main(argv: list[str] | None = None) -> int:
         out = control(argv[1]) if argv[0] == "control" else compare(argv[1])
         print(json.dumps({k: v for k, v in out.items() if k not in ("stage1", "stage2", "traits_on_the_card", "verdict")}, indent=1, default=str))
         return 0
-    if len(argv) == 3 and argv[0] in ("run", "show", "join") and argv[2] in STUDIES:
+    if len(argv) == 3 and argv[0] in ("run", "replay", "show", "join") and argv[2] in STUDIES:
         if argv[0] == "show":
             print(show(argv[1], argv[2]))
         else:
-            out = run(argv[1], argv[2]) if argv[0] == "run" else join(argv[1], argv[2])
+            out = run(argv[1], argv[2], replay=argv[0] == "replay") if argv[0] in ("run", "replay") else join(argv[1], argv[2])
             print(json.dumps({k: v for k, v in out.items() if k in ("study", "sheet", "header_row", "rows", "model", "join", "joined", "spent_usd")}
                              | {"stage1_accepted": out.get("stage1", {}).get("accepted"), "stage2_accepted": out.get("stage2", {}).get("accepted")}, indent=1, default=str))
         return 0

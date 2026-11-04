@@ -17,5 +17,6 @@ def test_the_check_asks_a_running_server_the_gaps_for_a_disease(tmp_path):
     pytest.importorskip("mcp")
     ask_selftest.tiny(tmp_path)
     r = asyncio.run(desktop._ask(sys.executable, str(tmp_path), dict(os.environ), "heart disease"))
-    assert "gaps" in r["tools"] and "subgraph" in r["tools"] and len(r["tools"]) == 9
+    assert "gaps" in r["tools"] and "subgraph" in r["tools"] and len(r["tools"]) == 12          # nine questions and, on the person's machine, the three that add a table
+    assert {"add_card", "add_check", "add_join"} <= set(r["tools"])
     assert r["found"] is False and "merged graph's other parts" in r["answer"]

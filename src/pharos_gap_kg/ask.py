@@ -617,31 +617,49 @@ class Graph:
     def _later_link(self, r) -> dict:
         tl = {k: v for k, v in self._tlabel(self.ti[r.target]).items() if k in ("id", "symbol", "pharos_level")} if r.target in self.ti else {"id": r.target, "symbol": r.symbol}
         k = self._row(self.ti[r.target], self.di[r.trait]) if r.target in self.ti and r.trait in self.di else None
-        return {**tl, "trait": self._dlabel(self.di[r.trait])["name"] if r.trait in self.di else r.trait, "first_reported": int(r.year),
-                "study": self.later_studies[r.study]["citation"], "as": "a predicted effector gene",
-                "locus": {"number_in_the_study": int(r.locus), "lead_variant": r.rsid, "chromosome": r.chromosome, "start": int(r.start), "end": int(r.end), "build": "GRCh37",
-                          "p": float(r.p_value), "new_in_this_study": bool(r.new_locus)},
-                "also_named_by": list(r.also_named_by), "linked_in_the_release": k is not None}
+        out = {**tl, "trait": self._dlabel(self.di[r.trait])["name"] if r.trait in self.di else r.trait, "first_reported": int(r.year),
+               "study": self.later_studies[r.study]["citation"]}
+        if pd.notna(getattr(r, "locus", np.nan)):           # a study read by hand (`later`), with its loci
+            out.update({"as": "a predicted effector gene",
+                        "locus": {"number_in_the_study": int(r.locus), "lead_variant": r.rsid, "chromosome": r.chromosome, "start": int(r.start), "end": int(r.end),
+                                  "build": "GRCh37", "p": float(r.p_value), "new_in_this_study": bool(r.new_locus)},
+                        "also_named_by": list(r.also_named_by)})
+        else:                                               # a table a model mapped and a person joined (`add`)
+            props = getattr(r, "properties", None)
+            out.update({"as": "a gene its table names", "from_the_table": json.loads(props) if isinstance(props, str) else {}, "also_named_by": []})
+        return {**out, "linked_in_the_release": k is not None}
 
     @staticmethod
     def _locus_say(x: dict) -> str:
+        if "locus" not in x:
+            t = list(x.get("from_the_table", {}).items())[:3]
+            return "its table" + (f" ({'; '.join(f'{k} {v}' for k, v in t)})" if t else "")
         lo = x["locus"]
         c = list(x["also_named_by"])
         by = f"; its {_and(c)} column{'s also name' if len(c) > 1 else ' also names'} it" if c else ""
         return f"locus {lo['number_in_the_study']} ({lo['lead_variant']}, {'new in that study' if lo['new_in_this_study'] else 'reported before that study'}{by})"
 
+    @staticmethod
+    def _later_sorted(lat: pd.DataFrame) -> pd.DataFrame:
+        return lat.sort_values([c for c in ("locus", "symbol") if c in lat], na_position="last")
+
     def _later_known(self, lat: pd.DataFrame, kind: str, lab: dict, limit: int) -> dict:
-        rows = [self._later_link(r) for r in lat.sort_values(["locus", "symbol"]).itertuples()]
+        rows = [self._later_link(r) for r in self._later_sorted(lat).itertuples()]
         keys = list(dict.fromkeys(lat.study))
         cite = _and([self.later_studies[k]["citation"] for k in keys])
         if kind == "target":
-            say = (f"Added after the release: {cite} names {lab['symbol']} as a predicted effector gene for "
-                   + "; ".join(f"{x['trait']} at {self._locus_say(x)}" for x in rows) + ".")
+            say = (f"Added after the release: {cite} names {lab['symbol']} as "
+                   + "; ".join(f"{x['as']} for {x['trait']} at {self._locus_say(x)}" if "locus" in x else f"{x['as']} for {x['trait']}" for x in rows) + ".")
         else:
-            genes, new = lat.symbol.nunique(), lat[lat.new_locus].symbol.nunique()
+            genes = lat.symbol.nunique()
             not_linked = sum(1 for x in {x["symbol"]: x for x in rows}.values() if not x["linked_in_the_release"])
-            say = (f"Added after the release: {cite} names {genes:,} genes at {lat.locus.nunique():,} loci as predicted effector genes for {lab['name']}, "
-                   f"{new:,} of them at loci new in that study; {not_linked:,} of the {genes:,} have no link to it in the release.")
+            if "locus" in lat and lat.locus.notna().all():
+                new = lat[lat.new_locus.astype(bool)].symbol.nunique()
+                say = (f"Added after the release: {cite} names {genes:,} genes at {lat.locus.nunique():,} loci as predicted effector genes for {lab['name']}, "
+                       f"{new:,} of them at loci new in that study; {not_linked:,} of the {genes:,} have no link to it in the release.")
+            else:
+                say = (f"Added after the release: {cite} {'names' if len(keys) == 1 else 'name'} {genes:,} genes for {lab['name']}; "
+                       f"{not_linked:,} of the {genes:,} have no link to it in the release.")
         return {"studies": [self._later_study(k) for k in keys], "links": len(rows), "top": rows[:limit], "more": max(0, len(rows) - limit), "answer": say, "note": LATER_NOTE}
 
     def _later_why(self, lat: pd.DataFrame, symbol: str, found: bool) -> dict:
@@ -650,10 +668,11 @@ class Graph:
         if not len(lat):
             return {"named": False, "studies": [self._later_study(k) for k in keys], "answer": "",
                     "note": f"{cite}, added after the release, does not name {symbol} among its predicted effector genes; a study that does not name a gene is not evidence against it. " + LATER_NOTE}
-        rows = [self._later_link(r) for r in lat.sort_values("locus").itertuples()]
+        rows = [self._later_link(r) for r in self._later_sorted(lat).itertuples()]
         where = "; ".join(self._locus_say(x) for x in rows)
-        say = (f"Added after the release: {cite} also names {symbol} as a predicted effector gene, at {where}." if found else
-               f"Added after the release: {cite} reports a link the release does not hold: it names {symbol} as a predicted effector gene, at {where}. "
+        as_ = rows[0]["as"]
+        say = (f"Added after the release: {cite} also names {symbol} as {as_}, at {where}." if found else
+               f"Added after the release: {cite} reports a link the release does not hold: it names {symbol} as {as_}, at {where}. "
                f"The absence above stands as of the release.")
         return {"named": True, "studies": [self._later_study(k) for k in keys], "links": rows, "answer": say, "note": LATER_NOTE}
 
@@ -1081,7 +1100,7 @@ class Graph:
         extra = {}
         if len(lat) and int(lat.year.max()) > since:
             lat = lat[lat.year > since]
-            rows_ = [self._later_link(x) for x in lat.sort_values(["locus", "symbol"]).itertuples()]
+            rows_ = [self._later_link(x) for x in self._later_sorted(lat).itertuples()]
             new_ = [x for x in rows_ if not x["linked_in_the_release"]]
             keys = list(dict.fromkeys(lat.study))
             cite = _and([self.later_studies[k]["citation"] for k in keys])

@@ -591,7 +591,8 @@ def identifiers(ids: list, category: str, refs: Refs) -> dict:
     for p in VOCAB_PREFIXES:
         mine = [i for i in distinct if i.startswith(p + ":")]
         if mine:
-            vocab[p] = {"distinct": len(mine), "in_release": sum(i in refs.vocab[p] for i in mine)}
+            if refs.vocab.get(p) is not None:              # a list the refs do not hold is not checked (add, on a bundle alone)
+                vocab[p] = {"distinct": len(mine), "in_release": sum(i in refs.vocab[p] for i in mine)}
     xref = {}
     for p in XREF_PREFIXES:
         mine = [i for i in distinct if i.startswith(p + ":")]

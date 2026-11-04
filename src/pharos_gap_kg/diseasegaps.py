@@ -245,8 +245,9 @@ def for_condition(G, r: dict, y: int, top: int | None = None, kind: str | None =
             if g_ is None:
                 return {}
             x_ = G._later_link(next(g_.itertuples()))
-            return {"named_by_a_later_study": {"study": x_["study"], "first_reported": x_["first_reported"], "locus": x_["locus"]["number_in_the_study"],
-                                               "lead_variant": x_["locus"]["lead_variant"], "new_in_this_study": x_["locus"]["new_in_this_study"]}}
+            lo = x_.get("locus") or {}
+            return {"named_by_a_later_study": {"study": x_["study"], "first_reported": x_["first_reported"], "locus": lo.get("number_in_the_study"),
+                                               "lead_variant": lo.get("lead_variant"), "new_in_this_study": lo.get("new_in_this_study")}}
 
         rate = (G.backtest or {}).get("sources_then_gwas")
         how = "Not measured."

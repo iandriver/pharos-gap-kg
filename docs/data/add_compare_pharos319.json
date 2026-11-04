@@ -1,0 +1,27 @@
+{
+ "release": "pharos319",
+ "A": {
+  "hand_pairs": 181,
+  "model_pairs": 181,
+  "reproduced": true,
+  "only_the_model": [],
+  "only_by_hand": []
+ },
+ "B": {
+  "catalog_study": "GCST90308590",
+  "sheet": "Supplementary Table 5 - Genomic",
+  "joined_a_table": false,
+  "catalog_associations": 121,
+  "catalog_mapped_genes_not_the_registered_check": 138,
+  "catalog_reported_genes": 0,
+  "catalog_genes_in_the_graph": 0,
+  "table_genes": 0,
+  "table_genes_the_catalog_reports": 0,
+  "share_of_table_genes": null,
+  "catalog_genes_the_table_holds": 0,
+  "share_of_catalog_genes": null,
+  "reading": "not computable: the Catalog reports no gene for the study's associations",
+  "only_the_table": [],
+  "only_the_catalog": []
+ }
+}

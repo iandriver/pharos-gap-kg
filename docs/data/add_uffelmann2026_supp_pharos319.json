@@ -1,0 +1,312 @@
+{
+ "release": "pharos319",
+ "study": "A",
+ "key": "uffelmann2026_supp",
+ "description": "Uffelmann et al. Alzheimer's disease genetics converges on microglial and neuronal dysregulation. Nature, published 28 October 2026. doi:10.1038/s41586-026-11206-y. Licence: CC BY-NC-ND 4.0. A genome-wide association study of Alzheimer's disease. Add the genes the study names at each associated locus.",
+ "file": "41586_2026_11206_MOESM3_ESM.ods",
+ "file_sha256": "cb450c90075accc75a0477c8051f5d10716eeca5561c3db2d6595119b49e2b9a",
+ "sheets": 23,
+ "stage1": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "sheet",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "sheet": "SD2",
+     "header_row": 2,
+     "notes": "SD2 lists the 127 loci from the multi-ancestry meta-analysis, with predicted effector gene(s) per locus in column 'Predicted effector gene(s)'. Header is on row 2. Rows 3-129 are data."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.0052431,
+    "seconds": 5.5
+   }
+  ]
+ },
+ "sheet": "SD2",
+ "header_row": 2,
+ "rows": 127,
+ "traits_on_the_card": [
+  {
+   "id": "MONDO:0004975",
+   "name": "Alzheimer disease",
+   "links": 618
+  },
+  {
+   "id": "EFO:0009268",
+   "name": "family history of Alzheimer\u2019s disease",
+   "links": 210
+  },
+  {
+   "id": "EFO:0006514",
+   "name": "Alzheimer's disease biomarker measurement",
+   "links": 21
+  }
+ ],
+ "stage2": {
+  "accepted": true,
+  "tries": [
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Predicted effector gene(s)"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "separator": "/"
+     },
+     "object": {
+      "constant": "MONDO:0004975",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetic_association",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "LeadSNP",
+      "rsid",
+      "p_value",
+      "beta",
+      "OR",
+      "Novel"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each slash-separated gene in 'Predicted effector gene(s)' becomes its own edge to Alzheimer disease. These are the effector genes the paper predicts for each GWAS locus (via FLAMES and related methods), so the agent is a computational pipeline. Non-gene entries such as 'IGH gene cluster' and lncRNA-style names (e.g. AC008394.1) will not resolve to a graph protein and are left unmatched. Literature and Coloc_MR columns are not used, since they are literature or colocalisation candidates rather than the study's named effector genes. Direction of effect is not mapped as a qualifier."
+    },
+    "accepted": false,
+    "problems": [
+     "2_predicate: biolink:genetic_association is abstract, a mixin or deprecated"
+    ],
+    "usd": 0.0017118,
+    "seconds": 7.2
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-haiku-5.5",
+    "attempt": 2,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Predicted effector gene(s)"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "separator": "/"
+     },
+     "object": {
+      "constant": "MONDO:0004975",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:gene_associated_with_condition",
+     "association_category": "biolink:Association",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "LeadSNP",
+      "rsid",
+      "p_value",
+      "beta",
+      "OR",
+      "Novel"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "by_value": {},
+     "notes": "Each slash-separated gene in 'Predicted effector gene(s)' becomes its own edge to Alzheimer disease. These are the effector genes the paper predicts for each GWAS locus (via FLAMES and related methods), so the agent is a computational pipeline. Non-gene entries such as 'IGH gene cluster' and lncRNA-style names (e.g. AC008394.1) will not resolve to a graph protein and are left unmatched. Literature and Coloc_MR columns are not used, since they are literature or colocalisation candidates rather than the study's named effector genes. Direction of effect is not mapped as a qualifier."
+    },
+    "accepted": false,
+    "problems": [
+     "4_domain_range: biolink:gene_associated_with_condition's domain is biolink:Gene, which does not admit biolink:Protein"
+    ],
+    "usd": 0.0015101,
+    "seconds": 5.0
+   },
+   {
+    "stage": "mapping",
+    "model": "anthropic/claude-sonnet-5.5",
+    "attempt": 1,
+    "proposal": {
+     "map": true,
+     "subject": {
+      "columns": [
+       "Predicted effector gene(s)"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein",
+      "separator": "/"
+     },
+     "object": {
+      "constant": "MONDO:0004975",
+      "category": "biolink:Disease"
+     },
+     "predicate": "biolink:genetically_associated_with",
+     "association_category": "biolink:GeneToDiseaseAssociation",
+     "knowledge_level": "statistical_association",
+     "agent_type": "data_analysis_pipeline",
+     "qualifiers": {},
+     "edge_properties": [
+      "locus",
+      "LeadSNP",
+      "rsid",
+      "p_value",
+      "OR",
+      "OR 95% CI",
+      "beta",
+      "standard_error",
+      "Novel"
+     ],
+     "keep_if": null,
+     "split_by": null,
+     "notes": "Each slash-separated predicted effector gene at a GWAS locus is linked to Alzheimer disease. The paper names these genes through fine-mapping, colocalisation and the FLAMES method, so the claim is a statistical association rather than a causal assertion. Non-gene entries such as 'IGH gene cluster' will not resolve and are left to the resolver."
+    },
+    "accepted": true,
+    "problems": [],
+    "usd": 0.023556,
+    "seconds": 5.3
+   }
+  ]
+ },
+ "knowledge_source": "infores:doi-10-1038-s41586-026-11206-y",
+ "replayed": "the stages were checked again from the replies logged by the run; no model was called",
+ "mapping": {
+  "map": true,
+  "subject": {
+   "columns": [
+    "Predicted effector gene(s)"
+   ],
+   "resolver": "gene_symbol",
+   "category": "biolink:Protein",
+   "separator": "/"
+  },
+  "object": {
+   "constant": "MONDO:0004975",
+   "category": "biolink:Disease"
+  },
+  "predicate": "biolink:genetically_associated_with",
+  "association_category": "biolink:GeneToDiseaseAssociation",
+  "knowledge_level": "statistical_association",
+  "agent_type": "data_analysis_pipeline",
+  "qualifiers": {},
+  "edge_properties": [
+   "locus",
+   "LeadSNP",
+   "rsid",
+   "p_value",
+   "OR",
+   "OR 95% CI",
+   "beta",
+   "standard_error",
+   "Novel"
+  ],
+  "keep_if": null,
+  "split_by": null,
+  "notes": "Each slash-separated predicted effector gene at a GWAS locus is linked to Alzheimer disease. The paper names these genes through fine-mapping, colocalisation and the FLAMES method, so the claim is a statistical association rather than a causal assertion. Non-gene entries such as 'IGH gene cluster' will not resolve and are left to the resolver."
+ },
+ "model": {
+  "sheet": "anthropic/claude-haiku-5.5",
+  "mapping": "anthropic/claude-sonnet-5.5"
+ },
+ "verdict": {
+  "accepted": true,
+  "problems": [],
+  "rules": [
+   {
+    "value": null,
+    "rows": 186,
+    "checks": {
+     "1_parses": [],
+     "2_predicate": [],
+     "3_categories": [],
+     "4_domain_range": [],
+     "5_association": [],
+     "6_qualifiers": [],
+     "7_provenance": [],
+     "8_identifiers": []
+    },
+    "identifiers": {
+     "subject": {
+      "rows": 186,
+      "resolved": 181,
+      "distinct": 181,
+      "prefixes": {
+       "UniProtKB": 181
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "UniProtKB": {
+        "distinct": 181,
+        "in_release": 181
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Protein"
+     },
+     "object": {
+      "rows": 186,
+      "resolved": 186,
+      "distinct": 1,
+      "prefixes": {
+       "MONDO": 1
+      },
+      "off_prefix": {},
+      "off_prefix_share": 0.0,
+      "vocabulary": {
+       "MONDO": {
+        "distinct": 1,
+        "in_release": 1
+       }
+      },
+      "mondo_xrefs": {},
+      "category": "biolink:Disease"
+     }
+    },
+    "resolved_as_needed": 181,
+    "kept": 186,
+    "made_gaps_by_condition": 0
+   }
+  ],
+  "export": {
+   "passed": true,
+   "failed": null,
+   "groups": 181,
+   "n_nodes": 182,
+   "n_edges": 181,
+   "n_gaps": 0,
+   "predicates": {
+    "biolink:genetically_associated_with": 181
+   }
+  }
+ },
+ "join": {
+  "rows": 181,
+  "targets": 181,
+  "symbols": 181,
+  "traits": [
+   "MONDO:0004975"
+  ],
+  "table_rows_with_no_subject": 5,
+  "their_values": [
+   "FAM105B",
+   "HLA",
+   "IGH gene cluster",
+   "KIAA0125/IGH gene cluster",
+   "MS4A gene cluster"
+  ],
+  "file_sha256": "3ba1da391a558aba36f82ea6ca66a1cc104a0a902b549308619665e3983a3b4d"
+ },
+ "spent_usd": 0.0358
+}

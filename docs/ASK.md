@@ -766,6 +766,26 @@ That sentence ends the answer; the rest is the answer without the study. What wa
 in `docs/data/later_pharos319.json`, and the rule is "A study added after the release" in
 `docs/PROTOCOL.md`.
 
+### Adding a table from a paper
+
+A table from a paper the release does not hold can be added without code written for it. A model
+proposes which sheet to read and how its rows become edges, code checks each proposal with the nine
+checks of the ingest stage, and the table joins beside the bundle only when you say so. In Claude
+Desktop (or any MCP client running the server on your machine), give your client the file's path and
+a description of the paper (citation, journal, publication date, DOI, licence, what the study is, the
+disease in words, and what to add); its model reads the cards from `add_card`, checks its proposals
+with `add_check`, and calls `add_join` only on your word. No key is needed: your client's model does
+the proposing. The server over the web serves none of these three tools.
+
+From the command line, the two studies of the protocol run with a model through OpenRouter:
+
+```bash
+python -I -m pharos_gap_kg.add run pharos319 A      # needs OPENROUTER_API_KEY
+python -I -m pharos_gap_kg.add show pharos319 A     # the accepted mapping, field by field
+```
+
+What the stages did with the two studies is in `findings/ADD.md`.
+
 ## From an MCP client
 
 ```bash

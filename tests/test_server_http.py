@@ -96,6 +96,7 @@ def test_the_questions_over_http(serve):
                 return tools, body
     tools, why = asyncio.run(go())
     assert "why" in tools and "gaps" in tools and len(tools) == 9
+    assert not any(t.startswith("add_") for t in tools), "the server over the web is read-only: it serves no tool that adds a table"
     assert why["found"] and [x["study"] for x in why["studies"]] == ["S1", "S2"]
 
 

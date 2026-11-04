@@ -51,7 +51,9 @@ def test_the_server_offers_the_eight_questions_and_answers_them(tmp_path):
     assert "to place one named target" in next(t.description for t in tools if t.name == "why") and "for the rank of one named target use why" in next(t.description for t in tools if t.name == "predict")
     assert [g["kind"] for g in gaps["gaps"]] == ["dark", "ligand"] and "nearest route" in gaps["answer"] and "function" in gaps["reading"]
     assert [t["symbol"] for t in nearest["targets"]] == ["DDD"]
-    assert sorted(t.name for t in tools) == NAMES
+    # over stdio, on the person's own machine, the server also serves the three tools that add a table (docs/PROTOCOL.md, "Adding a table")
+    assert sorted(t.name for t in tools) == sorted(NAMES + ["add_card", "add_check", "add_join"])
+    assert "ONLY when the person" in next(t.description for t in tools if t.name == "add_join")
     assert all(len(t.description or "") > 80 for t in tools), "each tool says what kind of request it answers"
     assert "do not choose" in (init.instructions or "") and "not in the graph" in (init.instructions or "")
     assert "11 GWAS links" in status["answer"]
