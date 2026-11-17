@@ -42,6 +42,7 @@ EVAL = DATA / "eval"                                          # frozen splits an
 BUNDLE = Path(os.environ.get("PHAROS_GAP_KG_BUNDLE", DATA / "bundle"))   # bundle/<release>: what the front end reads
 CONTEXT = DATA / "context"                                    # context/<release>: undated link tables, one per kind
 DOCS_DATA = (ROOT / "docs" / "data") if ROOT else DATA / "docs"  # small committed summaries
+BIOLINK_SCHEMA = (DOCS_DATA if ROOT else _HERE.parent) / "biolink_4.4.3.json"
 RECORDED = (ROOT / "recorded") if ROOT else DATA / "recorded"      # recorded/<release>: committed answers from live services
 RELEASE = DATA / "release"                                    # the bundle archive, as attached to a published release
 DESKTOP_HOME = Path.home() / ".pharos-gap-kg"                 # the copy Claude Desktop runs: venv/ and data/bundle/<release>

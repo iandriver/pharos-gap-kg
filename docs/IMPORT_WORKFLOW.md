@@ -4,6 +4,8 @@ The MCP import workflow now explains what happens to source rows and records how
 
 ## 1. Inspect
 
+For an example you can compare across installations, use the Cheng refractive-error walkthrough. With the supplement and accepted mapping held fixed, the full reference tables give 500 genes from 539 rows and the downloadable bundle gives 499. Only the full lookup resolves `C14orf39` to `UniProtKB:Q8N1H7`. The `checked_against` field in the dry run identifies the reference set. [Recorded run](https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D)
+
 Call `add_card(file, about)` to inspect sheets. Select a sheet and header row and call it again. The response includes a full-table `profile`: row count, missing/distinct values per column and repeated rows beyond the first. Repeats may be separate measurements; they are reported, not removed.
 
 The original bounded model card stays unchanged. This profile is additional information for the person or client, not a change to recorded model experiments.

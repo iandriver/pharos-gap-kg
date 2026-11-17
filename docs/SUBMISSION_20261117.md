@@ -1,47 +1,32 @@
-# pharos-gap-kg: final submission, November 17, 2026
+# Pharos gap graph
 
-Bio-Agent Knowledge Graph Construction Challenge, open-source track. Ian Driver.
+Bio-Agent Knowledge Graph Construction Challenge · Open-source track · Ian Driver · November 17, 2026
 
-## Open the demo
+## Try it with a scientist’s question
 
-- [Browser demo](https://pm4ie6tprh.us-east-1.awsapprunner.com/): choose Parkinson disease to inspect known evidence and missing evidence.
-- [Graph-building walkthrough](https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D): inspect an unseen study's sheet selection, proposed mapping, validator feedback and resulting links.
-- [MCP endpoint](https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp): add this URL in a compatible MCP client. A browser GET is not an MCP session.
-- [Service health and deployed commit](https://pm4ie6tprh.us-east-1.awsapprunner.com/health).
+**Which genes does this refractive-error study add to Pharos?** Open the recorded Cheng study. A scientist supplied the workbook and a description of the paper. The model picked Supplementary Table 3 from 15 sheets. Open “2. The mapping” to see why the validator refused a proposed gene relationship whose subject was a protein. A second model supplied a mapping that passed. The scientist could then inspect the rows and decide whether to join the study. [Open the walkthrough](https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D) · [Captioned demo video](https://github.com/iandriver/pharos-gap-kg/releases/download/submission-2026-11-17-r2/pharos-gap-kg-demo.mp4)
 
-The public demo is read-only and needs no model/API key. The questions are live graph queries; the import walkthrough displays recorded runs, not a public file-upload service. A local MCP installation additionally provides `add_card`, `add_check` and `add_join` for a scientist's file. Models propose, code validates, and a join requires the person's instruction. The new local workflow reports unresolved source rows and preserves immutable import receipts. See [the import guide](IMPORT_WORKFLOW.md).
+The accepted mapping accounted for all 539 rows. With the full Pharos reference tables it yielded **500 distinct genes**. An installation with the downloadable bundle yields **499** because only the full lookup resolves the symbol `C14orf39`. The study names a nearby protein-coding gene at each locus. Of the 500 genes, 327 also appear among the GWAS Catalog’s 737 positional gene assignments for this study. The scientist left the table unjoined. [Study D results](../findings/ADD.md)
+
+**Why does ACHE appear in an Alzheimer disease query?** The live graph traces donepezil to ACHE, its mechanism target, and to Alzheimer disease, its indication. Three more drugs follow this path. Pharos 3.19 contains no GWAS link for this gene–disease pair. The answer names the source of each kind of evidence and lets you download the supporting subgraph. [Ask the live question](https://pm4ie6tprh.us-east-1.awsapprunner.com/?target=ACHE&trait=Alzheimer%20disease)
+
+The browser serves recorded table imports and live graph queries without an API key. To check a file of your own, use the local MCP tools. They inspect the sheet, preview what would join, and write the table beside the release after you instruct the client to join it. Each import records its source file, mapping and validator identity. [Install and try a local client](ASK.md#from-an-mcp-client) · [Import guide](IMPORT_WORKFLOW.md) · [Hosted MCP](https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp)
+
+## What the evaluations showed
+
+| Question | Result and scope |
+|---|---|
+| Can a scientist use the agent? | Three hosted models each answered 34 or 35 of 35 tasks on four frozen sets through the typed questions. The typed interface beat SQL on two sets. An earlier set exposed faults later fixed. Independent researcher testing remains open. The ingest pipeline also exported 57,873 JAX/MGI gene–phenotype edges separately, an example beyond the external GWAS workbooks. [Usability](../findings/USABILITY.md) · [Human test](PERSON_TEST.md) · [Ingest](../findings/INGEST.md) |
+| Does context improve held-out link prediction? | With the same graph model, LightGCN, mean average precision on post-2018 links rose from **0.0825** on Pharos links alone to **0.0866** with context. The paired gain was 0.0041 [0.0006, 0.0085]. The context was undated and could include later information. A simpler neighbour method scored **0.0969**. In the separate 2023–2026 test, the prespecified ranking that used gene position scored 0.1012 versus 0.0947 for neighbours. Its gain concerned previously known loci. [Matched model test](../findings/MODELS.md) · [Later-link test](../findings/PROSPECTIVE.md) |
+| Does pruning work? | The literature rule met its prespecified thresholds on five of eleven sources. The rules withheld 7,248 rows. ClinGen judged 26 withheld rows, supporting 15, rating six limited and judging five against. Ten of the eleven withheld UniProt Disease rows it judged had support. The small, selectively curated subset cannot estimate how many of all 7,248 were wrong. The prediction test found no clear overall benefit from pruning. [Pruning](../findings/PRUNING2.md) · [ClinGen audit](../findings/CLINGEN.md) |
+| Can a reviewer trace or restore an edge? | An ordinary edge names its source. GWAS edges name their studies and papers. Each pruned row survives as a typed gap with its rule and restoration condition. Changing the recorded evidence for 20 pairs triggered a six-stage rebuild whose files matched a full rebuild. [Graph](../findings/GRAPH.md) · [Maintenance](../findings/MAINTENANCE.md) |
+| Does the export follow a standard? | The graph contains 59,071 nodes, 640,321 edges and 30,484 typed gaps. The remodelled edges pass the project’s Biolink 4.4.3 semantic checks. The reference KGX validator flagged identifier and category issues, including the extension used for gaps. [Standards report](../findings/STANDARDS.md) |
 
 ## Download and reproduce
 
-- [Public repository](https://github.com/iandriver/pharos-gap-kg).
-- [Frozen submission source](https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-final).
-- [KGX graph archive](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz), with `nodes.tsv`, `edges.tsv`, `gaps.tsv` and a file-digest manifest.
-- [Graph archive checksum](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz.sha256).
-- [Question-serving bundle](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-bundle-pharos319.tar.gz), for the local questions/MCP server.
-- [Detailed results and progress report](PROGRESS_20261027.md), [scoring protocol](PROTOCOL.md), and [reproduction findings](../findings/REPRODUCE.md).
+- [Corrected source and installation instructions](https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-r2) · [Original freeze](https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-final)
+- [KGX graph archive](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz) · [Graph checksum](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz.sha256)
+- [Question-serving bundle](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-bundle-pharos319.tar.gz) · [Deployed commit](https://pm4ie6tprh.us-east-1.awsapprunner.com/health) · [Public checks](https://github.com/iandriver/pharos-gap-kg/releases/download/submission-2026-11-17-r2/public-checks.json)
+- [Protocol](PROTOCOL.md) · [Detailed results](PROGRESS_20261027.md) · [Reproduction history](../findings/REPRODUCE.md)
 
-Graph archive SHA-256: `4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c`.
-Bundle archive SHA-256: `a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3`.
-
-The graph archive packages the existing measured graph; it does not rerun scientific evaluations. Its manifest records the packaging checkout and the exact file bytes. The submission tag freezes the code and write-up. The deployed image reports its exact code commit at `/health`. The bundle contains no API secrets or licensed later-study file. Repository code is Apache-2.0; upstream data provenance and source-specific terms remain applicable.
-
-## What the agent builds
-
-The entry ingests public Pharos tables, normalises identifiers, maps them to Biolink, applies declared pruning rules, exports a graph and serves bounded contextual questions. The graph has 640,321 edges and 30,484 typed gaps over 59,071 nodes. Disease/target gaps state what evidence is missing, the observation that would close the gap, and historical closure rates where measured. A missing relationship is not reported as a biological negative.
-
-Every removed association remains a gap naming the rule and restoration condition. Every ordinary edge identifies its source; GWAS edges carry their studies/papers, and build records identify the source files and digests. A traced dependency map rebuilds only outputs affected by changed inputs; a controlled demonstration matched a full rebuild byte for byte.
-
-The table-mapping agent was evaluated on separate study files, including unseen studies outside the original disease example. Schema validation and identifier coverage are measured separately from comparison with Catalog gene assignments. Paper-named genes and genes assigned by genomic position can differ; a valid mapping does not prove a causal gene.
-
-## Evidence by judging criterion
-
-| Criterion | Evidence | Limitation |
-|---|---|---|
-| Usability, 40% | Browser questions, MCP tools, contextual disease gaps and recorded import walkthrough; multiple frozen task sets answered by three hosted models | No completed independent human session is claimed. The hosted walkthrough is not an arbitrary-file importer |
-| Accuracy and pruning, 30% | Dated pair-level prediction tests, degree/neighbour baselines, lineage/position/locus controls, planted-edge tests and a CTD extension | No graph neural model beats neighbours; pruning has no resolved prediction benefit; planted crossings are not independently adjudicated real errors |
-| Explainability, 20% | Source tracing, typed gaps/restoration conditions, import diagnostics and receipts, changed-input rebuild demonstration | A gap in Pharos's evidence grade is not a functional or disease-causal conclusion |
-| Standards, 10% | KGX export, Biolink 4.4.3 semantic checks after the remodel, reference-validator report and recorded clean-clone reproduction | Known identifier warnings and the gap-file extension remain explicitly documented |
-
-The prespecified prospective combiner scores mean average precision 0.1012 versus neighbours 0.0947, paired difference +0.0066 [0.0031, 0.0102]. The gain concerns links at previously known loci. On candidates unexplained by earlier lineage/position evidence it is level or worse under the two protocol views. This is evidence for bounded ranking utility, not discovery of new biological mechanisms or an official competition score.
-
-The submission includes the negative results. No new model was fitted or rescored to prepare this release. Fresh code tests and deployed-link checks are recorded separately from the historical clean-clone scientific build. A demo video script is provided in [VIDEO.md](VIDEO.md); no completed video or independent-user result is claimed.
+A clean build of the original November 17 freeze used the published source files and recorded service answers. All 20 stages completed. The three graph TSVs and the serving archive matched the release digests byte for byte. The graph archive SHA-256 is `4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c`. The serving archive SHA-256 is `a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3`. Repository code is Apache-2.0. Upstream data keep their source-specific terms.

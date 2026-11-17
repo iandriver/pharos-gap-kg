@@ -47,7 +47,7 @@ from pharos_gap_kg import graph, paths
 
 PREFIX = graph.PREFIX
 SEED = 20261019
-BIOLINK = paths.ROOT / "docs" / "data" / "biolink_4.4.3.json"
+BIOLINK = paths.BIOLINK_SCHEMA
 CAP_USD = 1.75                    # raised from 1.00 on Ian's word, 19 Oct (docs/PROTOCOL.md, Amendments)
 PRICES = {"anthropic/claude-haiku-5.5": (0.10, 0.50), "anthropic/claude-sonnet-5.5": (2.00, 10.00), "anthropic/claude-opus-5.5": (4.00, 20.00)}
 LOCAL = "local:qwen3.6:35b-a3b"

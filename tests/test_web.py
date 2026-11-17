@@ -20,6 +20,7 @@ def test_the_walkthrough_carries_sheet_names_and_sizes_and_no_cell():
     for s in W["studies"]:
         assert all(set(x) == {"name", "rows", "columns"} for x in s["sheets"]), s["id"]
     d = W["studies"][-1]
+    assert "499 genes" in d["reference_note"] and "C14orf39" in d["reference_note"]
     assert d["join"]["rows"] == 500 and "disagree" in d["outcome"] and "at most 68%" in d["outcome"] and not d["joined"]
     assert W["studies"][3]["outcome"].startswith("Nothing joins") and "95 of 102 rows, 93.1%" in W["studies"][3]["outcome"]
     assert W["studies"][1]["check"]["against"].startswith("the genes the GWAS Catalog reports")

@@ -18,6 +18,8 @@ Three properties are the point of it:
 
 ## Try it
 
+[Start with a scientist's file](https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D). In the recorded Cheng study, a model selects the loci table from 15 sheets. Open the rejected mapping to see which biological relationship the validator refused, then inspect the accepted preview. The full reference tables resolve 500 genes. Replaying the mapping with the downloadable bundle resolves 499 because it lacks one gene-symbol cross-reference. The scientist decides whether to add the table locally.
+
 The questions are served at `https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp`. In Claude, add that address as a custom connector
 named pharos-gap-kg (Settings, Connectors) and ask, for example, "Using pharos-gap-kg, what are the
 gaps for Parkinson disease?". It is this repository's container image with the Pharos 3.19 bundle,

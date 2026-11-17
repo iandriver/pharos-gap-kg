@@ -29,5 +29,8 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/pharos_gap_kg"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"docs/data/biolink_4.4.3.json" = "pharos_gap_kg/biolink_4.4.3.json"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

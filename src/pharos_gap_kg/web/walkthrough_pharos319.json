@@ -2024,6 +2024,7 @@
    },
    "joined": false,
    "outcome": "It would join 500 links from 500 graph genes (508 of 539 rows give an edge of the graph). Its 539 rows lie within 466 to 1,864, half to twice the 932 the abstract reports, so by the stated check it is a table of the study's loci. Against the genes the GWAS Catalog maps to the study's variants by position, the reading is disagree. The table gives one gene per locus and the Catalog maps each of its 932 associations, so the table could hold at most 68% of the Catalog's 737 graph genes; it holds 44%. Not joined: it joins only on the person's word.",
+   "reference_note": "This run used the full Pharos reference tables. Replaying the same mapping with the downloadable bundle gives 499 genes. The full lookup resolves one extra symbol, C14orf39, to UniProtKB:Q8N1H7.",
    "check": {
     "against": "the genes the GWAS Catalog maps by position to the study's associations",
     "catalog_study": "GCST90841196",

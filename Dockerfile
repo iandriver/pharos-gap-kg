@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /
 WORKDIR /src
 COPY pyproject.toml constraints.txt README.md LICENSE ./
 COPY src ./src
+COPY docs/data/biolink_4.4.3.json docs/data/
 RUN python -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir ".[server]" -c constraints.txt
 
 FROM python:3.12-slim@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704

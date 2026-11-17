@@ -237,6 +237,10 @@ def walkthrough(release: str) -> dict:
                "mapping": {kk: r["mapping"][kk] for kk in MAPPING_KEYS if kk in (r.get("mapping") or {})} if r.get("mapping") else None,
                "join": r.get("join") and {kk: r["join"][kk] for kk in ("rows", "targets", "traits", "table_rows_with_no_subject", "their_values")},
                "joined": bool(r.get("joined")), "outcome": _outcome(study, rerun, r, k)}
+        if release == "pharos319" and study == "D":
+            out["reference_note"] = ("This run used the full Pharos reference tables. Replaying the same mapping "
+                                     "with the downloadable bundle gives 499 genes. The full lookup resolves "
+                                     "one extra symbol, C14orf39, to UniProtKB:Q8N1H7.")
         if study == "A":
             out["check"] = {"against": "the table built by hand", **{kk: checks.get(kk) for kk in ("hand_pairs", "model_pairs", "reproduced")}}
         elif checks:

@@ -6,5 +6,6 @@
 !LICENSE
 !src/
 !docs/data/bundle_archive_pharos319.json
+!docs/data/biolink_4.4.3.json
 !data/release/pharos-gap-kg-bundle-pharos319.tar.gz
 **/__pycache__

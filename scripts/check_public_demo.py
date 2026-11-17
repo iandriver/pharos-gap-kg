@@ -17,6 +17,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--base', default='https://pm4ie6tprh.us-east-1.awsapprunner.com')
     p.add_argument('--commit', required=True)
+    p.add_argument('--tag', default='submission-2026-11-17-r2')
     p.add_argument('--output', required=True)
     a = p.parse_args()
     results = []
@@ -47,6 +48,11 @@ def main():
                     get(u)
         walk = json.loads(get(a.base + '/walkthrough.json'))
         assert walk['studies'], 'walkthrough has no study examples'
+        if a.tag == 'submission-2026-11-17-r2':
+            study = next(s for s in walk['studies'] if s['id'] == 'D')
+            assert study['join']['targets'] == 500 and '499 genes' in study['reference_note'], study['id']
+            why = json.loads(get(a.base + '/api/why?target=ACHE&trait=Alzheimer%20disease'))
+            assert 'donepezil' in why['answer'].casefold(), 'missing drug path in the featured example'
         found = json.loads(get(a.base + '/api/find?text=Parkinson%20disease'))
         assert found.get('matches'), found
         gaps = json.loads(get(a.base + '/api/gaps?disease=Parkinson%20disease'))
@@ -70,13 +76,15 @@ def main():
                     results.append({'url': a.base + '/mcp', 'initialize': 'passed', 'tools': tools, 'gaps_call': 'passed'})
         asyncio.run(mcp())
         api = 'https://api.github.com/repos/iandriver/pharos-gap-kg'
-        commit = json.loads(get(api + '/commits/submission-2026-11-17-final'))
+        tag = quote(a.tag, safe='')
+        repo = 'https://github.com/iandriver/pharos-gap-kg'
+        commit = json.loads(get(api + '/commits/' + tag))
         assert commit['sha'] == a.commit, commit['sha']
-        get('https://github.com/iandriver/pharos-gap-kg')
-        get('https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-final')
+        get(repo)
+        get(f'{repo}/tree/{tag}')
         for name in ['SUBMISSION_20261117.md', 'PROGRESS_20261027.md', 'PROTOCOL.md', 'IMPORT_WORKFLOW.md', 'VIDEO.md']:
-            get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-final/docs/' + name)
-        get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-final/findings/REPRODUCE.md')
+            get(f'{repo}/blob/{tag}/docs/{name}')
+        get(f'{repo}/blob/{tag}/findings/REPRODUCE.md')
         release = json.loads(get(api + '/releases/tags/pharos319-bundle'))
         assets = {x['name']: x for x in release['assets']}
         checks = {'pharos-gap-kg-graph-pharos319.tar.gz': '4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c',
@@ -94,7 +102,7 @@ def main():
         passed = True
     except Exception as e:
         error = f'{type(e).__name__}: {e}'
-    out = {'checked_at': datetime.now(timezone.utc).isoformat(), 'commit': a.commit, 'passed': passed,
+    out = {'checked_at': datetime.now(timezone.utc).isoformat(), 'commit': a.commit, 'tag': a.tag, 'passed': passed,
            'checks': results, 'error': error}
     Path(a.output).write_text(json.dumps(out, indent=2) + '\n')
     print(json.dumps({'passed': passed, 'checks': len(results), 'error': error, 'output': a.output}))

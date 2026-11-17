@@ -120,3 +120,7 @@ See [AUDIT_20261008.md](AUDIT_20261008.md) for current evidence, scoring limits 
 ## November 17 submission freeze
 
 The [submission write-up](SUBMISSION_20261117.md) is the current deliverable. The browser demo, graph archive and source tag are released together; public checks record the deployed code identity. Earlier queue sections are historical. Independent human testing and a recorded video are not claimed.
+
+### November 17 release revision
+
+The corrected release packages the Biolink schema with the Desktop server and labels the two gene counts in the study walkthrough. Use the [current write-up](SUBMISSION_20261117.md) for the captioned video, source tag and verification links. The researcher session is still open. A release on GitHub establishes public availability. The organizer’s acknowledgment establishes delivery.

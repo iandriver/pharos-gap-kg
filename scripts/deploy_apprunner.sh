@@ -16,7 +16,7 @@ REGION="${AWS_REGION:-us-east-1}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 ARCHIVE=data/release/pharos-gap-kg-bundle-pharos319.tar.gz
-if [ -n "$(git status --porcelain -- src pyproject.toml constraints.txt Dockerfile .dockerignore docs/data/bundle_archive_pharos319.json)" ]; then
+if [ -n "$(git status --porcelain -- src pyproject.toml constraints.txt Dockerfile .dockerignore docs/data/bundle_archive_pharos319.json docs/data/biolink_4.4.3.json)" ]; then
   echo "REFUSED: what the image is built from has uncommitted changes; the image is the commit" >&2; exit 1
 fi
 [ -f "$ARCHIVE" ] || { echo "missing $ARCHIVE; fetch it:  python -m pharos_gap_kg.release get pharos319" >&2; exit 1; }

@@ -119,6 +119,7 @@ function show(run) {
     h("div", { class: "stage" }, h("h3", { text: "3. The person" }),
       run.join ? [
         h("p", null, `The accepted mapping reads "${run.sheet}" (${n(run.rows)} rows) and would make ${n(run.join.rows)} links from ${n(run.join.targets)} graph genes to ${(run.join.traits || []).map((t) => traitName(run, t)).join(", ")}.`),
+        run.reference_note ? h("p", { text: run.reference_note }) : null,
         run.join.table_rows_with_no_subject ? h("p", { class: "small", text: `${n(run.join.table_rows_with_no_subject)} rows give no graph gene; among their values: ${(run.join.their_values || []).join(", ")}.` }) : null,
         h("p", { class: "small", text: run.joined ? "The person joined it." : run.study === "A" ? "Compared with the table built by hand, not joined: that table is already beside the graph." : "Not joined. It joins only when the person says so." })]
         : h("p", { class: "small", text: "No accepted mapping makes edges, so there is nothing to join." })),
