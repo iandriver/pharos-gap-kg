@@ -7,6 +7,8 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import time
+import urllib.error
 import urllib.request
 from urllib.parse import quote, urljoin, urlparse
 
@@ -19,12 +21,19 @@ def main():
     a = p.parse_args()
     results = []
     def get(url):
-        req = urllib.request.Request(url, headers={'User-Agent': 'pharos-gap-kg-submission-check'})
-        with urllib.request.urlopen(req, timeout=60) as r:
-            data = r.read()
-            assert r.status == 200, (url, r.status)
-            results.append({'url': url, 'status': r.status, 'bytes': len(data)})
-            return data
+        req = urllib.request.Request(url)
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    data = r.read()
+                    assert r.status == 200, (url, r.status)
+                    results.append({'url': url, 'status': r.status, 'bytes': len(data)})
+                    return data
+            except urllib.error.HTTPError as e:
+                results.append({'url': url, 'status': e.code, 'attempt': attempt + 1})
+                if e.code not in (429, 502, 503, 504) or attempt == 2:
+                    raise
+                time.sleep(2 * (attempt + 1))
     def check():
         h = json.loads(get(a.base + '/health'))
         assert h['status'] == 'ok' and h['commit'] == a.commit, h
@@ -53,7 +62,7 @@ def main():
                     tools = [t.name for t in (await s.list_tools()).tools]
                     assert 'gaps' in tools and not any(t.startswith('add_') for t in tools), tools
                     r = await s.call_tool('gaps', {'disease': 'Parkinson disease'})
-                    assert not r.isError, r
+                    assert not getattr(r, "is_error", getattr(r, "isError", True)), r
                     body = getattr(r, 'structured_content', None) or getattr(r, 'structuredContent', None)
                     if body is None:
                         body = json.loads(r.content[0].text)
@@ -61,13 +70,13 @@ def main():
                     results.append({'url': a.base + '/mcp', 'initialize': 'passed', 'tools': tools, 'gaps_call': 'passed'})
         asyncio.run(mcp())
         api = 'https://api.github.com/repos/iandriver/pharos-gap-kg'
-        commit = json.loads(get(api + '/commits/submission-2026-11-17'))
+        commit = json.loads(get(api + '/commits/submission-2026-11-17-final'))
         assert commit['sha'] == a.commit, commit['sha']
         get('https://github.com/iandriver/pharos-gap-kg')
-        get('https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17')
+        get('https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-final')
         for name in ['SUBMISSION_20261117.md', 'PROGRESS_20261027.md', 'PROTOCOL.md', 'IMPORT_WORKFLOW.md', 'VIDEO.md']:
-            get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17/docs/' + name)
-        get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17/findings/REPRODUCE.md')
+            get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-final/docs/' + name)
+        get('https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-final/findings/REPRODUCE.md')
         release = json.loads(get(api + '/releases/tags/pharos319-bundle'))
         assets = {x['name']: x for x in release['assets']}
         checks = {'pharos-gap-kg-graph-pharos319.tar.gz': '4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c',

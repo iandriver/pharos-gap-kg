@@ -14,7 +14,7 @@ The public demo is read-only and needs no model/API key. The questions are live 
 ## Download and reproduce
 
 - [Public repository](https://github.com/iandriver/pharos-gap-kg).
-- [Frozen submission source](https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17).
+- [Frozen submission source](https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-final).
 - [KGX graph archive](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz), with `nodes.tsv`, `edges.tsv`, `gaps.tsv` and a file-digest manifest.
 - [Graph archive checksum](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz.sha256).
 - [Question-serving bundle](https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-bundle-pharos319.tar.gz), for the local questions/MCP server.
