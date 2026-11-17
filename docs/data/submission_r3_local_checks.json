@@ -1,0 +1,60 @@
+{
+  "commit": "87e93096e164c1cb9001f95deb5b9a83a02dfc9f",
+  "tag": "submission-2026-11-17-r3",
+  "rebuild": {
+    "checkout": "fresh clone of the tag with locally cached registered inputs and offline-installed dependencies",
+    "extract_tables": 16,
+    "restored_recorded_answers": true,
+    "stages": 20,
+    "tracked_changes_after_build": false,
+    "graph_files": {
+      "edges.tsv": {
+        "archive_sha256": "c9a79f572d97e448d51c07a58a9379010a0aa2d0419e19eb49fd25b71e75fede",
+        "rebuilt_sha256": "c9a79f572d97e448d51c07a58a9379010a0aa2d0419e19eb49fd25b71e75fede",
+        "data_rows": 640321
+      },
+      "gaps.tsv": {
+        "archive_sha256": "000382759174a2fb403585ff3f584c8ee0c64c263237afddbc169c5784c20e14",
+        "rebuilt_sha256": "000382759174a2fb403585ff3f584c8ee0c64c263237afddbc169c5784c20e14",
+        "data_rows": 30484
+      },
+      "nodes.tsv": {
+        "archive_sha256": "ebd608e99c5efb32d3745d4714ec1797bd5fe49eaefc1e9cae8c85287a34bb6f",
+        "rebuilt_sha256": "ebd608e99c5efb32d3745d4714ec1797bd5fe49eaefc1e9cae8c85287a34bb6f",
+        "data_rows": 59071
+      }
+    },
+    "graph_archive_sha256": "4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c",
+    "serving_archive_sha256": "a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3",
+    "held_out_model_scoring_rerun": false
+  },
+  "tests": {
+    "module_selftests": "passed",
+    "pytest_passed": 180,
+    "existing_warnings": 2,
+    "dated_study_checks_passed": 7
+  },
+  "deployment": {
+    "method": "Installed the final tag\u2019s wheel in the verified r2 runtime image. Dependency and base graph manifests did not change. All 70 package files were checked against their wheel bytes.",
+    "base_image_manifest_sha256": "fe2d3fe6ffa8fb80ec32dc9cd7443f8c843e96a63824f70e77fc433a6ddfc735",
+    "r3_image_manifest_sha256": "c91097ec285cfcfe4b948ee5938b793b72d8716ec4232329ee54be5bfa577a22"
+  },
+  "media": {
+    "duration_seconds": 79,
+    "image": "1600x900 H.264 at 24 fps",
+    "audio_tracks": 0,
+    "video_sha256": "b1e0c5ecb8857740b8dcd6f78b07a71de3b7ce3f588422a615943e1917d6b8ee",
+    "word_form_sha256": "82b94320c45f4bdf29ddd7852c5eb673db606e49b29f410d2120f54af3d363e9"
+  },
+  "kgx": {
+    "validator": "kgx 2.7.0",
+    "biolink_model": "4.4.3",
+    "checked": {
+      "nodes": 59071,
+      "edges": 640321
+    },
+    "nodes_with_an_error": 1042,
+    "subject_object_pairs_with_an_error": 1062,
+    "error_classes_and_counts_match": "docs/data/submission_kgx_20261117.json"
+  }
+}

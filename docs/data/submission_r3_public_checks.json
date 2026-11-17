@@ -1,0 +1,179 @@
+{
+  "checked_at": "2026-11-17T20:38:27.439585+00:00",
+  "commit": "87e93096e164c1cb9001f95deb5b9a83a02dfc9f",
+  "tag": "submission-2026-11-17-r3",
+  "passed": true,
+  "checks": [
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/health",
+      "status": 200,
+      "bytes": 93
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/",
+      "status": 200,
+      "bytes": 5026
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/app.js",
+      "status": 200,
+      "bytes": 20370
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/style.css",
+      "status": 200,
+      "bytes": 10411
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D",
+      "status": 200,
+      "bytes": 4296
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/add.js",
+      "status": 200,
+      "bytes": 9993
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/style.css",
+      "status": 200,
+      "bytes": 10411
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/walkthrough.json",
+      "status": 200,
+      "bytes": 70055
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/why?target=ACHE&trait=Alzheimer%20disease",
+      "status": 200,
+      "bytes": 7363
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/find?text=Parkinson%20disease",
+      "status": 200,
+      "bytes": 1196
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/gaps?disease=Parkinson%20disease",
+      "status": 200,
+      "bytes": 9558
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/gaps?disease=type%202%20diabetes%20mellitus",
+      "status": 200,
+      "bytes": 10505
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/subgraph?question=gaps&disease=MONDO%3A0005180",
+      "status": 200,
+      "bytes": 18163
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/api/status",
+      "status": 200,
+      "bytes": 5811
+    },
+    {
+      "url": "https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp",
+      "initialize": "passed",
+      "tools": [
+        "find",
+        "known",
+        "why",
+        "connect",
+        "predict",
+        "whats_new",
+        "gaps",
+        "status",
+        "subgraph"
+      ],
+      "gaps_call": "passed"
+    },
+    {
+      "url": "https://api.github.com/repos/iandriver/pharos-gap-kg/commits/submission-2026-11-17-r3",
+      "status": 200,
+      "bytes": 69661
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg",
+      "status": 200,
+      "bytes": 309821
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/tree/submission-2026-11-17-r3",
+      "status": 200,
+      "bytes": 313785
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/docs/SUBMISSION_20261117.md",
+      "status": 200,
+      "bytes": 221497
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/docs/PROGRESS_20261027.md",
+      "status": 200,
+      "bytes": 354644
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/docs/PROTOCOL.md",
+      "status": 200,
+      "bytes": 874982
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/docs/IMPORT_WORKFLOW.md",
+      "status": 200,
+      "bytes": 211455
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/docs/VIDEO.md",
+      "status": 200,
+      "bytes": 178536
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/blob/submission-2026-11-17-r3/findings/REPRODUCE.md",
+      "status": 200,
+      "bytes": 185444
+    },
+    {
+      "url": "https://api.github.com/repos/iandriver/pharos-gap-kg/releases/tags/submission-2026-11-17-r3",
+      "status": 200,
+      "bytes": 7493
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/releases/download/submission-2026-11-17-r3/pharos-gap-kg-final-submission.docx",
+      "status": 200,
+      "bytes": 10162,
+      "sha256": "82b94320c45f4bdf29ddd7852c5eb673db606e49b29f410d2120f54af3d363e9"
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/releases/download/submission-2026-11-17-r3/pharos-gap-kg-gaps-demo.mp4",
+      "status": 200,
+      "bytes": 1188720,
+      "sha256": "b1e0c5ecb8857740b8dcd6f78b07a71de3b7ce3f588422a615943e1917d6b8ee"
+    },
+    {
+      "url": "https://api.github.com/repos/iandriver/pharos-gap-kg/releases/tags/pharos319-bundle",
+      "status": 200,
+      "bytes": 9643
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz",
+      "status": 200,
+      "bytes": 17019477,
+      "sha256": "4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c"
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-bundle-pharos319.tar.gz",
+      "status": 200,
+      "bytes": 16286269,
+      "sha256": "a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3"
+    },
+    {
+      "url": "https://github.com/iandriver/pharos-gap-kg/releases/download/pharos319-bundle/pharos-gap-kg-graph-pharos319.tar.gz.sha256",
+      "status": 200,
+      "bytes": 103
+    }
+  ],
+  "error": null
+}
