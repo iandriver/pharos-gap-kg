@@ -148,3 +148,15 @@ same kind of mapping for B and C, and the new one refuses the ungrounded mapping
 **Limits.** Study D ran once and is one study. Check 8's bar was set after three tables had been seen, and D is the first
 table it met unseen. The Catalog check reads positional genes, not what the paper named, and on D the two lists differ in
 grain. The symbol rule has no table of previous symbols.
+
+## November 17 replay with the downloadable bundle
+
+The same Cheng workbook and accepted mapping accounted for all 539 rows in both installations. The full Pharos lookups resolved 500 target records. The compact release resolved 499. Comparing every input symbol found one difference. Only the full references mapped C14orf39 to UniProtKB:Q8N1H7. The replay verified the workbook digest and the identity of both bundle manifests before comparing them. [Replay record](../docs/data/cheng_reference_replay_pharos319.json) · [Runnable comparison](../scripts/replay_cheng_references.py)
+
+## November 17 test with a protein biomarker panel
+
+Higginbotham and colleagues measured proteins in cerebrospinal fluid (CSF) and compared Alzheimer cases with controls. Their supplementary workbook includes Table S2G, a panel of candidate biomarkers linked to brain protein networks. The question here was whether the same local import tools could read a different kind of study and preserve the measured difference. [Original paper and supplements](https://pmc.ncbi.nlm.nih.gov/articles/PMC7577712/)
+
+Codex inspected the workbook, chose Table S2G and proposed `biolink:biomarker_for` with statistical-association evidence. The proposal carries the brain module and the log2 difference between Alzheimer and control CSF. The local MCP tools accepted the sheet, header and mapping. All 284 rows below the header were accounted for. Of these, 271 held measurements and 13 were section labels, direction labels or repeated headers.
+
+The compact bundle resolved 264 of the 271 measured symbols. Seven lacked an exact match. Two symbols mapped to multiple target records, so the preview proposed 285 target–disease links. A separate count using the numeric measurement column and bundle target names reproduced the totals. The table stayed at preview. A curator would need to resolve the ambiguous proteins before joining it. This was a development example with a Codex proposal, outside the four frozen GWAS workbook runs. It measures neither diagnostic accuracy nor independent usability. [Report and mapping](../docs/data/csf_panel_preview_pharos319.json) · [Repeat the MCP preview](../scripts/replay_csf_panel.py)

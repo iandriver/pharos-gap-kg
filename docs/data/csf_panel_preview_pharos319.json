@@ -1,0 +1,103 @@
+{
+  "about": {
+    "citation": "Higginbotham et al. Integrated proteomics reveals brain-based cerebrospinal fluid biomarkers in asymptomatic and symptomatic Alzheimer\u2019s disease",
+    "journal": "Science Advances",
+    "published": "2020-10-21",
+    "doi": "10.1126/sciadv.aaz9360",
+    "licence": "CC BY-NC 4.0",
+    "what": "Brain and cerebrospinal fluid proteomics in Alzheimer disease.",
+    "disease": "Alzheimer disease",
+    "add": "Identify the authors\u2019 brain-linked CSF marker panel. Keep the disease versus control log2 difference."
+  },
+  "workbook": "aaz9360_Table_S2.xlsx",
+  "sha256": "6bcfdfa517c61387103637e34f18df1aefc997c9d0f2e33832d5a1df8d087f0c",
+  "download": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7577712/supplementaryFiles",
+  "sheets": 12,
+  "sheet": "Table S2G",
+  "header_row": 3,
+  "sheet_check": {
+    "accepted": true,
+    "problems": [],
+    "rows": 284
+  },
+  "profile": {
+    "rows": 284,
+    "columns": [
+      {
+        "name": "Gene Symbol",
+        "rows_with_a_value": 279,
+        "missing_rows": 5,
+        "distinct_values": 276
+      },
+      {
+        "name": "Brain Module",
+        "rows_with_a_value": 275,
+        "missing_rows": 9,
+        "distinct_values": 16
+      },
+      {
+        "name": "CSF Log2 Difference",
+        "rows_with_a_value": 280,
+        "missing_rows": 4,
+        "distinct_values": 273
+      }
+    ],
+    "duplicate_rows_beyond_first": 7,
+    "reading": "Repeated rows are not removed: they may represent separate observations. Missing values follow the mapping validator's convention. These counts do not establish scientific validity."
+  },
+  "mapping": {
+    "map": true,
+    "subject": {
+      "columns": [
+        "Gene Symbol"
+      ],
+      "resolver": "gene_symbol",
+      "category": "biolink:Protein"
+    },
+    "object": {
+      "constant": "MONDO:0004975",
+      "category": "biolink:Disease"
+    },
+    "predicate": "biolink:biomarker_for",
+    "association_category": "biolink:Association",
+    "knowledge_level": "statistical_association",
+    "agent_type": "data_analysis_pipeline",
+    "qualifiers": {},
+    "edge_properties": [
+      "Brain Module",
+      "CSF Log2 Difference"
+    ],
+    "keep_if": null,
+    "split_by": null,
+    "by_value": {}
+  },
+  "references": "the bundle's targets and traits only",
+  "accepted": true,
+  "rows": 284,
+  "accounted": 284,
+  "outcomes": {
+    "graph_pair": 264,
+    "unresolved": 20
+  },
+  "issues": {
+    "unresolved_subject": 20,
+    "multiple_symbol_matches": 2,
+    "unmatched_symbol": 15
+  },
+  "preview": {
+    "links": 285,
+    "graph_genes": 285,
+    "traits": [
+      "MONDO:0004975"
+    ]
+  },
+  "independent_check": {
+    "numeric_measurement_rows": 271,
+    "distinct_measured_symbols": 271,
+    "structural_rows": 13,
+    "mapped_measured_symbols": 264,
+    "distinct_targets": 285
+  },
+  "joined": false,
+  "scope": "One development example. Codex selected the sheet and proposed the mapping. Read-only preview on the compact release. The authors propose candidate biomarkers."
+}

@@ -17,7 +17,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--base', default='https://pm4ie6tprh.us-east-1.awsapprunner.com')
     p.add_argument('--commit', required=True)
-    p.add_argument('--tag', default='submission-2026-11-17-r2')
+    p.add_argument('--tag', default='submission-2026-11-17-r3')
     p.add_argument('--output', required=True)
     a = p.parse_args()
     results = []
@@ -48,7 +48,7 @@ def main():
                     get(u)
         walk = json.loads(get(a.base + '/walkthrough.json'))
         assert walk['studies'], 'walkthrough has no study examples'
-        if a.tag == 'submission-2026-11-17-r2':
+        if a.tag in {'submission-2026-11-17-r2', 'submission-2026-11-17-r3'}:
             study = next(s for s in walk['studies'] if s['id'] == 'D')
             assert study['join']['targets'] == 500 and '499 genes' in study['reference_note'], study['id']
             why = json.loads(get(a.base + '/api/why?target=ACHE&trait=Alzheimer%20disease'))
@@ -57,6 +57,13 @@ def main():
         assert found.get('matches'), found
         gaps = json.loads(get(a.base + '/api/gaps?disease=Parkinson%20disease'))
         assert gaps.get('found') is True, gaps
+        if a.tag == 'submission-2026-11-17-r3':
+            assert (gaps['holds']['tied_genes'], gaps['counts']['no_genetic_support']) == (345, 97)
+            assert '55,000' in gaps['answer']
+            diabetes = json.loads(get(a.base + '/api/gaps?disease=type%202%20diabetes%20mellitus'))
+            assert diabetes['holds']['tied_genes'] == 2549 and diabetes['counts']['no_genetic_support'] == 115
+            supporting = json.loads(get(a.base + '/api/subgraph?question=gaps&disease=MONDO%3A0005180'))
+            assert supporting['nodes'] and supporting['edges']
         status = json.loads(get(a.base + '/api/status'))
         assert status, 'empty graph status'
         async def mcp():
@@ -85,6 +92,15 @@ def main():
         for name in ['SUBMISSION_20261117.md', 'PROGRESS_20261027.md', 'PROTOCOL.md', 'IMPORT_WORKFLOW.md', 'VIDEO.md']:
             get(f'{repo}/blob/{tag}/docs/{name}')
         get(f'{repo}/blob/{tag}/findings/REPRODUCE.md')
+        if a.tag == 'submission-2026-11-17-r3':
+            assets = json.loads(get(api + '/releases/tags/' + tag))['assets']
+            records = {x['name']: x for x in assets}
+            for name in ['pharos-gap-kg-final-submission.docx', 'pharos-gap-kg-gaps-demo.mp4']:
+                asset = records[name]
+                content = get(asset['browser_download_url'])
+                digest = hashlib.sha256(content).hexdigest()
+                assert asset['digest'] == 'sha256:' + digest, name
+                results[-1]['sha256'] = digest
         release = json.loads(get(api + '/releases/tags/pharos319-bundle'))
         assets = {x['name']: x for x in release['assets']}
         checks = {'pharos-gap-kg-graph-pharos319.tar.gz': '4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c',

@@ -1,0 +1,40 @@
+{
+  "study": "cheng2026_re_supp",
+  "doi": "10.1038/s41588-026-02576-0",
+  "source_sha256": "a51e688cbf6d56c8ec5e17c71df56001ef740d159b4cc17c03f1381604bf501a",
+  "bundle_archive_sha256": "a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3",
+  "mapping_record": "add_cheng2026_re_supp_pharos319.json",
+  "mapping_record_sha256": "00f24d895f391250f3cae5efc727da1220ac7faa5c39aabe462a40037a284c05",
+  "sheet": "Supp Table 3",
+  "header_row": 2,
+  "full": {
+    "references": "the release's tables",
+    "links": 500,
+    "graph_genes": 500,
+    "traits": [
+      "MONDO:0004892"
+    ],
+    "rows": 539,
+    "accounted": 539
+  },
+  "bundle": {
+    "references": "the bundle's targets and traits only",
+    "links": 499,
+    "graph_genes": 499,
+    "traits": [
+      "MONDO:0004892"
+    ],
+    "rows": 539,
+    "accounted": 539
+  },
+  "resolver_differences": [
+    {
+      "symbol": "C14orf39",
+      "full": [
+        "UniProtKB:Q8N1H7"
+      ],
+      "bundle": []
+    }
+  ],
+  "operation": "Read-only replay of the accepted proposal. No model calls or study join."
+}

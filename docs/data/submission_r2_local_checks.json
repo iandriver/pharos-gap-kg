@@ -1,0 +1,64 @@
+{
+  "checked_at": "2026-11-17T19:42:43.998929+00:00",
+  "commit": "0b70bcf2b3d2eb8748d9d4d1fba736222284c99f",
+  "tag": "submission-2026-11-17-r2",
+  "source_build": {
+    "source": "Fresh local clone of the public tag. Read existing published input files, restored previously recorded service answers, ran the 20-stage build. Held-out scoring was not repeated.",
+    "tracked_changes_after_build": false,
+    "graph_files": {
+      "edges.tsv": {
+        "rows": 640321,
+        "sha256": "c9a79f572d97e448d51c07a58a9379010a0aa2d0419e19eb49fd25b71e75fede"
+      },
+      "gaps.tsv": {
+        "rows": 30484,
+        "sha256": "000382759174a2fb403585ff3f584c8ee0c64c263237afddbc169c5784c20e14"
+      },
+      "nodes.tsv": {
+        "rows": 59071,
+        "sha256": "ebd608e99c5efb32d3745d4714ec1797bd5fe49eaefc1e9cae8c85287a34bb6f"
+      }
+    },
+    "serving_bundle_sha256": "a6b1554c9cac320836652f1f198920c3013491ccc8081fbfd38ba112d8b0a3d3",
+    "graph_archive_sha256": "4891f7c80671a5771348817af16a8c9a8bc2652e4792db14d5221e7474d8c72c"
+  },
+  "desktop_wheel": {
+    "tools": [
+      "add_card",
+      "add_check",
+      "add_join",
+      "connect",
+      "find",
+      "gaps",
+      "known",
+      "predict",
+      "status",
+      "subgraph",
+      "whats_new",
+      "why"
+    ],
+    "disease_found": true,
+    "preview_genes": 2,
+    "checked_against": "the bundle's targets and traits only",
+    "schema_sha256": "e3039d206587ef17cda51eaac9b60f8b25f0f8b700f1f608248f1fe4dd927376"
+  },
+  "macos_desktop_probe": {
+    "protected_directories_denied": true,
+    "parkinson_disease_found": true,
+    "tools": 12
+  },
+  "tests": {
+    "pytest_passed": 180,
+    "warnings": 2,
+    "module_selftests": "passed"
+  },
+  "study_D_replay": {
+    "source_file_sha256": "a51e688cbf6d56c8ec5e17c71df56001ef740d159b4cc17c03f1381604bf501a",
+    "n_source_rows": 539,
+    "preview_genes_bundle": 499,
+    "preview_genes_full_reference_tables": 500,
+    "symbol_resolved_only_by_full_lookup": "C14orf39",
+    "target": "UniProtKB:Q8N1H7",
+    "basis": "Same saved mapping replayed in the November 17 review. No new model or study join."
+  }
+}

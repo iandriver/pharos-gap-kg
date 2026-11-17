@@ -2,6 +2,10 @@
 
 Whether someone with only the repository and the published files gets the same graph.
 
+**November 17 submission.** A clean clone of `0b70bcf` (tag `submission-2026-11-17-r2`) completed all 20 build stages using cached copies of the published inputs and recorded service answers. All three graph files and the serving archive matched the published bytes. Git reported no tracked changes after the build. The wheel exposed 12 MCP tools outside the checkout and passed a Parkinson query and mapping preview. All 180 tests and the module self-tests passed. This run did not repeat model calls or prediction scoring. [Build record, hashes and installation checks](../docs/data/submission_r2_local_checks.json)
+
+On the released KGX archive, KGX 2.7.0 read 59,071 nodes and 640,321 edges. It flagged 1,042 nodes and 1,062 subject–object pairs under its identifier and category checks. Its scope excludes the separate gaps file. All 26 public checks of the r2 service, tag, documents and archive downloads passed. Both records identify the artifact they checked. [KGX result](../docs/data/submission_kgx_20261117.json) · [Public checks](../docs/data/submission_r2_public_checks.json)
+
 **20 Oct 2026, commit e4e581f,** after the remodel for Biolink 4.4.3 (`findings/GRAPH.md`). The same
 run as on 18 Oct: a clean clone, installed as the README says, the published files read-only, the
 network blocked after the install, and the build traced by `python -m pharos_gap_kg.maintain`. Of the

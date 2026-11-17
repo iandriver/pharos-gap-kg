@@ -18,6 +18,8 @@ Three properties are the point of it:
 
 ## Try it
 
+Open the Parkinson disease gap report. Of 345 genes tied to the disease, 97 have support from other sources or a drug mechanism and lack a genome-wide association study (GWAS) link in Pharos 3.19. Select another covered disease to build its report, then download the graph behind the answer. A local Alzheimer’s update shows what happens when a new paper names genes on an existing gap list. [Parkinson disease gaps](https://pm4ie6tprh.us-east-1.awsapprunner.com/?id=MONDO%3A0005180&name=Parkinson%20disease&kind=trait&view=gaps) · [Alzheimer’s update](findings/AD_STUDY.md#added-29-oct-2026-the-study-as-a-dated-source)
+
 [Start with a scientist's file](https://pm4ie6tprh.us-east-1.awsapprunner.com/add?run=D). In the recorded Cheng study, a model selects the loci table from 15 sheets. Open the rejected mapping to see which biological relationship the validator refused, then inspect the accepted preview. The full reference tables resolve 500 genes. Replaying the mapping with the downloadable bundle resolves 499 because it lacks one gene-symbol cross-reference. The scientist decides whether to add the table locally.
 
 The questions are served at `https://pm4ie6tprh.us-east-1.awsapprunner.com/mcp`. In Claude, add that address as a custom connector

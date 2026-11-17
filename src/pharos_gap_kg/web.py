@@ -238,9 +238,14 @@ def walkthrough(release: str) -> dict:
                "join": r.get("join") and {kk: r["join"][kk] for kk in ("rows", "targets", "traits", "table_rows_with_no_subject", "their_values")},
                "joined": bool(r.get("joined")), "outcome": _outcome(study, rerun, r, k)}
         if release == "pharos319" and study == "D":
-            out["reference_note"] = ("This run used the full Pharos reference tables. Replaying the same mapping "
-                                     "with the downloadable bundle gives 499 genes. The full lookup resolves "
-                                     "one extra symbol, C14orf39, to UniProtKB:Q8N1H7.")
+            replay = json.loads((paths.DOCS_DATA / f"cheng_reference_replay_{release}.json").read_text())
+            if replay["source_sha256"] != r["file_sha256"] or replay["full"]["graph_genes"] != r["join"]["targets"]:
+                raise ValueError("The Cheng reference replay does not match the recorded walkthrough")
+            differences = ", ".join(f"{row['symbol']} ({', '.join(row['full'])} with full tables)"
+                                    for row in replay["resolver_differences"])
+            out["reference_note"] = (f"This run used the full Pharos reference tables. Replaying the same mapping "
+                                     f"with the downloadable bundle gives {replay['bundle']['graph_genes']} genes. "
+                                     f"Symbol lookup differences: {differences}.")
         if study == "A":
             out["check"] = {"against": "the table built by hand", **{kk: checks.get(kk) for kk in ("hand_pairs", "model_pairs", "reproduced")}}
         elif checks:

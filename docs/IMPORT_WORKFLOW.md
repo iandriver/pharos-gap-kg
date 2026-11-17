@@ -1,5 +1,7 @@
 # Inspect, check and safely add a table
 
+To update a covered disease, give the local client the paper’s workbook, publication date, DOI, disease name and the evidence you want to add. Ask it to identify the sheet, preview the proposed links and show the unresolved names. After review, approve a join to save a dated local source. Reopen the server and ask what the study adds. The original release and the dated study remain distinguishable in the answer. The Alzheimer’s example reproduced 181 gene–disease pairs. A separate CSF proteomics workbook reached preview and exposed two ambiguous protein symbols. [Alzheimer’s update](../findings/AD_STUDY.md#added-29-oct-2026-the-study-as-a-dated-source) · [Protein panel](../findings/ADD.md#november-17-test-with-a-protein-biomarker-panel)
+
 The MCP import workflow now explains what happens to source rows and records how a joined table was made. It does not change the scientific acceptance rules, remove repeated rows, repair gene names automatically or join a source without the person's instruction.
 
 ## 1. Inspect

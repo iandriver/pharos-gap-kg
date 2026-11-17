@@ -20,7 +20,11 @@ def test_the_walkthrough_carries_sheet_names_and_sizes_and_no_cell():
     for s in W["studies"]:
         assert all(set(x) == {"name", "rows", "columns"} for x in s["sheets"]), s["id"]
     d = W["studies"][-1]
-    assert "499 genes" in d["reference_note"] and "C14orf39" in d["reference_note"]
+    replay = json.loads((paths.DOCS_DATA / "cheng_reference_replay_pharos319.json").read_text())
+    assert replay["full"]["rows"] == replay["bundle"]["accounted"] == 539
+    assert replay["full"]["graph_genes"] == d["join"]["targets"]
+    assert f"{replay['bundle']['graph_genes']} genes" in d["reference_note"]
+    assert all(row["symbol"] in d["reference_note"] for row in replay["resolver_differences"])
     assert d["join"]["rows"] == 500 and "disagree" in d["outcome"] and "at most 68%" in d["outcome"] and not d["joined"]
     assert W["studies"][3]["outcome"].startswith("Nothing joins") and "95 of 102 rows, 93.1%" in W["studies"][3]["outcome"]
     assert W["studies"][1]["check"]["against"].startswith("the genes the GWAS Catalog reports")
