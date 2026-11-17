@@ -30,6 +30,7 @@ import argparse
 import asyncio
 import json
 import sys
+import os
 import time
 from collections import defaultdict, deque
 from pathlib import Path
@@ -187,7 +188,8 @@ def build(bundle_dir: Path, local: bool = False, answers: dict | None = None):
 
     @app.tool(description="Add a table, the check: code's verdict on a proposal, for stage 'sheet' ({sheet, header_row}) or stage 'mapping' (the "
                           "mapping the brief describes, with the sheet and header_row). A refused proposal comes back with the reasons; fix it once. "
-                          "For an accepted mapping it says how many links it would join. Show the person the accepted mapping before any join.")
+                          "The report accounts for source rows, gaps, skips and unresolved identifiers, with bounded examples. "
+                          "For an accepted mapping it says how many links it would join. Show the person the report and accepted mapping before any join.")
     def add_check(file: str, about: dict, stage: str, proposal: dict, sheet: str | None = None, header_row: int | None = None) -> dict:
         return add.tool_check(S(), file, about, stage, proposal, sheet, header_row)
 
@@ -241,7 +243,7 @@ class Guard:
         if scope["type"] != "http":
             return await self.app(scope, receive, send)
         if scope["path"] == "/health":
-            return await self._send(send, 200, {"status": "ok", "bundle": self.release})
+            return await self._send(send, 200, {"status": "ok", "bundle": self.release, "commit": os.environ.get("PHAROS_GAP_KG_COMMIT", "unversioned")})
         wait = self.wait((scope.get("client") or ("unknown",))[0])
         if wait is not None:
             return await self._send(send, 429, {"error": "too many requests; try again shortly"}, [(b"retry-after", str(int(wait + 0.999)).encode())])

@@ -63,7 +63,7 @@ byte-identical link tables (`findings/SNAPSHOTS.md`). What the files do support:
 
 1. **Gene and trait links, split by GWAS study year.** 295,327 pairs, every one dated. At a 2018 cutoff
    99,435 train, and 130,369 later links join a gene and a trait already in the graph. This is the
-   pair-level test. The cutoff year is not frozen yet.
+   pair-level test. The cutoff is frozen at 2018 in `docs/PROTOCOL.md`.
 2. **Ligand gain per target, from the 3.19 database to Pharos 4.0.0.** 17,517 targets with no activity
    row; 1,359 hold a ligand grade in May 2026. Features are strictly earlier than labels.
 
@@ -81,19 +81,19 @@ To settle before a model is scored:
   is the held-out data itself and is excluded from any context; the other eleven are undated.
 - Whether each of the 1,359 ligand gains rests on evidence published after 3.19's ends, from ChEMBL.
 
-## Schedule
+## Current schedule: November 3 to 17
 
-| dates | work |
-|---|---|
-| 6 to 12 Oct | done 6 Oct: snapshots read and compared, split frozen at 2018, protocol committed, graph as of 2018 built, four baselines scored. 7 Oct: the lineage, position and locus controls defined and measured. Next: the context tables, each with a pruning rule and its planted-edge test |
-| 13 to 26 Oct | baselines and one graph model on Pharos alone; first pruning rules |
-| 27 Oct | progress report; the public repository `iandriver/pharos-gap-kg` is created with it |
-| 27 Oct to 9 Nov | (the typed questions and the MCP server were built on 7 Oct, `docs/ASK.md`) a usability test with a person (the test with small models was run on 7 Oct, `findings/USABILITY.md`); (the context arm and both planted-pair rounds were run on 7 Oct, `findings/ENRICH.md`, `findings/PRUNING.md`, `findings/PRUNING2.md`) (the lift cut was applied to the five sources it passes on, 8 Oct) a larger planted sample for CTD and for the three sources that narrowly miss; the four fitted models of the protocol (two tuned on 8 Oct, `findings/MODELS.md`; the two with context on a rented GPU, `docs/BREV.md`), each then scored on the test links once |
-| 10 to 17 Nov | usability test, standards pass, reproduction from a clean clone, submission |
+See [November 3 review](REVIEW_20261103.md) for corrections and completion evidence. Earlier October schedules and reviews are historical.
 
-Another deadline-bearing project shares this machine and these weeks (22 Oct, 5 Nov). The enrichment
-arm is the first thing cut if time runs short; the baselines, the pruning test and the typed
-questions are not.
+| Priority | Remaining work | Completion evidence |
+|---|---|---|
+| 1 | Independent researcher usability; builder session separately | Saved sessions, code grading, timing/help and limitations |
+| 2 | Harden repeated table imports | Source/mapping receipt, collision-safe identity, interrupted-write regression checks |
+| 3 | Diagnose failed unseen sheet selection | Development diagnosis; a new frozen unseen source for any new generalisation claim |
+| 4 | Freeze submission tree and repeat clean install/build | Exact code/input/archive identities, fresh checks and MCP smoke test |
+| 5 | Confirm progress-report delivery and release/submission requirements | Direct delivery/release records; draft/URL alone is not evidence |
+
+Completed: context/pruned model comparisons, CTD planted-pair extension, full-text pruning checks, maintenance demonstration, Biolink remodel and earlier clean-clone reproduction. Preserve their findings and do not rerun spent tests. Do not expand into another broad tuning programme before submission.
 
 ## Not built
 
@@ -108,3 +108,15 @@ written.
 - How should a stored absence be written in BioLink? (For the Monarch mentors.)
 - Is the Pharos 4.0.0 database or graph itself available to teams? The public release is a table of
   levels and counts; with its activities and disease links, 3.19 to 4.0.0 could be scored link by link.
+
+## October 8 audit and active follow-ups
+
+See [AUDIT_20261008.md](AUDIT_20261008.md) for current evidence, scoring limits and the ordered task queue. Hypothesary project `pharos-gap-kg` now indexes this folder; [SCIMEM.md](SCIMEM.md) gives the agent coordination commands. Complete model provenance/preflight checks before final held-out scoring. Preserve existing tuning shards; the expanded graph-model grid is 44 settings.
+
+## October 11 review
+
+[Current review](REVIEW_20261011.md) supersedes the October 8 status snapshot. Model provenance safeguards are fixed and multiple final comparisons are complete. Priority is a research-facing gap workflow, a human test, input-change/restoration demonstration, and the existing pruning robustness work. The prospective combiner improves later-link ranking at known loci; it does not establish new biological links. Keep spent test splits closed and existing owners intact.
+
+## November 17 submission freeze
+
+The [submission write-up](SUBMISSION_20261117.md) is the current deliverable. The browser demo, graph archive and source tag are released together; public checks record the deployed code identity. Earlier queue sections are historical. Independent human testing and a recorded video are not claimed.

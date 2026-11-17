@@ -18,6 +18,7 @@ Run:  python -I -m pharos_gap_kg.add fetch kim2023_pd_supp            # the regi
       python -I -m pharos_gap_kg.add show pharos319 B                 # the accepted mapping, field by field, for the person
       python -I -m pharos_gap_kg.add join pharos319 B                 # the person's join
       python -I -m pharos_gap_kg.add compare pharos319                # A against later.py's table, B against the GWAS Catalog
+      python -m pharos_gap_kg.add replay-import BUNDLE RECEIPT SOURCE  # offline saved-recipe check, no join
       python -m pharos_gap_kg.add --selftest
 """
 from __future__ import annotations
@@ -274,6 +275,23 @@ def card2(df: pd.DataFrame, sheet: str, header_row: int, tr: list[dict]) -> dict
     ex = df.sample(n=min(8, len(df)), random_state=SEED)
     return {"sheet": sheet, "header_row": header_row, "rows": int(len(df)), "columns": cols,
             "example_rows": [{c: (None if v is None else ingest.cut(v)) for c, v in r.items()} for r in ex.to_dict("records")], "traits": tr}
+
+
+def table_profile(df: pd.DataFrame) -> dict:
+    """Read-only, full-table counts before mapping. Values use the validator's
+    missing-value convention; duplicate rows are reported, never removed."""
+    columns = []
+    for name in df.columns:
+        values = df[name]
+        present = ingest.present(values)
+        nonmissing = values[present]
+        columns.append({"name": name, "rows_with_a_value": int(present.sum()),
+                        "missing_rows": int((~present).sum()),
+                        "distinct_values": int(nonmissing.nunique())})
+    return {"rows": len(df), "columns": columns,
+            "duplicate_rows_beyond_first": int(df.duplicated().sum()),
+            "reading": "Repeated rows are not removed: they may represent separate observations. "
+                       "Missing values follow the mapping validator's convention. These counts do not establish scientific validity."}
 
 
 def brief2() -> str:
@@ -958,10 +976,18 @@ class Session:
 def _about_problems(about) -> list[str]:
     if not isinstance(about, dict) or set(ABOUT_KEYS) - set(about):
         return [f"the description needs the fields {list(ABOUT_KEYS)}"]
+    bad = [f"{key} must be non-empty text" for key in ABOUT_KEYS
+           if not isinstance(about[key], str) or not about[key].strip()]
+    if bad:
+        return bad
     try:
         date.fromisoformat(about["published"])
-    except (TypeError, ValueError):
+    except ValueError:
         return ["published must be a date written YYYY-MM-DD"]
+    # The DOI determines the sidecar filename and study identity. Refuse an empty
+    # or unrecognised identifier before reading the supplied file or writing it.
+    if re.fullmatch(r"10\.\d{4,9}/\S+", about["doi"], flags=re.IGNORECASE) is None:
+        return ["doi must be a DOI written 10.<registrant>/<suffix>"]
     return []
 
 
@@ -978,6 +1004,7 @@ def tool_card(S: Session, file: str, about: dict, sheet: str | None = None, head
     if problems:
         return {"accepted": False, "problems": problems}
     return {"stage": "mapping", "brief": brief2(), "description": text(about), "card": card2(df, sheet, header_row, traits(S.G, about["disease"])),
+            "profile": table_profile(df),
             "next": "Write the mapping the brief asks for, then call add_check with stage 'mapping' and the same sheet and header_row."}
 
 
@@ -988,6 +1015,8 @@ def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, s
     bad = _about_problems(about)
     if bad:
         return {"accepted": False, "problems": bad}
+    if stage not in ("sheet", "mapping"):
+        return {"accepted": False, "problems": ["stage must be sheet or mapping"]}
     sheets = read_sheets(Path(file).expanduser())
     if stage == "sheet":
         df, problems = check1(proposal, sheets)
@@ -996,11 +1025,118 @@ def tool_check(S: Session, file: str, about: dict, stage: str, proposal: dict, s
     if problems:
         return {"accepted": False, "problems": problems}
     v = check2(proposal, df, traits(S.G, about["disease"]), S.sym, S.refs, infores(about), "added", S.G, rule)
-    out = {"accepted": v["accepted"], "problems": v["problems"], "checked_against": S.lists}
+    out = {"accepted": v["accepted"], "problems": v["problems"], "checked_against": S.lists,
+           "report": mapping_report(v, df, proposal, S.G, S.refs, S.sym, header_row)}
     if v["accepted"] and v.get("map") is not False:
         J = joinable(v, S.G, S.sym, about, "added")
         out["would_join"] = {"links": int(len(J)), "graph_genes": int(J.target.nunique()), "traits": sorted(set(J.trait))}
     return out
+
+
+def mapping_report(v: dict, df: pd.DataFrame, proposal: dict, G, refs, sym,
+                   header_row: int, sample_limit: int = 10) -> dict:
+    """Account for every source row without changing the validator's decision.
+
+    Outcomes describe resolved mapping contributions before exporter merging, not
+    a promise of import success. Sheet row numbers follow read_sheets (blank rows
+    skipped), the same convention as the sheet card.
+    """
+    from collections import Counter
+    labels = {i: set() for i in df.index}
+    issues = []
+    issue_counts = Counter()
+    def issue(i, side, reason, value=None):
+        issue_counts[reason] += 1
+        if len(issues) < sample_limit:
+            issues.append({"source_row": int(i) + 1, "sheet_row": header_row + int(i) + 1,
+                           "side": side, "reason": reason, "value": value})
+
+    if v.get("map") is False:
+        for i in labels:
+            labels[i].add("declined")
+    elif "_rows" not in v:
+        for i in labels:
+            labels[i].add("not_evaluated")
+    else:
+        rows, p = v["_rows"], v["_p2"]
+        original_rules = ingest.rules_of(proposal)
+        public_rules = v.get("rules", [])
+        for n, (value, rule, skip) in enumerate(ingest.rules_of(p)):
+            source = df if value is None else df[df[proposal["split_by"]].astype(str) == str(value)]
+            if rule is None:
+                for i in source.index:
+                    labels[i].add("skipped")
+                    issue(i, None, "explicit_skip", skip)
+                continue
+            mine = rows if value is None else rows[rows[p["split_by"]].astype(str) == str(value)]
+            checks = public_rules[n].get("checks", {}) if n < len(public_rules) else {}
+            if n >= len(public_rules) or checks.get("1_parses"):
+                for i in source.index:
+                    labels[i].add("not_evaluated")
+                continue
+            sid, _ = ingest.resolve(mine, rule["subject"], refs)
+            oid, _ = ingest.resolve(mine, rule["object"], refs)
+            k = rule.get("keep_if")
+            kept = [ingest.keeps(k, x) for x in mine[k["column"]]] if k else [True] * len(mine)
+            for i, a, b, keep in zip(mine["__row"], sid, oid, kept):
+                if not a:
+                    labels[i].add("unresolved")
+                    issue(i, "subject", "unresolved_subject")
+                elif not keep:
+                    labels[i].add("gap")
+                elif not b:
+                    labels[i].add("unresolved")
+                    issue(i, "object", "unresolved_object")
+                elif (a in G.ti and b in G.di) or (b in G.ti and a in G.di):
+                    labels[i].add("graph_pair")
+                else:
+                    labels[i].add("outside_graph_pair")
+                    issue(i, None, "outside_graph_pair")
+            # Inspect each token, including unresolved tokens in a partly resolved
+            # cell. Resolution itself remains the existing exact-symbol rule.
+            original = original_rules[n][1]
+            for side in ("subject", "object"):
+                spec = original[side]
+                if spec.get("resolver") != "gene_symbol":
+                    continue
+                for i, record in source.iterrows():
+                    for col in spec["columns"]:
+                        raw = record[col]
+                        if raw is None or pd.isna(raw):
+                            continue
+                        tokens = str(raw).split(spec["separator"]) if spec.get("separator") else [str(raw)]
+                        resolved = False
+                        for token in tokens:
+                            token = token.strip()
+                            if not token:
+                                continue
+                            ids = sym(token)
+                            if not ids:
+                                issue(i, side, "unmatched_symbol", token)
+                            elif len(ids) > 1:
+                                issue(i, side, "multiple_symbol_matches", token)
+                            resolved |= bool(ids)
+                        if resolved:
+                            break  # same fallback-column rule as _resolve_side
+    counts = Counter()
+    examples = {}
+    for i, outcomes in labels.items():
+        outcome = "+".join(sorted(outcomes)) if outcomes else "unmapped_split_value"
+        counts[outcome] += 1
+        if len(examples.setdefault(outcome, [])) < sample_limit:
+            examples[outcome].append({"source_row": int(i) + 1, "sheet_row": header_row + int(i) + 1})
+    frames = v.get("_frames", {})
+    return {"accepted": v["accepted"], "source_rows": len(df), "accounted_source_rows": sum(counts.values()),
+            "outcomes": dict(sorted(counts.items())), "outcome_examples": examples,
+            "issue_counts": dict(issue_counts), "issue_examples": issues,
+            "issue_examples_truncated": sum(issue_counts.values()) > len(issues),
+            "exported_edges": len(frames["edges"]) if "edges" in frames else None,
+            "exported_gaps": len(frames["gaps"]) if "gaps" in frames else None,
+            "reading": "Outcomes count source rows once, including combined outcomes after cell expansion. "
+                       "Export totals count merged edges and gaps only when the validator produced them. "
+                       "Graph-pair contributions do not establish scientific validity. source_row is one-based below the header; "
+                       "sheet_row follows the sheet card's numbering after blank rows are skipped. "
+                       "Unmatched tokens are not automatically corrected; multiple matches are expanded by the existing resolver."}
 
 
 def tool_join(S: Session, file: str, about: dict, sheet: str, header_row: int, proposal: dict) -> dict:
@@ -1009,6 +1145,8 @@ def tool_join(S: Session, file: str, about: dict, sheet: str, header_row: int, p
     bad = _about_problems(about)
     if bad:
         return {"joined": False, "problems": bad}
+    source_path = Path(file).expanduser()
+    source_sha = graph.file_sha(source_path)
     df, problems = check1({"sheet": sheet, "header_row": header_row}, read_sheets(Path(file).expanduser()))
     if problems:
         return {"joined": False, "problems": problems}
@@ -1019,20 +1157,62 @@ def tool_join(S: Session, file: str, about: dict, sheet: str, header_row: int, p
     J = joinable(v, S.G, S.sym, about, key)
     if J.empty:
         return {"joined": False, "problems": ["the mapping makes no link from a graph gene to a graph trait, which is what the answers read"]}
-    d = ask.later_dir(S.G.dir)
-    d.mkdir(parents=True, exist_ok=True)
-    f = d / f"{key}.parquet"
-    J.to_parquet(f, index=False)
-    mf = d / "manifest.json"
-    man = json.loads(mf.read_text()) if mf.is_file() else {"release": S.release, "files": {}, "studies": {}}
-    man["files"][f.name] = graph.file_sha(f)
-    man["studies"][key] = {"citation": about["citation"].split(".")[0] + f", {about['journal']} ({date.fromisoformat(about['published']).year})",
-                           "doi": about["doi"], "published": about["published"], "added": date.today().isoformat(), "year": date.fromisoformat(about["published"]).year,
-                           "trait": sorted(set(J.trait))[0] if J.trait.nunique() == 1 else sorted(set(J.trait)), "licence": about["licence"], "table": sheet,
-                           "what": f"{about['what']}, as a client's model mapped its table and the person joined it", "mapped_by": "the MCP client's model"}
-    mf.write_text(json.dumps(man, indent=1, sort_keys=True) + "\n")
-    return {"joined": True, "links": int(len(J)), "graph_genes": int(J.target.nunique()), "file": str(f),
-            "answer": "Joined beside the bundle. Restart the server for the answers to read it."}
+    from pharos_gap_kg import importstore
+    if graph.file_sha(source_path) != source_sha:
+        return {"joined": False, "problems": ["the source changed during validation; inspect and retry"]}
+    metadata = {"citation": about["citation"].split(".")[0] + f", {about['journal']} ({date.fromisoformat(about['published']).year})",
+                "doi": about["doi"], "published": about["published"], "added": date.today().isoformat(),
+                "year": date.fromisoformat(about["published"]).year,
+                "trait": sorted(set(J.trait))[0] if J.trait.nunique() == 1 else sorted(set(J.trait)),
+                "licence": about["licence"], "table": sheet,
+                "what": f"{about['what']}, as a client's model mapped its table and the person joined it",
+                "mapped_by": "the MCP client's model"}
+    def stable(value):
+        if isinstance(value, dict):
+            return {str(k): stable(v) for k, v in sorted(value.items(), key=lambda x: str(x[0]))}
+        if isinstance(value, (set, frozenset)):
+            return sorted(stable(x) for x in value)
+        if isinstance(value, (list, tuple)):
+            return [stable(x) for x in value]
+        return value
+    resolver_state = {name: stable(getattr(S.refs, name)) for name in ("uniprot", "gene", "target", "vocab", "xref")}
+    resolver_state["symbols"] = stable({"map": S.sym.map, "ids": S.sym.ids})
+    recipe = {"source_sha256": source_sha, "source_filename": source_path.name, "about": about,
+              "sheet": sheet, "header_row": header_row, "mapping": proposal, "check_8": RULE,
+              "bundle_manifest_sha256": graph.file_sha(S.G.dir / "manifest.json"),
+              "code_sha256": {"add": graph.file_sha(Path(__file__)), "ingest": graph.file_sha(Path(ingest.__file__))},
+              "checked_against": S.lists,
+              "resolver_sha256": importstore.digest(importstore.encoded(resolver_state)),
+              "biolink_sha256": ingest.sha(ingest.biolink())}
+    try:
+        result = importstore.commit(ask.later_dir(S.G.dir), S.release, key, J, metadata, recipe)
+    except (ValueError, OSError) as e:
+        return {"joined": False, "problems": [str(e)]}
+    return {"joined": True, "links": int(len(J)), "graph_genes": int(J.target.nunique()), **result,
+            "answer": "Already present; verified receipt and table." if result["already_present"] else
+                      "Joined beside the bundle with an import receipt. Restart the server for the answers to read it."}
+
+
+def replay_import(S: Session, receipt_file: str, file: str) -> dict:
+    """Re-evaluate a saved recipe offline, with no join or API request.
+
+    The source and bundle must match. New code may revalidate an old recipe;
+    that is reported as a new evaluation, not a reproduction of the old verdict.
+    """
+    from pharos_gap_kg import graph
+    receipt = json.loads(Path(receipt_file).read_text())
+    recipe = receipt["recipe"]
+    if graph.file_sha(Path(file).expanduser()) != recipe["source_sha256"]:
+        return {"accepted": False, "problems": ["the source does not match the receipt; inspect its changes first"]}
+    if graph.file_sha(S.G.dir / "manifest.json") != recipe["bundle_manifest_sha256"]:
+        return {"accepted": False, "problems": ["the bundle does not match the receipt; inspect its changes first"]}
+    result = tool_check(S, file, recipe["about"], "mapping", recipe["mapping"], recipe["sheet"], recipe["header_row"])
+    current = {"add": graph.file_sha(Path(__file__)), "ingest": graph.file_sha(Path(ingest.__file__))}
+    result["replay"] = {"writes": False, "original_output_sha256": receipt["output_sha256"],
+                        "same_validator_code": current == recipe["code_sha256"],
+                        "reading": "Source and bundle match; mapping was checked again under the current validator. "
+                                   "This does not verify equality of exported table bytes or scientific correctness."}
+    return result
 
 
 # ---- self-test -------------------------------------------------------------------------------------
@@ -1099,6 +1279,11 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--selftest" in argv:
         return _selftest()
+    if len(argv) == 4 and argv[0] == "replay-import":
+        from pharos_gap_kg import ask
+        result = replay_import(Session(ask.Graph(Path(argv[1]))), argv[2], argv[3])
+        print(json.dumps(result, indent=1))
+        return 0 if result["accepted"] else 1
     if len(argv) >= 2 and argv[0] == "fetch":
         i = argv.index("--from") if "--from" in argv else None
         print(fetch(argv[1], Path(argv[i + 1]) if i else None))

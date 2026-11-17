@@ -20,6 +20,7 @@ if [ -n "$(git status --porcelain -- src pyproject.toml constraints.txt Dockerfi
   echo "REFUSED: what the image is built from has uncommitted changes; the image is the commit" >&2; exit 1
 fi
 [ -f "$ARCHIVE" ] || { echo "missing $ARCHIVE; fetch it:  python -m pharos_gap_kg.release get pharos319" >&2; exit 1; }
+COMMIT="$(git rev-parse HEAD)"
 TAG="$(git rev-parse --short HEAD)"
 ACCOUNT="$(aws sts get-caller-identity --query Account --output text)"
 REGISTRY="$ACCOUNT.dkr.ecr.$REGION.amazonaws.com"
@@ -29,7 +30,7 @@ echo "1. the image, from $TAG"
 SRC="$(mktemp -d)"; trap 'rm -rf "$SRC"' EXIT
 git archive HEAD | tar -x -C "$SRC"
 mkdir -p "$SRC/data/release" && cp "$ARCHIVE" "$SRC/data/release/"
-docker buildx build --platform linux/amd64 --provenance=false --sbom=false -t "$IMAGE" --load "$SRC"
+docker buildx build --build-arg "SUBMISSION_COMMIT=$COMMIT" --platform linux/amd64 --provenance=false --sbom=false -t "$IMAGE" --load "$SRC"
 
 echo "2. the registry"
 aws ecr describe-repositories --region "$REGION" --repository-names "$NAME" >/dev/null 2>&1 \
@@ -61,22 +62,26 @@ SOURCE="{\"ImageRepository\":{\"ImageIdentifier\":\"$IMAGE\",\"ImageRepositoryTy
   \"AutoDeploymentsEnabled\":false,\"AuthenticationConfiguration\":{\"AccessRoleArn\":\"$ROLE_ARN\"}}"
 SERVICE="$(aws apprunner list-services --region "$REGION" --query "ServiceSummaryList[?ServiceName=='$NAME'].ServiceArn | [0]" --output text)"
 if [ "$SERVICE" = "None" ] || [ -z "$SERVICE" ]; then
-  SERVICE="$(aws apprunner create-service --region "$REGION" --service-name "$NAME" --source-configuration "$SOURCE" \
+  CREATED="$(aws apprunner create-service --region "$REGION" --service-name "$NAME" --source-configuration "$SOURCE" \
     --instance-configuration Cpu=1024,Memory=2048 \
     --health-check-configuration Protocol=HTTP,Path=/health,Interval=10,Timeout=5,HealthyThreshold=1,UnhealthyThreshold=5 \
-    --auto-scaling-configuration-arn "$SCALE" --query Service.ServiceArn --output text)"
+    --auto-scaling-configuration-arn "$SCALE" --query '[Service.ServiceArn,OperationId]' --output text)"
+  read -r SERVICE OPERATION <<< "$CREATED"
 else
-  aws apprunner update-service --region "$REGION" --service-arn "$SERVICE" --source-configuration "$SOURCE" >/dev/null
+  OPERATION="$(aws apprunner update-service --region "$REGION" --service-arn "$SERVICE" --source-configuration "$SOURCE" --query OperationId --output text)"
 fi
 
-echo "6. waiting for it to run"
+echo "6. waiting for deployment $OPERATION"
+SUCCEEDED=false
 for _ in $(seq 1 90); do
-  STATUS="$(aws apprunner describe-service --region "$REGION" --service-arn "$SERVICE" --query Service.Status --output text)"
+  STATUS="$(aws apprunner list-operations --region "$REGION" --service-arn "$SERVICE" \
+    --query "OperationSummaryList[?Id=='$OPERATION'].Status | [0]" --output text)"
   case "$STATUS" in
-    RUNNING) break ;;
-    CREATE_FAILED|DELETED|PAUSED) echo "the service is $STATUS; see its event log in the App Runner console" >&2; exit 1 ;;
+    SUCCEEDED) SUCCEEDED=true; break ;;
+    FAILED|ROLLBACK_FAILED|ROLLBACK_SUCCEEDED) echo "deployment $OPERATION is $STATUS; inspect its event log" >&2; exit 1 ;;
   esac
   sleep 20
 done
+[ "$SUCCEEDED" = true ] || { echo "deployment timed out; success is unverified" >&2; exit 1; }
 URL="$(aws apprunner describe-service --region "$REGION" --service-arn "$SERVICE" --query Service.ServiceUrl --output text)"
 echo "running $TAG at https://$URL/mcp  (health: https://$URL/health)"

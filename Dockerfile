@@ -18,7 +18,8 @@ RUN python -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir ".[serv
 
 FROM python:3.12-slim@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
 COPY --from=build /opt/venv /opt/venv
-ENV PATH=/opt/venv/bin:$PATH PHAROS_GAP_KG_DATA=/data
+ARG SUBMISSION_COMMIT=unknown
+ENV PATH=/opt/venv/bin:$PATH PHAROS_GAP_KG_DATA=/data PHAROS_GAP_KG_COMMIT=$SUBMISSION_COMMIT
 COPY docs/data/bundle_archive_pharos319.json /data/docs/
 COPY data/release/pharos-gap-kg-bundle-pharos319.tar.gz /tmp/
 RUN python -m pharos_gap_kg.release unpack pharos319 /tmp/pharos-gap-kg-bundle-pharos319.tar.gz \

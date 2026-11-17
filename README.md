@@ -47,7 +47,8 @@ server to an MCP client. To build the bundle from the published files instead, s
 
 ## Status
 
-Started 6 Oct 2026. What exists, by the challenge's criteria. The progress report, [`docs/PROGRESS_20261027.md`](docs/PROGRESS_20261027.md), gives the detail, and `make check` compares each of its figures with the records:
+Started 6 Oct 2026. The [final submission write-up](docs/SUBMISSION_20261117.md) gives the demo, downloads, evidence and limitations. The [October progress report](docs/PROGRESS_20261027.md) gives detailed results whose figures are checked by `make check`.
+
 
 - **The graph** ([`findings/GRAPH.md`](findings/GRAPH.md)). One KGX export of 640,321 edges and 30,484
   gaps over 59,071 nodes, with every input row an edge or a gap: 295,327 GWAS links between targets

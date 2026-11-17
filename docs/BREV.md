@@ -122,10 +122,10 @@ Measured on this laptop's CPU while it was busy with other work, one setting eac
 | model | settings in the grid | one setting, CPU | first setting, validation |
 |---|---|---|---|
 | `mf` | 8 | 62 s | 0.0543 |
-| `lightgcn` | 24 | 85 s | 0.0658 |
-| `lightgcn_ctx`, `lightgcn_ctx_pruned` | 24 each | 573 s | 0.0618 |
+| `lightgcn` | 44 | 85 s | 0.0658 |
+| `lightgcn_ctx`, `lightgcn_ctx_pruned` | 44 each | 573 s | 0.0618 |
 
-Those are single settings from a dry run that chose nothing, not results. They say the first two
+Grid counts reflect the October 8 amendment; timings below were measured before it and are not estimates for all 44 settings. Those are single settings from a dry run that chose nothing, not results. They say the first two
 models can be tuned on a laptop in under an hour, and that the GPU's job is the two context models
 (about four hours each on this CPU) and the five-seed refits. None of the three first settings beats
 the neighbours baseline on validation.
